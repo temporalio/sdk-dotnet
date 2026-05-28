@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Temporal SDK .NET AWS Lambda Worker Extension</Description>
+    <!-- New package, no previously published package baseline to compare against. -->
+    <EnablePackageValidation>false</EnablePackageValidation>
+    <IncludeSymbols>true</IncludeSymbols>
+    <LangVersion>9.0</LangVersion>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Amazon.Lambda.Core" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Temporalio\Temporalio.csproj" />
+  </ItemGroup>
+
+  <!-- Allow tests to use internals -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Temporalio.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- Pack the README -->
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>
