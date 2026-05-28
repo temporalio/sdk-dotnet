@@ -90,7 +90,7 @@ public class NexusWorkflowStartHelperTests
         var result = TemporalOperationResult<string>.SyncResult("hello");
         Assert.True(result.IsSyncResult);
         Assert.Equal("hello", result.SyncValue);
-        Assert.Null(result.AsyncToken);
+        Assert.Throws<InvalidOperationException>(() => result.AsyncToken);
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public class NexusWorkflowStartHelperTests
         var result = TemporalOperationResult<string>.SyncResult(null);
         Assert.True(result.IsSyncResult);
         Assert.Null(result.SyncValue);
-        Assert.Null(result.AsyncToken);
+        Assert.Throws<InvalidOperationException>(() => result.AsyncToken);
     }
 
     [Fact]
@@ -108,7 +108,7 @@ public class NexusWorkflowStartHelperTests
         var result = TemporalOperationResult<string>.AsyncResult("some-token");
         Assert.False(result.IsSyncResult);
         Assert.Equal("some-token", result.AsyncToken);
-        Assert.Null(result.SyncValue);
+        Assert.Throws<InvalidOperationException>(() => result.SyncValue);
     }
 
     [Fact]
