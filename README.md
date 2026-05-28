@@ -1265,9 +1265,9 @@ See the earlier part of this section for details on what environments are suppor
 
 Some platforms are not loading the system CA list properly due to quirks with how the platforms work.
 
-#### AWS Lambda .NET CA Loading Issues
+#### AWS Lambda .NET 8 CA Loading Issues
 
-Due to a [recent change](https://github.com/aws/aws-lambda-dotnet/pull/1661) in newer AWS .NET Lambda images to force
+Due to a [change](https://github.com/aws/aws-lambda-dotnet/pull/1661) in AWS .NET 8 Lambda images to force
 override the `SSL_CERT_FILE` environment variable, the CA list cannot be loaded from the system properly in our
 Rust-based extension. This may cause errors like:
 
