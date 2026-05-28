@@ -206,7 +206,7 @@ namespace Temporalio.Common.EnvConfig
             {
                 if (Disabled == true)
                 {
-                    return null;
+                    return new TlsOptions { Disabled = true };
                 }
 
                 return new TlsOptions

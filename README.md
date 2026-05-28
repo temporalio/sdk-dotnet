@@ -276,6 +276,26 @@ var client = await TemporalClient.ConnectAsync(new("my-namespace.a1b2c.tmprl.clo
 });
 ```
 
+#### Client Configuration From Environment
+
+Client connection options can be loaded from a `temporal.toml` file and environment variables:
+
+```csharp
+using Temporalio.Client;
+using Temporalio.Common.EnvConfig;
+
+var client = await TemporalClient.ConnectAsync(
+    ClientEnvConfig.LoadClientConnectOptions());
+```
+
+By default, the loader checks `TEMPORAL_CONFIG_FILE`; if unset, it looks for `temporal.toml` in the
+user config directory under `temporalio`. The selected profile is `TEMPORAL_PROFILE`, or `default`
+when unset. Environment variables such as `TEMPORAL_ADDRESS`, `TEMPORAL_NAMESPACE`,
+`TEMPORAL_API_KEY`, TLS certificate/key settings, and `TEMPORAL_GRPC_META_*` override file values.
+
+Use `ClientEnvConfig.ProfileLoadOptions` to choose a profile, provide an explicit config source, or
+disable file or environment loading.
+
 #### Client Dependency Injection
 
 To create clients for use with dependency injection, see the
