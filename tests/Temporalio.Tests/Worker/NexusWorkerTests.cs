@@ -1444,7 +1444,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             AddNexusService(new HandlerFactoryStringService(() =>
                 TemporalNexusOperationHandler.FromHandleFactory<string, string>(
                     (context, client, input) =>
-                        Task.FromResult(TemporalOperationResult<string>.Sync($"Hello, {input}")))));
+                        Task.FromResult(TemporalOperationResult<string>.SyncResult($"Hello, {input}")))));
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
 
         await RunInWorkflowAsync(workerOptions, async () =>
@@ -1651,7 +1651,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             AddNexusService(new HandlerFactoryNoInputService(() =>
                 TemporalNexusOperationHandler.FromHandleFactory<string>(
                     (context, client) =>
-                        Task.FromResult(TemporalOperationResult<string>.Sync("hello-no-input")))));
+                        Task.FromResult(TemporalOperationResult<string>.SyncResult("hello-no-input")))));
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
 
         await RunInWorkflowAsync(workerOptions, async () =>

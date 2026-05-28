@@ -14,6 +14,11 @@ namespace Temporalio.Nexus
     /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public class NexusWorkflowRunHandle
     {
+        /// <summary>
+        /// Token-type value identifying a workflow-run operation token.
+        /// </summary>
+        internal const int WorkflowRunOperationTokenType = 1;
+
         private static readonly JsonSerializerOptions TokenSerializerOptions = new()
         {
 #pragma warning disable SYSLIB0020 // Need to use obsolete form, alternative not in all our versions
@@ -148,7 +153,7 @@ namespace Temporalio.Nexus
             [property: JsonPropertyName("v")]
             int? Version,
             [property: JsonPropertyName("t")]
-            int Type = 1);
+            int Type = WorkflowRunOperationTokenType);
     }
 
     /// <inheritdoc />

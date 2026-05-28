@@ -31,7 +31,7 @@ namespace Temporalio.Nexus
     ///             await client.TemporalClient
     ///                 .GetWorkflowHandle($"order-{input.OrderId}")
     ///                 .SignalAsync("requestCancellation", new[] { input });
-    ///             return TemporalOperationResult&lt;NoValue&gt;.Sync(default);
+    ///             return TemporalOperationResult&lt;NoValue&gt;.SyncResult(default);
     ///         });
     /// </code>
     /// </remarks>
@@ -75,9 +75,7 @@ namespace Temporalio.Nexus
     /// <remarks>
     /// <para>WARNING: Nexus support is experimental.</para>
     /// <para>This class supports inheritance to customize cancel behavior. Override
-    /// <see cref="CancelWorkflowRunAsync"/> to change how workflow-run cancellations are handled.
-    /// The <see cref="StartAsync"/> and <see cref="CancelAsync"/> methods should not be
-    /// overridden — they contain the core dispatch logic.</para>
+    /// <see cref="CancelWorkflowRunAsync"/> to change how workflow-run cancellations are handled.</para>
     /// </remarks>
     public class TemporalNexusOperationHandler<TInput, TResult> : IOperationHandler<TInput, TResult>
     {
@@ -98,13 +96,13 @@ namespace Temporalio.Nexus
         public async Task<OperationStartResult<TResult>> StartAsync(
             OperationStartContext context, TInput input)
         {
-            var client = new TemporalNexusClient(context);
+            var client = new TemporalNexusClient(context, NexusOperationExecutionContext.Current);
             var result = await startFunc(context, client, input).ConfigureAwait(false);
             if (result.IsSyncResult)
             {
                 return OperationStartResult.SyncResult(result.SyncValue!);
             }
-            return OperationStartResult.AsyncResult<TResult>(result.AsyncToken!);
+            return OperationStartResult.AsyncResult<TResult>(result.AsyncToken);
         }
 
         /// <inheritdoc/>
@@ -125,7 +123,8 @@ namespace Temporalio.Nexus
             }
             return token.Type switch
             {
-                1 => CancelWorkflowRunAsync(context, token.WorkflowId),
+                NexusWorkflowRunHandle.WorkflowRunOperationTokenType =>
+                    CancelWorkflowRunAsync(context, token.WorkflowId),
                 _ => throw new HandlerException(
                     HandlerErrorType.BadRequest,
                     $"Unsupported token type: {token.Type}"),
@@ -133,7 +132,7 @@ namespace Temporalio.Nexus
         }
 
         /// <summary>
-        /// Called when a cancel request is received for a workflow-run token (type=1). Override to
+        /// Called when a cancel request is received for a workflow-run token. Override to
         /// customize cancel behavior.
         /// <para>Default behavior: cancels the underlying workflow.</para>
         /// </summary>

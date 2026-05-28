@@ -25,7 +25,9 @@ public class NexusWorkflowStartHelperTests
         using var doc = JsonDocument.Parse(json);
         var root = doc.RootElement;
 
-        Assert.Equal(1, root.GetProperty("t").GetInt32());
+        Assert.Equal(
+            NexusWorkflowRunHandle.WorkflowRunOperationTokenType,
+            root.GetProperty("t").GetInt32());
         Assert.Equal("my-ns", root.GetProperty("ns").GetString());
         Assert.Equal("my-wf", root.GetProperty("wid").GetString());
     }
@@ -38,7 +40,7 @@ public class NexusWorkflowStartHelperTests
 
         Assert.Equal("my-ns", parsed.Namespace);
         Assert.Equal("my-wf", parsed.WorkflowId);
-        Assert.Equal(1, parsed.Type);
+        Assert.Equal(NexusWorkflowRunHandle.WorkflowRunOperationTokenType, parsed.Type);
     }
 
     [Fact]
@@ -83,41 +85,42 @@ public class NexusWorkflowStartHelperTests
     }
 
     [Fact]
-    public void TemporalOperationResult_Sync_StoresValue()
+    public void TemporalOperationResult_SyncResult_StoresValue()
     {
-        var result = TemporalOperationResult<string>.Sync("hello");
+        var result = TemporalOperationResult<string>.SyncResult("hello");
         Assert.True(result.IsSyncResult);
         Assert.Equal("hello", result.SyncValue);
         Assert.Null(result.AsyncToken);
     }
 
     [Fact]
-    public void TemporalOperationResult_Sync_AllowsDefault()
+    public void TemporalOperationResult_SyncResult_AllowsDefault()
     {
-        var result = TemporalOperationResult<string>.Sync(null);
+        var result = TemporalOperationResult<string>.SyncResult(null);
         Assert.True(result.IsSyncResult);
         Assert.Null(result.SyncValue);
         Assert.Null(result.AsyncToken);
     }
 
     [Fact]
-    public void TemporalOperationResult_Async_StoresToken()
+    public void TemporalOperationResult_AsyncResult_StoresToken()
     {
-        var result = TemporalOperationResult<string>.Async("some-token");
+        var result = TemporalOperationResult<string>.AsyncResult("some-token");
         Assert.False(result.IsSyncResult);
         Assert.Equal("some-token", result.AsyncToken);
         Assert.Null(result.SyncValue);
     }
 
     [Fact]
-    public void TemporalOperationResult_Async_RejectsNull()
+    public void TemporalOperationResult_AsyncResult_RejectsNull()
     {
-        Assert.Throws<ArgumentException>(() => TemporalOperationResult<string>.Async(null!));
+        Assert.Throws<ArgumentException>(() => TemporalOperationResult<string>.AsyncResult(null!));
     }
 
     [Fact]
-    public void TemporalOperationResult_Async_RejectsEmpty()
+    public void TemporalOperationResult_AsyncResult_RejectsEmpty()
     {
-        Assert.Throws<ArgumentException>(() => TemporalOperationResult<string>.Async(string.Empty));
+        Assert.Throws<ArgumentException>(() =>
+            TemporalOperationResult<string>.AsyncResult(string.Empty));
     }
 }

@@ -9,17 +9,20 @@ namespace Temporalio.Nexus
     /// <typeparam name="TResult">The result type.</typeparam>
     /// <remarks>
     /// <para>WARNING: Nexus support is experimental.</para>
-    /// <para>Use <see cref="Sync"/> for operations that complete immediately (e.g., signals).
-    /// Use <see cref="Async"/> for operations that return an operation token for async completion
-    /// (e.g., starting a workflow).</para>
+    /// <para>Use <see cref="SyncResult"/> for operations that complete immediately (e.g., signals).
+    /// Use <see cref="AsyncResult"/> for operations that return an operation token for async
+    /// completion (e.g., starting a workflow).</para>
     /// </remarks>
     public sealed class TemporalOperationResult<TResult>
     {
+        private readonly TResult? syncValue;
+        private readonly string? asyncToken;
+
         private TemporalOperationResult(bool isSyncResult, TResult? syncValue, string? asyncToken)
         {
             IsSyncResult = isSyncResult;
-            SyncValue = syncValue;
-            AsyncToken = asyncToken;
+            this.syncValue = syncValue;
+            this.asyncToken = asyncToken;
         }
 
         /// <summary>
@@ -28,16 +31,21 @@ namespace Temporalio.Nexus
         public bool IsSyncResult { get; }
 
         /// <summary>
-        /// Gets the synchronous result value. Only meaningful when <see cref="IsSyncResult"/> is
-        /// true.
+        /// Gets the synchronous result value. Only valid when <see cref="IsSyncResult"/> is true.
         /// </summary>
-        internal TResult? SyncValue { get; }
+        /// <exception cref="InvalidOperationException">If accessed on an async result.</exception>
+        internal TResult? SyncValue => IsSyncResult
+            ? syncValue
+            : throw new InvalidOperationException("Not a sync result");
 
         /// <summary>
-        /// Gets the asynchronous operation token. Only meaningful when <see cref="IsSyncResult"/>
-        /// is false.
+        /// Gets the asynchronous operation token. Only valid when <see cref="IsSyncResult"/> is
+        /// false.
         /// </summary>
-        internal string? AsyncToken { get; }
+        /// <exception cref="InvalidOperationException">If accessed on a sync result.</exception>
+        internal string AsyncToken => IsSyncResult
+            ? throw new InvalidOperationException("Not an async result")
+            : asyncToken!;
 
         /// <summary>
         /// Create a synchronous result with the given value.
@@ -45,7 +53,7 @@ namespace Temporalio.Nexus
         /// <param name="value">The result value.</param>
         /// <returns>A synchronous operation result.</returns>
 #pragma warning disable CA1000 // Intentional static factory on generic type
-        public static TemporalOperationResult<TResult> Sync(TResult? value) =>
+        public static TemporalOperationResult<TResult> SyncResult(TResult? value) =>
             new(isSyncResult: true, syncValue: value, asyncToken: null);
 #pragma warning restore CA1000
 
@@ -55,9 +63,9 @@ namespace Temporalio.Nexus
         /// <param name="token">The operation token.</param>
         /// <returns>An asynchronous operation result.</returns>
         /// <exception cref="ArgumentException">If the token is null or empty.</exception>
-#pragma warning disable CA1000, VSTHRD200 // Intentional: static factory on generic type; "Async" refers to the result kind, not the method signature
-        public static TemporalOperationResult<TResult> Async(string token)
-#pragma warning restore CA1000, VSTHRD200
+#pragma warning disable CA1000 // Intentional static factory on generic type
+        public static TemporalOperationResult<TResult> AsyncResult(string token)
+#pragma warning restore CA1000
         {
             if (string.IsNullOrEmpty(token))
             {

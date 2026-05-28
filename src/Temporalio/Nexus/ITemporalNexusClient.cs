@@ -27,7 +27,7 @@ namespace Temporalio.Nexus
     /// await client.TemporalClient
     ///     .GetWorkflowHandle($"order-{input.OrderId}")
     ///     .SignalAsync("requestCancellation", new[] { input });
-    /// return TemporalOperationResult&lt;NoValue&gt;.Sync(default);
+    /// return TemporalOperationResult&lt;NoValue&gt;.SyncResult(default);
     /// </code>
     /// </remarks>
     public interface ITemporalNexusClient
