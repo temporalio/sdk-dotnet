@@ -71,6 +71,55 @@ namespace Temporalio.Nexus
         }
 
         /// <summary>
+        /// Convert an activity link to a Nexus link.
+        /// </summary>
+        /// <param name="act">Activity link to convert.</param>
+        /// <returns>Nexus link.</returns>
+        public static NexusLink ToNexusLink(this Api.Common.V1.Link.Types.Activity act)
+        {
+            var builder = new UriBuilder
+            {
+                Scheme = "temporal",
+                Path = "/namespaces/" + Uri.EscapeDataString(act.Namespace) + "/activities/" +
+                    Uri.EscapeDataString(act.ActivityId) + "/" + Uri.EscapeDataString(act.RunId) +
+                    "/details",
+            };
+            return new(builder.Uri, Api.Common.V1.Link.Types.Activity.Descriptor.FullName);
+        }
+
+        /// <summary>
+        /// Convert a Nexus link to an activity link.
+        /// </summary>
+        /// <param name="link">Nexus link.</param>
+        /// <returns>Activity link.</returns>
+        /// <exception cref="ArgumentException">If the link is invalid.</exception>
+        public static Api.Common.V1.Link.Types.Activity ToActivity(this NexusLink link)
+        {
+            if (link.Uri.Scheme != "temporal")
+            {
+                throw new ArgumentException("Invalid scheme");
+            }
+            if (link.Uri.Host.Length > 0)
+            {
+                throw new ArgumentException("Unexpected host");
+            }
+            var pathPieces = link.Uri.AbsolutePath.TrimStart('/').Split('/');
+            if (pathPieces.Length != 6 ||
+                pathPieces[0] != "namespaces" ||
+                pathPieces[2] != "activities" ||
+                pathPieces[5] != "details")
+            {
+                throw new ArgumentException("Invalid path");
+            }
+            return new Api.Common.V1.Link.Types.Activity
+            {
+                Namespace = Uri.UnescapeDataString(pathPieces[1]),
+                ActivityId = Uri.UnescapeDataString(pathPieces[3]),
+                RunId = Uri.UnescapeDataString(pathPieces[4]),
+            };
+        }
+
+        /// <summary>
         /// Convert a Nexus link to a workflow event.
         /// </summary>
         /// <param name="link">Nexus link.</param>

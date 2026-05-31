@@ -118,7 +118,7 @@ namespace Temporalio.Client
                             Name = input.Options.TaskQueue!,
                         },
                         Identity = Client.Connection.Options.Identity,
-                        RequestId = Guid.NewGuid().ToString(),
+                        RequestId = input.Options.RequestId ?? Guid.NewGuid().ToString(),
                         IdReusePolicy = input.Options.IdReusePolicy,
                         IdConflictPolicy = input.Options.IdConflictPolicy,
                         RetryPolicy = input.Options.RetryPolicy?.ToProto(),
@@ -126,7 +126,16 @@ namespace Temporalio.Client
                             input.Options.StaticSummary, input.Options.StaticDetails).
                             ConfigureAwait(false),
                         Priority = input.Options.Priority?.ToProto(),
+                        OnConflictOptions = input.Options.OnConflictOptions,
                     };
+                    if (input.Options.CompletionCallbacks is { } completionCallbacks)
+                    {
+                        req.CompletionCallbacks.AddRange(completionCallbacks);
+                    }
+                    if (input.Options.Links is { } activityLinks)
+                    {
+                        req.Links.AddRange(activityLinks);
+                    }
                     if (input.Args.Count > 0)
                     {
                         req.Input = new Payloads();
