@@ -112,50 +112,72 @@ namespace Temporalio.Nexus
         /// <inheritdoc/>
         public Task CancelAsync(OperationCancelContext context)
         {
-            NexusWorkflowRunHandle.OperationToken token;
+            int tokenType;
             try
             {
-                token = NexusWorkflowRunHandle.ParseToken(context.OperationToken);
+                tokenType = NexusWorkflowRunHandle.ParseTokenType(context.OperationToken);
             }
             catch (ArgumentException e)
             {
                 throw new HandlerException(HandlerErrorType.BadRequest, e.Message);
             }
-            if (token.Namespace != NexusOperationExecutionContext.Current.Info.Namespace)
+            switch (tokenType)
             {
-                throw new HandlerException(HandlerErrorType.BadRequest, "Invalid namespace");
-            }
-            return token.Type switch
-            {
-                NexusWorkflowRunHandle.WorkflowRunOperationTokenType =>
-                    CancelWorkflowRunAsync(
+                case NexusWorkflowRunHandle.WorkflowRunOperationTokenType:
+                    NexusWorkflowRunHandle.OperationToken wfToken;
+                    try
+                    {
+                        wfToken = NexusWorkflowRunHandle.ParseToken(context.OperationToken);
+                    }
+                    catch (ArgumentException e)
+                    {
+                        throw new HandlerException(HandlerErrorType.BadRequest, e.Message);
+                    }
+                    if (wfToken.Namespace != NexusOperationExecutionContext.Current.Info.Namespace)
+                    {
+                        throw new HandlerException(HandlerErrorType.BadRequest, "Invalid namespace");
+                    }
+                    return CancelWorkflowRunAsync(
                         new TemporalOperationCancelContext(context),
-                        new CancelWorkflowRunInput(token.WorkflowId)),
-                NexusWorkflowRunHandle.UpdateWorkflowOperationTokenType =>
-                    CancelWorkflowUpdateFromTokenAsync(),
-                _ => throw new HandlerException(
-                    HandlerErrorType.BadRequest,
-                    $"Unsupported token type: {token.Type}"),
-            };
-
-            Task CancelWorkflowUpdateFromTokenAsync()
-            {
-                // Decode via the update-workflow handle so a malformed token (e.g. missing workflow
-                // ID or update ID) is rejected as a bad request rather than passing empty strings
-                // through to a user-supplied cancel override.
-                NexusWorkflowUpdateHandle updateHandle;
-                try
-                {
-                    updateHandle = NexusWorkflowUpdateHandle.FromToken(context.OperationToken);
-                }
-                catch (ArgumentException e)
-                {
-                    throw new HandlerException(HandlerErrorType.BadRequest, e.Message);
-                }
-                return CancelWorkflowUpdateAsync(
-                    new TemporalOperationCancelContext(context),
-                    new CancelWorkflowUpdateInput(
-                        updateHandle.WorkflowId, updateHandle.RunId, updateHandle.UpdateId));
+                        new CancelWorkflowRunInput(wfToken.WorkflowId));
+                case NexusWorkflowRunHandle.UpdateWorkflowOperationTokenType:
+                    // Decode via the update-workflow handle so a malformed token (e.g. missing
+                    // workflow ID or update ID) is rejected as a bad request rather than passing
+                    // empty strings through to a user-supplied cancel override.
+                    NexusWorkflowUpdateHandle updateHandle;
+                    try
+                    {
+                        updateHandle = NexusWorkflowUpdateHandle.FromToken(context.OperationToken);
+                    }
+                    catch (ArgumentException e)
+                    {
+                        throw new HandlerException(HandlerErrorType.BadRequest, e.Message);
+                    }
+                    return CancelWorkflowUpdateAsync(
+                        new TemporalOperationCancelContext(context),
+                        new CancelWorkflowUpdateInput(
+                            updateHandle.WorkflowId, updateHandle.RunId, updateHandle.UpdateId));
+                case NexusActivityExecutionToken.OperationTokenType:
+                    NexusActivityExecutionToken.Token actToken;
+                    try
+                    {
+                        actToken = NexusActivityExecutionToken.Parse(context.OperationToken);
+                    }
+                    catch (ArgumentException e)
+                    {
+                        throw new HandlerException(HandlerErrorType.BadRequest, e.Message);
+                    }
+                    if (actToken.Namespace != NexusOperationExecutionContext.Current.Info.Namespace)
+                    {
+                        throw new HandlerException(HandlerErrorType.BadRequest, "Invalid namespace");
+                    }
+                    return CancelActivityExecutionAsync(
+                        new TemporalOperationCancelContext(context),
+                        new CancelActivityExecutionInput(actToken.ActivityId, actToken.RunId));
+                default:
+                    throw new HandlerException(
+                        HandlerErrorType.BadRequest,
+                        $"Unsupported token type: {tokenType}");
             }
         }
 
@@ -185,6 +207,19 @@ namespace Temporalio.Nexus
             TemporalOperationCancelContext context, CancelWorkflowUpdateInput input) =>
             throw new HandlerException(
                 HandlerErrorType.NotImplemented, "cannot cancel an UpdateWorkflow operation");
+
+        /// <summary>
+        /// Called when a cancel request is received for an activity-execution token. Override to
+        /// customize cancel behavior.
+        /// <para>Default behavior: cancels the underlying standalone activity.</para>
+        /// </summary>
+        /// <param name="context">The cancel context.</param>
+        /// <param name="input">Activity-execution cancel input.</param>
+        /// <returns>Task for cancel completion.</returns>
+        protected virtual Task CancelActivityExecutionAsync(
+            TemporalOperationCancelContext context, CancelActivityExecutionInput input) =>
+            NexusOperationExecutionContext.Current.TemporalClient
+                .GetActivityHandle(input.ActivityId, input.RunId).CancelAsync();
     }
 
     /// <summary>
@@ -240,6 +275,35 @@ namespace Temporalio.Nexus
         /// Gets the update ID extracted from the operation token.
         /// </summary>
         public string UpdateId { get; }
+    }
+
+    /// <summary>
+    /// Input passed to
+    /// <see cref="TemporalOperationHandler{TInput, TResult}.CancelActivityExecutionAsync"/>.
+    /// </summary>
+    /// <remarks>WARNING: Nexus support is experimental.</remarks>
+    public class CancelActivityExecutionInput
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CancelActivityExecutionInput"/> class.
+        /// </summary>
+        /// <param name="activityId">Activity ID extracted from the operation token.</param>
+        /// <param name="runId">Activity run ID extracted from the operation token.</param>
+        public CancelActivityExecutionInput(string activityId, string? runId)
+        {
+            ActivityId = activityId;
+            RunId = runId;
+        }
+
+        /// <summary>
+        /// Gets the activity ID extracted from the operation token.
+        /// </summary>
+        public string ActivityId { get; }
+
+        /// <summary>
+        /// Gets the activity run ID extracted from the operation token.
+        /// </summary>
+        public string? RunId { get; }
     }
 
     /// <summary>

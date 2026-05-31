@@ -19,8 +19,6 @@ namespace Temporalio.Nexus
     /// </summary>
     internal static class NexusWorkflowStartHelper
     {
-        private const string NexusOperationTokenHeader = "Nexus-Operation-Token";
-
         /// <summary>
         /// Start a workflow and return the workflow-run handle. This handles all Nexus plumbing:
         /// cloning options, setting task queue, processing links, injecting callbacks, and
@@ -30,7 +28,8 @@ namespace Temporalio.Nexus
         /// <param name="temporalContext">Temporal operation context for client, info, and logging.</param>
         /// <param name="workflow">Workflow type name.</param>
         /// <param name="args">Workflow arguments.</param>
-        /// <param name="options">Workflow start options. ID and TaskQueue are required.</param>
+        /// <param name="options">Workflow start options. ID is required; TaskQueue defaults to
+        /// the operation's task queue when omitted.</param>
         /// <returns>Workflow-run handle for the started workflow.</returns>
         internal static async Task<NexusWorkflowRunHandle> StartWorkflowAsync(
             OperationStartContext nexusStartContext,
@@ -61,46 +60,14 @@ namespace Temporalio.Nexus
                     AttachRequestId = true,
                 };
             }
-            if (nexusStartContext.InboundLinks.Count > 0)
+            if (NexusOperationStartHelper.CreateInboundLinks(
+                    nexusStartContext, temporalContext) is { } links)
             {
-                options.Links = nexusStartContext.InboundLinks.Select(link =>
-                {
-                    try
-                    {
-                        return link.ToProtoLink();
-                    }
-                    catch (ArgumentException e)
-                    {
-                        temporalContext.Logger.LogWarning(e, "Invalid Nexus link: {Url}", link.Uri);
-                        return null;
-                    }
-                }).OfType<Link>().ToList();
+                options.Links = links;
             }
-            if (nexusStartContext.CallbackUrl is { } callbackUrl)
+            if (NexusOperationStartHelper.CreateCallback(
+                    nexusStartContext, token, options.Links) is { } callback)
             {
-                var callback = new Callback() { Nexus = new() { Url = callbackUrl } };
-                var callbackHeadersHasToken = false;
-                if (nexusStartContext.CallbackHeaders is { } callbackHeaders)
-                {
-                    foreach (var kv in callbackHeaders)
-                    {
-                        callback.Nexus.Header.Add(kv.Key, kv.Value);
-                        if (string.Equals(
-                                kv.Key, NexusOperationTokenHeader, StringComparison.OrdinalIgnoreCase))
-                        {
-                            callbackHeadersHasToken = true;
-                        }
-                    }
-                }
-                // Set operation token if not already present (header is case-insensitive)
-                if (!callbackHeadersHasToken)
-                {
-                    callback.Nexus.Header[NexusOperationTokenHeader] = token;
-                }
-                if (options.Links is { } links)
-                {
-                    callback.Links.AddRange(links);
-                }
                 options.CompletionCallbacks = new[] { callback };
             }
             options.RequestId = nexusStartContext.RequestId;
@@ -109,7 +76,8 @@ namespace Temporalio.Nexus
             var wfHandle = await client.StartWorkflowAsync(
                 workflow, args, options).ConfigureAwait(false);
 
-            // Add the outbound link
+            // Add the outbound link pointing at the started workflow's WorkflowExecutionStarted
+            // event so the caller's NexusOperationStarted event links back to the target run.
             nexusStartContext.OutboundLinks.Add(new Link.Types.WorkflowEvent
             {
                 Namespace = namespace_,
@@ -226,7 +194,9 @@ namespace Temporalio.Nexus
                 {
                     callback.Nexus.Header.Add(kv.Key, kv.Value);
                     if (string.Equals(
-                            kv.Key, NexusOperationTokenHeader, StringComparison.OrdinalIgnoreCase))
+                            kv.Key,
+                            NexusOperationStartHelper.NexusOperationTokenHeader,
+                            StringComparison.OrdinalIgnoreCase))
                     {
                         callbackHeadersHasToken = true;
                     }
@@ -235,7 +205,7 @@ namespace Temporalio.Nexus
             // Set operation token if not already present (header is case-insensitive).
             if (!callbackHeadersHasToken)
             {
-                callback.Nexus.Header[NexusOperationTokenHeader] = token;
+                callback.Nexus.Header[NexusOperationStartHelper.NexusOperationTokenHeader] = token;
             }
             if (links.Count > 0)
             {

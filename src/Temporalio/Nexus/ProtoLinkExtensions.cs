@@ -88,11 +88,27 @@ namespace Temporalio.Nexus
         }
 
         /// <summary>
+        /// Convert an activity link to a Nexus link.
+        /// </summary>
+        /// <param name="act">Activity link to convert.</param>
+        /// <returns>Nexus link.</returns>
+        public static NexusLink ToNexusLink(this Api.Common.V1.Link.Types.Activity act)
+        {
+            // Build URI with empty authority so there is no host. UriBuilder cannot be used
+            // here because even with Host explicitly set to "", it emits "temporal:/path"
+            // (single slash) rather than the canonical "temporal:///path" form other SDKs use.
+            var uriStr = "temporal:///namespaces/" + Uri.EscapeDataString(act.Namespace) +
+                "/activities/" + Uri.EscapeDataString(act.ActivityId) +
+                "/" + Uri.EscapeDataString(act.RunId) + "/details";
+            return new(new Uri(uriStr), Api.Common.V1.Link.Types.Activity.Descriptor.FullName);
+        }
+
+        /// <summary>
         /// Convert a proto Link to a Nexus link, dispatching on the populated oneof variant. Handles
-        /// the workflow-event, nexus-operation, and workflow variants. Returns <c>null</c> when no
-        /// variant is set (e.g. a rejected update that has no history event to link to), so callers
-        /// can skip it rather than dereferencing an unset variant. Throws for a set-but-unrecognized
-        /// variant.
+        /// the workflow-event, nexus-operation, workflow, and activity variants. Returns <c>null</c>
+        /// when no variant is set (e.g. a rejected update that has no history event to link to), so
+        /// callers can skip it rather than dereferencing an unset variant. Throws for a
+        /// set-but-unrecognized variant.
         /// </summary>
         /// <param name="link">Proto link.</param>
         /// <returns>Nexus link, or <c>null</c> if no variant is set.</returns>
@@ -102,6 +118,7 @@ namespace Temporalio.Nexus
             Api.Common.V1.Link.VariantOneofCase.WorkflowEvent => link.WorkflowEvent.ToNexusLink(),
             Api.Common.V1.Link.VariantOneofCase.NexusOperation => link.NexusOperation.ToNexusLink(),
             Api.Common.V1.Link.VariantOneofCase.Workflow => link.Workflow.ToNexusLink(),
+            Api.Common.V1.Link.VariantOneofCase.Activity => link.Activity.ToNexusLink(),
             Api.Common.V1.Link.VariantOneofCase.None => null,
             _ => throw new ArgumentException($"Unknown link variant: {link.VariantCase}"),
         };
@@ -118,6 +135,8 @@ namespace Temporalio.Nexus
                 new Api.Common.V1.Link { WorkflowEvent = link.ToWorkflowEvent() },
             var t when t == Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName =>
                 new Api.Common.V1.Link { NexusOperation = link.ToNexusOperation() },
+            var t when t == Api.Common.V1.Link.Types.Activity.Descriptor.FullName =>
+                new Api.Common.V1.Link { Activity = link.ToActivity() },
             _ => throw new ArgumentException($"Unknown link type: {link.Type}"),
         };
 
@@ -151,6 +170,23 @@ namespace Temporalio.Nexus
                 "/workflows/" + Uri.EscapeDataString(workflow.WorkflowId) + "/" +
                 Uri.EscapeDataString(workflow.RunId) + "/history";
             return new(new Uri(uriStr), Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+        }
+
+        /// <summary>
+        /// Convert a Nexus link to an activity link.
+        /// </summary>
+        /// <param name="link">Nexus link.</param>
+        /// <returns>Activity link.</returns>
+        /// <exception cref="ArgumentException">If the link is invalid.</exception>
+        public static Api.Common.V1.Link.Types.Activity ToActivity(this NexusLink link)
+        {
+            var pathPieces = ParseTemporalLinkPath(link, "activities", "details");
+            return new Api.Common.V1.Link.Types.Activity
+            {
+                Namespace = Uri.UnescapeDataString(pathPieces[1]),
+                ActivityId = Uri.UnescapeDataString(pathPieces[3]),
+                RunId = Uri.UnescapeDataString(pathPieces[4]),
+            };
         }
 
         /// <summary>
