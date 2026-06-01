@@ -21,7 +21,8 @@ namespace Temporalio.Extensions.Aws.Lambda
         /// Gets or sets the client configuration loader.
         /// </summary>
         public Func<ClientEnvConfig.ProfileLoadOptions?, TemporalClientConnectOptions>?
-            LoadClientConnectOptions { get; set; }
+            LoadClientConnectOptions
+        { get; set; }
 
         /// <summary>
         /// Gets or sets the client connection factory.
