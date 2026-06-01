@@ -5,11 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using OpenTelemetry;
 using OpenTelemetry.Exporter;
-using OpenTelemetry.Extensions.AWS.Trace;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Temporalio.Client.Interceptors;
-using Temporalio.Extensions.Aws.Lambda;
 using Temporalio.Runtime;
 using TemporalOpenTelemetry = Temporalio.Extensions.OpenTelemetry;
 
