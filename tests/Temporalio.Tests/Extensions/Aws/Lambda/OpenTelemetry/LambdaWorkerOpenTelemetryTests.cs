@@ -194,18 +194,56 @@ public class LambdaWorkerOpenTelemetryTests
         }
     }
 
+    [Fact]
+    public async Task ForceFlushAsync_ReturnsWhenCancellationRequested()
+    {
+        using var flushStarted = new ManualResetEventSlim();
+        using var releaseFlush = new ManualResetEventSlim();
+        using var flushCompleted = new ManualResetEventSlim();
+#pragma warning disable CA2000 // Tracer provider owns the processor/exporter.
+        using var provider = Sdk.CreateTracerProviderBuilder().
+            AddProcessor(new SimpleActivityExportProcessor(
+                new BlockingForceFlushExporter(flushStarted, releaseFlush, flushCompleted))).
+            Build();
+#pragma warning restore CA2000
+        using var cts = new CancellationTokenSource();
+
+#pragma warning disable CA2025 // The provider exits scope after the blocking flush is released.
+        var flushTask = LambdaWorkerOpenTelemetry.ForceFlushAsync(
+            provider,
+            TimeSpan.FromSeconds(10),
+            cts.Token);
+#pragma warning restore CA2025
+
+        try
+        {
+            Assert.True(flushStarted.Wait(TimeSpan.FromSeconds(5)));
+            await cts.CancelAsync();
+            await flushTask.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.False(flushCompleted.IsSet);
+        }
+        finally
+        {
+            releaseFlush.Set();
+            Assert.True(flushCompleted.Wait(TimeSpan.FromSeconds(5)));
+        }
+    }
+
     private sealed class BlockingForceFlushExporter :
         BaseExporter<System.Diagnostics.Activity>
     {
         private readonly ManualResetEventSlim flushStarted;
         private readonly ManualResetEventSlim releaseFlush;
+        private readonly ManualResetEventSlim? flushCompleted;
 
         public BlockingForceFlushExporter(
             ManualResetEventSlim flushStarted,
-            ManualResetEventSlim releaseFlush)
+            ManualResetEventSlim releaseFlush,
+            ManualResetEventSlim? flushCompleted = null)
         {
             this.flushStarted = flushStarted;
             this.releaseFlush = releaseFlush;
+            this.flushCompleted = flushCompleted;
         }
 
         public override ExportResult Export(in Batch<System.Diagnostics.Activity> batch) =>
@@ -214,7 +252,14 @@ public class LambdaWorkerOpenTelemetryTests
         protected override bool OnForceFlush(int timeoutMilliseconds)
         {
             flushStarted.Set();
-            return releaseFlush.Wait(timeoutMilliseconds);
+            try
+            {
+                return releaseFlush.Wait(timeoutMilliseconds);
+            }
+            finally
+            {
+                flushCompleted?.Set();
+            }
         }
     }
 

@@ -110,13 +110,29 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
                 return;
             }
 
-            await Task.Run(
-                () => tracerProvider.ForceFlush(ToTimeoutMilliseconds(shutdownDeadlineBuffer))).
-                ConfigureAwait(false);
+            var flushTask = Task.Run(
+                () => tracerProvider.ForceFlush(ToTimeoutMilliseconds(shutdownDeadlineBuffer)));
+            if (flushTask == await Task.WhenAny(
+                flushTask,
+                Task.Delay(Timeout.Infinite, cancellationToken)).ConfigureAwait(false))
+            {
+                await flushTask.ConfigureAwait(false);
+            }
+            else
+            {
+                ObserveTaskException(flushTask);
+            }
         }
 
         private static string FirstNonEmpty(params string?[] values) =>
             values.First(value => !string.IsNullOrEmpty(value))!;
+
+        private static void ObserveTaskException(Task task) =>
+            _ = task.ContinueWith(
+                completedTask => _ = completedTask.Exception,
+                CancellationToken.None,
+                TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
+                TaskScheduler.Default);
 
         private static TracerProvider CreateTracerProvider(
             ResolvedLambdaWorkerOpenTelemetryOptions options) =>

@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Temporalio.Client;
 using Temporalio.Worker;
-using Temporalio.Worker.Tuning;
 
 namespace Temporalio.Extensions.Aws.Lambda
 {
@@ -18,27 +17,62 @@ namespace Temporalio.Extensions.Aws.Lambda
         /// </summary>
         public static readonly TimeSpan DefaultShutdownDeadlineBuffer = TimeSpan.FromSeconds(7);
 
+        private Func<TemporalClientConnectOptions>? loadClientOptions;
+        private TemporalClientConnectOptions? clientOptions;
+        private bool clientOptionsSet;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LambdaWorkerConfig"/> class.
         /// </summary>
         public LambdaWorkerConfig()
+            : this(null)
         {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LambdaWorkerConfig"/> class.
+        /// </summary>
+        /// <param name="loadClientOptions">Lazy client options loader.</param>
+        internal LambdaWorkerConfig(Func<TemporalClientConnectOptions>? loadClientOptions)
+        {
+            this.loadClientOptions = loadClientOptions;
             WorkerOptions.MaxConcurrentActivities = 2;
             WorkerOptions.MaxConcurrentWorkflowTasks = 10;
             WorkerOptions.MaxConcurrentLocalActivities = 2;
             WorkerOptions.MaxConcurrentNexusTasks = 5;
             WorkerOptions.GracefulShutdownTimeout = TimeSpan.FromSeconds(5);
             WorkerOptions.MaxCachedWorkflows = 30;
-            WorkerOptions.WorkflowTaskPollerBehavior = new PollerBehavior.SimpleMaximum(2);
-            WorkerOptions.ActivityTaskPollerBehavior = new PollerBehavior.SimpleMaximum(1);
-            WorkerOptions.NexusTaskPollerBehavior = new PollerBehavior.SimpleMaximum(1);
+            WorkerOptions.MaxConcurrentWorkflowTaskPolls = 2;
+            WorkerOptions.MaxConcurrentActivityTaskPolls = 1;
+            WorkerOptions.MaxConcurrentNexusTaskPolls = 1;
             WorkerOptions.DisableEagerActivityExecution = true;
         }
 
         /// <summary>
         /// Gets or sets the client connection options.
         /// </summary>
-        public TemporalClientConnectOptions ClientOptions { get; set; } = new TemporalClientConnectOptions();
+        public TemporalClientConnectOptions ClientOptions
+        {
+            get
+            {
+                if (!clientOptionsSet)
+                {
+                    clientOptions = loadClientOptions == null ?
+                        new TemporalClientConnectOptions() :
+                        loadClientOptions();
+                    loadClientOptions = null;
+                    clientOptionsSet = true;
+                }
+                return clientOptions!;
+            }
+
+            set
+            {
+                clientOptions = value;
+                loadClientOptions = null;
+                clientOptionsSet = true;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the worker options.

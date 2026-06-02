@@ -102,18 +102,17 @@ namespace Temporalio.Extensions.Aws.Lambda
                 throw new ArgumentException("Build ID must be set", nameof(version));
             }
 
-            var config = new LambdaWorkerConfig
-            {
-                ClientOptions = handlerOptions.LoadClientConnectOptions == null ?
-                    new TemporalClientConnectOptions() :
-                    handlerOptions.LoadClientConnectOptions(null),
-            };
+            var loadClientConnectOptions = handlerOptions.LoadClientConnectOptions;
+            var config = new LambdaWorkerConfig(
+                loadClientConnectOptions == null ?
+                    null :
+                    () => loadClientConnectOptions(null));
             var environmentTaskQueue = handlerOptions.GetEnvironmentVariable(TaskQueueEnvironmentVariable);
             if (environmentTaskQueue != null)
             {
                 config.WorkerOptions.TaskQueue = environmentTaskQueue;
             }
-            config.WorkerOptions.DeploymentOptions = new WorkerDeploymentOptions(version, useWorkerVersioning: true);
+            ApplyDeploymentVersion(config.WorkerOptions, version);
 
             configure(config);
             var state = PrepareHandlerState(version, config, handlerOptions);
@@ -147,17 +146,14 @@ namespace Temporalio.Extensions.Aws.Lambda
                     "WorkerOptions.TaskQueue must be set or TEMPORAL_TASK_QUEUE must be present");
             }
 
-            var defaultVersioningBehavior =
-                config.WorkerOptions.DeploymentOptions?.DefaultVersioningBehavior ??
-                VersioningBehavior.Unspecified;
-            config.WorkerOptions.DeploymentOptions = new WorkerDeploymentOptions(
-                version,
-                useWorkerVersioning: true)
+            var postPluginConfiguration = config.WorkerOptions.PostPluginConfiguration;
+            config.WorkerOptions.PostPluginConfiguration = options =>
             {
-                DefaultVersioningBehavior = defaultVersioningBehavior,
+                postPluginConfiguration?.Invoke(options);
+                ApplyDeploymentVersion(options, version);
+                ClearConcurrencyLimitsIfTunerSet(options);
             };
-            config.WorkerOptions.BuildId = null;
-            config.WorkerOptions.UseWorkerVersioning = false;
+            config.WorkerOptions.ApplyPostPluginConfiguration();
 
             foreach (var hook in config.ShutdownHooks)
             {
@@ -173,6 +169,38 @@ namespace Temporalio.Extensions.Aws.Lambda
                 config.ShutdownDeadlineBuffer,
                 new List<Func<CancellationToken, Task>>(config.ShutdownHooks),
                 handlerOptions);
+        }
+
+        private static void ApplyDeploymentVersion(
+            TemporalWorkerOptions workerOptions,
+            WorkerDeploymentVersion version)
+        {
+            var defaultVersioningBehavior =
+                workerOptions.DeploymentOptions?.DefaultVersioningBehavior is { } behavior &&
+                behavior != VersioningBehavior.Unspecified ?
+                    behavior :
+                    VersioningBehavior.AutoUpgrade;
+            workerOptions.DeploymentOptions = new WorkerDeploymentOptions(
+                version,
+                useWorkerVersioning: true)
+            {
+                DefaultVersioningBehavior = defaultVersioningBehavior,
+            };
+            workerOptions.BuildId = null;
+            workerOptions.UseWorkerVersioning = false;
+        }
+
+        private static void ClearConcurrencyLimitsIfTunerSet(TemporalWorkerOptions workerOptions)
+        {
+            if (workerOptions.Tuner == null)
+            {
+                return;
+            }
+
+            workerOptions.MaxConcurrentActivities = null;
+            workerOptions.MaxConcurrentWorkflowTasks = null;
+            workerOptions.MaxConcurrentLocalActivities = null;
+            workerOptions.MaxConcurrentNexusTasks = null;
         }
 
         private static CancellationTokenSource CreateHookCancellationTokenSource(

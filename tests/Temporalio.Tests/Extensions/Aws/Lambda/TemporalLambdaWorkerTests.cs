@@ -8,8 +8,10 @@ using Temporalio.Common.EnvConfig;
 using Temporalio.Extensions.Aws.Lambda;
 using Temporalio.Worker;
 using Temporalio.Worker.Tuning;
+using Temporalio.Workflows;
 using Xunit;
 
+[Collection("TemporalLambdaWorkerNonParallel")]
 public class TemporalLambdaWorkerTests
 {
     private static readonly WorkerDeploymentVersion Version = new("deployment", "build");
@@ -31,10 +33,19 @@ public class TemporalLambdaWorkerTests
                 Assert.Equal(5, config.WorkerOptions.MaxConcurrentNexusTasks);
                 Assert.Equal(TimeSpan.FromSeconds(5), config.WorkerOptions.GracefulShutdownTimeout);
                 Assert.Equal(30, config.WorkerOptions.MaxCachedWorkflows);
-                Assert.Equal(2, SimpleMaximum(config.WorkerOptions.WorkflowTaskPollerBehavior));
-                Assert.Equal(1, SimpleMaximum(config.WorkerOptions.ActivityTaskPollerBehavior));
-                Assert.Equal(1, SimpleMaximum(config.WorkerOptions.NexusTaskPollerBehavior));
+                Assert.Equal(2, config.WorkerOptions.MaxConcurrentWorkflowTaskPolls);
+                Assert.Equal(1, config.WorkerOptions.MaxConcurrentActivityTaskPolls);
+                Assert.Equal(1, config.WorkerOptions.MaxConcurrentNexusTaskPolls);
+                Assert.Null(config.WorkerOptions.WorkflowTaskPollerBehavior);
+                Assert.Null(config.WorkerOptions.ActivityTaskPollerBehavior);
+                Assert.Null(config.WorkerOptions.NexusTaskPollerBehavior);
                 Assert.True(config.WorkerOptions.DisableEagerActivityExecution);
+                Assert.NotNull(config.WorkerOptions.DeploymentOptions);
+                Assert.Equal(Version, config.WorkerOptions.DeploymentOptions.Version);
+                Assert.True(config.WorkerOptions.DeploymentOptions.UseWorkerVersioning);
+                Assert.Equal(
+                    VersioningBehavior.AutoUpgrade,
+                    config.WorkerOptions.DeploymentOptions.DefaultVersioningBehavior);
                 Assert.Equal("env-task-queue", config.WorkerOptions.TaskQueue);
                 Assert.Equal("loaded-address", config.ClientOptions.TargetHost);
                 Assert.Equal("loaded-namespace", config.ClientOptions.Namespace);
@@ -42,15 +53,14 @@ public class TemporalLambdaWorkerTests
                 config.ClientOptions.TargetHost = "localhost:7233";
                 config.WorkerOptions.TaskQueue = "configured-task-queue";
                 config.WorkerOptions.MaxConcurrentActivities = 8;
+                config.WorkerOptions.MaxConcurrentActivityTaskPolls = 4;
                 config.WorkerOptions.MaxCachedWorkflows = 12;
-                config.WorkerOptions.WorkflowTaskPollerBehavior =
-                    new PollerBehavior.SimpleMaximum(4);
                 config.WorkerOptions.DisableEagerActivityExecution = false;
                 config.WorkerOptions.DeploymentOptions = new WorkerDeploymentOptions(
                     new WorkerDeploymentVersion("ignored", "ignored"),
                     useWorkerVersioning: false)
                 {
-                    DefaultVersioningBehavior = VersioningBehavior.AutoUpgrade,
+                    DefaultVersioningBehavior = VersioningBehavior.Pinned,
                 };
                 config.WorkerOptions.Activities.Add(DummyActivity());
             },
@@ -87,9 +97,240 @@ public class TemporalLambdaWorkerTests
         Assert.Equal(10, capturedWorkerOptions.MaxConcurrentWorkflowTasks);
         Assert.Equal(2, capturedWorkerOptions.MaxConcurrentLocalActivities);
         Assert.Equal(5, capturedWorkerOptions.MaxConcurrentNexusTasks);
+        Assert.Equal(2, capturedWorkerOptions.MaxConcurrentWorkflowTaskPolls);
+        Assert.Equal(4, capturedWorkerOptions.MaxConcurrentActivityTaskPolls);
+        Assert.Equal(1, capturedWorkerOptions.MaxConcurrentNexusTaskPolls);
+        Assert.Null(capturedWorkerOptions.WorkflowTaskPollerBehavior);
+        Assert.Null(capturedWorkerOptions.ActivityTaskPollerBehavior);
+        Assert.Null(capturedWorkerOptions.NexusTaskPollerBehavior);
         Assert.Equal(12, capturedWorkerOptions.MaxCachedWorkflows);
-        Assert.Equal(4, SimpleMaximum(capturedWorkerOptions.WorkflowTaskPollerBehavior));
         Assert.False(capturedWorkerOptions.DisableEagerActivityExecution);
+        Assert.NotNull(capturedWorkerOptions.DeploymentOptions);
+        Assert.Equal(Version, capturedWorkerOptions.DeploymentOptions.Version);
+        Assert.True(capturedWorkerOptions.DeploymentOptions.UseWorkerVersioning);
+        Assert.Equal(
+            VersioningBehavior.Pinned,
+            capturedWorkerOptions.DeploymentOptions.DefaultVersioningBehavior);
+#pragma warning disable CS0618 // Verifying the Lambda helper clears legacy versioning options.
+        Assert.Null(capturedWorkerOptions.BuildId);
+        Assert.False(capturedWorkerOptions.UseWorkerVersioning);
+#pragma warning restore CS0618
+    }
+
+    [Fact]
+    public async Task CreateHandler_DefaultsVersioningBehaviorToAutoUpgrade()
+    {
+        TemporalWorkerOptions? capturedWorkerOptions = null;
+        var handler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            config =>
+            {
+                config.ClientOptions.TargetHost = "localhost:7233";
+                config.WorkerOptions.TaskQueue = "task-queue";
+                config.WorkerOptions.AddWorkflow<WorkflowWithoutVersioningBehavior>();
+            },
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                ConnectClientAsync = _ => Task.FromResult<object>(new object()),
+                CreateWorker = (_, options) =>
+                {
+                    capturedWorkerOptions = options;
+                    return new FakeLambdaWorker(_ => Task.CompletedTask);
+                },
+            });
+
+        await handler(null, new FakeLambdaContext());
+
+        Assert.NotNull(capturedWorkerOptions);
+        Assert.NotNull(capturedWorkerOptions.DeploymentOptions);
+        Assert.Equal(Version, capturedWorkerOptions.DeploymentOptions.Version);
+        Assert.True(capturedWorkerOptions.DeploymentOptions.UseWorkerVersioning);
+        Assert.Equal(
+            VersioningBehavior.AutoUpgrade,
+            capturedWorkerOptions.DeploymentOptions.DefaultVersioningBehavior);
+    }
+
+    [Fact]
+    public async Task CreateHandler_LoadsDefaultClientOptionsWhenNotOverridden()
+    {
+        var loadCalls = 0;
+        TemporalClientConnectOptions? capturedClientOptions = null;
+        var handler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            config =>
+            {
+                config.WorkerOptions.TaskQueue = "task-queue";
+            },
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                LoadClientConnectOptions = _ =>
+                {
+                    loadCalls++;
+                    return new TemporalClientConnectOptions
+                    {
+                        TargetHost = "loaded-address",
+                        Namespace = "loaded-namespace",
+                    };
+                },
+                ConnectClientAsync = options =>
+                {
+                    capturedClientOptions = options;
+                    return Task.FromResult<object>(new object());
+                },
+                CreateWorker = (_, _) => new FakeLambdaWorker(_ => Task.CompletedTask),
+            });
+
+        await handler(null, new FakeLambdaContext());
+
+        Assert.Equal(1, loadCalls);
+        Assert.NotNull(capturedClientOptions);
+        Assert.Equal("loaded-address", capturedClientOptions.TargetHost);
+        Assert.Equal("loaded-namespace", capturedClientOptions.Namespace);
+    }
+
+    [Fact]
+    public async Task CreateHandler_ExplicitClientOptionsBypassDefaultConfigLoad()
+    {
+        TemporalClientConnectOptions? capturedClientOptions = null;
+        var handler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            config =>
+            {
+                config.ClientOptions = new TemporalClientConnectOptions
+                {
+                    TargetHost = "explicit-address",
+                    Namespace = "explicit-namespace",
+                };
+                config.WorkerOptions.TaskQueue = "task-queue";
+            },
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                LoadClientConnectOptions = _ =>
+                    throw new InvalidOperationException("Config should not be loaded"),
+                ConnectClientAsync = options =>
+                {
+                    capturedClientOptions = options;
+                    return Task.FromResult<object>(new object());
+                },
+                CreateWorker = (_, _) => new FakeLambdaWorker(_ => Task.CompletedTask),
+            });
+
+        await handler(null, new FakeLambdaContext());
+
+        Assert.NotNull(capturedClientOptions);
+        Assert.Equal("explicit-address", capturedClientOptions.TargetHost);
+        Assert.Equal("explicit-namespace", capturedClientOptions.Namespace);
+    }
+
+    [Fact]
+    public async Task CreateHandler_ClearsConcurrencyDefaultsWhenTunerSet()
+    {
+        var tuner = WorkerTuner.CreateFixedSize(
+            workflowTaskSlots: 1,
+            activityTaskSlots: 2,
+            localActivitySlots: 3,
+            nexusTaskSlots: 4);
+        TemporalWorkerOptions? capturedWorkerOptions = null;
+        var handler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            config =>
+            {
+                config.ClientOptions.TargetHost = "localhost:7233";
+                config.WorkerOptions.TaskQueue = "task-queue";
+                config.WorkerOptions.Tuner = tuner;
+            },
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                ConnectClientAsync = _ => Task.FromResult<object>(new object()),
+                CreateWorker = (_, options) =>
+                {
+                    capturedWorkerOptions = options;
+                    return new FakeLambdaWorker(_ => Task.CompletedTask);
+                },
+            });
+
+        await handler(null, new FakeLambdaContext());
+
+        Assert.NotNull(capturedWorkerOptions);
+        Assert.Same(tuner, capturedWorkerOptions.Tuner);
+        Assert.Null(capturedWorkerOptions.MaxConcurrentActivities);
+        Assert.Null(capturedWorkerOptions.MaxConcurrentWorkflowTasks);
+        Assert.Null(capturedWorkerOptions.MaxConcurrentLocalActivities);
+        Assert.Null(capturedWorkerOptions.MaxConcurrentNexusTasks);
+    }
+
+    [Fact]
+    public async Task CreateHandler_ClearsConcurrencyDefaultsWhenPluginSetsTuner()
+    {
+        var tuner = WorkerTuner.CreateFixedSize(
+            workflowTaskSlots: 1,
+            activityTaskSlots: 2,
+            localActivitySlots: 3,
+            nexusTaskSlots: 4);
+        TemporalWorkerOptions? capturedWorkerOptions = null;
+        var handler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            config =>
+            {
+                config.ClientOptions.TargetHost = "localhost:7233";
+                config.WorkerOptions.TaskQueue = "task-queue";
+                config.WorkerOptions.Plugins = new[] { new TunerPlugin(tuner) };
+            },
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                ConnectClientAsync = _ => Task.FromResult<object>(new object()),
+                CreateWorker = (_, options) =>
+                {
+                    foreach (var plugin in options.Plugins ?? Array.Empty<ITemporalWorkerPlugin>())
+                    {
+                        plugin.ConfigureWorker(options);
+                    }
+                    options.ApplyPostPluginConfiguration();
+                    capturedWorkerOptions = options;
+                    return new FakeLambdaWorker(_ => Task.CompletedTask);
+                },
+            });
+
+        await handler(null, new FakeLambdaContext());
+
+        Assert.NotNull(capturedWorkerOptions);
+        Assert.Same(tuner, capturedWorkerOptions.Tuner);
+        Assert.Null(capturedWorkerOptions.MaxConcurrentActivities);
+        Assert.Null(capturedWorkerOptions.MaxConcurrentWorkflowTasks);
+        Assert.Null(capturedWorkerOptions.MaxConcurrentLocalActivities);
+        Assert.Null(capturedWorkerOptions.MaxConcurrentNexusTasks);
+    }
+
+    [Fact]
+    public async Task CreateHandler_ReappliesDeploymentVersionAfterPlugins()
+    {
+        TemporalWorkerOptions? capturedWorkerOptions = null;
+        var handler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            config =>
+            {
+                config.ClientOptions.TargetHost = "localhost:7233";
+                config.WorkerOptions.TaskQueue = "task-queue";
+                config.WorkerOptions.Plugins = new[] { new VersioningPlugin() };
+            },
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                ConnectClientAsync = _ => Task.FromResult<object>(new object()),
+                CreateWorker = (_, options) =>
+                {
+                    foreach (var plugin in options.Plugins ?? Array.Empty<ITemporalWorkerPlugin>())
+                    {
+                        plugin.ConfigureWorker(options);
+                    }
+                    options.ApplyPostPluginConfiguration();
+                    capturedWorkerOptions = options;
+                    return new FakeLambdaWorker(_ => Task.CompletedTask);
+                },
+            });
+
+        await handler(null, new FakeLambdaContext());
+
+        Assert.NotNull(capturedWorkerOptions);
         Assert.NotNull(capturedWorkerOptions.DeploymentOptions);
         Assert.Equal(Version, capturedWorkerOptions.DeploymentOptions.Version);
         Assert.True(capturedWorkerOptions.DeploymentOptions.UseWorkerVersioning);
@@ -527,9 +768,6 @@ public class TemporalLambdaWorkerTests
                 CreateWorker = (_, _) => new FakeLambdaWorker(_ => Task.CompletedTask),
             });
 
-    private static int SimpleMaximum(PollerBehavior? behavior) =>
-        Assert.IsType<PollerBehavior.SimpleMaximum>(behavior).Maximum;
-
     private static string ConfigToml(string address, string nameSpace) => $@"
 [profile.default]
 address = ""{address}""
@@ -553,6 +791,13 @@ namespace = ""{nameSpace}""
             0,
             _ => Task.CompletedTask);
 
+    [Workflow]
+    public sealed class WorkflowWithoutVersioningBehavior
+    {
+        [WorkflowRun]
+        public Task RunAsync() => Task.CompletedTask;
+    }
+
     private sealed class FakeLambdaWorker : ILambdaWorker
     {
         private readonly Func<CancellationToken, Task> executeAsync;
@@ -566,6 +811,78 @@ namespace = ""{nameSpace}""
         public void Dispose()
         {
         }
+    }
+
+    private sealed class TunerPlugin : ITemporalWorkerPlugin
+    {
+        private readonly WorkerTuner tuner;
+
+        public TunerPlugin(WorkerTuner tuner) => this.tuner = tuner;
+
+        public string Name => "TunerPlugin";
+
+        public void ConfigureWorker(TemporalWorkerOptions options) => options.Tuner = tuner;
+
+        public Task<TResult> RunWorkerAsync<TResult>(
+            TemporalWorker worker,
+            Func<TemporalWorker, CancellationToken, Task<TResult>> continuation,
+            CancellationToken stoppingToken) =>
+            throw new NotImplementedException();
+
+        public void ConfigureReplayer(WorkflowReplayerOptions options) =>
+            throw new NotImplementedException();
+
+        public Task<IEnumerable<WorkflowReplayResult>> ReplayWorkflowsAsync(
+            WorkflowReplayer replayer,
+            Func<WorkflowReplayer, CancellationToken, Task<IEnumerable<WorkflowReplayResult>>> continuation,
+            CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
+        public IAsyncEnumerable<WorkflowReplayResult> ReplayWorkflowsAsync(
+            WorkflowReplayer replayer,
+            Func<WorkflowReplayer, IAsyncEnumerable<WorkflowReplayResult>> continuation,
+            CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+    }
+
+    private sealed class VersioningPlugin : ITemporalWorkerPlugin
+    {
+        public string Name => "VersioningPlugin";
+
+        public void ConfigureWorker(TemporalWorkerOptions options)
+        {
+            options.DeploymentOptions = new WorkerDeploymentOptions(
+                new WorkerDeploymentVersion("plugin-deployment", "plugin-build"),
+                useWorkerVersioning: false)
+            {
+                DefaultVersioningBehavior = VersioningBehavior.AutoUpgrade,
+            };
+#pragma warning disable CS0618 // Verifying the Lambda helper clears legacy versioning options.
+            options.BuildId = "legacy-build";
+            options.UseWorkerVersioning = true;
+#pragma warning restore CS0618
+        }
+
+        public Task<TResult> RunWorkerAsync<TResult>(
+            TemporalWorker worker,
+            Func<TemporalWorker, CancellationToken, Task<TResult>> continuation,
+            CancellationToken stoppingToken) =>
+            throw new NotImplementedException();
+
+        public void ConfigureReplayer(WorkflowReplayerOptions options) =>
+            throw new NotImplementedException();
+
+        public Task<IEnumerable<WorkflowReplayResult>> ReplayWorkflowsAsync(
+            WorkflowReplayer replayer,
+            Func<WorkflowReplayer, CancellationToken, Task<IEnumerable<WorkflowReplayResult>>> continuation,
+            CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
+        public IAsyncEnumerable<WorkflowReplayResult> ReplayWorkflowsAsync(
+            WorkflowReplayer replayer,
+            Func<WorkflowReplayer, IAsyncEnumerable<WorkflowReplayResult>> continuation,
+            CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
     }
 
     private sealed class FakeLambdaContext : ILambdaContext

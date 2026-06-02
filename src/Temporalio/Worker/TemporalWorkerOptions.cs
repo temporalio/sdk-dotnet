@@ -377,6 +377,14 @@ namespace Temporalio.Worker
             DefaultWorkflowInstanceFactory;
 
         /// <summary>
+        /// Gets or sets a function to run after worker plugins configure options.
+        /// </summary>
+        /// <remarks>
+        /// Don't expose this until there's a use case.
+        /// </remarks>
+        internal Action<TemporalWorkerOptions>? PostPluginConfiguration { get; set; }
+
+        /// <summary>
         /// Add the given delegate with <see cref="ActivityAttribute" /> as an activity. This is
         /// usually a method reference.
         /// </summary>
@@ -517,5 +525,10 @@ namespace Temporalio.Worker
                 handler(instance, new(instance, failureException));
             }
         }
+
+        /// <summary>
+        /// Run post-plugin configuration.
+        /// </summary>
+        internal void ApplyPostPluginConfiguration() => PostPluginConfiguration?.Invoke(this);
     }
 }
