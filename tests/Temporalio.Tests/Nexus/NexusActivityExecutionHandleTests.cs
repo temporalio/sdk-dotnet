@@ -55,7 +55,7 @@ public class NexusActivityExecutionHandleTests
     [Fact]
     public void FromToken_RejectsMissingActivityId()
     {
-        var json = """{"t":4,"ns":"ns"}""";
+        var json = """{"t":2,"ns":"ns"}""";
         var token = NexusWorkflowRunHandle.Base64UrlEncode(Encoding.UTF8.GetBytes(json));
         Assert.Throws<ArgumentException>(() => NexusActivityExecutionHandle.FromToken(token));
     }
@@ -63,7 +63,7 @@ public class NexusActivityExecutionHandleTests
     [Fact]
     public void FromToken_RejectsUnsupportedVersion()
     {
-        var json = """{"t":4,"ns":"ns","aid":"aid","v":1}""";
+        var json = """{"t":2,"ns":"ns","aid":"aid","v":1}""";
         var token = NexusWorkflowRunHandle.Base64UrlEncode(Encoding.UTF8.GetBytes(json));
         Assert.Throws<ArgumentException>(() => NexusActivityExecutionHandle.FromToken(token));
     }

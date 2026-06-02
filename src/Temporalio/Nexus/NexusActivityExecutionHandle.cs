@@ -16,7 +16,7 @@ namespace Temporalio.Nexus
         /// <summary>
         /// Token-type value identifying an activity-execution operation token.
         /// </summary>
-        internal const int ActivityExecutionOperationTokenType = 4;
+        internal const int ActivityExecutionOperationTokenType = 2;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NexusActivityExecutionHandle"/> class.
