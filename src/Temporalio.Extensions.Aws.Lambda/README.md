@@ -74,9 +74,9 @@ queue in `configure`. If no task queue is set by the environment or by `configur
 
 `TemporalLambdaWorker.CreateHandler` requires a `WorkerDeploymentVersion` and always enables Worker Versioning by setting
 `WorkerOptions.DeploymentOptions` with `UseWorkerVersioning = true`. Use a deployment name and build ID that match your
-rollout process. If you need to set the default versioning behavior, configure
-`config.WorkerOptions.DeploymentOptions.DefaultVersioningBehavior`; the handler preserves that value while enforcing the
-deployment version passed to `CreateHandler`.
+rollout process. The default versioning behavior is `AutoUpgrade`. If you need a different default versioning behavior,
+configure `config.WorkerOptions.DeploymentOptions.DefaultVersioningBehavior`; the handler preserves any non-`Unspecified`
+value while enforcing the deployment version passed to `CreateHandler`.
 
 The helper applies Lambda-oriented worker defaults before `configure`, including lower concurrency, a 5 second graceful
 shutdown timeout, a smaller workflow cache, simple poller limits, and disabled eager activity execution. Values you set in
