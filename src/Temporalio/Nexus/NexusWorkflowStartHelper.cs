@@ -23,21 +23,20 @@ namespace Temporalio.Nexus
         /// cloning options, setting task queue, processing links, injecting callbacks, and
         /// adding outbound links.
         /// </summary>
-        /// <param name="client">Temporal client.</param>
         /// <param name="nexusStartContext">Nexus start context for callbacks and links.</param>
-        /// <param name="temporalContext">Temporal operation context for info and logging.</param>
+        /// <param name="temporalContext">Temporal operation context for client, info, and logging.</param>
         /// <param name="workflow">Workflow type name.</param>
         /// <param name="args">Workflow arguments.</param>
         /// <param name="options">Workflow start options. ID and TaskQueue are required.</param>
         /// <returns>Base64url-encoded operation token.</returns>
         internal static async Task<string> StartWorkflowAndGetTokenAsync(
-            ITemporalClient client,
             OperationStartContext nexusStartContext,
             NexusOperationExecutionContext temporalContext,
             string workflow,
             IReadOnlyCollection<object?> args,
             WorkflowOptions options)
         {
+            var client = temporalContext.TemporalClient;
             var namespace_ = client.Options.Namespace;
             var workflowId = options.Id ?? string.Empty;
 

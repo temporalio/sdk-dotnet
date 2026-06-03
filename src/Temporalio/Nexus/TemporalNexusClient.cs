@@ -19,7 +19,6 @@ namespace Temporalio.Nexus
     /// </remarks>
     public class TemporalNexusClient : ITemporalNexusClient
     {
-        private readonly ITemporalClient temporalClient;
         private readonly OperationStartContext nexusStartContext;
         private readonly NexusOperationExecutionContext temporalContext;
 
@@ -34,11 +33,10 @@ namespace Temporalio.Nexus
         {
             this.nexusStartContext = nexusStartContext;
             this.temporalContext = temporalContext;
-            temporalClient = temporalContext.TemporalClient;
         }
 
         /// <inheritdoc/>
-        public ITemporalClient TemporalClient => temporalClient;
+        public ITemporalClient TemporalClient => temporalContext.TemporalClient;
 
         /// <inheritdoc/>
         public Task<TemporalOperationResult<TResult>> StartWorkflowAsync<TWorkflow, TResult>(
@@ -57,7 +55,6 @@ namespace Temporalio.Nexus
         {
             var (runMethod, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
             var token = await NexusWorkflowStartHelper.StartWorkflowAndGetTokenAsync(
-                temporalClient,
                 nexusStartContext,
                 temporalContext,
                 Workflows.WorkflowDefinition.NameFromRunMethodForCall(runMethod),
@@ -71,7 +68,6 @@ namespace Temporalio.Nexus
             string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options)
         {
             var token = await NexusWorkflowStartHelper.StartWorkflowAndGetTokenAsync(
-                temporalClient,
                 nexusStartContext,
                 temporalContext,
                 workflow,

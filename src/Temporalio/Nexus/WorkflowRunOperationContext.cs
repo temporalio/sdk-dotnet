@@ -74,16 +74,15 @@ namespace Temporalio.Nexus
         {
 #pragma warning restore CA1822
             var temporalContext = NexusOperationExecutionContext.Current;
-            var ns = temporalContext.TemporalClient.Options.Namespace;
             var wfId = options.Id ?? string.Empty;
             await NexusWorkflowStartHelper.StartWorkflowAndGetTokenAsync(
-                temporalContext.TemporalClient,
                 (OperationStartContext)temporalContext.HandlerContext,
                 temporalContext,
                 workflow,
                 args,
                 options).ConfigureAwait(false);
-            return new NexusWorkflowRunHandle(ns, wfId, version: 0);
+            return new NexusWorkflowRunHandle(
+                temporalContext.TemporalClient.Options.Namespace, wfId, version: 0);
         }
 
         /// <summary>
@@ -100,16 +99,15 @@ namespace Temporalio.Nexus
         {
 #pragma warning restore CA1822
             var temporalContext = NexusOperationExecutionContext.Current;
-            var ns = temporalContext.TemporalClient.Options.Namespace;
             var wfId = options.Id ?? string.Empty;
             await NexusWorkflowStartHelper.StartWorkflowAndGetTokenAsync(
-                temporalContext.TemporalClient,
                 (OperationStartContext)temporalContext.HandlerContext,
                 temporalContext,
                 workflow,
                 args,
                 options).ConfigureAwait(false);
-            return new NexusWorkflowRunHandle<TResult>(ns, wfId, version: 0);
+            return new NexusWorkflowRunHandle<TResult>(
+                temporalContext.TemporalClient.Options.Namespace, wfId, version: 0);
         }
     }
 }
