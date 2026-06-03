@@ -18,7 +18,7 @@ namespace Temporalio.Nexus
     /// <code>
     /// [OperationImpl]
     /// public IOperationHandler&lt;TransferInput, TransferResult&gt; StartTransfer() =>
-    ///     TemporalNexusOperationHandler.FromHandleFactory&lt;TransferInput, TransferResult&gt;(
+    ///     TemporalOperationHandler.FromHandleFactory&lt;TransferInput, TransferResult&gt;(
     ///         async (context, client, input) =>
     ///             await client.StartWorkflowAsync&lt;TransferWorkflow, TransferResult&gt;(
     ///                 wf => wf.RunAsync(input),
@@ -28,7 +28,7 @@ namespace Temporalio.Nexus
     /// <code>
     /// [OperationImpl]
     /// public IOperationHandler&lt;CancelOrderInput, NoValue&gt; CancelOrder() =>
-    ///     TemporalNexusOperationHandler.FromHandleFactory&lt;CancelOrderInput, NoValue&gt;(
+    ///     TemporalOperationHandler.FromHandleFactory&lt;CancelOrderInput, NoValue&gt;(
     ///         async (context, client, input) =>
     ///         {
     ///             await client.TemporalClient
@@ -38,7 +38,7 @@ namespace Temporalio.Nexus
     ///         });
     /// </code>
     /// </remarks>
-    public static class TemporalNexusOperationHandler
+    public static class TemporalOperationHandler
     {
         /// <summary>
         /// Create an operation handler from the given start function.
@@ -46,11 +46,11 @@ namespace Temporalio.Nexus
         /// <typeparam name="TInput">Operation input type.</typeparam>
         /// <typeparam name="TResult">Operation result type.</typeparam>
         /// <param name="startFunc">Function invoked on every operation start. Receives the Nexus
-        /// start context, a Temporal Nexus client for starting workflows, and the operation input.
+        /// start context, a Temporal operation client for starting workflows, and the operation input.
         /// Should return a <see cref="TemporalOperationResult{TResult}"/>.</param>
         /// <returns>Operation handler backed by Temporal.</returns>
-        public static TemporalNexusOperationHandler<TInput, TResult> FromHandleFactory<TInput, TResult>(
-            Func<NexusOperationStartContext, ITemporalNexusClient, TInput,
+        public static TemporalOperationHandler<TInput, TResult> FromHandleFactory<TInput, TResult>(
+            Func<TemporalOperationStartContext, ITemporalNexusClient, TInput,
                 Task<TemporalOperationResult<TResult>>> startFunc) =>
             new(startFunc);
 
@@ -59,11 +59,11 @@ namespace Temporalio.Nexus
         /// </summary>
         /// <typeparam name="TResult">Operation result type.</typeparam>
         /// <param name="startFunc">Function invoked on every operation start. Receives the Nexus
-        /// start context and a Temporal Nexus client for starting workflows. Should return a
+        /// start context and a Temporal operation client for starting workflows. Should return a
         /// <see cref="TemporalOperationResult{TResult}"/>.</param>
         /// <returns>Operation handler backed by Temporal.</returns>
-        public static TemporalNexusOperationHandler<NoValue, TResult> FromHandleFactory<TResult>(
-            Func<NexusOperationStartContext, ITemporalNexusClient,
+        public static TemporalOperationHandler<NoValue, TResult> FromHandleFactory<TResult>(
+            Func<TemporalOperationStartContext, ITemporalNexusClient,
                 Task<TemporalOperationResult<TResult>>> startFunc) =>
             new((context, client, _) => startFunc(context, client));
     }
@@ -80,18 +80,18 @@ namespace Temporalio.Nexus
     /// <para>This class supports inheritance to customize cancel behavior. Override
     /// <see cref="CancelWorkflowRunAsync"/> to change how workflow-run cancellations are handled.</para>
     /// </remarks>
-    public class TemporalNexusOperationHandler<TInput, TResult> : IOperationHandler<TInput, TResult>
+    public class TemporalOperationHandler<TInput, TResult> : IOperationHandler<TInput, TResult>
     {
-        private readonly Func<NexusOperationStartContext, ITemporalNexusClient, TInput,
+        private readonly Func<TemporalOperationStartContext, ITemporalNexusClient, TInput,
             Task<TemporalOperationResult<TResult>>> startFunc;
 
         /// <summary>
         /// Initializes a new instance of the
-        /// <see cref="TemporalNexusOperationHandler{TInput, TResult}"/> class.
+        /// <see cref="TemporalOperationHandler{TInput, TResult}"/> class.
         /// </summary>
         /// <param name="startFunc">Start function delegate.</param>
-        public TemporalNexusOperationHandler(
-            Func<NexusOperationStartContext, ITemporalNexusClient, TInput,
+        public TemporalOperationHandler(
+            Func<TemporalOperationStartContext, ITemporalNexusClient, TInput,
                 Task<TemporalOperationResult<TResult>>> startFunc) =>
             this.startFunc = startFunc;
 
@@ -101,7 +101,7 @@ namespace Temporalio.Nexus
         {
             var client = new TemporalNexusClient(context, NexusOperationExecutionContext.Current);
             var result = await startFunc(
-                new NexusOperationStartContext(context), client, input).ConfigureAwait(false);
+                new TemporalOperationStartContext(context), client, input).ConfigureAwait(false);
             if (result.IsSyncResult)
             {
                 return OperationStartResult.SyncResult(result.SyncValue!);
@@ -129,7 +129,7 @@ namespace Temporalio.Nexus
             {
                 NexusWorkflowRunHandle.WorkflowRunOperationTokenType =>
                     CancelWorkflowRunAsync(
-                        new NexusOperationCancelContext(context),
+                        new TemporalOperationCancelContext(context),
                         new CancelWorkflowRunInput(token.WorkflowId)),
                 _ => throw new HandlerException(
                     HandlerErrorType.BadRequest,
@@ -146,14 +146,14 @@ namespace Temporalio.Nexus
         /// <param name="input">Workflow-run cancel input.</param>
         /// <returns>Task for cancel completion.</returns>
         protected virtual Task CancelWorkflowRunAsync(
-            NexusOperationCancelContext context, CancelWorkflowRunInput input) =>
+            TemporalOperationCancelContext context, CancelWorkflowRunInput input) =>
             NexusOperationExecutionContext.Current.TemporalClient
                 .GetWorkflowHandle(input.WorkflowId).CancelAsync();
     }
 
     /// <summary>
     /// Input passed to
-    /// <see cref="TemporalNexusOperationHandler{TInput, TResult}.CancelWorkflowRunAsync"/>.
+    /// <see cref="TemporalOperationHandler{TInput, TResult}.CancelWorkflowRunAsync"/>.
     /// </summary>
     /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public class CancelWorkflowRunInput
@@ -172,16 +172,16 @@ namespace Temporalio.Nexus
 
     /// <summary>
     /// Context passed to the start function of a
-    /// <see cref="TemporalNexusOperationHandler{TInput, TResult}"/>.
+    /// <see cref="TemporalOperationHandler{TInput, TResult}"/>.
     /// </summary>
     /// <remarks>WARNING: Nexus support is experimental.</remarks>
-    public class NexusOperationStartContext
+    public class TemporalOperationStartContext
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="NexusOperationStartContext"/> class.
+        /// Initializes a new instance of the <see cref="TemporalOperationStartContext"/> class.
         /// </summary>
         /// <param name="underlying">Underlying Nexus start context.</param>
-        internal NexusOperationStartContext(OperationStartContext underlying) =>
+        internal TemporalOperationStartContext(OperationStartContext underlying) =>
             Underlying = underlying;
 
         /// <summary>
@@ -232,18 +232,18 @@ namespace Temporalio.Nexus
 
     /// <summary>
     /// Context passed to
-    /// <see cref="TemporalNexusOperationHandler{TInput, TResult}.CancelWorkflowRunAsync"/>.
+    /// <see cref="TemporalOperationHandler{TInput, TResult}.CancelWorkflowRunAsync"/>.
     /// </summary>
     /// <remarks>WARNING: Nexus support is experimental.</remarks>
-    public class NexusOperationCancelContext
+    public class TemporalOperationCancelContext
     {
         private readonly OperationCancelContext underlying;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NexusOperationCancelContext"/> class.
+        /// Initializes a new instance of the <see cref="TemporalOperationCancelContext"/> class.
         /// </summary>
         /// <param name="underlying">Underlying Nexus cancel context.</param>
-        internal NexusOperationCancelContext(OperationCancelContext underlying) =>
+        internal TemporalOperationCancelContext(OperationCancelContext underlying) =>
             this.underlying = underlying;
 
         /// <summary>

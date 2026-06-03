@@ -13,7 +13,7 @@ namespace Temporalio.Nexus
     /// </summary>
     /// <remarks>
     /// <para>WARNING: Nexus support is experimental.</para>
-    /// <para>Obtained via the <see cref="TemporalNexusOperationHandler.FromHandleFactory{TInput, TResult}"/>
+    /// <para>Obtained via the <see cref="TemporalOperationHandler.FromHandleFactory{TInput, TResult}"/>
     /// start function parameter.</para>
     /// <para>Example usage — starting a workflow from an operation handler:</para>
     /// <code>

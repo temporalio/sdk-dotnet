@@ -1385,7 +1385,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // Build the worker options w/ the nexus service using the new generic handler
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalNexusOperationHandler.FromHandleFactory<string, string>(
+                TemporalOperationHandler.FromHandleFactory<string, string>(
                     async (context, client, input) =>
                         await client.StartWorkflowAsync(
                             (SimpleWorkflow wf) => wf.RunAsync(input),
@@ -1408,7 +1408,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // Build the worker options w/ the nexus service using the new generic handler
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalNexusOperationHandler.FromHandleFactory<string, string>(
+                TemporalOperationHandler.FromHandleFactory<string, string>(
                     async (context, client, input) =>
                         await client.StartWorkflowAsync(
                             (WaitForeverWorkflow wf) => wf.RunAsync(input),
@@ -1442,7 +1442,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // Build the worker options w/ a handler that returns a sync result
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalNexusOperationHandler.FromHandleFactory<string, string>(
+                TemporalOperationHandler.FromHandleFactory<string, string>(
                     (context, client, input) =>
                         Task.FromResult(TemporalOperationResult<string>.SyncResult($"Hello, {input}")))));
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
@@ -1459,11 +1459,11 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     public async Task ExecuteNexusOperationAsync_GenericHandler_LinksAndContext_Populated()
     {
         // Capture the context and client passed to the generic handler so we can assert plumbing
-        NexusOperationStartContext? capturedContext = null;
+        TemporalOperationStartContext? capturedContext = null;
         ITemporalNexusClient? capturedClient = null;
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalNexusOperationHandler.FromHandleFactory<string, string>(
+                TemporalOperationHandler.FromHandleFactory<string, string>(
                     async (context, client, input) =>
                     {
                         capturedContext = context;
@@ -1516,7 +1516,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var workflowId = $"wf-{Guid.NewGuid()}";
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalNexusOperationHandler.FromHandleFactory<string, string>(
+                TemporalOperationHandler.FromHandleFactory<string, string>(
                     async (context, client, input) =>
                         await client.StartWorkflowAsync(
                             (WaitForeverWorkflow wf) => wf.RunAsync(input),
@@ -1591,7 +1591,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // Use the by-name overload of TemporalNexusClient.StartWorkflowAsync
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalNexusOperationHandler.FromHandleFactory<string, string>(
+                TemporalOperationHandler.FromHandleFactory<string, string>(
                     async (context, client, input) =>
                         await client.StartWorkflowAsync<string>(
                             "SimpleWorkflow",
@@ -1617,7 +1617,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var workflowId = $"wf-{Guid.NewGuid()}";
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalNexusOperationHandler.FromHandleFactory<string, string>(
+                TemporalOperationHandler.FromHandleFactory<string, string>(
                     async (context, client, input) =>
                         await client.StartWorkflowAsync(
                             (WaitForSignalWorkflow wf) => wf.RunAsync(input),
@@ -1649,7 +1649,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // Exercise the no-input FromHandleFactory<TResult> overload
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryNoInputService(() =>
-                TemporalNexusOperationHandler.FromHandleFactory<string>(
+                TemporalOperationHandler.FromHandleFactory<string>(
                     (context, client) =>
                         Task.FromResult(TemporalOperationResult<string>.SyncResult("hello-no-input")))));
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
@@ -1681,10 +1681,10 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         public IOperationHandler<NoValue, string> DoIt() => handlerFactory();
     }
 
-    private class CancelOverrideHandler : TemporalNexusOperationHandler<string, string>
+    private class CancelOverrideHandler : TemporalOperationHandler<string, string>
     {
         public CancelOverrideHandler(
-            Func<NexusOperationStartContext, ITemporalNexusClient, string,
+            Func<TemporalOperationStartContext, ITemporalNexusClient, string,
                 Task<TemporalOperationResult<string>>> startFunc)
             : base(startFunc)
         {
@@ -1695,7 +1695,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         public string? CapturedWorkflowId { get; private set; }
 
         protected override Task CancelWorkflowRunAsync(
-            NexusOperationCancelContext context, CancelWorkflowRunInput input)
+            TemporalOperationCancelContext context, CancelWorkflowRunInput input)
         {
             CancelCallCount++;
             CapturedWorkflowId = input.WorkflowId;

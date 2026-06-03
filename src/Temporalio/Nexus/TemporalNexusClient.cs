@@ -14,7 +14,7 @@ namespace Temporalio.Nexus
     /// </summary>
     /// <remarks>
     /// WARNING: Nexus support is experimental.
-    /// This client is created by <see cref="TemporalNexusOperationHandler"/> and passed to the
+    /// This client is created by <see cref="TemporalOperationHandler"/> and passed to the
     /// user's start function. It should not be instantiated directly.
     /// </remarks>
     public class TemporalNexusClient : ITemporalNexusClient
