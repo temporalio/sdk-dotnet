@@ -637,6 +637,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke PauseActivityExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<PauseActivityExecutionResponse> PauseActivityExecutionAsync(PauseActivityExecutionRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("PauseActivityExecution", req, PauseActivityExecutionResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke PauseWorkflowExecution.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -810,6 +821,17 @@ namespace Temporalio.Client
         public Task<ResetActivityResponse> ResetActivityAsync(ResetActivityRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("ResetActivity", req, ResetActivityResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke ResetActivityExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<ResetActivityExecutionResponse> ResetActivityExecutionAsync(ResetActivityExecutionRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("ResetActivityExecution", req, ResetActivityExecutionResponse.Parser, options);
         }
 
         /// <summary>
@@ -1154,6 +1176,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke UnpauseActivityExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UnpauseActivityExecutionResponse> UnpauseActivityExecutionAsync(UnpauseActivityExecutionRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UnpauseActivityExecution", req, UnpauseActivityExecutionResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke UnpauseWorkflowExecution.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -1162,6 +1195,17 @@ namespace Temporalio.Client
         public Task<UnpauseWorkflowExecutionResponse> UnpauseWorkflowExecutionAsync(UnpauseWorkflowExecutionRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("UnpauseWorkflowExecution", req, UnpauseWorkflowExecutionResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke UpdateActivityExecutionOptions.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UpdateActivityExecutionOptionsResponse> UpdateActivityExecutionOptionsAsync(UpdateActivityExecutionOptionsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UpdateActivityExecutionOptions", req, UpdateActivityExecutionOptionsResponse.Parser, options);
         }
 
         /// <summary>
