@@ -14,6 +14,11 @@ namespace Temporalio.Nexus
     /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public class NexusWorkflowRunHandle
     {
+        /// <summary>
+        /// Token-type value identifying a workflow-run operation token.
+        /// </summary>
+        internal const int WorkflowRunOperationTokenType = 1;
+
         private static readonly JsonSerializerOptions TokenSerializerOptions = new()
         {
 #pragma warning disable SYSLIB0020 // Need to use obsolete form, alternative not in all our versions
@@ -87,6 +92,19 @@ namespace Temporalio.Nexus
         /// <exception cref="ArgumentException">If the token is invalid.</exception>
         internal static NexusWorkflowRunHandle FromToken(string token)
         {
+            var data = ParseToken(token);
+            return new(data.Namespace, data.WorkflowId, data.Version ?? 0);
+        }
+
+        /// <summary>
+        /// Parse an operation token to its underlying fields. Validates encoding, JSON shape, and
+        /// version (but not type — callers decide which token types they support).
+        /// </summary>
+        /// <param name="token">Base64url-encoded token string.</param>
+        /// <returns>Parsed token fields.</returns>
+        /// <exception cref="ArgumentException">If the token is invalid.</exception>
+        internal static OperationToken ParseToken(string token)
+        {
             byte[] bytes;
             try
             {
@@ -96,10 +114,10 @@ namespace Temporalio.Nexus
             {
                 throw new ArgumentException("Token invalid");
             }
-            Token? tokenObj;
+            OperationToken? tokenObj;
             try
             {
-                tokenObj = JsonSerializer.Deserialize<Token>(bytes, TokenSerializerOptions);
+                tokenObj = JsonSerializer.Deserialize<OperationToken>(bytes, TokenSerializerOptions);
             }
             catch (JsonException e)
             {
@@ -113,7 +131,7 @@ namespace Temporalio.Nexus
             {
                 throw new ArgumentException($"Unsupported token version: {tokenObj.Version}");
             }
-            return new(tokenObj.Namespace, tokenObj.WorkflowId, tokenObj.Version ?? 0);
+            return tokenObj;
         }
 
         /// <summary>
@@ -121,10 +139,13 @@ namespace Temporalio.Nexus
         /// </summary>
         /// <returns>Operation token.</returns>
         internal string ToToken() => Base64UrlEncode(JsonSerializer.SerializeToUtf8Bytes(
-            new Token(Namespace, WorkflowId, Version == 0 ? null : Version),
+            new OperationToken(Namespace, WorkflowId, Version == 0 ? null : Version),
             TokenSerializerOptions));
 
-        private record Token(
+        /// <summary>
+        /// Represents the fields of a Nexus operation token.
+        /// </summary>
+        internal record OperationToken(
             [property: JsonPropertyName("ns")]
             string Namespace,
             [property: JsonPropertyName("wid")]
@@ -132,7 +153,7 @@ namespace Temporalio.Nexus
             [property: JsonPropertyName("v")]
             int? Version,
             [property: JsonPropertyName("t")]
-            int Type = 1);
+            int Type = WorkflowRunOperationTokenType);
     }
 
     /// <inheritdoc />

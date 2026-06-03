@@ -43,7 +43,9 @@ public class NexusWorkflowRunHandleTests
         var root = doc.RootElement;
 
         // Key must be "t" (not "t'")
-        Assert.Equal(1, root.GetProperty("t").GetInt32());
+        Assert.Equal(
+            NexusWorkflowRunHandle.WorkflowRunOperationTokenType,
+            root.GetProperty("t").GetInt32());
         Assert.Equal("ns", root.GetProperty("ns").GetString());
         Assert.Equal("wid", root.GetProperty("wid").GetString());
     }
