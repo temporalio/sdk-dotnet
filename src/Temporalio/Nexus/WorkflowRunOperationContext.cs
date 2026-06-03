@@ -69,20 +69,17 @@ namespace Temporalio.Nexus
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Nexus workflow run handle to return in handle factory.</returns>
 #pragma warning disable CA1822 // We don't want this static
-        public async Task<NexusWorkflowRunHandle> StartWorkflowAsync(
+        public Task<NexusWorkflowRunHandle> StartWorkflowAsync(
             string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options)
         {
 #pragma warning restore CA1822
             var temporalContext = NexusOperationExecutionContext.Current;
-            var wfId = options.Id ?? string.Empty;
-            await NexusWorkflowStartHelper.StartWorkflowAndGetTokenAsync(
+            return NexusWorkflowStartHelper.StartWorkflowAsync(
                 (OperationStartContext)temporalContext.HandlerContext,
                 temporalContext,
                 workflow,
                 args,
-                options).ConfigureAwait(false);
-            return new NexusWorkflowRunHandle(
-                temporalContext.TemporalClient.Options.Namespace, wfId, version: 0);
+                options);
         }
 
         /// <summary>
@@ -99,15 +96,14 @@ namespace Temporalio.Nexus
         {
 #pragma warning restore CA1822
             var temporalContext = NexusOperationExecutionContext.Current;
-            var wfId = options.Id ?? string.Empty;
-            await NexusWorkflowStartHelper.StartWorkflowAndGetTokenAsync(
+            var handle = await NexusWorkflowStartHelper.StartWorkflowAsync(
                 (OperationStartContext)temporalContext.HandlerContext,
                 temporalContext,
                 workflow,
                 args,
                 options).ConfigureAwait(false);
             return new NexusWorkflowRunHandle<TResult>(
-                temporalContext.TemporalClient.Options.Namespace, wfId, version: 0);
+                handle.Namespace, handle.WorkflowId, handle.Version);
         }
     }
 }

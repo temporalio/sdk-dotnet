@@ -54,26 +54,26 @@ namespace Temporalio.Nexus
             Expression<Func<TWorkflow, Task>> workflowRunCall, WorkflowOptions options)
         {
             var (runMethod, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
-            var token = await NexusWorkflowStartHelper.StartWorkflowAndGetTokenAsync(
+            var handle = await NexusWorkflowStartHelper.StartWorkflowAsync(
                 nexusStartContext,
                 temporalContext,
                 Workflows.WorkflowDefinition.NameFromRunMethodForCall(runMethod),
                 args,
                 options).ConfigureAwait(false);
-            return TemporalOperationResult<NoValue>.AsyncResult(token);
+            return TemporalOperationResult<NoValue>.AsyncResult(handle.ToToken());
         }
 
         /// <inheritdoc/>
         public async Task<TemporalOperationResult<TResult>> StartWorkflowAsync<TResult>(
             string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options)
         {
-            var token = await NexusWorkflowStartHelper.StartWorkflowAndGetTokenAsync(
+            var handle = await NexusWorkflowStartHelper.StartWorkflowAsync(
                 nexusStartContext,
                 temporalContext,
                 workflow,
                 args,
                 options).ConfigureAwait(false);
-            return TemporalOperationResult<TResult>.AsyncResult(token);
+            return TemporalOperationResult<TResult>.AsyncResult(handle.ToToken());
         }
     }
 }

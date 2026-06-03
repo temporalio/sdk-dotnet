@@ -1484,7 +1484,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
 
         // Context fields populated
         Assert.NotNull(capturedContext);
-        Assert.Equal("StringService", capturedContext!.Service);
+        Assert.Equal("StringService", capturedContext.Service);
         Assert.Equal("DoSomething", capturedContext.Operation);
         Assert.True(Guid.TryParse(capturedContext.RequestId, out _));
         Assert.False(string.IsNullOrEmpty(capturedContext.Underlying.CallbackUrl));
@@ -1495,7 +1495,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
 
         // Nexus client exposes the temporal client
         Assert.NotNull(capturedClient);
-        Assert.Equal(Env.Client.Options.Namespace, capturedClient!.TemporalClient.Options.Namespace);
+        Assert.Equal(Env.Client.Options.Namespace, capturedClient.TemporalClient.Options.Namespace);
 
         // Outbound link on the start event points to the workflow that the handler started
         var startEvent = Assert.Single(
@@ -1581,7 +1581,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             }));
 
         Assert.NotNull(capturedHandler);
-        Assert.True(capturedHandler!.CancelCallCount > 0);
+        Assert.True(capturedHandler.CancelCallCount > 0);
         Assert.Equal(workflowId, capturedHandler.CapturedWorkflowId);
     }
 

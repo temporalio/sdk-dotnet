@@ -19,7 +19,7 @@ namespace Temporalio.Nexus
         private const string NexusOperationTokenHeader = "Nexus-Operation-Token";
 
         /// <summary>
-        /// Start a workflow and return the operation token. This handles all Nexus plumbing:
+        /// Start a workflow and return the workflow-run handle. This handles all Nexus plumbing:
         /// cloning options, setting task queue, processing links, injecting callbacks, and
         /// adding outbound links.
         /// </summary>
@@ -28,8 +28,8 @@ namespace Temporalio.Nexus
         /// <param name="workflow">Workflow type name.</param>
         /// <param name="args">Workflow arguments.</param>
         /// <param name="options">Workflow start options. ID and TaskQueue are required.</param>
-        /// <returns>Base64url-encoded operation token.</returns>
-        internal static async Task<string> StartWorkflowAndGetTokenAsync(
+        /// <returns>Workflow-run handle for the started workflow.</returns>
+        internal static async Task<NexusWorkflowRunHandle> StartWorkflowAsync(
             OperationStartContext nexusStartContext,
             NexusOperationExecutionContext temporalContext,
             string workflow,
@@ -40,8 +40,10 @@ namespace Temporalio.Nexus
             var namespace_ = client.Options.Namespace;
             var workflowId = options.Id ?? string.Empty;
 
-            // Generate the token before starting the workflow (needed for callback header)
-            var token = new NexusWorkflowRunHandle(namespace_, workflowId, 0).ToToken();
+            // Generate the handle and token before starting the workflow (token is needed for the
+            // callback header).
+            var handle = new NexusWorkflowRunHandle(namespace_, workflowId, 0);
+            var token = handle.ToToken();
 
             // Shallow clone the options so we can mutate them. We just overwrite any of these
             // internal options since they cannot be user set at this time.
@@ -114,7 +116,7 @@ namespace Temporalio.Nexus
                 EventRef = new() { EventId = 1, EventType = EventType.WorkflowExecutionStarted },
             }.ToNexusLink());
 
-            return token;
+            return handle;
         }
     }
 }
