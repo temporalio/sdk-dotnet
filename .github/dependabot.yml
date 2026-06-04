@@ -13,3 +13,70 @@ updates:
       interval: "weekly"
     cooldown:
       default-days: 14
+    groups:
+      # Microsoft.Extensions.Logging and .Logging.Console share a version and are
+      # bumped together in a single PR.
+      microsoft-extensions-logging:
+        patterns:
+          - "Microsoft.Extensions.Logging"
+          - "Microsoft.Extensions.Logging.Console"
+      # The official xunit packages share a release cadence and are bumped
+      # together. Xunit.SkippableFact is a separate third-party package and is
+      # intentionally left out of this group.
+      xunit:
+        patterns:
+          - "xunit"
+          - "xunit.console"
+          - "xunit.runner.visualstudio"
+    # Dependencies of the shipped product projects (src/*) are kept on their
+    # current versions to preserve low version floors for downstream consumers.
+    # Security updates still flow through, since update-types ignores don't
+    # apply to them. Build- and test-only dependencies are left updatable.
+    ignore:
+      - dependency-name: "Google.Protobuf"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "Microsoft.Bcl.HashCode"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "Microsoft.Extensions.Hosting"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "Microsoft.Extensions.Logging.Abstractions"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "NexusRpc"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "OpenTelemetry.Api"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      # While not a product dependency, OpenTelemetry.Exporter.InMemory is
+      # typically updated in lockstep with OpenTelemetry.Api
+      - dependency-name: "OpenTelemetry.Exporter.InMemory"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "System.Diagnostics.DiagnosticSource"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "System.Text.Json"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
