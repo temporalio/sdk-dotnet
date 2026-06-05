@@ -28,6 +28,13 @@ updates:
           - "xunit"
           - "xunit.console"
           - "xunit.runner.visualstudio"
+      # The OpenTelemetry .NET family has version updates ignored and
+      # is bumped manually in lock-step. Security updates still flow through, so
+      # group them to land in a single PR when more than one is affected.
+      opentelemetry:
+        applies-to: security-updates
+        patterns:
+          - "OpenTelemetry*"
     # Dependencies of the shipped product projects (src/*) are kept on their
     # current versions to preserve low version floors for downstream consumers.
     # Security updates still flow through, since update-types ignores don't
