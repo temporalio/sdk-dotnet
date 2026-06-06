@@ -283,6 +283,14 @@ namespace Temporalio.Bridge
                     options.DnsLoadBalancing == null
                         ? null
                         : scope.Pointer(options.DnsLoadBalancing.ToInteropOptions()),
+                grpc_compression = options.GrpcCompression switch
+                {
+                    Temporalio.Client.GrpcCompression.Gzip =>
+                        Interop.TemporalCoreClientGrpcCompression.TemporalCoreClientGrpcCompression_Gzip,
+                    Temporalio.Client.GrpcCompression.None =>
+                        Interop.TemporalCoreClientGrpcCompression.TemporalCoreClientGrpcCompression_None,
+                    _ => throw new ArgumentOutOfRangeException(nameof(options)),
+                },
             };
         }
 
