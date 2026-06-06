@@ -15,6 +15,7 @@ var openApiV2ProtoDir = Path.Join(protoDir, "protoc-gen-openapiv2");
 new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api")).Delete(true);
 new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api/Dependencies/Google")).Create();
 new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api/Dependencies/GrpcGateway")).Create();
+new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api/Dependencies/NexusAnnotations")).Create();
 // Do not delete the .editorconfig from Bridge/Api
 foreach (var fi in new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Bridge/Api")).GetFileSystemInfos())
 {
@@ -39,6 +40,15 @@ foreach (var fi in new DirectoryInfo(apiProtoDir).GetFiles("*.proto", SearchOpti
         Protoc(
             fi.FullName,
             Path.Join(projectDir, "src/Temporalio/Api/Dependencies/Google"),
+            string.Empty,
+            apiProtoDir);
+    }
+    else if (fi.FullName.Contains($"nexusannotations{Path.DirectorySeparatorChar}"))
+    {
+        // Non-temporal namespace; gen as a dependency, namespace rewritten below.
+        Protoc(
+            fi.FullName,
+            Path.Join(projectDir, "src/Temporalio/Api/Dependencies/NexusAnnotations"),
             string.Empty,
             apiProtoDir);
     }
@@ -158,6 +168,8 @@ foreach (
     else
     {
         var newContents = contents.Replace("Google.Api.", "Temporalio.Api.Dependencies.Google.Api.");
+        newContents = newContents.Replace(
+            "Nexusannotations.", "Temporalio.Api.Dependencies.NexusAnnotations.");
         if (contents != newContents)
         {
             File.WriteAllText(fi.FullName, newContents);
