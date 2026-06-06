@@ -85,7 +85,7 @@ namespace Temporalio.Api.Schedule.V1 {
             "aW1tZWRpYXRlbHkYASABKAsyMy50ZW1wb3JhbC5hcGkuc2NoZWR1bGUudjEu",
             "VHJpZ2dlckltbWVkaWF0ZWx5UmVxdWVzdBJDChBiYWNrZmlsbF9yZXF1ZXN0",
             "GAIgAygLMikudGVtcG9yYWwuYXBpLnNjaGVkdWxlLnYxLkJhY2tmaWxsUmVx",
-            "dWVzdBINCgVwYXVzZRgDIAEoCRIPCgd1bnBhdXNlGAQgASgJItYDCgxTY2hl",
+            "dWVzdBINCgVwYXVzZRgDIAEoCRIPCgd1bnBhdXNlGAQgASgJIvADCgxTY2hl",
             "ZHVsZUluZm8SFAoMYWN0aW9uX2NvdW50GAEgASgDEh0KFW1pc3NlZF9jYXRj",
             "aHVwX3dpbmRvdxgCIAEoAxIXCg9vdmVybGFwX3NraXBwZWQYAyABKAMSFgoO",
             "YnVmZmVyX2Ryb3BwZWQYCiABKAMSEwoLYnVmZmVyX3NpemUYCyABKAMSRAoR",
@@ -96,27 +96,28 @@ namespace Temporalio.Api.Schedule.V1 {
             "dG9idWYuVGltZXN0YW1wEi8KC2NyZWF0ZV90aW1lGAYgASgLMhouZ29vZ2xl",
             "LnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgHIAEoCzIaLmdv",
             "b2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASIgoWaW52YWxpZF9zY2hlZHVsZV9l",
-            "cnJvchgIIAEoCUICGAEi8AEKCFNjaGVkdWxlEjQKBHNwZWMYASABKAsyJi50",
-            "ZW1wb3JhbC5hcGkuc2NoZWR1bGUudjEuU2NoZWR1bGVTcGVjEjgKBmFjdGlv",
-            "bhgCIAEoCzIoLnRlbXBvcmFsLmFwaS5zY2hlZHVsZS52MS5TY2hlZHVsZUFj",
-            "dGlvbhI8Cghwb2xpY2llcxgDIAEoCzIqLnRlbXBvcmFsLmFwaS5zY2hlZHVs",
-            "ZS52MS5TY2hlZHVsZVBvbGljaWVzEjYKBXN0YXRlGAQgASgLMicudGVtcG9y",
-            "YWwuYXBpLnNjaGVkdWxlLnYxLlNjaGVkdWxlU3RhdGUipQIKEFNjaGVkdWxl",
-            "TGlzdEluZm8SNAoEc3BlYxgBIAEoCzImLnRlbXBvcmFsLmFwaS5zY2hlZHVs",
-            "ZS52MS5TY2hlZHVsZVNwZWMSOwoNd29ya2Zsb3dfdHlwZRgCIAEoCzIkLnRl",
-            "bXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dUeXBlEg0KBW5vdGVzGAMg",
-            "ASgJEg4KBnBhdXNlZBgEIAEoCBJGCg5yZWNlbnRfYWN0aW9ucxgFIAMoCzIu",
-            "LnRlbXBvcmFsLmFwaS5zY2hlZHVsZS52MS5TY2hlZHVsZUFjdGlvblJlc3Vs",
-            "dBI3ChNmdXR1cmVfYWN0aW9uX3RpbWVzGAYgAygLMhouZ29vZ2xlLnByb3Rv",
-            "YnVmLlRpbWVzdGFtcCLTAQoRU2NoZWR1bGVMaXN0RW50cnkSEwoLc2NoZWR1",
-            "bGVfaWQYASABKAkSKgoEbWVtbxgCIAEoCzIcLnRlbXBvcmFsLmFwaS5jb21t",
-            "b24udjEuTWVtbxJDChFzZWFyY2hfYXR0cmlidXRlcxgDIAEoCzIoLnRlbXBv",
-            "cmFsLmFwaS5jb21tb24udjEuU2VhcmNoQXR0cmlidXRlcxI4CgRpbmZvGAQg",
-            "ASgLMioudGVtcG9yYWwuYXBpLnNjaGVkdWxlLnYxLlNjaGVkdWxlTGlzdElu",
-            "Zm9CkwEKG2lvLnRlbXBvcmFsLmFwaS5zY2hlZHVsZS52MUIMTWVzc2FnZVBy",
-            "b3RvUAFaJ2dvLnRlbXBvcmFsLmlvL2FwaS9zY2hlZHVsZS92MTtzY2hlZHVs",
-            "ZaoCGlRlbXBvcmFsaW8uQXBpLlNjaGVkdWxlLlYx6gIdVGVtcG9yYWxpbzo6",
-            "QXBpOjpTY2hlZHVsZTo6VjFiBnByb3RvMw=="));
+            "cnJvchgIIAEoCUICGAESGAoQc3RhdGVfc2l6ZV9ieXRlcxgMIAEoAyLwAQoI",
+            "U2NoZWR1bGUSNAoEc3BlYxgBIAEoCzImLnRlbXBvcmFsLmFwaS5zY2hlZHVs",
+            "ZS52MS5TY2hlZHVsZVNwZWMSOAoGYWN0aW9uGAIgASgLMigudGVtcG9yYWwu",
+            "YXBpLnNjaGVkdWxlLnYxLlNjaGVkdWxlQWN0aW9uEjwKCHBvbGljaWVzGAMg",
+            "ASgLMioudGVtcG9yYWwuYXBpLnNjaGVkdWxlLnYxLlNjaGVkdWxlUG9saWNp",
+            "ZXMSNgoFc3RhdGUYBCABKAsyJy50ZW1wb3JhbC5hcGkuc2NoZWR1bGUudjEu",
+            "U2NoZWR1bGVTdGF0ZSK/AgoQU2NoZWR1bGVMaXN0SW5mbxI0CgRzcGVjGAEg",
+            "ASgLMiYudGVtcG9yYWwuYXBpLnNjaGVkdWxlLnYxLlNjaGVkdWxlU3BlYxI7",
+            "Cg13b3JrZmxvd190eXBlGAIgASgLMiQudGVtcG9yYWwuYXBpLmNvbW1vbi52",
+            "MS5Xb3JrZmxvd1R5cGUSDQoFbm90ZXMYAyABKAkSDgoGcGF1c2VkGAQgASgI",
+            "EkYKDnJlY2VudF9hY3Rpb25zGAUgAygLMi4udGVtcG9yYWwuYXBpLnNjaGVk",
+            "dWxlLnYxLlNjaGVkdWxlQWN0aW9uUmVzdWx0EjcKE2Z1dHVyZV9hY3Rpb25f",
+            "dGltZXMYBiADKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhgKEHN0",
+            "YXRlX3NpemVfYnl0ZXMYByABKAMi0wEKEVNjaGVkdWxlTGlzdEVudHJ5EhMK",
+            "C3NjaGVkdWxlX2lkGAEgASgJEioKBG1lbW8YAiABKAsyHC50ZW1wb3JhbC5h",
+            "cGkuY29tbW9uLnYxLk1lbW8SQwoRc2VhcmNoX2F0dHJpYnV0ZXMYAyABKAsy",
+            "KC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlNlYXJjaEF0dHJpYnV0ZXMSOAoE",
+            "aW5mbxgEIAEoCzIqLnRlbXBvcmFsLmFwaS5zY2hlZHVsZS52MS5TY2hlZHVs",
+            "ZUxpc3RJbmZvQpMBChtpby50ZW1wb3JhbC5hcGkuc2NoZWR1bGUudjFCDE1l",
+            "c3NhZ2VQcm90b1ABWidnby50ZW1wb3JhbC5pby9hcGkvc2NoZWR1bGUvdjE7",
+            "c2NoZWR1bGWqAhpUZW1wb3JhbGlvLkFwaS5TY2hlZHVsZS5WMeoCHVRlbXBv",
+            "cmFsaW86OkFwaTo6U2NoZWR1bGU6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.ScheduleReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -132,9 +133,9 @@ namespace Temporalio.Api.Schedule.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.TriggerImmediatelyRequest), global::Temporalio.Api.Schedule.V1.TriggerImmediatelyRequest.Parser, new[]{ "OverlapPolicy", "ScheduledTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.BackfillRequest), global::Temporalio.Api.Schedule.V1.BackfillRequest.Parser, new[]{ "StartTime", "EndTime", "OverlapPolicy" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.SchedulePatch), global::Temporalio.Api.Schedule.V1.SchedulePatch.Parser, new[]{ "TriggerImmediately", "BackfillRequest", "Pause", "Unpause" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.ScheduleInfo), global::Temporalio.Api.Schedule.V1.ScheduleInfo.Parser, new[]{ "ActionCount", "MissedCatchupWindow", "OverlapSkipped", "BufferDropped", "BufferSize", "RunningWorkflows", "RecentActions", "FutureActionTimes", "CreateTime", "UpdateTime", "InvalidScheduleError" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.ScheduleInfo), global::Temporalio.Api.Schedule.V1.ScheduleInfo.Parser, new[]{ "ActionCount", "MissedCatchupWindow", "OverlapSkipped", "BufferDropped", "BufferSize", "RunningWorkflows", "RecentActions", "FutureActionTimes", "CreateTime", "UpdateTime", "InvalidScheduleError", "StateSizeBytes" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.Schedule), global::Temporalio.Api.Schedule.V1.Schedule.Parser, new[]{ "Spec", "Action", "Policies", "State" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.ScheduleListInfo), global::Temporalio.Api.Schedule.V1.ScheduleListInfo.Parser, new[]{ "Spec", "WorkflowType", "Notes", "Paused", "RecentActions", "FutureActionTimes" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.ScheduleListInfo), global::Temporalio.Api.Schedule.V1.ScheduleListInfo.Parser, new[]{ "Spec", "WorkflowType", "Notes", "Paused", "RecentActions", "FutureActionTimes", "StateSizeBytes" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.ScheduleListEntry), global::Temporalio.Api.Schedule.V1.ScheduleListEntry.Parser, new[]{ "ScheduleId", "Memo", "SearchAttributes", "Info" }, null, null, null, null)
           }));
     }
@@ -4306,6 +4307,7 @@ namespace Temporalio.Api.Schedule.V1 {
       createTime_ = other.createTime_ != null ? other.createTime_.Clone() : null;
       updateTime_ = other.updateTime_ != null ? other.updateTime_.Clone() : null;
       invalidScheduleError_ = other.invalidScheduleError_;
+      stateSizeBytes_ = other.stateSizeBytes_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -4481,6 +4483,21 @@ namespace Temporalio.Api.Schedule.V1 {
       }
     }
 
+    /// <summary>Field number for the "state_size_bytes" field.</summary>
+    public const int StateSizeBytesFieldNumber = 12;
+    private long stateSizeBytes_;
+    /// <summary>
+    /// Size of the schedule's internal state (including payloads) in bytes.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public long StateSizeBytes {
+      get { return stateSizeBytes_; }
+      set {
+        stateSizeBytes_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -4507,6 +4524,7 @@ namespace Temporalio.Api.Schedule.V1 {
       if (!object.Equals(CreateTime, other.CreateTime)) return false;
       if (!object.Equals(UpdateTime, other.UpdateTime)) return false;
       if (InvalidScheduleError != other.InvalidScheduleError) return false;
+      if (StateSizeBytes != other.StateSizeBytes) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -4525,6 +4543,7 @@ namespace Temporalio.Api.Schedule.V1 {
       if (createTime_ != null) hash ^= CreateTime.GetHashCode();
       if (updateTime_ != null) hash ^= UpdateTime.GetHashCode();
       if (InvalidScheduleError.Length != 0) hash ^= InvalidScheduleError.GetHashCode();
+      if (StateSizeBytes != 0L) hash ^= StateSizeBytes.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -4578,6 +4597,10 @@ namespace Temporalio.Api.Schedule.V1 {
         output.WriteRawTag(88);
         output.WriteInt64(BufferSize);
       }
+      if (StateSizeBytes != 0L) {
+        output.WriteRawTag(96);
+        output.WriteInt64(StateSizeBytes);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -4623,6 +4646,10 @@ namespace Temporalio.Api.Schedule.V1 {
         output.WriteRawTag(88);
         output.WriteInt64(BufferSize);
       }
+      if (StateSizeBytes != 0L) {
+        output.WriteRawTag(96);
+        output.WriteInt64(StateSizeBytes);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -4659,6 +4686,9 @@ namespace Temporalio.Api.Schedule.V1 {
       }
       if (InvalidScheduleError.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(InvalidScheduleError);
+      }
+      if (StateSizeBytes != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(StateSizeBytes);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -4704,6 +4734,9 @@ namespace Temporalio.Api.Schedule.V1 {
       }
       if (other.InvalidScheduleError.Length != 0) {
         InvalidScheduleError = other.InvalidScheduleError;
+      }
+      if (other.StateSizeBytes != 0L) {
+        StateSizeBytes = other.StateSizeBytes;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -4770,6 +4803,10 @@ namespace Temporalio.Api.Schedule.V1 {
             BufferSize = input.ReadInt64();
             break;
           }
+          case 96: {
+            StateSizeBytes = input.ReadInt64();
+            break;
+          }
         }
       }
     #endif
@@ -4833,6 +4870,10 @@ namespace Temporalio.Api.Schedule.V1 {
           }
           case 88: {
             BufferSize = input.ReadInt64();
+            break;
+          }
+          case 96: {
+            StateSizeBytes = input.ReadInt64();
             break;
           }
         }
@@ -5222,6 +5263,7 @@ namespace Temporalio.Api.Schedule.V1 {
       paused_ = other.paused_;
       recentActions_ = other.recentActions_.Clone();
       futureActionTimes_ = other.futureActionTimes_.Clone();
+      stateSizeBytes_ = other.stateSizeBytes_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -5316,6 +5358,21 @@ namespace Temporalio.Api.Schedule.V1 {
       get { return futureActionTimes_; }
     }
 
+    /// <summary>Field number for the "state_size_bytes" field.</summary>
+    public const int StateSizeBytesFieldNumber = 7;
+    private long stateSizeBytes_;
+    /// <summary>
+    /// Size of the schedule's internal state (including payloads) in bytes.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public long StateSizeBytes {
+      get { return stateSizeBytes_; }
+      set {
+        stateSizeBytes_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -5337,6 +5394,7 @@ namespace Temporalio.Api.Schedule.V1 {
       if (Paused != other.Paused) return false;
       if(!recentActions_.Equals(other.recentActions_)) return false;
       if(!futureActionTimes_.Equals(other.futureActionTimes_)) return false;
+      if (StateSizeBytes != other.StateSizeBytes) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -5350,6 +5408,7 @@ namespace Temporalio.Api.Schedule.V1 {
       if (Paused != false) hash ^= Paused.GetHashCode();
       hash ^= recentActions_.GetHashCode();
       hash ^= futureActionTimes_.GetHashCode();
+      if (StateSizeBytes != 0L) hash ^= StateSizeBytes.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -5386,6 +5445,10 @@ namespace Temporalio.Api.Schedule.V1 {
       }
       recentActions_.WriteTo(output, _repeated_recentActions_codec);
       futureActionTimes_.WriteTo(output, _repeated_futureActionTimes_codec);
+      if (StateSizeBytes != 0L) {
+        output.WriteRawTag(56);
+        output.WriteInt64(StateSizeBytes);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -5414,6 +5477,10 @@ namespace Temporalio.Api.Schedule.V1 {
       }
       recentActions_.WriteTo(ref output, _repeated_recentActions_codec);
       futureActionTimes_.WriteTo(ref output, _repeated_futureActionTimes_codec);
+      if (StateSizeBytes != 0L) {
+        output.WriteRawTag(56);
+        output.WriteInt64(StateSizeBytes);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -5438,6 +5505,9 @@ namespace Temporalio.Api.Schedule.V1 {
       }
       size += recentActions_.CalculateSize(_repeated_recentActions_codec);
       size += futureActionTimes_.CalculateSize(_repeated_futureActionTimes_codec);
+      if (StateSizeBytes != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(StateSizeBytes);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -5470,6 +5540,9 @@ namespace Temporalio.Api.Schedule.V1 {
       }
       recentActions_.Add(other.recentActions_);
       futureActionTimes_.Add(other.futureActionTimes_);
+      if (other.StateSizeBytes != 0L) {
+        StateSizeBytes = other.StateSizeBytes;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -5515,6 +5588,10 @@ namespace Temporalio.Api.Schedule.V1 {
             futureActionTimes_.AddEntriesFrom(input, _repeated_futureActionTimes_codec);
             break;
           }
+          case 56: {
+            StateSizeBytes = input.ReadInt64();
+            break;
+          }
         }
       }
     #endif
@@ -5558,6 +5635,10 @@ namespace Temporalio.Api.Schedule.V1 {
           }
           case 50: {
             futureActionTimes_.AddEntriesFrom(ref input, _repeated_futureActionTimes_codec);
+            break;
+          }
+          case 56: {
+            StateSizeBytes = input.ReadInt64();
             break;
           }
         }
