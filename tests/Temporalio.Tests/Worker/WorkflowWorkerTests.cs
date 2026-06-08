@@ -7816,18 +7816,20 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         async worker =>
         {
             using var httpClient = new HttpClient();
-            var resp = await httpClient.GetAsync(new Uri($"http://{promAddr}/metrics"));
-            var body = await resp.Content.ReadAsStringAsync();
-            var bodyLines = body.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-            var matches = bodyLines.Where(l => l.Contains("temporal_num_pollers")).ToList();
-            var activityPollers = matches.Where(l => l.Contains("activity_task")).ToList();
-
-            Assert.Single(activityPollers);
-            Assert.True(activityPollers[0].EndsWith('2'), "Activity poller count should be 2");
-            var workflowPollers = matches.Where(l => l.Contains("workflow_task")).ToList();
 
             await AssertMore.EventuallyAsync(async () =>
             {
+                var resp = await httpClient.GetAsync(new Uri($"http://{promAddr}/metrics"));
+                var body = await resp.Content.ReadAsStringAsync();
+                var bodyLines = body.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                var matches = bodyLines.Where(l => l.Contains("temporal_num_pollers")).ToList();
+                var activityPollers = matches.Where(l => l.Contains("activity_task")).ToList();
+
+                Assert.Single(activityPollers);
+                Assert.True(activityPollers[0].EndsWith('2'), "Activity poller count should be 2");
+
+                var workflowPollers = matches.Where(l => l.Contains("workflow_task")).ToList();
+
                 // Should have exactly two workflow poller metrics (sticky and non-sticky)
                 Assert.Equal(2, workflowPollers.Count);
 
