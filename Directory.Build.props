@@ -44,7 +44,7 @@
       Bump PackageValidationBaselineVersion when releasing.
     -->
     <EnablePackageValidation>true</EnablePackageValidation>
-    <PackageValidationBaselineVersion>1.14.1</PackageValidationBaselineVersion>
+    <PackageValidationBaselineVersion>1.15.0</PackageValidationBaselineVersion>
     <ApiCompatPermitUnnecessarySuppressions>false</ApiCompatPermitUnnecessarySuppressions>
   </PropertyGroup>
 
