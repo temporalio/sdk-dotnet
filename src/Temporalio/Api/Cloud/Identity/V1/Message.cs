@@ -121,13 +121,26 @@ namespace Temporalio.Api.Cloud.Identity.V1 {
             "LmFwaS5jbG91ZC5yZXNvdXJjZS52MS5SZXNvdXJjZVN0YXRlEhoKEmFzeW5j",
             "X29wZXJhdGlvbl9pZBgFIAEoCRIwCgxjcmVhdGVkX3RpbWUYBiABKAsyGi5n",
             "b29nbGUucHJvdG9idWYuVGltZXN0YW1wEjYKEmxhc3RfbW9kaWZpZWRfdGlt",
-            "ZRgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAqXAoJT3duZXJU",
-            "eXBlEhoKFk9XTkVSX1RZUEVfVU5TUEVDSUZJRUQQABITCg9PV05FUl9UWVBF",
-            "X1VTRVIQARIeChpPV05FUl9UWVBFX1NFUlZJQ0VfQUNDT1VOVBACQqwBCiFp",
-            "by50ZW1wb3JhbC5hcGkuY2xvdWQuaWRlbnRpdHkudjFCDE1lc3NhZ2VQcm90",
-            "b1ABWi1nby50ZW1wb3JhbC5pby9hcGkvY2xvdWQvaWRlbnRpdHkvdjE7aWRl",
-            "bnRpdHmqAiBUZW1wb3JhbGlvLkFwaS5DbG91ZC5JZGVudGl0eS5WMeoCJFRl",
-            "bXBvcmFsaW86OkFwaTo6Q2xvdWQ6OklkZW50aXR5OjpWMWIGcHJvdG8z"));
+            "ZRgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiswEKF1VzZXJO",
+            "YW1lc3BhY2VBc3NpZ25tZW50EgoKAmlkGAEgASgJEg0KBWVtYWlsGAIgASgJ",
+            "EkkKEG5hbWVzcGFjZV9hY2Nlc3MYAyABKAsyLy50ZW1wb3JhbC5hcGkuY2xv",
+            "dWQuaWRlbnRpdHkudjEuTmFtZXNwYWNlQWNjZXNzEhgKEGluaGVyaXRlZF9h",
+            "Y2Nlc3MYBCABKAgSGAoQcmVzb3VyY2VfdmVyc2lvbhgFIAEoCSK8AQohU2Vy",
+            "dmljZUFjY291bnROYW1lc3BhY2VBc3NpZ25tZW50EgoKAmlkGAEgASgJEgwK",
+            "BG5hbWUYAiABKAkSSQoQbmFtZXNwYWNlX2FjY2VzcxgDIAEoCzIvLnRlbXBv",
+            "cmFsLmFwaS5jbG91ZC5pZGVudGl0eS52MS5OYW1lc3BhY2VBY2Nlc3MSGAoQ",
+            "aW5oZXJpdGVkX2FjY2VzcxgEIAEoCBIYChByZXNvdXJjZV92ZXJzaW9uGAUg",
+            "ASgJIr8BChxVc2VyR3JvdXBOYW1lc3BhY2VBc3NpZ25tZW50EgoKAmlkGAEg",
+            "ASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRJJChBuYW1lc3BhY2VfYWNjZXNz",
+            "GAMgASgLMi8udGVtcG9yYWwuYXBpLmNsb3VkLmlkZW50aXR5LnYxLk5hbWVz",
+            "cGFjZUFjY2VzcxIYChBpbmhlcml0ZWRfYWNjZXNzGAQgASgIEhgKEHJlc291",
+            "cmNlX3ZlcnNpb24YBSABKAkqXAoJT3duZXJUeXBlEhoKFk9XTkVSX1RZUEVf",
+            "VU5TUEVDSUZJRUQQABITCg9PV05FUl9UWVBFX1VTRVIQARIeChpPV05FUl9U",
+            "WVBFX1NFUlZJQ0VfQUNDT1VOVBACQqwBCiFpby50ZW1wb3JhbC5hcGkuY2xv",
+            "dWQuaWRlbnRpdHkudjFCDE1lc3NhZ2VQcm90b1ABWi1nby50ZW1wb3JhbC5p",
+            "by9hcGkvY2xvdWQvaWRlbnRpdHkvdjE7aWRlbnRpdHmqAiBUZW1wb3JhbGlv",
+            "LkFwaS5DbG91ZC5JZGVudGl0eS5WMeoCJFRlbXBvcmFsaW86OkFwaTo6Q2xv",
+            "dWQ6OklkZW50aXR5OjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Cloud.Resource.V1.MessageReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Cloud.Identity.V1.OwnerType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -151,7 +164,10 @@ namespace Temporalio.Api.Cloud.Identity.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Identity.V1.ApiKeySpec), global::Temporalio.Api.Cloud.Identity.V1.ApiKeySpec.Parser, new[]{ "OwnerId", "OwnerTypeDeprecated", "OwnerType", "DisplayName", "Description", "ExpiryTime", "Disabled" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Identity.V1.CustomRoleSpec), global::Temporalio.Api.Cloud.Identity.V1.CustomRoleSpec.Parser, new[]{ "Name", "Description", "Permissions" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Identity.V1.CustomRoleSpec.Types.Resources), global::Temporalio.Api.Cloud.Identity.V1.CustomRoleSpec.Types.Resources.Parser, new[]{ "ResourceType", "ResourceIds", "AllowAll" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Identity.V1.CustomRoleSpec.Types.Permission), global::Temporalio.Api.Cloud.Identity.V1.CustomRoleSpec.Types.Permission.Parser, new[]{ "Resources", "Actions" }, null, null, null, null)}),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Identity.V1.CustomRole), global::Temporalio.Api.Cloud.Identity.V1.CustomRole.Parser, new[]{ "Id", "ResourceVersion", "Spec", "State", "AsyncOperationId", "CreatedTime", "LastModifiedTime" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Identity.V1.CustomRole), global::Temporalio.Api.Cloud.Identity.V1.CustomRole.Parser, new[]{ "Id", "ResourceVersion", "Spec", "State", "AsyncOperationId", "CreatedTime", "LastModifiedTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Identity.V1.UserNamespaceAssignment), global::Temporalio.Api.Cloud.Identity.V1.UserNamespaceAssignment.Parser, new[]{ "Id", "Email", "NamespaceAccess", "InheritedAccess", "ResourceVersion" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Identity.V1.ServiceAccountNamespaceAssignment), global::Temporalio.Api.Cloud.Identity.V1.ServiceAccountNamespaceAssignment.Parser, new[]{ "Id", "Name", "NamespaceAccess", "InheritedAccess", "ResourceVersion" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Identity.V1.UserGroupNamespaceAssignment), global::Temporalio.Api.Cloud.Identity.V1.UserGroupNamespaceAssignment.Parser, new[]{ "Id", "DisplayName", "NamespaceAccess", "InheritedAccess", "ResourceVersion" }, null, null, null, null)
           }));
     }
     #endregion
@@ -7275,6 +7291,1089 @@ namespace Temporalio.Api.Cloud.Identity.V1 {
               LastModifiedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
             input.ReadMessage(LastModifiedTime);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class UserNamespaceAssignment : pb::IMessage<UserNamespaceAssignment>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<UserNamespaceAssignment> _parser = new pb::MessageParser<UserNamespaceAssignment>(() => new UserNamespaceAssignment());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<UserNamespaceAssignment> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Cloud.Identity.V1.MessageReflection.Descriptor.MessageTypes[20]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public UserNamespaceAssignment() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public UserNamespaceAssignment(UserNamespaceAssignment other) : this() {
+      id_ = other.id_;
+      email_ = other.email_;
+      namespaceAccess_ = other.namespaceAccess_ != null ? other.namespaceAccess_.Clone() : null;
+      inheritedAccess_ = other.inheritedAccess_;
+      resourceVersion_ = other.resourceVersion_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public UserNamespaceAssignment Clone() {
+      return new UserNamespaceAssignment(this);
+    }
+
+    /// <summary>Field number for the "id" field.</summary>
+    public const int IdFieldNumber = 1;
+    private string id_ = "";
+    /// <summary>
+    /// The ID of the user.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Id {
+      get { return id_; }
+      set {
+        id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "email" field.</summary>
+    public const int EmailFieldNumber = 2;
+    private string email_ = "";
+    /// <summary>
+    /// The email of the user.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Email {
+      get { return email_; }
+      set {
+        email_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "namespace_access" field.</summary>
+    public const int NamespaceAccessFieldNumber = 3;
+    private global::Temporalio.Api.Cloud.Identity.V1.NamespaceAccess namespaceAccess_;
+    /// <summary>
+    /// The access assigned to the user at the namespace level.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Cloud.Identity.V1.NamespaceAccess NamespaceAccess {
+      get { return namespaceAccess_; }
+      set {
+        namespaceAccess_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "inherited_access" field.</summary>
+    public const int InheritedAccessFieldNumber = 4;
+    private bool inheritedAccess_;
+    /// <summary>
+    /// True if the user has inherited access to the namespace through an account or project role.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool InheritedAccess {
+      get { return inheritedAccess_; }
+      set {
+        inheritedAccess_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "resource_version" field.</summary>
+    public const int ResourceVersionFieldNumber = 5;
+    private string resourceVersion_ = "";
+    /// <summary>
+    /// The current resource version of the user.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ResourceVersion {
+      get { return resourceVersion_; }
+      set {
+        resourceVersion_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as UserNamespaceAssignment);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(UserNamespaceAssignment other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Id != other.Id) return false;
+      if (Email != other.Email) return false;
+      if (!object.Equals(NamespaceAccess, other.NamespaceAccess)) return false;
+      if (InheritedAccess != other.InheritedAccess) return false;
+      if (ResourceVersion != other.ResourceVersion) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Id.Length != 0) hash ^= Id.GetHashCode();
+      if (Email.Length != 0) hash ^= Email.GetHashCode();
+      if (namespaceAccess_ != null) hash ^= NamespaceAccess.GetHashCode();
+      if (InheritedAccess != false) hash ^= InheritedAccess.GetHashCode();
+      if (ResourceVersion.Length != 0) hash ^= ResourceVersion.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Id.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Id);
+      }
+      if (Email.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Email);
+      }
+      if (namespaceAccess_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(NamespaceAccess);
+      }
+      if (InheritedAccess != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(InheritedAccess);
+      }
+      if (ResourceVersion.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ResourceVersion);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Id.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Id);
+      }
+      if (Email.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Email);
+      }
+      if (namespaceAccess_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(NamespaceAccess);
+      }
+      if (InheritedAccess != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(InheritedAccess);
+      }
+      if (ResourceVersion.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ResourceVersion);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Id.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
+      }
+      if (Email.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Email);
+      }
+      if (namespaceAccess_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(NamespaceAccess);
+      }
+      if (InheritedAccess != false) {
+        size += 1 + 1;
+      }
+      if (ResourceVersion.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ResourceVersion);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(UserNamespaceAssignment other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Id.Length != 0) {
+        Id = other.Id;
+      }
+      if (other.Email.Length != 0) {
+        Email = other.Email;
+      }
+      if (other.namespaceAccess_ != null) {
+        if (namespaceAccess_ == null) {
+          NamespaceAccess = new global::Temporalio.Api.Cloud.Identity.V1.NamespaceAccess();
+        }
+        NamespaceAccess.MergeFrom(other.NamespaceAccess);
+      }
+      if (other.InheritedAccess != false) {
+        InheritedAccess = other.InheritedAccess;
+      }
+      if (other.ResourceVersion.Length != 0) {
+        ResourceVersion = other.ResourceVersion;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Id = input.ReadString();
+            break;
+          }
+          case 18: {
+            Email = input.ReadString();
+            break;
+          }
+          case 26: {
+            if (namespaceAccess_ == null) {
+              NamespaceAccess = new global::Temporalio.Api.Cloud.Identity.V1.NamespaceAccess();
+            }
+            input.ReadMessage(NamespaceAccess);
+            break;
+          }
+          case 32: {
+            InheritedAccess = input.ReadBool();
+            break;
+          }
+          case 42: {
+            ResourceVersion = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Id = input.ReadString();
+            break;
+          }
+          case 18: {
+            Email = input.ReadString();
+            break;
+          }
+          case 26: {
+            if (namespaceAccess_ == null) {
+              NamespaceAccess = new global::Temporalio.Api.Cloud.Identity.V1.NamespaceAccess();
+            }
+            input.ReadMessage(NamespaceAccess);
+            break;
+          }
+          case 32: {
+            InheritedAccess = input.ReadBool();
+            break;
+          }
+          case 42: {
+            ResourceVersion = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class ServiceAccountNamespaceAssignment : pb::IMessage<ServiceAccountNamespaceAssignment>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ServiceAccountNamespaceAssignment> _parser = new pb::MessageParser<ServiceAccountNamespaceAssignment>(() => new ServiceAccountNamespaceAssignment());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ServiceAccountNamespaceAssignment> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Cloud.Identity.V1.MessageReflection.Descriptor.MessageTypes[21]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ServiceAccountNamespaceAssignment() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ServiceAccountNamespaceAssignment(ServiceAccountNamespaceAssignment other) : this() {
+      id_ = other.id_;
+      name_ = other.name_;
+      namespaceAccess_ = other.namespaceAccess_ != null ? other.namespaceAccess_.Clone() : null;
+      inheritedAccess_ = other.inheritedAccess_;
+      resourceVersion_ = other.resourceVersion_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ServiceAccountNamespaceAssignment Clone() {
+      return new ServiceAccountNamespaceAssignment(this);
+    }
+
+    /// <summary>Field number for the "id" field.</summary>
+    public const int IdFieldNumber = 1;
+    private string id_ = "";
+    /// <summary>
+    /// The ID of the service account.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Id {
+      get { return id_; }
+      set {
+        id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "name" field.</summary>
+    public const int NameFieldNumber = 2;
+    private string name_ = "";
+    /// <summary>
+    /// The name of the service account.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "namespace_access" field.</summary>
+    public const int NamespaceAccessFieldNumber = 3;
+    private global::Temporalio.Api.Cloud.Identity.V1.NamespaceAccess namespaceAccess_;
+    /// <summary>
+    /// The access assigned to the service account at the namespace level.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Cloud.Identity.V1.NamespaceAccess NamespaceAccess {
+      get { return namespaceAccess_; }
+      set {
+        namespaceAccess_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "inherited_access" field.</summary>
+    public const int InheritedAccessFieldNumber = 4;
+    private bool inheritedAccess_;
+    /// <summary>
+    /// True if the service account has inherited access to the namespace through an account or project role.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool InheritedAccess {
+      get { return inheritedAccess_; }
+      set {
+        inheritedAccess_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "resource_version" field.</summary>
+    public const int ResourceVersionFieldNumber = 5;
+    private string resourceVersion_ = "";
+    /// <summary>
+    /// The current resource version of the service account.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ResourceVersion {
+      get { return resourceVersion_; }
+      set {
+        resourceVersion_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ServiceAccountNamespaceAssignment);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ServiceAccountNamespaceAssignment other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Id != other.Id) return false;
+      if (Name != other.Name) return false;
+      if (!object.Equals(NamespaceAccess, other.NamespaceAccess)) return false;
+      if (InheritedAccess != other.InheritedAccess) return false;
+      if (ResourceVersion != other.ResourceVersion) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Id.Length != 0) hash ^= Id.GetHashCode();
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (namespaceAccess_ != null) hash ^= NamespaceAccess.GetHashCode();
+      if (InheritedAccess != false) hash ^= InheritedAccess.GetHashCode();
+      if (ResourceVersion.Length != 0) hash ^= ResourceVersion.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Id.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Id);
+      }
+      if (Name.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Name);
+      }
+      if (namespaceAccess_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(NamespaceAccess);
+      }
+      if (InheritedAccess != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(InheritedAccess);
+      }
+      if (ResourceVersion.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ResourceVersion);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Id.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Id);
+      }
+      if (Name.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Name);
+      }
+      if (namespaceAccess_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(NamespaceAccess);
+      }
+      if (InheritedAccess != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(InheritedAccess);
+      }
+      if (ResourceVersion.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ResourceVersion);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Id.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
+      }
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (namespaceAccess_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(NamespaceAccess);
+      }
+      if (InheritedAccess != false) {
+        size += 1 + 1;
+      }
+      if (ResourceVersion.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ResourceVersion);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ServiceAccountNamespaceAssignment other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Id.Length != 0) {
+        Id = other.Id;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      if (other.namespaceAccess_ != null) {
+        if (namespaceAccess_ == null) {
+          NamespaceAccess = new global::Temporalio.Api.Cloud.Identity.V1.NamespaceAccess();
+        }
+        NamespaceAccess.MergeFrom(other.NamespaceAccess);
+      }
+      if (other.InheritedAccess != false) {
+        InheritedAccess = other.InheritedAccess;
+      }
+      if (other.ResourceVersion.Length != 0) {
+        ResourceVersion = other.ResourceVersion;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Id = input.ReadString();
+            break;
+          }
+          case 18: {
+            Name = input.ReadString();
+            break;
+          }
+          case 26: {
+            if (namespaceAccess_ == null) {
+              NamespaceAccess = new global::Temporalio.Api.Cloud.Identity.V1.NamespaceAccess();
+            }
+            input.ReadMessage(NamespaceAccess);
+            break;
+          }
+          case 32: {
+            InheritedAccess = input.ReadBool();
+            break;
+          }
+          case 42: {
+            ResourceVersion = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Id = input.ReadString();
+            break;
+          }
+          case 18: {
+            Name = input.ReadString();
+            break;
+          }
+          case 26: {
+            if (namespaceAccess_ == null) {
+              NamespaceAccess = new global::Temporalio.Api.Cloud.Identity.V1.NamespaceAccess();
+            }
+            input.ReadMessage(NamespaceAccess);
+            break;
+          }
+          case 32: {
+            InheritedAccess = input.ReadBool();
+            break;
+          }
+          case 42: {
+            ResourceVersion = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class UserGroupNamespaceAssignment : pb::IMessage<UserGroupNamespaceAssignment>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<UserGroupNamespaceAssignment> _parser = new pb::MessageParser<UserGroupNamespaceAssignment>(() => new UserGroupNamespaceAssignment());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<UserGroupNamespaceAssignment> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Cloud.Identity.V1.MessageReflection.Descriptor.MessageTypes[22]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public UserGroupNamespaceAssignment() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public UserGroupNamespaceAssignment(UserGroupNamespaceAssignment other) : this() {
+      id_ = other.id_;
+      displayName_ = other.displayName_;
+      namespaceAccess_ = other.namespaceAccess_ != null ? other.namespaceAccess_.Clone() : null;
+      inheritedAccess_ = other.inheritedAccess_;
+      resourceVersion_ = other.resourceVersion_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public UserGroupNamespaceAssignment Clone() {
+      return new UserGroupNamespaceAssignment(this);
+    }
+
+    /// <summary>Field number for the "id" field.</summary>
+    public const int IdFieldNumber = 1;
+    private string id_ = "";
+    /// <summary>
+    /// The ID of the group.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Id {
+      get { return id_; }
+      set {
+        id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "display_name" field.</summary>
+    public const int DisplayNameFieldNumber = 2;
+    private string displayName_ = "";
+    /// <summary>
+    /// The display name of the group.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string DisplayName {
+      get { return displayName_; }
+      set {
+        displayName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "namespace_access" field.</summary>
+    public const int NamespaceAccessFieldNumber = 3;
+    private global::Temporalio.Api.Cloud.Identity.V1.NamespaceAccess namespaceAccess_;
+    /// <summary>
+    /// The access assigned to the group at the namespace level.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Cloud.Identity.V1.NamespaceAccess NamespaceAccess {
+      get { return namespaceAccess_; }
+      set {
+        namespaceAccess_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "inherited_access" field.</summary>
+    public const int InheritedAccessFieldNumber = 4;
+    private bool inheritedAccess_;
+    /// <summary>
+    /// True if the group has inherited access to the namespace through an account or project role.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool InheritedAccess {
+      get { return inheritedAccess_; }
+      set {
+        inheritedAccess_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "resource_version" field.</summary>
+    public const int ResourceVersionFieldNumber = 5;
+    private string resourceVersion_ = "";
+    /// <summary>
+    /// The current resource version of the group.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ResourceVersion {
+      get { return resourceVersion_; }
+      set {
+        resourceVersion_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as UserGroupNamespaceAssignment);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(UserGroupNamespaceAssignment other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Id != other.Id) return false;
+      if (DisplayName != other.DisplayName) return false;
+      if (!object.Equals(NamespaceAccess, other.NamespaceAccess)) return false;
+      if (InheritedAccess != other.InheritedAccess) return false;
+      if (ResourceVersion != other.ResourceVersion) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Id.Length != 0) hash ^= Id.GetHashCode();
+      if (DisplayName.Length != 0) hash ^= DisplayName.GetHashCode();
+      if (namespaceAccess_ != null) hash ^= NamespaceAccess.GetHashCode();
+      if (InheritedAccess != false) hash ^= InheritedAccess.GetHashCode();
+      if (ResourceVersion.Length != 0) hash ^= ResourceVersion.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Id.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Id);
+      }
+      if (DisplayName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(DisplayName);
+      }
+      if (namespaceAccess_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(NamespaceAccess);
+      }
+      if (InheritedAccess != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(InheritedAccess);
+      }
+      if (ResourceVersion.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ResourceVersion);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Id.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Id);
+      }
+      if (DisplayName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(DisplayName);
+      }
+      if (namespaceAccess_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(NamespaceAccess);
+      }
+      if (InheritedAccess != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(InheritedAccess);
+      }
+      if (ResourceVersion.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ResourceVersion);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Id.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
+      }
+      if (DisplayName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DisplayName);
+      }
+      if (namespaceAccess_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(NamespaceAccess);
+      }
+      if (InheritedAccess != false) {
+        size += 1 + 1;
+      }
+      if (ResourceVersion.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ResourceVersion);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(UserGroupNamespaceAssignment other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Id.Length != 0) {
+        Id = other.Id;
+      }
+      if (other.DisplayName.Length != 0) {
+        DisplayName = other.DisplayName;
+      }
+      if (other.namespaceAccess_ != null) {
+        if (namespaceAccess_ == null) {
+          NamespaceAccess = new global::Temporalio.Api.Cloud.Identity.V1.NamespaceAccess();
+        }
+        NamespaceAccess.MergeFrom(other.NamespaceAccess);
+      }
+      if (other.InheritedAccess != false) {
+        InheritedAccess = other.InheritedAccess;
+      }
+      if (other.ResourceVersion.Length != 0) {
+        ResourceVersion = other.ResourceVersion;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Id = input.ReadString();
+            break;
+          }
+          case 18: {
+            DisplayName = input.ReadString();
+            break;
+          }
+          case 26: {
+            if (namespaceAccess_ == null) {
+              NamespaceAccess = new global::Temporalio.Api.Cloud.Identity.V1.NamespaceAccess();
+            }
+            input.ReadMessage(NamespaceAccess);
+            break;
+          }
+          case 32: {
+            InheritedAccess = input.ReadBool();
+            break;
+          }
+          case 42: {
+            ResourceVersion = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Id = input.ReadString();
+            break;
+          }
+          case 18: {
+            DisplayName = input.ReadString();
+            break;
+          }
+          case 26: {
+            if (namespaceAccess_ == null) {
+              NamespaceAccess = new global::Temporalio.Api.Cloud.Identity.V1.NamespaceAccess();
+            }
+            input.ReadMessage(NamespaceAccess);
+            break;
+          }
+          case 32: {
+            InheritedAccess = input.ReadBool();
+            break;
+          }
+          case 42: {
+            ResourceVersion = input.ReadString();
             break;
           }
         }

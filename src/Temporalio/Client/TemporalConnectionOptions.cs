@@ -76,6 +76,15 @@ namespace Temporalio.Client
         public DnsLoadBalancingOptions? DnsLoadBalancing { get; set; }
 
         /// <summary>
+        /// Gets or sets the transport-level gRPC compression for this connection.
+        /// </summary>
+        /// <remarks>
+        /// Defaults to <see cref="GrpcCompression.Gzip"/>, which compresses outbound requests and
+        /// accepts compressed responses. Set to <see cref="GrpcCompression.None"/> to opt out.
+        /// </remarks>
+        public GrpcCompression GrpcCompression { get; set; } = new GrpcCompression.Gzip();
+
+        /// <summary>
         /// Gets or sets the gRPC metadata for all calls (i.e. the headers).
         /// </summary>
         /// <remarks>
