@@ -289,7 +289,8 @@ namespace Temporalio.Bridge
                         Interop.TemporalCoreClientGrpcCompression.TemporalCoreClientGrpcCompression_Gzip,
                     Temporalio.Client.GrpcCompression.None =>
                         Interop.TemporalCoreClientGrpcCompression.TemporalCoreClientGrpcCompression_None,
-                    _ => throw new ArgumentOutOfRangeException(nameof(options)),
+                    _ => throw new ArgumentException(
+                        $"Unsupported gRPC compression: {options.GrpcCompression.GetType()}"),
                 },
             };
         }

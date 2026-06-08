@@ -82,7 +82,7 @@ namespace Temporalio.Client
         /// Defaults to <see cref="GrpcCompression.Gzip"/>, which compresses outbound requests and
         /// accepts compressed responses. Set to <see cref="GrpcCompression.None"/> to opt out.
         /// </remarks>
-        public GrpcCompression GrpcCompression { get; set; } = GrpcCompression.Gzip;
+        public GrpcCompression GrpcCompression { get; set; } = new GrpcCompression.Gzip();
 
         /// <summary>
         /// Gets or sets the gRPC metadata for all calls (i.e. the headers).

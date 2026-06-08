@@ -249,12 +249,29 @@ public unsafe class TemporalConnectionOptionsTests
     }
 
     [Fact]
+    public void ToInteropOptions_GrpcCompression_Gzip()
+    {
+        var options = new TemporalConnectionOptions("localhost:7233")
+        {
+            Identity = "test-identity",
+            GrpcCompression = new GrpcCompression.Gzip(),
+        };
+
+        using var scope = new Scope();
+        var interopOptions = options.ToInteropOptions(scope);
+
+        Assert.Equal(
+            Bridge.Interop.TemporalCoreClientGrpcCompression.TemporalCoreClientGrpcCompression_Gzip,
+            interopOptions.grpc_compression);
+    }
+
+    [Fact]
     public void ToInteropOptions_GrpcCompression_None()
     {
         var options = new TemporalConnectionOptions("localhost:7233")
         {
             Identity = "test-identity",
-            GrpcCompression = GrpcCompression.None,
+            GrpcCompression = new GrpcCompression.None(),
         };
 
         using var scope = new Scope();
