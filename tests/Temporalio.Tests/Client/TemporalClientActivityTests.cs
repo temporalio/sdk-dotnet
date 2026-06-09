@@ -362,7 +362,7 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
 
                 var thirdPage = await Client.ListActivitiesPaginatedAsync(
                     $"TaskQueue = '{taskQueue}'", secondPage.NextPageToken, options);
-                Assert.Equal(1, thirdPage.Activities.Count);
+                Assert.Single(thirdPage.Activities);
                 Assert.Null(thirdPage.NextPageToken);
             });
         });

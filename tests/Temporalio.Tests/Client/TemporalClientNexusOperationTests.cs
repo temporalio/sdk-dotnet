@@ -374,7 +374,7 @@ public class TemporalClientNexusOperationTests : WorkflowEnvironmentTestBase
 
                     var thirdPage = await Client.ListNexusOperationsPaginatedAsync(
                         $"Endpoint = '{endpointName}'", secondPage.NextPageToken, options);
-                    Assert.Equal(1, thirdPage.Operations.Count);
+                    Assert.Single(thirdPage.Operations);
                     Assert.Null(thirdPage.NextPageToken);
                 });
             });
