@@ -1,0 +1,113 @@
+name: NuGet Publish
+
+# Reusable publish step: pushes the packed packages to a NuGet gallery using
+# Trusted Publishing (OIDC), then waits until every package is restorable from
+# that gallery.
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: >
+          GitHub environment to run the push under. Holds the Trusted Publishing
+          scoping and any manual-approval gate (required reviewers).
+        required: true
+        type: string
+      index-url:
+        description: >
+          V3 package source to push to. Its host is also polled (via
+          /v3-flatcontainer) to confirm the packages are restorable.
+        required: true
+        type: string
+      token-service-url:
+        description: "Trusted Publishing OIDC token-exchange endpoint for this gallery."
+        required: true
+        type: string
+      version:
+        description: "Version expected to appear in the gallery listing."
+        required: true
+        type: string
+      artifact-name:
+        description: "Run artifact containing the .nupkg/.snupkg files to publish."
+        required: false
+        type: string
+        default: nuget-package
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    permissions:
+      contents: read
+      id-token: write # Required for Trusted Publishing OIDC token issuance
+    steps:
+      - name: Download NuGet artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ${{ github.workspace }}/nuget-package
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
+        with:
+          dotnet-version: 10.x
+
+      # Request the short-lived (~1h, single-use) API key immediately before the
+      # push so it cannot expire in transit.
+      - name: NuGet login
+        id: login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1
+        with:
+          user: Temporal
+          token-service-url: ${{ inputs.token-service-url }}
+
+      - name: Push packages
+        run: |
+          dotnet nuget push "$GITHUB_WORKSPACE/nuget-package/**/*.nupkg" \
+            --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" \
+            --source "${{ inputs.index-url }}" \
+            --skip-duplicate
+
+  wait:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Wait for packages to be available
+        env:
+          VERSION: ${{ inputs.version }}
+          INDEX_URL: ${{ inputs.index-url }}
+        run: |
+          set -euo pipefail
+          # Flat-container is served from the same host as the V3 index.
+          host="${INDEX_URL#https://}"
+          host="${host%%/*}"
+          remaining="temporalio temporalio.extensions.diagnosticsource temporalio.extensions.hosting temporalio.extensions.opentelemetry"
+          deadline=$(( $(date +%s) + 1800 )) # 30 minutes
+          while true; do
+            pending=""
+            for pkg in $remaining; do
+              if curl -fsSL "https://$host/v3-flatcontainer/$pkg/index.json" 2>/dev/null \
+                   | jq -e --arg v "$VERSION" '.versions | index($v)' >/dev/null; then
+                echo "  $pkg $VERSION is available on $host"
+              else
+                pending="$pending $pkg"
+              fi
+            done
+            remaining="${pending# }"
+            [ -z "$remaining" ] && break
+            if [ "$(date +%s)" -ge "$deadline" ]; then
+              echo "Timed out on $host; still not available:" >&2
+              printf '  - %s\n' $remaining >&2
+              exit 1
+            fi
+            echo "Pending on $host:"
+            printf '  - %s\n' $remaining
+            echo "Waiting for 15s..."
+            sleep 15
+          done
+          echo "All packages $VERSION available on $host"
