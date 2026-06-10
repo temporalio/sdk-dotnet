@@ -542,6 +542,186 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task ExecuteNexusOperationAsync_HandlerSignal_ForwardsInboundLinks()
+    {
+        // A target workflow that the handler will signal from inside the operation. The signal it
+        // issues must carry the inbound Nexus task links so the WorkflowExecutionSignaled event on
+        // the target links back to the caller workflow.
+        var targetTaskQueue = $"tq-target-{Guid.NewGuid()}";
+        var targetWorkflowId = $"wf-target-{Guid.NewGuid()}";
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (ctx, name) =>
+                {
+                    await NexusOperationExecutionContext.Current.TemporalClient.
+                        GetWorkflowHandle<WaitForSignalWorkflow>(targetWorkflowId).
+                        SignalAsync(wf => wf.SignalAsync());
+                    return $"signaled {name}";
+                })));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        // Run the target workflow on its own worker/task queue so the handler can signal it.
+        using var targetWorker = new TemporalWorker(
+            Client, new TemporalWorkerOptions(targetTaskQueue).
+                AddWorkflow<WaitForSignalWorkflow>());
+        await targetWorker.ExecuteAsync(async () =>
+        {
+            var targetHandle = await Client.StartWorkflowAsync(
+                (WaitForSignalWorkflow wf) => wf.RunAsync("target"),
+                new(targetWorkflowId, targetTaskQueue));
+
+            var callerHandle = await RunInWorkflowAsync(workerOptions, async () =>
+            {
+                var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+                Assert.Equal("signaled some-name", result);
+            });
+
+            // The target workflow's signal event should carry a link pointing back at the caller.
+            var signalEvent = Assert.Single(
+                (await targetHandle.FetchHistoryAsync()).Events,
+                evt => evt.WorkflowExecutionSignaledEventAttributes != null);
+            var link = Assert.Single(signalEvent.Links);
+            Assert.Equal(callerHandle.Id, link.WorkflowEvent.WorkflowId);
+            Assert.Equal(
+                Api.Enums.V1.EventType.NexusOperationScheduled,
+                link.WorkflowEvent.EventRef.EventType);
+        });
+    }
+
+    [SkippableFact]
+    public async Task ExecuteNexusOperationAsync_HandlerSignal_PropagatesBacklink()
+    {
+        // The backward direction is gated by the server's history.enableCHASMSignalBacklinks dynamic
+        // config (which requires history.enableChasm); older servers leave the response link unset.
+        // Run against such a server with ENABLE_SIGNAL_BACKLINK_TESTS=1 to exercise this end to end.
+        Skip.IfNot(
+            Environment.GetEnvironmentVariable("ENABLE_SIGNAL_BACKLINK_TESTS") == "1",
+            "Set ENABLE_SIGNAL_BACKLINK_TESTS=1 and run against a server with " +
+                "history.enableCHASMSignalBacklinks=true");
+
+        // A target workflow the handler signals from inside the operation. The server returns a
+        // backlink on the signal response pointing at the target's WorkflowExecutionSignaled event;
+        // the SDK must propagate it onto the caller's NexusOperationCompleted event.
+        var targetTaskQueue = $"tq-target-{Guid.NewGuid()}";
+        var targetWorkflowId = $"wf-target-{Guid.NewGuid()}";
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (ctx, name) =>
+                {
+                    await NexusOperationExecutionContext.Current.TemporalClient.
+                        GetWorkflowHandle<WaitForSignalWorkflow>(targetWorkflowId).
+                        SignalAsync(wf => wf.SignalAsync());
+                    return $"signaled {name}";
+                })));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        using var targetWorker = new TemporalWorker(
+            Client, new TemporalWorkerOptions(targetTaskQueue).
+                AddWorkflow<WaitForSignalWorkflow>());
+        await targetWorker.ExecuteAsync(async () =>
+        {
+            await Client.StartWorkflowAsync(
+                (WaitForSignalWorkflow wf) => wf.RunAsync("target"),
+                new(targetWorkflowId, targetTaskQueue));
+
+            var callerHandle = await RunInWorkflowAsync(workerOptions, async () =>
+            {
+                var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+                Assert.Equal("signaled some-name", result);
+            });
+
+            // The caller's NexusOperationCompleted event should carry a backlink pointing at the
+            // target's WorkflowExecutionSignaled event.
+            var completedEvent = Assert.Single(
+                (await callerHandle.FetchHistoryAsync()).Events,
+                evt => evt.NexusOperationCompletedEventAttributes != null);
+            var backlink = Assert.Single(completedEvent.Links);
+            Assert.Equal(targetWorkflowId, backlink.WorkflowEvent.WorkflowId);
+            // Server PR temporalio/temporal#9897 keys these backlinks via RequestIdReference rather
+            // than EventReference, so accept either oneof variant (matches the Java/Go/Python tests).
+            var backlinkEventType = backlink.WorkflowEvent.RequestIdRef != null
+                ? backlink.WorkflowEvent.RequestIdRef.EventType
+                : backlink.WorkflowEvent.EventRef.EventType;
+            Assert.Equal(Api.Enums.V1.EventType.WorkflowExecutionSignaled, backlinkEventType);
+        });
+    }
+
+    [SkippableFact]
+    public async Task ExecuteNexusOperationAsync_HandlerSignalsMultiple_PropagatesAllBacklinks()
+    {
+        // Integration-level counterpart to the unit-level accumulation tests: a single operation
+        // handler signals several workflows and the server returns one backlink per signal, all of
+        // which must land on the caller's single NexusOperationCompleted event (mirrors the
+        // Java/Go/TypeScript multi-callee tests).
+        Skip.IfNot(
+            Environment.GetEnvironmentVariable("ENABLE_SIGNAL_BACKLINK_TESTS") == "1",
+            "Set ENABLE_SIGNAL_BACKLINK_TESTS=1 and run against a server with " +
+                "history.enableCHASMSignalBacklinks=true");
+
+        var targetTaskQueue = $"tq-target-{Guid.NewGuid()}";
+        var targetWorkflowIds = new List<string>
+        {
+            $"wf-target-a-{Guid.NewGuid()}",
+            $"wf-target-b-{Guid.NewGuid()}",
+            $"wf-target-c-{Guid.NewGuid()}",
+        };
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (ctx, name) =>
+                {
+                    foreach (var targetWorkflowId in targetWorkflowIds)
+                    {
+                        await NexusOperationExecutionContext.Current.TemporalClient.
+                            GetWorkflowHandle<WaitForSignalWorkflow>(targetWorkflowId).
+                            SignalAsync(wf => wf.SignalAsync());
+                    }
+                    return $"signaled {name}";
+                })));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        using var targetWorker = new TemporalWorker(
+            Client, new TemporalWorkerOptions(targetTaskQueue).
+                AddWorkflow<WaitForSignalWorkflow>());
+        await targetWorker.ExecuteAsync(async () =>
+        {
+            foreach (var targetWorkflowId in targetWorkflowIds)
+            {
+                await Client.StartWorkflowAsync(
+                    (WaitForSignalWorkflow wf) => wf.RunAsync("target"),
+                    new(targetWorkflowId, targetTaskQueue));
+            }
+
+            var callerHandle = await RunInWorkflowAsync(workerOptions, async () =>
+            {
+                var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+                Assert.Equal("signaled some-name", result);
+            });
+
+            // The caller's NexusOperationCompleted event should carry one backlink per signalled
+            // target, each pointing at that target's WorkflowExecutionSignaled event.
+            var completedEvent = Assert.Single(
+                (await callerHandle.FetchHistoryAsync()).Events,
+                evt => evt.NexusOperationCompletedEventAttributes != null);
+            Assert.Equal(targetWorkflowIds.Count, completedEvent.Links.Count);
+            var linkedWorkflowIds = new HashSet<string>();
+            foreach (var backlink in completedEvent.Links)
+            {
+                linkedWorkflowIds.Add(backlink.WorkflowEvent.WorkflowId);
+                // Server PR temporalio/temporal#9897 keys these backlinks via RequestIdReference
+                // rather than EventReference, so accept either oneof variant.
+                var backlinkEventType = backlink.WorkflowEvent.RequestIdRef != null
+                    ? backlink.WorkflowEvent.RequestIdRef.EventType
+                    : backlink.WorkflowEvent.EventRef.EventType;
+                Assert.Equal(Api.Enums.V1.EventType.WorkflowExecutionSignaled, backlinkEventType);
+            }
+            Assert.Equal(new HashSet<string>(targetWorkflowIds), linkedWorkflowIds);
+        });
+    }
+
+    [Fact]
     public async Task ExecuteNexusOperationAsync_BadArgs_FailsOperation()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").

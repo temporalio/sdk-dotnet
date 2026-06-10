@@ -199,14 +199,46 @@ namespace Temporalio.Worker
             running.OnCancelReason = reason => context.CancellationReason = reason;
 
             // Start operation
-            NexusOperationExecutionContext.AsyncLocalCurrent.Value = NewExecutionContext(context, endpoint);
+            var executionContext = NewExecutionContext(context, endpoint);
+            NexusOperationExecutionContext.AsyncLocalCurrent.Value = executionContext;
+            // Stash the inbound links in common.v1.Link form on the operation context so the RPCs
+            // the handler issues (e.g. signal, signalWithStart, start) can attach them to their
+            // request's links field. ToWorkflowEvent only succeeds for WorkflowEvent-shaped links;
+            // links of other shapes (e.g. non-temporal URLs) are intentionally dropped because the
+            // RPCs the handler issues require the WorkflowEvent variant. Log so a debugging session
+            // can see what was dropped.
+            executionContext.NexusOperationLinks = context.InboundLinks.Select(link =>
+            {
+                try
+                {
+                    return new Api.Common.V1.Link { WorkflowEvent = link.ToWorkflowEvent() };
+                }
+                catch (ArgumentException e)
+                {
+                    logger.LogWarning(
+                        e,
+                        "Dropping inbound Nexus link from outbound link propagation: type='{Type}', url='{Url}' (not a parseable temporal WorkflowEvent link)",
+                        link.Type,
+                        link.Uri);
+                    return null;
+                }
+            }).OfType<Api.Common.V1.Link>().ToList();
             try
             {
                 var result = await handler.StartOperationAsync(
                     context,
                     new HandlerContent(startOp.Payload.ToByteArray())).ConfigureAwait(false);
+                // Drain any backlinks captured from outbound RPCs the handler issued (e.g. signal,
+                // signalWithStart, start) and attach them to both the sync and async response so the
+                // caller workflow's history event links to each event on the callee.
+                var backlinks = executionContext.ResponseBacklinks
+                    .Where(l => l.VariantCase == Api.Common.V1.Link.VariantOneofCase.WorkflowEvent)
+                    .Select(l => l.WorkflowEvent.ToNexusLink())
+                    .Select(l => new Api.Nexus.V1.Link() { Type = l.Type, Url = l.Uri.ToString(), })
+                    .ToList();
                 var links = context.OutboundLinks.Select(l =>
-                    new Api.Nexus.V1.Link() { Type = l.Type, Url = l.Uri.ToString(), });
+                    new Api.Nexus.V1.Link() { Type = l.Type, Url = l.Uri.ToString(), })
+                    .Concat(backlinks);
                 if (result.AsyncOperationToken is { } asyncOperationToken)
                 {
                     return new()
