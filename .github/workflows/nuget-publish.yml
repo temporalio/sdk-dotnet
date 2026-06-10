@@ -65,10 +65,13 @@ jobs:
           token-service-url: ${{ inputs.token-service-url }}
 
       - name: Push packages
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+          INDEX_URL: ${{ inputs.index-url }}
         run: |
           dotnet nuget push "$GITHUB_WORKSPACE/nuget-package/**/*.nupkg" \
-            --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" \
-            --source "${{ inputs.index-url }}" \
+            --api-key "$NUGET_API_KEY" \
+            --source "$INDEX_URL" \
             --skip-duplicate
 
   wait:
