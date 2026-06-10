@@ -14,6 +14,7 @@ using Temporalio.Client.Interceptors;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
+using Temporalio.Nexus;
 
 #if NETCOREAPP3_0_OR_GREATER
 using System.Runtime.CompilerServices;
@@ -367,8 +368,22 @@ namespace Temporalio.Client
                         }
                     }
                 }
-                await Client.Connection.WorkflowService.SignalWorkflowExecutionAsync(
+                // If this signal is being issued from inside a Nexus operation handler, forward the
+                // inbound Nexus task links so the SignalWorkflowExecution history event links back
+                // to the caller.
+                var inNexusContext = NexusOperationExecutionContext.HasCurrent;
+                if (inNexusContext)
+                {
+                    req.Links.AddRange(NexusOperationExecutionContext.Current.NexusOperationLinks);
+                }
+                var resp = await Client.Connection.WorkflowService.SignalWorkflowExecutionAsync(
                     req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
+                // Server >=1.31 with EnableCHASMSignalBacklinks returns a backlink pointing at the
+                // signal event; older servers leave it unset. Propagate when present.
+                if (inNexusContext && resp.Link != null)
+                {
+                    NexusOperationExecutionContext.Current.AddBacklink(resp.Link);
+                }
             }
 
             /// <inheritdoc />
@@ -739,6 +754,35 @@ namespace Temporalio.Client
                     }
                     var resp = await Client.Connection.WorkflowService.StartWorkflowExecutionAsync(
                         req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
+                    if (NexusOperationExecutionContext.HasCurrent)
+                    {
+                        // Auto-capture the start-workflow backlink so the task handler drains it onto
+                        // the StartOperationResponse, the same path used for signal/signalWithStart
+                        // responses.
+                        if (resp.Link != null)
+                        {
+                            NexusOperationExecutionContext.Current.AddBacklink(resp.Link);
+                        }
+                        else
+                        {
+                            // Older servers (pre-1.31) don't return a link on the start response.
+                            // Fabricate one pointing at the started workflow's
+                            // WorkflowExecutionStarted event so the caller still gets a backlink.
+                            NexusOperationExecutionContext.Current.AddBacklink(new Api.Common.V1.Link
+                            {
+                                WorkflowEvent = new()
+                                {
+                                    Namespace = Client.Options.Namespace,
+                                    WorkflowId = req.WorkflowId,
+                                    RunId = resp.RunId,
+                                    EventRef = new()
+                                    {
+                                        EventType = Api.Enums.V1.EventType.WorkflowExecutionStarted,
+                                    },
+                                },
+                            });
+                        }
+                    }
                     return new WorkflowHandle<TWorkflow, TResult>(
                         Client: Client,
                         Id: req.WorkflowId,
@@ -779,8 +823,22 @@ namespace Temporalio.Client
                     signalReq.SignalInput.Payloads_.AddRange(
                         await dataConverter.ToPayloadsAsync(input.Options.StartSignalArgs).ConfigureAwait(false));
                 }
+                // If this signalWithStart is being issued from inside a Nexus operation handler,
+                // forward the inbound Nexus task links so both the WorkflowExecutionStarted and
+                // WorkflowExecutionSignaled events on the callee link back to the caller.
+                var inNexusContext = NexusOperationExecutionContext.HasCurrent;
+                if (inNexusContext)
+                {
+                    signalReq.Links.AddRange(NexusOperationExecutionContext.Current.NexusOperationLinks);
+                }
                 var signalResp = await Client.Connection.WorkflowService.SignalWithStartWorkflowExecutionAsync(
                     signalReq, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
+                // Server >=1.31 with EnableCHASMSignalBacklinks returns a backlink pointing at the
+                // signal event; older servers leave it unset. Propagate when present.
+                if (inNexusContext && signalResp.SignalLink != null)
+                {
+                    NexusOperationExecutionContext.Current.AddBacklink(signalResp.SignalLink);
+                }
                 // Notice we do _not_ set first execution run ID for signal with start
                 return new WorkflowHandle<TWorkflow, TResult>(
                     Client: Client,
