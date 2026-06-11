@@ -24,7 +24,7 @@ namespace Temporalio.Bridge
 
             try
             {
-                var envVarsRef = options.OverrideEnvVars?.Count > 0
+                var envVarsRef = options.OverrideEnvVars != null
                     ? scope.ByteArray(JsonSerializer.Serialize(options.OverrideEnvVars))
                     : ByteArrayRef.Empty.Ref;
 
@@ -60,7 +60,7 @@ namespace Temporalio.Bridge
 
             try
             {
-                var envVarsRef = options.OverrideEnvVars?.Count > 0
+                var envVarsRef = options.OverrideEnvVars != null
                     ? scope.ByteArray(JsonSerializer.Serialize(options.OverrideEnvVars))
                     : ByteArrayRef.Empty.Ref;
 
