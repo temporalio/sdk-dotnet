@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using NexusRpc.Handlers;
@@ -24,10 +25,10 @@ namespace Temporalio.Nexus
         // the StartOperationResponse so each RPC the handler issued gets a corresponding link on the
         // caller workflow's history event.
         //
-        // This context is only safe for use from the single thread that runs the operation handler
-        // (the Nexus task executor's thread); the backing list is not synchronized. Handlers must
-        // not mutate it from other threads.
+        // Access is synchronized via backlinksLock: AddBacklink appends under the lock and the
+        // ResponseBacklinks getter returns a copy under the lock.
         private readonly List<Api.Common.V1.Link> responseBacklinks = new();
+        private readonly object backlinksLock = new();
 
         // Links extracted from the inbound Nexus task. Stored once at the task-handler boundary so
         // the workflow client can attach them to the outgoing requests it issues (e.g. signal,
@@ -130,7 +131,16 @@ namespace Temporalio.Nexus
         /// accumulated while the operation handler runs and are drained afterward by the task
         /// handler when building the StartOperationResponse.
         /// </summary>
-        internal IReadOnlyList<Api.Common.V1.Link> ResponseBacklinks => responseBacklinks;
+        internal IReadOnlyList<Api.Common.V1.Link> ResponseBacklinks
+        {
+            get
+            {
+                lock (backlinksLock)
+                {
+                    return responseBacklinks.ToList();
+                }
+            }
+        }
 
         /// <summary>
         /// Append a backlink returned by an outbound RPC the operation handler issued (e.g. signal,
@@ -143,7 +153,10 @@ namespace Temporalio.Nexus
             if (link != null &&
                 link.VariantCase == Api.Common.V1.Link.VariantOneofCase.WorkflowEvent)
             {
-                responseBacklinks.Add(link);
+                lock (backlinksLock)
+                {
+                    responseBacklinks.Add(link);
+                }
             }
         }
     }
