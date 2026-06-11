@@ -46,7 +46,7 @@ namespace Temporalio.Api.Activity.V1 {
             "EWhlYXJ0YmVhdF90aW1lb3V0GAUgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1",
             "cmF0aW9uEjkKDHJldHJ5X3BvbGljeRgGIAEoCzIjLnRlbXBvcmFsLmFwaS5j",
             "b21tb24udjEuUmV0cnlQb2xpY3kSMgoIcHJpb3JpdHkYByABKAsyIC50ZW1w",
-            "b3JhbC5hcGkuY29tbW9uLnYxLlByaW9yaXR5ItINChVBY3Rpdml0eUV4ZWN1",
+            "b3JhbC5hcGkuY29tbW9uLnYxLlByaW9yaXR5IoIOChVBY3Rpdml0eUV4ZWN1",
             "dGlvbkluZm8SEwoLYWN0aXZpdHlfaWQYASABKAkSDgoGcnVuX2lkGAIgASgJ",
             "EjsKDWFjdGl2aXR5X3R5cGUYAyABKAsyJC50ZW1wb3JhbC5hcGkuY29tbW9u",
             "LnYxLkFjdGl2aXR5VHlwZRI+CgZzdGF0dXMYBCABKA4yLi50ZW1wb3JhbC5h",
@@ -85,33 +85,34 @@ namespace Temporalio.Api.Activity.V1 {
             "LnYxLlVzZXJNZXRhZGF0YRIXCg9jYW5jZWxlZF9yZWFzb24YICABKAkSKwoF",
             "bGlua3MYISADKAsyHC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkxpbmsSHQoV",
             "dG90YWxfaGVhcnRiZWF0X2NvdW50GCIgASgDEhAKCHNka19uYW1lGCMgASgJ",
-            "EhMKC3Nka192ZXJzaW9uGCQgASgJIuoDChlBY3Rpdml0eUV4ZWN1dGlvbkxp",
-            "c3RJbmZvEhMKC2FjdGl2aXR5X2lkGAEgASgJEg4KBnJ1bl9pZBgCIAEoCRI7",
-            "Cg1hY3Rpdml0eV90eXBlGAMgASgLMiQudGVtcG9yYWwuYXBpLmNvbW1vbi52",
-            "MS5BY3Rpdml0eVR5cGUSMQoNc2NoZWR1bGVfdGltZRgEIAEoCzIaLmdvb2ds",
-            "ZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY2xvc2VfdGltZRgFIAEoCzIaLmdv",
-            "b2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASPgoGc3RhdHVzGAYgASgOMi4udGVt",
-            "cG9yYWwuYXBpLmVudW1zLnYxLkFjdGl2aXR5RXhlY3V0aW9uU3RhdHVzEkMK",
-            "EXNlYXJjaF9hdHRyaWJ1dGVzGAcgASgLMigudGVtcG9yYWwuYXBpLmNvbW1v",
-            "bi52MS5TZWFyY2hBdHRyaWJ1dGVzEhIKCnRhc2tfcXVldWUYCCABKAkSHgoW",
-            "c3RhdGVfdHJhbnNpdGlvbl9jb3VudBgJIAEoAxIYChBzdGF0ZV9zaXplX2J5",
-            "dGVzGAogASgDEjUKEmV4ZWN1dGlvbl9kdXJhdGlvbhgLIAEoCzIZLmdvb2ds",
-            "ZS5wcm90b2J1Zi5EdXJhdGlvbiL/AQoMQ2FsbGJhY2tJbmZvEj8KB3RyaWdn",
-            "ZXIYASABKAsyLi50ZW1wb3JhbC5hcGkuYWN0aXZpdHkudjEuQ2FsbGJhY2tJ",
-            "bmZvLlRyaWdnZXISNAoEaW5mbxgCIAEoCzImLnRlbXBvcmFsLmFwaS5jYWxs",
-            "YmFjay52MS5DYWxsYmFja0luZm8aEAoOQWN0aXZpdHlDbG9zZWQaZgoHVHJp",
-            "Z2dlchJQCg9hY3Rpdml0eV9jbG9zZWQYASABKAsyNS50ZW1wb3JhbC5hcGku",
-            "YWN0aXZpdHkudjEuQ2FsbGJhY2tJbmZvLkFjdGl2aXR5Q2xvc2VkSABCCQoH",
-            "dmFyaWFudEKTAQobaW8udGVtcG9yYWwuYXBpLmFjdGl2aXR5LnYxQgxNZXNz",
-            "YWdlUHJvdG9QAVonZ28udGVtcG9yYWwuaW8vYXBpL2FjdGl2aXR5L3YxO2Fj",
-            "dGl2aXR5qgIaVGVtcG9yYWxpby5BcGkuQWN0aXZpdHkuVjHqAh1UZW1wb3Jh",
-            "bGlvOjpBcGk6OkFjdGl2aXR5OjpWMWIGcHJvdG8z"));
+            "EhMKC3Nka192ZXJzaW9uGCQgASgJEi4KC3N0YXJ0X2RlbGF5GCUgASgLMhku",
+            "Z29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uIuoDChlBY3Rpdml0eUV4ZWN1dGlv",
+            "bkxpc3RJbmZvEhMKC2FjdGl2aXR5X2lkGAEgASgJEg4KBnJ1bl9pZBgCIAEo",
+            "CRI7Cg1hY3Rpdml0eV90eXBlGAMgASgLMiQudGVtcG9yYWwuYXBpLmNvbW1v",
+            "bi52MS5BY3Rpdml0eVR5cGUSMQoNc2NoZWR1bGVfdGltZRgEIAEoCzIaLmdv",
+            "b2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY2xvc2VfdGltZRgFIAEoCzIa",
+            "Lmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASPgoGc3RhdHVzGAYgASgOMi4u",
+            "dGVtcG9yYWwuYXBpLmVudW1zLnYxLkFjdGl2aXR5RXhlY3V0aW9uU3RhdHVz",
+            "EkMKEXNlYXJjaF9hdHRyaWJ1dGVzGAcgASgLMigudGVtcG9yYWwuYXBpLmNv",
+            "bW1vbi52MS5TZWFyY2hBdHRyaWJ1dGVzEhIKCnRhc2tfcXVldWUYCCABKAkS",
+            "HgoWc3RhdGVfdHJhbnNpdGlvbl9jb3VudBgJIAEoAxIYChBzdGF0ZV9zaXpl",
+            "X2J5dGVzGAogASgDEjUKEmV4ZWN1dGlvbl9kdXJhdGlvbhgLIAEoCzIZLmdv",
+            "b2dsZS5wcm90b2J1Zi5EdXJhdGlvbiL/AQoMQ2FsbGJhY2tJbmZvEj8KB3Ry",
+            "aWdnZXIYASABKAsyLi50ZW1wb3JhbC5hcGkuYWN0aXZpdHkudjEuQ2FsbGJh",
+            "Y2tJbmZvLlRyaWdnZXISNAoEaW5mbxgCIAEoCzImLnRlbXBvcmFsLmFwaS5j",
+            "YWxsYmFjay52MS5DYWxsYmFja0luZm8aEAoOQWN0aXZpdHlDbG9zZWQaZgoH",
+            "VHJpZ2dlchJQCg9hY3Rpdml0eV9jbG9zZWQYASABKAsyNS50ZW1wb3JhbC5h",
+            "cGkuYWN0aXZpdHkudjEuQ2FsbGJhY2tJbmZvLkFjdGl2aXR5Q2xvc2VkSABC",
+            "CQoHdmFyaWFudEKTAQobaW8udGVtcG9yYWwuYXBpLmFjdGl2aXR5LnYxQgxN",
+            "ZXNzYWdlUHJvdG9QAVonZ28udGVtcG9yYWwuaW8vYXBpL2FjdGl2aXR5L3Yx",
+            "O2FjdGl2aXR5qgIaVGVtcG9yYWxpby5BcGkuQWN0aXZpdHkuVjHqAh1UZW1w",
+            "b3JhbGlvOjpBcGk6OkFjdGl2aXR5OjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.ActivityReflection.Descriptor, global::Temporalio.Api.Callback.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor, global::Temporalio.Api.Sdk.V1.UserMetadataReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.ActivityExecutionOutcome), global::Temporalio.Api.Activity.V1.ActivityExecutionOutcome.Parser, new[]{ "Result", "Failure" }, new[]{ "Value" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.ActivityOptions), global::Temporalio.Api.Activity.V1.ActivityOptions.Parser, new[]{ "TaskQueue", "ScheduleToCloseTimeout", "ScheduleToStartTimeout", "StartToCloseTimeout", "HeartbeatTimeout", "RetryPolicy", "Priority" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.ActivityExecutionInfo), global::Temporalio.Api.Activity.V1.ActivityExecutionInfo.Parser, new[]{ "ActivityId", "RunId", "ActivityType", "Status", "RunState", "TaskQueue", "ScheduleToCloseTimeout", "ScheduleToStartTimeout", "StartToCloseTimeout", "HeartbeatTimeout", "RetryPolicy", "HeartbeatDetails", "LastHeartbeatTime", "LastStartedTime", "Attempt", "ExecutionDuration", "ScheduleTime", "ExpirationTime", "CloseTime", "LastFailure", "LastWorkerIdentity", "CurrentRetryInterval", "LastAttemptCompleteTime", "NextAttemptScheduleTime", "LastDeploymentVersion", "Priority", "StateTransitionCount", "StateSizeBytes", "SearchAttributes", "Header", "UserMetadata", "CanceledReason", "Links", "TotalHeartbeatCount", "SdkName", "SdkVersion" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.ActivityExecutionInfo), global::Temporalio.Api.Activity.V1.ActivityExecutionInfo.Parser, new[]{ "ActivityId", "RunId", "ActivityType", "Status", "RunState", "TaskQueue", "ScheduleToCloseTimeout", "ScheduleToStartTimeout", "StartToCloseTimeout", "HeartbeatTimeout", "RetryPolicy", "HeartbeatDetails", "LastHeartbeatTime", "LastStartedTime", "Attempt", "ExecutionDuration", "ScheduleTime", "ExpirationTime", "CloseTime", "LastFailure", "LastWorkerIdentity", "CurrentRetryInterval", "LastAttemptCompleteTime", "NextAttemptScheduleTime", "LastDeploymentVersion", "Priority", "StateTransitionCount", "StateSizeBytes", "SearchAttributes", "Header", "UserMetadata", "CanceledReason", "Links", "TotalHeartbeatCount", "SdkName", "SdkVersion", "StartDelay" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.ActivityExecutionListInfo), global::Temporalio.Api.Activity.V1.ActivityExecutionListInfo.Parser, new[]{ "ActivityId", "RunId", "ActivityType", "ScheduleTime", "CloseTime", "Status", "SearchAttributes", "TaskQueue", "StateTransitionCount", "StateSizeBytes", "ExecutionDuration" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.CallbackInfo), global::Temporalio.Api.Activity.V1.CallbackInfo.Parser, new[]{ "Trigger", "Info" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.CallbackInfo.Types.ActivityClosed), global::Temporalio.Api.Activity.V1.CallbackInfo.Types.ActivityClosed.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.CallbackInfo.Types.Trigger), global::Temporalio.Api.Activity.V1.CallbackInfo.Types.Trigger.Parser, new[]{ "ActivityClosed" }, new[]{ "Variant" }, null, null, null)})
@@ -996,6 +997,7 @@ namespace Temporalio.Api.Activity.V1 {
       totalHeartbeatCount_ = other.totalHeartbeatCount_;
       sdkName_ = other.sdkName_;
       sdkVersion_ = other.sdkVersion_;
+      startDelay_ = other.startDelay_ != null ? other.startDelay_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1182,6 +1184,7 @@ namespace Temporalio.Api.Activity.V1 {
     private global::Temporalio.Api.Common.V1.Payloads heartbeatDetails_;
     /// <summary>
     /// Details provided in the last recorded activity heartbeat.
+    /// DescribeActivityExecution does not set this field unless include_heartbeat_details was true in the request.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1302,6 +1305,7 @@ namespace Temporalio.Api.Activity.V1 {
     private global::Temporalio.Api.Failure.V1.Failure lastFailure_;
     /// <summary>
     /// Failure details from the last failed attempt.
+    /// DescribeActivityExecution does not set this field unless include_last_failure was true in the request.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1551,6 +1555,21 @@ namespace Temporalio.Api.Activity.V1 {
       }
     }
 
+    /// <summary>Field number for the "start_delay" field.</summary>
+    public const int StartDelayFieldNumber = 37;
+    private global::Google.Protobuf.WellKnownTypes.Duration startDelay_;
+    /// <summary>
+    /// Time to wait before dispatching the first activity task. This delay is not applied to retry attempts.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Duration StartDelay {
+      get { return startDelay_; }
+      set {
+        startDelay_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1602,6 +1621,7 @@ namespace Temporalio.Api.Activity.V1 {
       if (TotalHeartbeatCount != other.TotalHeartbeatCount) return false;
       if (SdkName != other.SdkName) return false;
       if (SdkVersion != other.SdkVersion) return false;
+      if (!object.Equals(StartDelay, other.StartDelay)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1645,6 +1665,7 @@ namespace Temporalio.Api.Activity.V1 {
       if (TotalHeartbeatCount != 0L) hash ^= TotalHeartbeatCount.GetHashCode();
       if (SdkName.Length != 0) hash ^= SdkName.GetHashCode();
       if (SdkVersion.Length != 0) hash ^= SdkVersion.GetHashCode();
+      if (startDelay_ != null) hash ^= StartDelay.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1804,6 +1825,10 @@ namespace Temporalio.Api.Activity.V1 {
         output.WriteRawTag(162, 2);
         output.WriteString(SdkVersion);
       }
+      if (startDelay_ != null) {
+        output.WriteRawTag(170, 2);
+        output.WriteMessage(StartDelay);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1955,6 +1980,10 @@ namespace Temporalio.Api.Activity.V1 {
         output.WriteRawTag(162, 2);
         output.WriteString(SdkVersion);
       }
+      if (startDelay_ != null) {
+        output.WriteRawTag(170, 2);
+        output.WriteMessage(StartDelay);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2070,6 +2099,9 @@ namespace Temporalio.Api.Activity.V1 {
       }
       if (SdkVersion.Length != 0) {
         size += 2 + pb::CodedOutputStream.ComputeStringSize(SdkVersion);
+      }
+      if (startDelay_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(StartDelay);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2254,6 +2286,12 @@ namespace Temporalio.Api.Activity.V1 {
       }
       if (other.SdkVersion.Length != 0) {
         SdkVersion = other.SdkVersion;
+      }
+      if (other.startDelay_ != null) {
+        if (startDelay_ == null) {
+          StartDelay = new global::Google.Protobuf.WellKnownTypes.Duration();
+        }
+        StartDelay.MergeFrom(other.StartDelay);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -2480,6 +2518,13 @@ namespace Temporalio.Api.Activity.V1 {
             SdkVersion = input.ReadString();
             break;
           }
+          case 298: {
+            if (startDelay_ == null) {
+              StartDelay = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(StartDelay);
+            break;
+          }
         }
       }
     #endif
@@ -2703,6 +2748,13 @@ namespace Temporalio.Api.Activity.V1 {
           }
           case 290: {
             SdkVersion = input.ReadString();
+            break;
+          }
+          case 298: {
+            if (startDelay_ == null) {
+              StartDelay = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(StartDelay);
             break;
           }
         }
