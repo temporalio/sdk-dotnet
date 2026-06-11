@@ -752,37 +752,15 @@ namespace Temporalio.Client
                     {
                         throw new ArgumentException("Cannot have start signal args without start signal");
                     }
-                    var resp = await Client.Connection.WorkflowService.StartWorkflowExecutionAsync(
-                        req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
+                    // If this start is being issued from inside a Nexus operation handler, forward
+                    // the inbound Nexus task links so the callee's WorkflowExecutionStarted history
+                    // event links back to the caller. A plain start does not produce a backlink.
                     if (NexusOperationExecutionContext.HasCurrent)
                     {
-                        // Auto-capture the start-workflow backlink so the task handler drains it onto
-                        // the StartOperationResponse, the same path used for signal/signalWithStart
-                        // responses.
-                        if (resp.Link != null)
-                        {
-                            NexusOperationExecutionContext.Current.AddBacklink(resp.Link);
-                        }
-                        else
-                        {
-                            // Older servers (pre-1.31) don't return a link on the start response.
-                            // Fabricate one pointing at the started workflow's
-                            // WorkflowExecutionStarted event so the caller still gets a backlink.
-                            NexusOperationExecutionContext.Current.AddBacklink(new Api.Common.V1.Link
-                            {
-                                WorkflowEvent = new()
-                                {
-                                    Namespace = Client.Options.Namespace,
-                                    WorkflowId = req.WorkflowId,
-                                    RunId = resp.RunId,
-                                    EventRef = new()
-                                    {
-                                        EventType = Api.Enums.V1.EventType.WorkflowExecutionStarted,
-                                    },
-                                },
-                            });
-                        }
+                        req.Links.AddRange(NexusOperationExecutionContext.Current.NexusOperationLinks);
                     }
+                    var resp = await Client.Connection.WorkflowService.StartWorkflowExecutionAsync(
+                        req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
                     return new WorkflowHandle<TWorkflow, TResult>(
                         Client: Client,
                         Id: req.WorkflowId,
