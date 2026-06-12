@@ -5,8 +5,8 @@ namespace Temporalio.Bridge.Interop
 {
     internal enum TemporalCoreClientGrpcCompression
     {
-        TemporalCoreClientGrpcCompression_Gzip = 0,
-        TemporalCoreClientGrpcCompression_None = 1,
+        Gzip = 0,
+        None = 1,
     }
 
     internal enum TemporalCoreRpcService
@@ -944,15 +944,19 @@ namespace Temporalio.Bridge.Interop
         internal partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
+            [NativeTypeName("TemporalCoreSlotInfo_TemporalCoreWorkflowSlotInfo_Body")]
             public TemporalCoreWorkflowSlotInfo_Body workflow_slot_info;
 
             [FieldOffset(0)]
+            [NativeTypeName("TemporalCoreSlotInfo_TemporalCoreActivitySlotInfo_Body")]
             public TemporalCoreActivitySlotInfo_Body activity_slot_info;
 
             [FieldOffset(0)]
+            [NativeTypeName("TemporalCoreSlotInfo_TemporalCoreLocalActivitySlotInfo_Body")]
             public TemporalCoreLocalActivitySlotInfo_Body local_activity_slot_info;
 
             [FieldOffset(0)]
+            [NativeTypeName("TemporalCoreSlotInfo_TemporalCoreNexusSlotInfo_Body")]
             public TemporalCoreNexusSlotInfo_Body nexus_slot_info;
         }
     }
