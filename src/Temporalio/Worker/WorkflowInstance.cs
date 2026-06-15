@@ -821,6 +821,13 @@ namespace Temporalio.Worker
         }
 
         /// <inheritdoc/>
+        public IWorkflowCodecHelperInstance.NexusOperationInfo? GetPendingNexusOperationInfo(uint seq)
+        {
+            nexusOperationsPending.TryGetValue(seq, out var pending);
+            return pending == null ? null : new(pending.Service, pending.Operation);
+        }
+
+        /// <inheritdoc/>
         protected override IEnumerable<Task>? GetScheduledTasks() => scheduledTasks;
 
         /// <inheritdoc/>
@@ -2578,13 +2585,20 @@ namespace Temporalio.Worker
                 var payloadConverter = instance.payloadConverterNoContext;
 
                 var seq = ++instance.nexusOperationCounter;
+                var inputPayload = SystemNexusPayloadVisitorRegistry.TryToInputPayload(
+                    input.Service,
+                    input.OperationName,
+                    input.Arg,
+                    out var systemNexusInputPayload) ?
+                    systemNexusInputPayload :
+                    payloadConverter.ToPayload(input.Arg);
                 var cmd = new ScheduleNexusOperation()
                 {
                     Seq = seq,
                     Endpoint = input.ClientOptions.Endpoint,
                     Service = input.Service,
                     Operation = input.OperationName,
-                    Input = payloadConverter.ToPayload(input.Arg),
+                    Input = inputPayload,
                     CancellationType = (Bridge.Api.Nexus.NexusOperationCancellationType)input.Options.CancellationType,
                 };
                 if (input.Options.ScheduleToCloseTimeout is TimeSpan schedToCloseTimeout)
@@ -2612,6 +2626,8 @@ namespace Temporalio.Worker
 
                 var handleSource = new TaskCompletionSource<NexusWorkflowOperationHandle<TResult>>();
                 var pending = new PendingNexusOperationInfo(
+                    Service: input.Service,
+                    Operation: input.OperationName,
                     StartCompletionSource: new(),
                     ResultCompletionSource: new());
                 instance.nexusOperationsPending[seq] = pending;
@@ -3074,6 +3090,8 @@ namespace Temporalio.Worker
             TaskCompletionSource<ResolveRequestCancelExternalWorkflow> CompletionSource);
 
         private record PendingNexusOperationInfo(
+            string Service,
+            string Operation,
             TaskCompletionSource<ResolveNexusOperationStart> StartCompletionSource,
             TaskCompletionSource<NexusOperationResult> ResultCompletionSource);
 

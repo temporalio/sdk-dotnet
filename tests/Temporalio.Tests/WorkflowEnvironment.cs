@@ -67,7 +67,7 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
             {
                 DevServerOptions = new()
                 {
-                    DownloadVersion = "v1.7.1-standalone-nexus-operations",
+                    DownloadVersion = "v1.7.1-system-nexus-operations",
                     ExtraArgs = new List<string>
                     {
                         // Disable search attribute cache
@@ -85,6 +85,8 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
                         // Enable multi-op
                         "--dynamic-config-value",
                         "frontend.enableExecuteMultiOperation=true",
+                        "--dynamic-config-value",
+                        "history.enableSignalWithStartFromWorkflow=true",
                         "--dynamic-config-value",
                         "system.enableDeploymentVersions=true",
                         // Enable standalone activities

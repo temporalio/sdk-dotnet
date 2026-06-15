@@ -16,7 +16,7 @@ namespace Temporalio.Workflows
     /// class cannot be used outside of a workflow (with the obvious exception of
     /// <see cref="InWorkflow" />).
     /// </summary>
-    public static class Workflow
+    public static partial class Workflow
     {
         /// <summary>
         /// Gets a value indicating whether all update and signal handlers have finished executing.

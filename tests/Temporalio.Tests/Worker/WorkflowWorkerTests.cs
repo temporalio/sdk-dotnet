@@ -985,6 +985,55 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public IList<string> Events() => events;
     }
 
+    [Workflow]
+    public class SystemNexusSignalWithStartTargetWorkflow
+    {
+        private readonly List<string> events = new();
+
+        [WorkflowRun]
+        public async Task<IReadOnlyCollection<string>> RunAsync(string value)
+        {
+            events.Add($"Started: {value}");
+            await Workflow.WaitConditionAsync(() => events.Count >= 3);
+            return events;
+        }
+
+        [WorkflowSignal]
+        public Task SignalAsync(string value)
+        {
+            events.Add($"Signal: {value}");
+            return Task.CompletedTask;
+        }
+    }
+
+    [Workflow]
+    public class SystemNexusSignalWithStartCallerWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync(string workflowId, string taskQueue)
+        {
+            var handle = await Workflow.SignalWithStartWorkflowAsync(
+                    (SystemNexusSignalWithStartTargetWorkflow workflow) =>
+                        workflow.RunAsync("start-value"),
+                    workflow => workflow.SignalAsync("signal-one"),
+                    new(workflowId, taskQueue)
+                    {
+                        IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
+                    });
+
+            await Workflow.SignalWithStartWorkflowAsync(
+                    (SystemNexusSignalWithStartTargetWorkflow workflow) =>
+                        workflow.RunAsync("unused-start-value"),
+                    workflow => workflow.SignalAsync("signal-two"),
+                    new(workflowId, taskQueue)
+                    {
+                        IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
+                    });
+
+            return handle.Id;
+        }
+    }
+
     [Fact]
     public async Task ExecuteWorkflowAsync_Signals_ProperlyHandled()
     {
@@ -1064,6 +1113,40 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 },
                 await handle.QueryAsync(wf => wf.Events()));
         });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_SignalWithStartFromWorkflow_Succeeds()
+    {
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadCodec = new Base64PayloadCodec(),
+        };
+        var codecClient = new TemporalClient(Client.Connection, newOptions);
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddWorkflow<SystemNexusSignalWithStartTargetWorkflow>();
+        await ExecuteWorkerAsync<SystemNexusSignalWithStartCallerWorkflow>(
+            async worker =>
+            {
+                var targetWorkflowId = $"workflow-{Guid.NewGuid()}";
+                var resultWorkflowId = await codecClient.ExecuteWorkflowAsync(
+                    (SystemNexusSignalWithStartCallerWorkflow workflow) =>
+                        workflow.RunAsync(targetWorkflowId, worker.Options.TaskQueue!),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                Assert.Equal(targetWorkflowId, resultWorkflowId);
+
+                var targetHandle = codecClient.GetWorkflowHandle<
+                    SystemNexusSignalWithStartTargetWorkflow,
+                    IReadOnlyCollection<string>>(targetWorkflowId);
+                var events = await targetHandle.GetResultAsync();
+                Assert.Equal(3, events.Count);
+                Assert.Contains("Started: start-value", events);
+                Assert.Contains("Signal: signal-one", events);
+                Assert.Contains("Signal: signal-two", events);
+            },
+            workerOptions,
+            codecClient);
     }
 
     [Workflow]

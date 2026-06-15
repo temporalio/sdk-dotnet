@@ -118,31 +118,44 @@ namespace Temporalio.Worker
                         break;
                     case WorkflowActivationJob.VariantOneofCase.ResolveNexusOperation:
                         // TODO(cretz): Support Nexus serialization context
-                        if (context.CodecNoContext == null)
+                        var nexusCodec = context.CodecNoContext;
+                        if (nexusCodec == null)
                         {
                             break;
                         }
                         if (job.ResolveNexusOperation.Result.Completed != null)
                         {
-                            await DecodeAsync(
-                                context.CodecNoContext, job.ResolveNexusOperation.Result.Completed).
-                                ConfigureAwait(false);
+                            var operationInfo = context.Instance?.GetPendingNexusOperationInfo(
+                                job.ResolveNexusOperation.Seq);
+                            if (operationInfo == null ||
+                                !await SystemNexusPayloadVisitorRegistry.TryVisitOutputAsync(
+                                    operationInfo.Service,
+                                    operationInfo.Operation,
+                                    job.ResolveNexusOperation.Result.Completed,
+                                    payload => DecodeAsync(nexusCodec, payload),
+                                    payloads => DecodeAsync(nexusCodec, payloads)).
+                                    ConfigureAwait(false))
+                            {
+                                await DecodeAsync(
+                                    nexusCodec, job.ResolveNexusOperation.Result.Completed).
+                                    ConfigureAwait(false);
+                            }
                         }
                         else if (job.ResolveNexusOperation.Result.Failed != null)
                         {
-                            await context.CodecNoContext.DecodeFailureAsync(
+                            await nexusCodec.DecodeFailureAsync(
                                 job.ResolveNexusOperation.Result.Failed).
                                 ConfigureAwait(false);
                         }
                         else if (job.ResolveNexusOperation.Result.Cancelled != null)
                         {
-                            await context.CodecNoContext.DecodeFailureAsync(
+                            await nexusCodec.DecodeFailureAsync(
                                 job.ResolveNexusOperation.Result.Cancelled).
                                 ConfigureAwait(false);
                         }
                         else if (job.ResolveNexusOperation.Result.TimedOut != null)
                         {
-                            await context.CodecNoContext.DecodeFailureAsync(
+                            await nexusCodec.DecodeFailureAsync(
                                 job.ResolveNexusOperation.Result.TimedOut).
                                 ConfigureAwait(false);
                         }
@@ -335,8 +348,17 @@ namespace Temporalio.Worker
                     codec = context.CodecNoContext;
                     if (cmd.ScheduleNexusOperation.Input != null && codec != null)
                     {
-                        await EncodeAsync(
-                            codec, cmd.ScheduleNexusOperation.Input).ConfigureAwait(false);
+                        if (!await SystemNexusPayloadVisitorRegistry.TryVisitInputAsync(
+                                cmd.ScheduleNexusOperation.Service,
+                                cmd.ScheduleNexusOperation.Operation,
+                                cmd.ScheduleNexusOperation.Input,
+                                payload => EncodeAsync(codec, payload),
+                                payloads => EncodeAsync(codec, payloads)).
+                            ConfigureAwait(false))
+                        {
+                            await EncodeAsync(
+                                codec, cmd.ScheduleNexusOperation.Input).ConfigureAwait(false);
+                        }
                     }
                     break;
                 case WorkflowCommand.VariantOneofCase.StartChildWorkflowExecution:

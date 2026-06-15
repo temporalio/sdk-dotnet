@@ -5,6 +5,17 @@
     <Description>Temporal SDK for .NET</Description>
     <IncludeSymbols>true</IncludeSymbols>
     <LangVersion>9.0</LangVersion>
+    <SystemNexusIntermediateDir>$(MSBuildProjectDirectory)/obj/$(Configuration)/$(TargetFramework)/SystemNexus/</SystemNexusIntermediateDir>
+    <SystemNexusDescriptorPath>$(SystemNexusIntermediateDir)temporal_api.bin</SystemNexusDescriptorPath>
+    <SystemNexusGeneratedDir>$(SystemNexusIntermediateDir)generated/</SystemNexusGeneratedDir>
+    <SystemNexusOperationsPath>$(SystemNexusGeneratedDir)Operations.cs</SystemNexusOperationsPath>
+    <SystemNexusGeneratedStampPath>$(SystemNexusIntermediateDir)generated.stamp</SystemNexusGeneratedStampPath>
+    <SystemNexusExporterProject>$(MSBuildProjectDirectory)/../Temporalio.SystemNexus.Generator/Temporalio.SystemNexus.Generator.csproj</SystemNexusExporterProject>
+    <NexGenVersion>0.1.4</NexGenVersion>
+    <NexGenCommand Condition="'$(NEX_GEN_BIN)' != ''">$(NEX_GEN_BIN)</NexGenCommand>
+    <NexGenCommand Condition="'$(NexGenCommand)' == ''">nex-gen</NexGenCommand>
+    <DotNetCommand Condition="'$(DotNetHostPath)' != ''">$(DotNetHostPath)</DotNetCommand>
+    <DotNetCommand Condition="'$(DotNetCommand)' == ''">dotnet</DotNetCommand>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -29,6 +40,41 @@
       <_Parameter1>Temporalio.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="SystemNexus/wit/**/*.cs" />
+    <None Include="SystemNexus/wit/**" Pack="false" />
+    <SystemNexusWitInput Include="SystemNexus/wit/**/*.wit;SystemNexus/wit/**/*.cs" />
+    <SystemNexusDescriptorInput Include="Bridge/sdk-core/crates/protos/protos/**/*.proto" />
+    <SystemNexusDescriptorInput Include="Bridge/sdk-core/crates/protos/protos/api_upstream/**/*.proto" />
+    <SystemNexusExporterInput Include="../Temporalio.SystemNexus.Generator/**/*.cs;../Temporalio.SystemNexus.Generator/**/*.csproj" />
+  </ItemGroup>
+
+  <Target Name="EnsureNexGen">
+    <Exec Command="&quot;$(NexGenCommand)&quot; help" IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="NexGenVersionExitCode" />
+    </Exec>
+    <Exec Condition="'$(NexGenVersionExitCode)' != '0' And '$(NEX_GEN_BIN)' == ''" Command="cargo install --locked nex-gen --version $(NexGenVersion) --force" />
+  </Target>
+
+  <Target Name="BuildSystemNexusDescriptor" Inputs="@(SystemNexusDescriptorInput)" Outputs="$(SystemNexusDescriptorPath)">
+    <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(SystemNexusDescriptorPath)'))" />
+    <Exec Command="protoc -I=&quot;$(MSBuildProjectDirectory)/Bridge/sdk-core/crates/protos/protos/api_upstream&quot; -I=&quot;$(MSBuildProjectDirectory)/Bridge/sdk-core/crates/protos/protos&quot; --include_imports --descriptor_set_out=&quot;$(SystemNexusDescriptorPath)&quot; &quot;$(MSBuildProjectDirectory)/Bridge/sdk-core/crates/protos/protos/api_upstream/temporal/api/workflowservice/v1/request_response.proto&quot;" />
+  </Target>
+
+  <Target Name="GenerateSystemNexusApi" DependsOnTargets="EnsureNexGen;BuildSystemNexusDescriptor" Inputs="$(MSBuildProjectFullPath);@(SystemNexusWitInput);$(SystemNexusDescriptorPath);@(SystemNexusExporterInput)" Outputs="$(SystemNexusGeneratedStampPath)">
+    <RemoveDir Directories="$(SystemNexusGeneratedDir)" />
+    <MakeDir Directories="$(SystemNexusGeneratedDir)" />
+    <Exec Command="&quot;$(NexGenCommand)&quot; generate --lang dotnet --input &quot;$(MSBuildProjectDirectory)/SystemNexus/wit/workflow-service.wit&quot; --input &quot;$(MSBuildProjectDirectory)/SystemNexus/wit/deps&quot; --descriptors &quot;$(SystemNexusDescriptorPath)&quot; --output &quot;$(SystemNexusGeneratedDir)&quot;" />
+    <Exec Command="&quot;$(DotNetCommand)&quot; run --project &quot;$(SystemNexusExporterProject)&quot; -- &quot;$(SystemNexusOperationsPath)&quot; &quot;$(SystemNexusDescriptorPath)&quot;" />
+    <Touch Files="$(SystemNexusGeneratedStampPath)" AlwaysCreate="true" />
+  </Target>
+
+  <Target Name="IncludeSystemNexusGeneratedApi" BeforeTargets="CoreCompile" DependsOnTargets="GenerateSystemNexusApi">
+    <ItemGroup>
+      <Compile Include="$(SystemNexusGeneratedDir)**/*.cs" LinkBase="SystemNexusGenerated" Visible="false" />
+    </ItemGroup>
+  </Target>
 
   <!-- Build/copy debug/release bridge DLL -->
 
