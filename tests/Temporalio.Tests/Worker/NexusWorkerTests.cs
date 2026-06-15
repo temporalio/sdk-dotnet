@@ -598,7 +598,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     {
         // A handler that plain-starts a target workflow from inside the operation. The start request
         // must carry the inbound Nexus task links so the target's WorkflowExecutionStarted event
-        // links back to the caller workflow. Forward links work on any server (unlike backlinks), so
+        // links back to the caller workflow. Request links work on any server (unlike backlinks), so
         // this is an unconditional [Fact].
         var targetTaskQueue = $"tq-target-{Guid.NewGuid()}";
         var calleeWorkflowId = $"callee-{Guid.NewGuid()}";

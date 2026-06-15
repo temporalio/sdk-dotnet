@@ -372,7 +372,7 @@ namespace Temporalio.Client
                 ForwardNexusLinks(req.Links);
                 var resp = await Client.Connection.WorkflowService.SignalWorkflowExecutionAsync(
                     req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
-                CaptureNexusBacklink(resp.Link);
+                CaptureNexusResponseLink(resp.Link);
             }
 
             /// <inheritdoc />
@@ -686,20 +686,20 @@ namespace Temporalio.Client
             {
                 if (NexusOperationExecutionContext.HasCurrent)
                 {
-                    links.AddRange(NexusOperationExecutionContext.Current.ForwardLinks);
+                    links.AddRange(NexusOperationExecutionContext.Current.RequestLinks);
                 }
             }
 
-            // Capture a backlink returned by an outbound RPC (signal / signalWithStart) onto the
-            // current Nexus operation context so the task handler can attach it to the operation's
-            // StartOperationResponse. No-op outside a Nexus operation context; null/unset links are
-            // dropped by TryAddBacklink (servers older than 1.31, or without
+            // Capture a response link returned by an outbound RPC (signal / signalWithStart) onto
+            // the current Nexus operation context so the task handler can attach it to the
+            // operation's StartOperationResponse. No-op outside a Nexus operation context; null/unset
+            // links are dropped by TryAddResponseLink (servers older than 1.31, or without
             // EnableCHASMSignalBacklinks, leave the response link unset).
-            private static void CaptureNexusBacklink(Link? backlink)
+            private static void CaptureNexusResponseLink(Link? responseLink)
             {
                 if (NexusOperationExecutionContext.HasCurrent)
                 {
-                    NexusOperationExecutionContext.Current.TryAddBacklink(backlink);
+                    NexusOperationExecutionContext.Current.TryAddResponseLink(responseLink);
                 }
             }
 
@@ -765,7 +765,7 @@ namespace Temporalio.Client
                     {
                         throw new ArgumentException("Cannot have start signal args without start signal");
                     }
-                    // A plain start does not produce a backlink.
+                    // A plain start does not produce a response link.
                     ForwardNexusLinks(req.Links);
                     var resp = await Client.Connection.WorkflowService.StartWorkflowExecutionAsync(
                         req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
@@ -812,7 +812,7 @@ namespace Temporalio.Client
                 ForwardNexusLinks(signalReq.Links);
                 var signalResp = await Client.Connection.WorkflowService.SignalWithStartWorkflowExecutionAsync(
                     signalReq, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
-                CaptureNexusBacklink(signalResp.SignalLink);
+                CaptureNexusResponseLink(signalResp.SignalLink);
                 // Notice we do _not_ set first execution run ID for signal with start
                 return new WorkflowHandle<TWorkflow, TResult>(
                     Client: Client,
