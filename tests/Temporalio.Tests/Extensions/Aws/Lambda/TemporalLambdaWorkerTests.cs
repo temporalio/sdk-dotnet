@@ -752,6 +752,144 @@ public class TemporalLambdaWorkerTests
         Assert.Equal(2, workerCreations);
     }
 
+    [Fact]
+    public async Task CreateHandler_AsyncConfigureRunsPerInvocationWithFreshConfig()
+    {
+        var configureCalls = 0;
+        var capturedConfigs = new List<LambdaWorkerConfig>();
+        var capturedTargets = new List<string?>();
+        var capturedTaskQueues = new List<string?>();
+        var hookCalls = new List<string>();
+        var handler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            async config =>
+            {
+                await Task.Yield();
+                var call = ++configureCalls;
+                capturedConfigs.Add(config);
+                Assert.Equal("env-task-queue", config.WorkerOptions.TaskQueue);
+
+                config.ClientOptions.TargetHost = $"target-{call}";
+                config.WorkerOptions.TaskQueue = $"task-queue-{call}";
+                config.ShutdownHooks.Add(_ =>
+                {
+                    hookCalls.Add($"hook-{call}");
+                    return Task.CompletedTask;
+                });
+            },
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                GetEnvironmentVariable = name =>
+                    name == "TEMPORAL_TASK_QUEUE" ? "env-task-queue" : null,
+                ConnectClientAsync = options =>
+                {
+                    capturedTargets.Add(options.TargetHost);
+                    return Task.FromResult<object>(new object());
+                },
+                CreateWorker = (_, options) =>
+                {
+                    capturedTaskQueues.Add(options.TaskQueue);
+                    return new FakeLambdaWorker(_ => Task.CompletedTask);
+                },
+            });
+
+        await handler(null, new FakeLambdaContext());
+        await handler(null, new FakeLambdaContext());
+
+        Assert.Equal(2, configureCalls);
+        Assert.Equal(2, capturedConfigs.Count);
+        Assert.NotSame(capturedConfigs[0], capturedConfigs[1]);
+        Assert.Equal(new[] { "target-1", "target-2" }, capturedTargets);
+        Assert.Equal(new[] { "task-queue-1", "task-queue-2" }, capturedTaskQueues);
+        Assert.Equal(new[] { "hook-1", "hook-2" }, hookCalls);
+    }
+
+    [Fact]
+    public async Task CreateHandler_AsyncConfigureErrorsSurfaceOnInvocation()
+    {
+        var configureCalls = 0;
+        var handler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            async config =>
+            {
+                _ = config;
+                await Task.Yield();
+                configureCalls++;
+                throw new InvalidOperationException("bad config");
+            },
+            new TemporalLambdaWorkerHandlerOptions());
+
+        var error = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            handler(null, new FakeLambdaContext()));
+        Assert.Equal("bad config", error.Message);
+        Assert.Equal(1, configureCalls);
+    }
+
+    [Fact]
+    public async Task CreateHandler_AsyncConfigureValidatesTaskQueueOnInvocation()
+    {
+        var handler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            _ => Task.CompletedTask,
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                GetEnvironmentVariable = _ => null,
+            });
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            handler(null, new FakeLambdaContext()));
+    }
+
+    [Fact]
+    public async Task CreateHandler_AsyncConfigureShutdownHooksRunAfterFailures()
+    {
+        var hookCalls = new List<string>();
+        var connectFailureHandler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            config =>
+            {
+                config.WorkerOptions.TaskQueue = "task-queue";
+                config.ShutdownHooks.Add(_ =>
+                {
+                    hookCalls.Add("connect");
+                    return Task.CompletedTask;
+                });
+                return Task.CompletedTask;
+            },
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                ConnectClientAsync = _ =>
+                    throw new InvalidOperationException("connect failed"),
+            });
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            connectFailureHandler(null, new FakeLambdaContext()));
+
+        var workerFailureHandler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            config =>
+            {
+                config.WorkerOptions.TaskQueue = "task-queue";
+                config.ShutdownHooks.Add(_ =>
+                {
+                    hookCalls.Add("worker");
+                    return Task.CompletedTask;
+                });
+                return Task.CompletedTask;
+            },
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                ConnectClientAsync = _ => Task.FromResult<object>(new object()),
+                CreateWorker = (_, _) => new FakeLambdaWorker(
+                    _ => throw new InvalidOperationException("worker failed")),
+            });
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            workerFailureHandler(null, new FakeLambdaContext()));
+
+        Assert.Equal(new[] { "connect", "worker" }, hookCalls);
+    }
+
     private static Func<object?, ILambdaContext, Task> CreateCapturingHandler(
         Action<LambdaWorkerConfig> configure,
         Action<TemporalClientConnectOptions> captureClientOptions) =>

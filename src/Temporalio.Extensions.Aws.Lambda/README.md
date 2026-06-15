@@ -33,9 +33,33 @@ public class Function
 }
 ```
 
-`configure` runs once when the delegate is created, which is normally during Lambda cold start. Each invocation creates a
-fresh Temporal client and worker, runs until the Lambda deadline minus `ShutdownDeadlineBuffer`, then shuts down and runs
-configured shutdown hooks.
+The synchronous `configure` callback shown above runs once when the delegate is created, which is normally during Lambda
+cold start. Use it for static worker setup such as task queues, workflow/activity registration, and options that can be
+shared across warm invocations. Each invocation creates a fresh Temporal client and worker, runs until the Lambda
+deadline minus `ShutdownDeadlineBuffer`, then shuts down and runs configured shutdown hooks.
+
+For setup that must be awaited per invocation, use the async overload:
+
+```csharp
+private static readonly Func<object?, ILambdaContext, Task> WorkerHandler =
+    TemporalLambdaWorker.CreateHandler(
+        new WorkerDeploymentVersion("payments-worker", "2026-05-27"),
+        async config =>
+        {
+            config.WorkerOptions.TaskQueue = "payments";
+            config.WorkerOptions.AddWorkflow<PaymentWorkflow>();
+            config.WorkerOptions.AddActivity(PaymentActivities.ChargeAsync);
+
+            config.ClientOptions.ApiKey = await LoadTemporalApiKeyAsync();
+            config.ShutdownHooks.Add(async cancellationToken =>
+            {
+                await FlushPerInvocationResourceAsync(cancellationToken);
+            });
+        });
+```
+
+The async `configure` callback is awaited once per Lambda invocation, before the Temporal client connects. It receives a
+fresh `LambdaWorkerConfig` each time, so use shutdown hooks for any per-invocation cleanup.
 
 ## Configuration
 
@@ -70,7 +94,8 @@ config.ClientOptions = new TemporalClientConnectOptions
 ```
 
 If `TEMPORAL_TASK_QUEUE` is present, it is used as the initial `WorkerOptions.TaskQueue`. You can still override the task
-queue in `configure`. If no task queue is set by the environment or by `configure`, handler creation fails.
+queue in `configure`. If no task queue is set by the environment or by `configure`, synchronous handler creation fails;
+with async configure, the invocation fails after the callback is awaited.
 
 `TemporalLambdaWorker.CreateHandler` requires a `WorkerDeploymentVersion` and always enables Worker Versioning by setting
 `WorkerOptions.DeploymentOptions` with `UseWorkerVersioning = true`. Use a deployment name and build ID that match your
@@ -80,7 +105,8 @@ value while enforcing the deployment version passed to `CreateHandler`.
 
 The helper applies Lambda-oriented worker defaults before `configure`, including lower concurrency, a 5 second graceful
 shutdown timeout, a smaller workflow cache, simple poller limits, and disabled eager activity execution. Values you set in
-`configure` override these defaults except for the enforced deployment version.
+`configure` override these defaults except for the enforced deployment version. With sync configure this happens once at
+handler creation; with async configure it happens for every invocation.
 
 ## Shutdown Hooks
 
@@ -94,7 +120,7 @@ config.ShutdownHooks.Add(async cancellationToken =>
 ```
 
 Hooks run in order after the worker has stopped. Hook failures are logged to the Lambda context logger and later hooks
-still run.
+still run. Hooks added from async configure are scoped to that invocation.
 
 ## Observability
 
