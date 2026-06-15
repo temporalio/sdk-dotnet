@@ -207,7 +207,7 @@ namespace Temporalio.Worker
             // links of other shapes (e.g. non-temporal URLs) are intentionally dropped because the
             // RPCs the handler issues require the WorkflowEvent variant. Log so a debugging session
             // can see what was dropped.
-            executionContext.NexusOperationLinks = context.InboundLinks.Select(link =>
+            executionContext.ForwardLinks = context.InboundLinks.Select(link =>
             {
                 try
                 {
@@ -231,14 +231,11 @@ namespace Temporalio.Worker
                 // Drain any backlinks captured from outbound RPCs the handler issued (e.g. signal,
                 // signalWithStart, start) and attach them to both the sync and async response so the
                 // caller workflow's history event links to each event on the callee.
-                var backlinks = executionContext.ResponseBacklinks
-                    .Where(l => l.VariantCase == Api.Common.V1.Link.VariantOneofCase.WorkflowEvent)
-                    .Select(l => l.WorkflowEvent.ToNexusLink())
-                    .Select(l => new Api.Nexus.V1.Link() { Type = l.Type, Url = l.Uri.ToString(), })
-                    .ToList();
-                var links = context.OutboundLinks.Select(l =>
-                    new Api.Nexus.V1.Link() { Type = l.Type, Url = l.Uri.ToString(), })
-                    .Concat(backlinks);
+                var backlinks = executionContext.Backlinks
+                    .Select(l => l.WorkflowEvent.ToNexusLink());
+                var links = context.OutboundLinks
+                    .Concat(backlinks)
+                    .Select(l => new Api.Nexus.V1.Link() { Type = l.Type, Url = l.Uri.ToString(), });
                 if (result.AsyncOperationToken is { } asyncOperationToken)
                 {
                     return new()

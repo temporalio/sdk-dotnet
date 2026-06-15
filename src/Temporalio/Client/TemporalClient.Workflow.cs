@@ -374,15 +374,15 @@ namespace Temporalio.Client
                 var inNexusContext = NexusOperationExecutionContext.HasCurrent;
                 if (inNexusContext)
                 {
-                    req.Links.AddRange(NexusOperationExecutionContext.Current.NexusOperationLinks);
+                    req.Links.AddRange(NexusOperationExecutionContext.Current.ForwardLinks);
                 }
                 var resp = await Client.Connection.WorkflowService.SignalWorkflowExecutionAsync(
                     req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                 // Server >=1.31 with EnableCHASMSignalBacklinks returns a backlink pointing at the
-                // signal event; older servers leave it unset. Propagate when present.
-                if (inNexusContext && resp.Link != null)
+                // signal event; older servers leave it unset. TryAddBacklink ignores the unset case.
+                if (inNexusContext)
                 {
-                    NexusOperationExecutionContext.Current.AddBacklink(resp.Link);
+                    NexusOperationExecutionContext.Current.TryAddBacklink(resp.Link);
                 }
             }
 
@@ -757,7 +757,7 @@ namespace Temporalio.Client
                     // event links back to the caller. A plain start does not produce a backlink.
                     if (NexusOperationExecutionContext.HasCurrent)
                     {
-                        req.Links.AddRange(NexusOperationExecutionContext.Current.NexusOperationLinks);
+                        req.Links.AddRange(NexusOperationExecutionContext.Current.ForwardLinks);
                     }
                     var resp = await Client.Connection.WorkflowService.StartWorkflowExecutionAsync(
                         req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
@@ -807,15 +807,15 @@ namespace Temporalio.Client
                 var inNexusContext = NexusOperationExecutionContext.HasCurrent;
                 if (inNexusContext)
                 {
-                    signalReq.Links.AddRange(NexusOperationExecutionContext.Current.NexusOperationLinks);
+                    signalReq.Links.AddRange(NexusOperationExecutionContext.Current.ForwardLinks);
                 }
                 var signalResp = await Client.Connection.WorkflowService.SignalWithStartWorkflowExecutionAsync(
                     signalReq, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
                 // Server >=1.31 with EnableCHASMSignalBacklinks returns a backlink pointing at the
-                // signal event; older servers leave it unset. Propagate when present.
-                if (inNexusContext && signalResp.SignalLink != null)
+                // signal event; older servers leave it unset. TryAddBacklink ignores the unset case.
+                if (inNexusContext)
                 {
-                    NexusOperationExecutionContext.Current.AddBacklink(signalResp.SignalLink);
+                    NexusOperationExecutionContext.Current.TryAddBacklink(signalResp.SignalLink);
                 }
                 // Notice we do _not_ set first execution run ID for signal with start
                 return new WorkflowHandle<TWorkflow, TResult>(

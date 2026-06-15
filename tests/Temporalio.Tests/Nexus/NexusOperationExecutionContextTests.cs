@@ -13,68 +13,58 @@ using Xunit;
 public class NexusOperationExecutionContextTests
 {
     [Fact]
-    public void NexusOperationLinks_DefaultsToEmpty()
+    public void ForwardLinks_DefaultsToEmpty()
     {
         var context = NewContext();
-        Assert.Empty(context.NexusOperationLinks);
+        Assert.Empty(context.ForwardLinks);
     }
 
     [Fact]
-    public void NexusOperationLinks_RoundTrips()
+    public void ForwardLinks_RoundTrips()
     {
         var context = NewContext();
         var links = new[] { WorkflowEventLink("wf", "run", EventType.NexusOperationScheduled) };
-        context.NexusOperationLinks = links;
-        Assert.Equal(links, context.NexusOperationLinks);
+        context.ForwardLinks = links;
+        Assert.Equal(links, context.ForwardLinks);
     }
 
     [Fact]
-    public void NexusOperationLinks_NullResetsToEmpty()
-    {
-        var context = NewContext();
-        context.NexusOperationLinks =
-            new[] { WorkflowEventLink("wf", "run", EventType.NexusOperationScheduled) };
-        context.NexusOperationLinks = null!;
-        Assert.Empty(context.NexusOperationLinks);
-    }
-
-    [Fact]
-    public void AddBacklink_AppendsWorkflowEventLink()
+    public void TryAddBacklink_AppendsWorkflowEventLink()
     {
         var context = NewContext();
         var link = WorkflowEventLink("wf", "run", EventType.WorkflowExecutionSignaled);
-        context.AddBacklink(link);
-        Assert.Equal(new[] { link }, context.ResponseBacklinks);
+        Assert.True(context.TryAddBacklink(link));
+        Assert.Equal(new[] { link }, context.Backlinks);
     }
 
     [Fact]
-    public void AddBacklink_AccumulatesInOrder()
+    public void TryAddBacklink_AccumulatesInOrder()
     {
         var context = NewContext();
         var first = WorkflowEventLink("a", "run-a", EventType.WorkflowExecutionSignaled);
         var second = WorkflowEventLink("b", "run-b", EventType.WorkflowExecutionStarted);
-        context.AddBacklink(first);
-        context.AddBacklink(second);
-        Assert.Equal(new[] { first, second }, context.ResponseBacklinks);
+        context.TryAddBacklink(first);
+        context.TryAddBacklink(second);
+        Assert.Equal(new[] { first, second }, context.Backlinks);
     }
 
     [Fact]
-    public void AddBacklink_IgnoresNull()
+    public void TryAddBacklink_IgnoresNull()
     {
         var context = NewContext();
-        context.AddBacklink(null);
-        Assert.Empty(context.ResponseBacklinks);
+        Assert.False(context.TryAddBacklink(null));
+        Assert.Empty(context.Backlinks);
     }
 
     [Fact]
-    public void AddBacklink_IgnoresNonWorkflowEventLink()
+    public void TryAddBacklink_IgnoresNonWorkflowEventLink()
     {
         var context = NewContext();
         // A link with no variant set (e.g. an unset response link) must be dropped.
-        context.AddBacklink(new Link());
+        Assert.False(context.TryAddBacklink(new Link()));
         // A non-WorkflowEvent variant must also be dropped.
-        context.AddBacklink(new Link { BatchJob = new() { JobId = "batch" } });
-        Assert.Empty(context.ResponseBacklinks);
+        Assert.False(context.TryAddBacklink(new Link { BatchJob = new() { JobId = "batch" } }));
+        Assert.Empty(context.Backlinks);
     }
 
     private static NexusOperationExecutionContext NewContext()

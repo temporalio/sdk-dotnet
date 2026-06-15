@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -23,18 +24,9 @@ namespace Temporalio.Nexus
         // SignalWorkflowExecutionResponse.Link or SignalWithStartWorkflowExecutionResponse.SignalLink).
         // One entry per outbound RPC that returned a link. Drained by the task handler when building
         // the StartOperationResponse so each RPC the handler issued gets a corresponding link on the
-        // caller workflow's history event.
-        //
-        // Access is synchronized via backlinksLock: AddBacklink appends under the lock and the
-        // ResponseBacklinks getter returns a copy under the lock.
-        private readonly List<Api.Common.V1.Link> responseBacklinks = new();
-        private readonly object backlinksLock = new();
-
-        // Links extracted from the inbound Nexus task. Stored once at the task-handler boundary so
-        // the workflow client can attach them to the outgoing requests it issues (e.g. signal,
-        // signalWithStart, start) via the request's links field. Only WorkflowEvent-shaped links
-        // are stored.
-        private IReadOnlyCollection<Api.Common.V1.Link> nexusOperationLinks = Array.Empty<Api.Common.V1.Link>();
+        // caller workflow's history event. A ConcurrentQueue handles enqueues from outbound RPCs the
+        // handler may issue in parallel; the Backlinks getter snapshots it.
+        private readonly ConcurrentQueue<Api.Common.V1.Link> backlinks = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NexusOperationExecutionContext"/> class.
@@ -120,44 +112,33 @@ namespace Temporalio.Nexus
         /// be attached to RPCs issued by the operation handler. Only WorkflowEvent-shaped links are
         /// stored; empty if none.
         /// </summary>
-        internal IReadOnlyCollection<Api.Common.V1.Link> NexusOperationLinks
-        {
-            get => nexusOperationLinks;
-            set => nexusOperationLinks = value ?? Array.Empty<Api.Common.V1.Link>();
-        }
+        internal IReadOnlyCollection<Api.Common.V1.Link> ForwardLinks { get; set; } =
+            Array.Empty<Api.Common.V1.Link>();
 
         /// <summary>
         /// Gets the backlinks accumulated from every outbound RPC the handler issued. Entries are
         /// accumulated while the operation handler runs and are drained afterward by the task
         /// handler when building the StartOperationResponse.
         /// </summary>
-        internal IReadOnlyList<Api.Common.V1.Link> ResponseBacklinks
-        {
-            get
-            {
-                lock (backlinksLock)
-                {
-                    return responseBacklinks.ToList();
-                }
-            }
-        }
+        internal IReadOnlyList<Api.Common.V1.Link> Backlinks => backlinks.ToList();
 
         /// <summary>
         /// Append a backlink returned by an outbound RPC the operation handler issued (e.g. signal,
-        /// signalWithStart, start). The task handler drains the list when building the operation's
-        /// StartOperationResponse. Null and non-WorkflowEvent links are ignored.
+        /// signalWithStart, start). The task handler drains the accumulated links when building the
+        /// operation's StartOperationResponse. Null and non-WorkflowEvent links are ignored.
         /// </summary>
         /// <param name="link">Backlink to add.</param>
-        internal void AddBacklink(Api.Common.V1.Link? link)
+        /// <returns><c>true</c> if the link was added; <c>false</c> if it was null or not a
+        /// WorkflowEvent-shaped link.</returns>
+        internal bool TryAddBacklink(Api.Common.V1.Link? link)
         {
-            if (link != null &&
-                link.VariantCase == Api.Common.V1.Link.VariantOneofCase.WorkflowEvent)
+            if (link == null ||
+                link.VariantCase != Api.Common.V1.Link.VariantOneofCase.WorkflowEvent)
             {
-                lock (backlinksLock)
-                {
-                    responseBacklinks.Add(link);
-                }
+                return false;
             }
+            backlinks.Enqueue(link);
+            return true;
         }
     }
 }
