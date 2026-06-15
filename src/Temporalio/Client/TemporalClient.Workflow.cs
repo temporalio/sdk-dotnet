@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Google.Protobuf;
+using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
@@ -368,22 +369,10 @@ namespace Temporalio.Client
                         }
                     }
                 }
-                // If this signal is being issued from inside a Nexus operation handler, forward the
-                // inbound Nexus task links so the SignalWorkflowExecution history event links back
-                // to the caller.
-                var inNexusContext = NexusOperationExecutionContext.HasCurrent;
-                if (inNexusContext)
-                {
-                    req.Links.AddRange(NexusOperationExecutionContext.Current.ForwardLinks);
-                }
+                ForwardNexusLinks(req.Links);
                 var resp = await Client.Connection.WorkflowService.SignalWorkflowExecutionAsync(
                     req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
-                // Server >=1.31 with EnableCHASMSignalBacklinks returns a backlink pointing at the
-                // signal event; older servers leave it unset. TryAddBacklink ignores the unset case.
-                if (inNexusContext)
-                {
-                    NexusOperationExecutionContext.Current.TryAddBacklink(resp.Link);
-                }
+                CaptureNexusBacklink(resp.Link);
             }
 
             /// <inheritdoc />
@@ -690,6 +679,30 @@ namespace Temporalio.Client
                     NextPageToken: resp.NextPageToken.IsEmpty ? null : resp.NextPageToken.ToByteArray());
             }
 
+            // Forward the inbound Nexus task links onto an outbound request when this call is issued
+            // from inside a Nexus operation handler, so the resulting history event links back to
+            // the caller. No-op outside a Nexus operation context.
+            private static void ForwardNexusLinks(RepeatedField<Link> links)
+            {
+                if (NexusOperationExecutionContext.HasCurrent)
+                {
+                    links.AddRange(NexusOperationExecutionContext.Current.ForwardLinks);
+                }
+            }
+
+            // Capture a backlink returned by an outbound RPC (signal / signalWithStart) onto the
+            // current Nexus operation context so the task handler can attach it to the operation's
+            // StartOperationResponse. No-op outside a Nexus operation context; null/unset links are
+            // dropped by TryAddBacklink (servers older than 1.31, or without
+            // EnableCHASMSignalBacklinks, leave the response link unset).
+            private static void CaptureNexusBacklink(Link? backlink)
+            {
+                if (NexusOperationExecutionContext.HasCurrent)
+                {
+                    NexusOperationExecutionContext.Current.TryAddBacklink(backlink);
+                }
+            }
+
 #if NETCOREAPP3_0_OR_GREATER
             private async IAsyncEnumerable<WorkflowExecution> ListWorkflowsInternalAsync(
                 ListWorkflowsInput input,
@@ -752,13 +765,8 @@ namespace Temporalio.Client
                     {
                         throw new ArgumentException("Cannot have start signal args without start signal");
                     }
-                    // If this start is being issued from inside a Nexus operation handler, forward
-                    // the inbound Nexus task links so the callee's WorkflowExecutionStarted history
-                    // event links back to the caller. A plain start does not produce a backlink.
-                    if (NexusOperationExecutionContext.HasCurrent)
-                    {
-                        req.Links.AddRange(NexusOperationExecutionContext.Current.ForwardLinks);
-                    }
+                    // A plain start does not produce a backlink.
+                    ForwardNexusLinks(req.Links);
                     var resp = await Client.Connection.WorkflowService.StartWorkflowExecutionAsync(
                         req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
                     return new WorkflowHandle<TWorkflow, TResult>(
@@ -801,22 +809,10 @@ namespace Temporalio.Client
                     signalReq.SignalInput.Payloads_.AddRange(
                         await dataConverter.ToPayloadsAsync(input.Options.StartSignalArgs).ConfigureAwait(false));
                 }
-                // If this signalWithStart is being issued from inside a Nexus operation handler,
-                // forward the inbound Nexus task links so both the WorkflowExecutionStarted and
-                // WorkflowExecutionSignaled events on the callee link back to the caller.
-                var inNexusContext = NexusOperationExecutionContext.HasCurrent;
-                if (inNexusContext)
-                {
-                    signalReq.Links.AddRange(NexusOperationExecutionContext.Current.ForwardLinks);
-                }
+                ForwardNexusLinks(signalReq.Links);
                 var signalResp = await Client.Connection.WorkflowService.SignalWithStartWorkflowExecutionAsync(
                     signalReq, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
-                // Server >=1.31 with EnableCHASMSignalBacklinks returns a backlink pointing at the
-                // signal event; older servers leave it unset. TryAddBacklink ignores the unset case.
-                if (inNexusContext)
-                {
-                    NexusOperationExecutionContext.Current.TryAddBacklink(signalResp.SignalLink);
-                }
+                CaptureNexusBacklink(signalResp.SignalLink);
                 // Notice we do _not_ set first execution run ID for signal with start
                 return new WorkflowHandle<TWorkflow, TResult>(
                     Client: Client,
