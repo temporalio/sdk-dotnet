@@ -286,9 +286,9 @@ namespace Temporalio.Bridge
                 grpc_compression = options.GrpcCompression switch
                 {
                     Temporalio.Client.GrpcCompression.Gzip =>
-                        Interop.TemporalCoreClientGrpcCompression.TemporalCoreClientGrpcCompression_Gzip,
+                        Interop.TemporalCoreClientGrpcCompression.Gzip,
                     Temporalio.Client.GrpcCompression.None =>
-                        Interop.TemporalCoreClientGrpcCompression.TemporalCoreClientGrpcCompression_None,
+                        Interop.TemporalCoreClientGrpcCompression.None,
                     _ => throw new ArgumentException(
                         $"Unsupported gRPC compression: {options.GrpcCompression.GetType()}"),
                 },
