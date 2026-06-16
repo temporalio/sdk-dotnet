@@ -180,6 +180,9 @@ jobs:
 
   # Runs the sdk features repo tests with this repo's current SDK code
   features-tests:
+    permissions:
+      contents: read
+      actions: read
     uses: temporalio/features/.github/workflows/dotnet.yaml@main
     with:
       dotnet-repo-path: ${{github.event.pull_request.head.repo.full_name}}
