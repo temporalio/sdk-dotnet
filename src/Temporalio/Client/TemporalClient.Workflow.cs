@@ -682,7 +682,7 @@ namespace Temporalio.Client
             // Forward the inbound Nexus task links onto an outbound request when this call is issued
             // from inside a Nexus operation handler, so the resulting history event links back to
             // the caller. No-op outside a Nexus operation context.
-            private static void ForwardNexusLinks(RepeatedField<Link> links)
+            private static void ForwardNexusRequestLinks(RepeatedField<Link> links)
             {
                 if (NexusOperationExecutionContext.HasCurrent)
                 {
