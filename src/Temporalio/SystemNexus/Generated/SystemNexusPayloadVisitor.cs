@@ -3,67 +3,33 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Google.Protobuf;
-using Google.Protobuf.Collections;
 using Temporalio.Api.Common.V1;
-using Temporalio.Converters;
 using Temporalio.Workflows;
 
 namespace Temporalio.Worker
 {
-    internal static class SystemNexusPayloadVisitor
+    internal static partial class SystemNexusPayloadVisitor
     {
-        internal delegate Task PayloadVisitor(Payload payload);
-        internal delegate Task PayloadsVisitor(RepeatedField<Payload> payloads);
-        internal delegate Task EnvelopeVisitor(Payload payload);
-
-        private static readonly BinaryProtoConverter ProtoPayloadConverter = new();
-
-        internal static bool TryToInputPayload(
-            string service,
-            string operation,
-            object? value,
-            out Payload payload)
-        {
-            payload = null!;
-            if (!NexGenOperationRegistry.Operations.ContainsKey((service, operation)))
+        private static readonly IReadOnlyDictionary<Type, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>> EnvelopeVisitors =
+            new Dictionary<Type, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>>
             {
-                return false;
-            }
-
-            if (service == @"temporal.api.workflowservice.v1.WorkflowService" && operation == @"SignalWithStartWorkflowExecution")
-            {
-                if (value is not global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest typedValue)
-                {
-                    return false;
-                }
-
-                ProtoPayloadConverter.TryToPayload(typedValue, out var converted);
-                payload = converted!;
-                return true;
-            }
-
-            return false;
-        }
-
-        internal static Task<bool> TryVisitInputAsync(
-            string service,
-            string operation,
-            Payload payload,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads,
-            EnvelopeVisitor? visitEnvelope = null) =>
-            TryVisitAsync(service, operation, input: true, payload, visitPayload, visitPayloads, visitEnvelope);
-
-        internal static Task<bool> TryVisitOutputAsync(
-            string service,
-            string operation,
-            Payload payload,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads,
-            EnvelopeVisitor? visitEnvelope = null) =>
-            TryVisitAsync(service, operation, input: false, payload, visitPayload, visitPayloads, visitEnvelope);
+                [typeof(global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest)] = (payload, visitPayload, visitPayloads, visitEnvelope) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_SignalWithStartWorkflowExecutionRequest,
+                        visitPayload,
+                        visitPayloads,
+                        visitEnvelope),
+                [typeof(global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse)] = (payload, visitPayload, visitPayloads, visitEnvelope) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_SignalWithStartWorkflowExecutionResponse,
+                        visitPayload,
+                        visitPayloads,
+                        visitEnvelope),
+            };
 
         private static async Task<bool> TryVisitAsync(
             string service,
@@ -74,48 +40,18 @@ namespace Temporalio.Worker
             PayloadsVisitor visitPayloads,
             EnvelopeVisitor? visitEnvelope)
         {
-            if (!NexGenOperationRegistry.Operations.ContainsKey((service, operation)))
+            if (!NexGenOperationRegistry.Operations.TryGetValue((service, operation), out var definition))
             {
                 return false;
             }
 
-            if (service == @"temporal.api.workflowservice.v1.WorkflowService" && operation == @"SignalWithStartWorkflowExecution")
+            if (!EnvelopeVisitors.TryGetValue(input ? definition.InputType : definition.OutputType, out var visit))
             {
-                if (input)
-                {
-                    await VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest>(payload, Visit_temporal_api_workflowservice_v1_SignalWithStartWorkflowExecutionRequest, visitPayload, visitPayloads, visitEnvelope).ConfigureAwait(false);
-                }
-                else
-                {
-                    await VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse>(payload, Visit_temporal_api_workflowservice_v1_SignalWithStartWorkflowExecutionResponse, visitPayload, visitPayloads, visitEnvelope).ConfigureAwait(false);
-                }
-
-                return true;
+                return false;
             }
 
-            return false;
-        }
-
-        private static async Task VisitEnvelopeAsync<T>(
-            Payload payload,
-            Func<T, PayloadVisitor, PayloadsVisitor, Task> visitMessage,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads,
-            EnvelopeVisitor? visitEnvelope)
-            where T : IMessage<T>, new()
-        {
-            BinaryProtoConverter.AssertProtoPayload(payload, typeof(T));
-            var message = new T();
-            message.MergeFrom(payload.Data);
-            await visitMessage(message, visitPayload, visitPayloads).ConfigureAwait(false);
-            payload.Metadata.Clear();
-            payload.Metadata["encoding"] = ByteString.CopyFromUtf8("binary/protobuf");
-            payload.Metadata["messageType"] = ByteString.CopyFromUtf8(message.Descriptor.FullName);
-            payload.Data = message.ToByteString();
-            if (visitEnvelope != null)
-            {
-                await visitEnvelope(payload).ConfigureAwait(false);
-            }
+            await visit(payload, visitPayload, visitPayloads, visitEnvelope).ConfigureAwait(false);
+            return true;
         }
 
         private static async Task Visit_temporal_api_common_v1_Payloads(

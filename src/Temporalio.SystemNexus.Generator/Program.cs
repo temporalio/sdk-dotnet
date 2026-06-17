@@ -103,10 +103,10 @@ static void GeneratePayloadVisitorRegistry(string operationsPath, string descrip
         message => message);
     var operationMessages = operations.Select(operation =>
         new OperationMessages(
-            operation,
             GetMessage(messagesByCsharpType, operation.InputType),
             GetMessage(messagesByCsharpType, operation.OutputType))).ToList();
     var containsPayloadMemo = new Dictionary<string, bool>();
+    var emittedVisitors = new HashSet<string>();
     var emittedMethods = new HashSet<string>();
     var builder = new StringBuilder();
 
@@ -115,75 +115,26 @@ static void GeneratePayloadVisitorRegistry(string operationsPath, string descrip
     builder.AppendLine("#nullable enable");
     builder.AppendLine();
     builder.AppendLine("using System;");
+    builder.AppendLine("using System.Collections.Generic;");
     builder.AppendLine("using System.Threading.Tasks;");
-    builder.AppendLine("using Google.Protobuf;");
-    builder.AppendLine("using Google.Protobuf.Collections;");
     builder.AppendLine("using Temporalio.Api.Common.V1;");
-    builder.AppendLine("using Temporalio.Converters;");
     builder.AppendLine($"using {generatedNamespace};");
     builder.AppendLine();
     builder.AppendLine("namespace Temporalio.Worker");
     builder.AppendLine("{");
-    builder.AppendLine("    internal static class SystemNexusPayloadVisitor");
+    builder.AppendLine("    internal static partial class SystemNexusPayloadVisitor");
     builder.AppendLine("    {");
-    builder.AppendLine("        internal delegate Task PayloadVisitor(Payload payload);");
-    builder.AppendLine("        internal delegate Task PayloadsVisitor(RepeatedField<Payload> payloads);");
-    builder.AppendLine("        internal delegate Task EnvelopeVisitor(Payload payload);");
-    builder.AppendLine();
-    builder.AppendLine("        private static readonly BinaryProtoConverter ProtoPayloadConverter = new();");
-    builder.AppendLine();
-    builder.AppendLine("        internal static bool TryToInputPayload(");
-    builder.AppendLine("            string service,");
-    builder.AppendLine("            string operation,");
-    builder.AppendLine("            object? value,");
-    builder.AppendLine("            out Payload payload)");
-    builder.AppendLine("        {");
-    builder.AppendLine("            payload = null!;");
-    builder.AppendLine("            if (!NexGenOperationRegistry.Operations.ContainsKey((service, operation)))");
+    builder.AppendLine("        private static readonly IReadOnlyDictionary<Type, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>> EnvelopeVisitors =");
+    builder.AppendLine("            new Dictionary<Type, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>>");
     builder.AppendLine("            {");
-    builder.AppendLine("                return false;");
-    builder.AppendLine("            }");
-    builder.AppendLine();
 
     foreach (var operation in operationMessages)
     {
-        var serviceLiteral = CsharpLiteral(operation.Operation.Service);
-        var operationLiteral = CsharpLiteral(operation.Operation.Operation);
-        builder.AppendLine(
-            $"            if (service == {serviceLiteral} && operation == {operationLiteral})");
-        builder.AppendLine("            {");
-        builder.AppendLine($"                if (value is not {operation.Input.CsharpType} typedValue)");
-        builder.AppendLine("                {");
-        builder.AppendLine("                    return false;");
-        builder.AppendLine("                }");
-        builder.AppendLine();
-        builder.AppendLine("                ProtoPayloadConverter.TryToPayload(typedValue, out var converted);");
-        builder.AppendLine("                payload = converted!;");
-        builder.AppendLine("                return true;");
-        builder.AppendLine("            }");
-        builder.AppendLine();
+        EmitEnvelopeVisitor(builder, operation.Input, emittedVisitors);
+        EmitEnvelopeVisitor(builder, operation.Output, emittedVisitors);
     }
 
-    builder.AppendLine("            return false;");
-    builder.AppendLine("        }");
-    builder.AppendLine();
-    builder.AppendLine("        internal static Task<bool> TryVisitInputAsync(");
-    builder.AppendLine("            string service,");
-    builder.AppendLine("            string operation,");
-    builder.AppendLine("            Payload payload,");
-    builder.AppendLine("            PayloadVisitor visitPayload,");
-    builder.AppendLine("            PayloadsVisitor visitPayloads,");
-    builder.AppendLine("            EnvelopeVisitor? visitEnvelope = null) =>");
-    builder.AppendLine("            TryVisitAsync(service, operation, input: true, payload, visitPayload, visitPayloads, visitEnvelope);");
-    builder.AppendLine();
-    builder.AppendLine("        internal static Task<bool> TryVisitOutputAsync(");
-    builder.AppendLine("            string service,");
-    builder.AppendLine("            string operation,");
-    builder.AppendLine("            Payload payload,");
-    builder.AppendLine("            PayloadVisitor visitPayload,");
-    builder.AppendLine("            PayloadsVisitor visitPayloads,");
-    builder.AppendLine("            EnvelopeVisitor? visitEnvelope = null) =>");
-    builder.AppendLine("            TryVisitAsync(service, operation, input: false, payload, visitPayload, visitPayloads, visitEnvelope);");
+    builder.AppendLine("            };");
     builder.AppendLine();
     builder.AppendLine("        private static async Task<bool> TryVisitAsync(");
     builder.AppendLine("            string service,");
@@ -194,58 +145,18 @@ static void GeneratePayloadVisitorRegistry(string operationsPath, string descrip
     builder.AppendLine("            PayloadsVisitor visitPayloads,");
     builder.AppendLine("            EnvelopeVisitor? visitEnvelope)");
     builder.AppendLine("        {");
-    builder.AppendLine("            if (!NexGenOperationRegistry.Operations.ContainsKey((service, operation)))");
+    builder.AppendLine("            if (!NexGenOperationRegistry.Operations.TryGetValue((service, operation), out var definition))");
     builder.AppendLine("            {");
     builder.AppendLine("                return false;");
     builder.AppendLine("            }");
     builder.AppendLine();
-
-    foreach (var operation in operationMessages)
-    {
-        var serviceLiteral = CsharpLiteral(operation.Operation.Service);
-        var operationLiteral = CsharpLiteral(operation.Operation.Operation);
-        builder.AppendLine(
-            $"            if (service == {serviceLiteral} && operation == {operationLiteral})");
-        builder.AppendLine("            {");
-        builder.AppendLine("                if (input)");
-        builder.AppendLine("                {");
-        builder.AppendLine(
-            $"                    await VisitEnvelopeAsync<{operation.Input.CsharpType}>(payload, {VisitMethodName(operation.Input)}, visitPayload, visitPayloads, visitEnvelope).ConfigureAwait(false);");
-        builder.AppendLine("                }");
-        builder.AppendLine("                else");
-        builder.AppendLine("                {");
-        builder.AppendLine(
-            $"                    await VisitEnvelopeAsync<{operation.Output.CsharpType}>(payload, {VisitMethodName(operation.Output)}, visitPayload, visitPayloads, visitEnvelope).ConfigureAwait(false);");
-        builder.AppendLine("                }");
-        builder.AppendLine();
-        builder.AppendLine("                return true;");
-        builder.AppendLine("            }");
-        builder.AppendLine();
-    }
-
-    builder.AppendLine("            return false;");
-    builder.AppendLine("        }");
-    builder.AppendLine();
-    builder.AppendLine("        private static async Task VisitEnvelopeAsync<T>(");
-    builder.AppendLine("            Payload payload,");
-    builder.AppendLine("            Func<T, PayloadVisitor, PayloadsVisitor, Task> visitMessage,");
-    builder.AppendLine("            PayloadVisitor visitPayload,");
-    builder.AppendLine("            PayloadsVisitor visitPayloads,");
-    builder.AppendLine("            EnvelopeVisitor? visitEnvelope)");
-    builder.AppendLine("            where T : IMessage<T>, new()");
-    builder.AppendLine("        {");
-    builder.AppendLine("            BinaryProtoConverter.AssertProtoPayload(payload, typeof(T));");
-    builder.AppendLine("            var message = new T();");
-    builder.AppendLine("            message.MergeFrom(payload.Data);");
-    builder.AppendLine("            await visitMessage(message, visitPayload, visitPayloads).ConfigureAwait(false);");
-    builder.AppendLine("            payload.Metadata.Clear();");
-    builder.AppendLine("            payload.Metadata[\"encoding\"] = ByteString.CopyFromUtf8(\"binary/protobuf\");");
-    builder.AppendLine("            payload.Metadata[\"messageType\"] = ByteString.CopyFromUtf8(message.Descriptor.FullName);");
-    builder.AppendLine("            payload.Data = message.ToByteString();");
-    builder.AppendLine("            if (visitEnvelope != null)");
+    builder.AppendLine("            if (!EnvelopeVisitors.TryGetValue(input ? definition.InputType : definition.OutputType, out var visit))");
     builder.AppendLine("            {");
-    builder.AppendLine("                await visitEnvelope(payload).ConfigureAwait(false);");
+    builder.AppendLine("                return false;");
     builder.AppendLine("            }");
+    builder.AppendLine();
+    builder.AppendLine("            await visit(payload, visitPayload, visitPayloads, visitEnvelope).ConfigureAwait(false);");
+    builder.AppendLine("            return true;");
     builder.AppendLine("        }");
     builder.AppendLine();
 
@@ -266,22 +177,19 @@ static List<OperationInfo> ParseOperations(string serviceSource)
     var operations = new List<OperationInfo>();
     var serviceMatches = Regex.Matches(
         serviceSource,
-        @"\[NexusService\(""(?<service>[^""]+)""\)\]\s+internal\s+interface\s+\w+\s*\{(?<body>.*?)^\s*\}",
+        @"\[NexusService\(""[^""]+""\)\]\s+internal\s+interface\s+\w+\s*\{(?<body>.*?)^\s*\}",
         RegexOptions.Multiline | RegexOptions.Singleline,
         TimeSpan.FromSeconds(5));
     foreach (Match serviceMatch in serviceMatches)
     {
-        var service = serviceMatch.Groups["service"].Value;
         var operationMatches = Regex.Matches(
             serviceMatch.Groups["body"].Value,
-            @"\[NexusOperation\(""(?<operation>[^""]+)""\)\]\s+(?<output>[A-Za-z0-9_.:]+)\s+\w+\((?<input>[A-Za-z0-9_.:]+)\s+\w+\);",
+            @"\[NexusOperation\(""[^""]+""\)\]\s+(?<output>[A-Za-z0-9_.:]+)\s+\w+\((?<input>[A-Za-z0-9_.:]+)\s+\w+\);",
             RegexOptions.Multiline,
             TimeSpan.FromSeconds(5));
         foreach (Match operationMatch in operationMatches)
         {
             operations.Add(new OperationInfo(
-                service,
-                operationMatch.Groups["operation"].Value,
                 NormalizeTypeName(operationMatch.Groups["input"].Value),
                 NormalizeTypeName(operationMatch.Groups["output"].Value)));
         }
@@ -338,6 +246,25 @@ static MessageInfo GetMessage(
     }
 
     return message;
+}
+
+static void EmitEnvelopeVisitor(
+    StringBuilder builder,
+    MessageInfo message,
+    HashSet<string> emittedVisitors)
+{
+    if (!emittedVisitors.Add(message.FullName))
+    {
+        return;
+    }
+
+    builder.AppendLine($"                [typeof({message.CsharpType})] = (payload, visitPayload, visitPayloads, visitEnvelope) =>");
+    builder.AppendLine($"                    VisitEnvelopeAsync<{message.CsharpType}>(");
+    builder.AppendLine("                        payload,");
+    builder.AppendLine($"                        {VisitMethodName(message)},");
+    builder.AppendLine("                        visitPayload,");
+    builder.AppendLine("                        visitPayloads,");
+    builder.AppendLine("                        visitEnvelope),");
 }
 
 static void EmitVisitMethod(
@@ -660,10 +587,8 @@ static string UniqueLocalName(MessageInfo message, FieldDescriptorProto field, s
 static string NormalizeTypeName(string typeName) =>
     typeName.StartsWith("global::", StringComparison.Ordinal) ? typeName["global::".Length..] : typeName;
 
-static string CsharpLiteral(string value) => "@\"" + value.Replace("\"", "\"\"", StringComparison.Ordinal) + "\"";
+internal sealed record OperationInfo(string InputType, string OutputType);
 
-internal sealed record OperationInfo(string Service, string Operation, string InputType, string OutputType);
-
-internal sealed record OperationMessages(OperationInfo Operation, MessageInfo Input, MessageInfo Output);
+internal sealed record OperationMessages(MessageInfo Input, MessageInfo Output);
 
 internal sealed record MessageInfo(string FullName, string CsharpType, DescriptorProto Descriptor);
