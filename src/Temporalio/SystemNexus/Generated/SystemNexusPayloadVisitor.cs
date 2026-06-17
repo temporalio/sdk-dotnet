@@ -12,7 +12,7 @@ using Temporalio.Workflows;
 
 namespace Temporalio.Worker
 {
-    internal static class SystemNexusPayloadVisitorRegistry
+    internal static class SystemNexusPayloadVisitor
     {
         internal delegate Task PayloadVisitor(Payload payload);
         internal delegate Task PayloadsVisitor(RepeatedField<Payload> payloads);

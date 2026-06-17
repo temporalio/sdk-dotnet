@@ -2585,7 +2585,7 @@ namespace Temporalio.Worker
                 var payloadConverter = instance.payloadConverterNoContext;
 
                 var seq = ++instance.nexusOperationCounter;
-                var inputPayload = SystemNexusPayloadVisitorRegistry.TryToInputPayload(
+                var inputPayload = SystemNexusPayloadVisitor.TryToInputPayload(
                     input.Service,
                     input.OperationName,
                     input.Arg,

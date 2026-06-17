@@ -128,7 +128,7 @@ namespace Temporalio.Worker
                             var operationInfo = context.Instance?.GetPendingNexusOperationInfo(
                                 job.ResolveNexusOperation.Seq);
                             if (operationInfo == null ||
-                                !await SystemNexusPayloadVisitorRegistry.TryVisitOutputAsync(
+                                !await SystemNexusPayloadVisitor.TryVisitOutputAsync(
                                     operationInfo.Service,
                                     operationInfo.Operation,
                                     job.ResolveNexusOperation.Result.Completed,
@@ -348,7 +348,7 @@ namespace Temporalio.Worker
                     codec = context.CodecNoContext;
                     if (cmd.ScheduleNexusOperation.Input != null && codec != null)
                     {
-                        if (!await SystemNexusPayloadVisitorRegistry.TryVisitInputAsync(
+                        if (!await SystemNexusPayloadVisitor.TryVisitInputAsync(
                                 cmd.ScheduleNexusOperation.Service,
                                 cmd.ScheduleNexusOperation.Operation,
                                 cmd.ScheduleNexusOperation.Input,

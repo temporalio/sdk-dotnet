@@ -124,7 +124,7 @@ static void GeneratePayloadVisitorRegistry(string operationsPath, string descrip
     builder.AppendLine();
     builder.AppendLine("namespace Temporalio.Worker");
     builder.AppendLine("{");
-    builder.AppendLine("    internal static class SystemNexusPayloadVisitorRegistry");
+    builder.AppendLine("    internal static class SystemNexusPayloadVisitor");
     builder.AppendLine("    {");
     builder.AppendLine("        internal delegate Task PayloadVisitor(Payload payload);");
     builder.AppendLine("        internal delegate Task PayloadsVisitor(RepeatedField<Payload> payloads);");
@@ -258,7 +258,7 @@ static void GeneratePayloadVisitorRegistry(string operationsPath, string descrip
     builder.AppendLine("    }");
     builder.AppendLine("}");
 
-    File.WriteAllText(Path.Combine(generatedDir, "SystemNexusPayloadVisitorRegistry.cs"), builder.ToString());
+    File.WriteAllText(Path.Combine(generatedDir, "SystemNexusPayloadVisitor.cs"), builder.ToString());
 }
 
 static List<OperationInfo> ParseOperations(string serviceSource)

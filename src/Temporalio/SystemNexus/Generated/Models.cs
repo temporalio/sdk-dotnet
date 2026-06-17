@@ -178,7 +178,7 @@ namespace Temporalio.Workflows
 
     }
 
-    public class UserMetadata
+    internal class UserMetadata
     {
         /// <summary>
         /// Single-line fixed summary for the workflow execution that may appear in UI and CLI. This can be in single-line Temporal Markdown format.
