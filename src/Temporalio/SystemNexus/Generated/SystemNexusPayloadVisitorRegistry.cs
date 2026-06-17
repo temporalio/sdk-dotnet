@@ -8,7 +8,7 @@ using Google.Protobuf;
 using Google.Protobuf.Collections;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
-using NexGen.WorkflowService;
+using Temporalio.Workflows;
 
 namespace Temporalio.Worker
 {

@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using NexGen.Support;
 
-namespace NexGen.WorkflowService
+namespace Temporalio.Workflows
 {
 
     /// <summary>

@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using NexusRpc;
 
-namespace NexGen.WorkflowService
+namespace Temporalio.Workflows
 {
 
     [NexusService("temporal.api.workflowservice.v1.WorkflowService")]

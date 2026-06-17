@@ -13,7 +13,6 @@ using Google.Protobuf.WellKnownTypes;
 using Temporalio.Converters;
 using Temporalio.Workflows;
 
-using NexGen.WorkflowService;
 namespace Temporalio.Workflows
 {
 

@@ -15,7 +15,6 @@ var operationsPath = Path.Join(outputDir, "Operations.cs");
 EnsureNexGen();
 BuildDescriptor();
 GenerateNexusApi();
-TransformOperationsFile(operationsPath);
 GeneratePayloadVisitorRegistry(operationsPath, descriptorPath);
 return 0;
 
@@ -74,41 +73,6 @@ void GenerateNexusApi()
             "--output",
             outputDir,
         });
-}
-
-static void TransformOperationsFile(string operationsPath)
-{
-    var source = File.ReadAllText(operationsPath);
-    var namespaceMatch = Regex.Match(
-        source,
-        @"namespace\s+(?<namespace>[A-Za-z0-9_.]+)\s*\{",
-        RegexOptions.Multiline);
-    if (!namespaceMatch.Success)
-    {
-        throw new InvalidOperationException($"No generated namespace found in {operationsPath}");
-    }
-
-    var generatedNamespace = namespaceMatch.Groups["namespace"].Value;
-    source = EnsureUsing(source, generatedNamespace);
-    source = Regex.Replace(
-        source,
-        @"namespace\s+" + Regex.Escape(generatedNamespace) + @"\s*\{",
-        "namespace Temporalio.Workflows\n{",
-        RegexOptions.Multiline,
-        TimeSpan.FromSeconds(5));
-    source = Regex.Replace(
-        source,
-        @"public\s+static\s+class\s+\w+Operations\b",
-        "public static partial class Workflow",
-        RegexOptions.Multiline,
-        TimeSpan.FromSeconds(5));
-
-    if (!source.Contains("public static partial class Workflow", StringComparison.Ordinal))
-    {
-        throw new InvalidOperationException($"No generated operations class found in {operationsPath}");
-    }
-
-    File.WriteAllText(operationsPath, source);
 }
 
 static void GeneratePayloadVisitorRegistry(string operationsPath, string descriptorPath)
@@ -697,24 +661,6 @@ static string NormalizeTypeName(string typeName) =>
     typeName.StartsWith("global::", StringComparison.Ordinal) ? typeName["global::".Length..] : typeName;
 
 static string CsharpLiteral(string value) => "@\"" + value.Replace("\"", "\"\"", StringComparison.Ordinal) + "\"";
-
-static string EnsureUsing(string source, string namespaceName)
-{
-    if (Regex.IsMatch(source, @"using\s+" + Regex.Escape(namespaceName) + @"\s*;"))
-    {
-        return source;
-    }
-
-    var lastUsing = Regex.Matches(source, @"^using\s+[A-Za-z0-9_.]+;\s*$", RegexOptions.Multiline)
-        .Cast<Match>()
-        .LastOrDefault();
-    if (lastUsing == null)
-    {
-        throw new InvalidOperationException("No using directives found in generated operations file");
-    }
-
-    return source.Insert(lastUsing.Index + lastUsing.Length, Environment.NewLine + "using " + namespaceName + ";");
-}
 
 internal sealed record OperationInfo(string Service, string Operation, string InputType, string OutputType);
 
