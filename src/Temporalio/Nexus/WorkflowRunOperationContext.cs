@@ -31,7 +31,8 @@ namespace Temporalio.Nexus
         /// </summary>
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <param name="workflowRunCall">Invocation of workflow run method with no result.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <param name="options">Start workflow options. ID is required; TaskQueue defaults to
+        /// the operation's task queue when omitted.</param>
         /// <returns>Nexus workflow run handle to return in handle factory.</returns>
         public Task<NexusWorkflowRunHandle> StartWorkflowAsync<TWorkflow>(
             Expression<Func<TWorkflow, Task>> workflowRunCall, WorkflowOptions options)
@@ -49,7 +50,8 @@ namespace Temporalio.Nexus
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <typeparam name="TResult">Workflow result type.</typeparam>
         /// <param name="workflowRunCall">Invocation of workflow run method with a result.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <param name="options">Start workflow options. ID is required; TaskQueue defaults to
+        /// the operation's task queue when omitted.</param>
         /// <returns>Nexus workflow run handle to return in handle factory.</returns>
         public Task<NexusWorkflowRunHandle<TResult>> StartWorkflowAsync<TWorkflow, TResult>(
             Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall, WorkflowOptions options)
@@ -66,7 +68,8 @@ namespace Temporalio.Nexus
         /// </summary>
         /// <param name="workflow">Workflow type name.</param>
         /// <param name="args">Arguments for the workflow.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <param name="options">Start workflow options. ID is required; TaskQueue defaults to
+        /// the operation's task queue when omitted.</param>
         /// <returns>Nexus workflow run handle to return in handle factory.</returns>
 #pragma warning disable CA1822 // We don't want this static
         public Task<NexusWorkflowRunHandle> StartWorkflowAsync(
@@ -88,7 +91,8 @@ namespace Temporalio.Nexus
         /// <typeparam name="TResult">Result type.</typeparam>
         /// <param name="workflow">Workflow type name.</param>
         /// <param name="args">Arguments for the workflow.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <param name="options">Start workflow options. ID is required; TaskQueue defaults to
+        /// the operation's task queue when omitted.</param>
         /// <returns>Nexus workflow run handle to return in handle factory.</returns>
 #pragma warning disable CA1822 // We don't want this static
         public async Task<NexusWorkflowRunHandle<TResult>> StartWorkflowAsync<TResult>(

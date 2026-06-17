@@ -33,6 +33,44 @@ namespace Temporalio.Nexus
         private static readonly char[] QueryValueSeparator = new[] { '=' };
 
         /// <summary>
+        /// Convert a Nexus link to a Temporal proto link, dispatching by the link's type.
+        /// </summary>
+        /// <param name="link">Nexus link.</param>
+        /// <returns>Proto link with the appropriate variant populated, or <c>null</c> if the type
+        /// is unrecognized.</returns>
+        /// <exception cref="ArgumentException">If the link is malformed for its declared type.</exception>
+        public static Api.Common.V1.Link? ToProtoLink(this NexusLink link)
+        {
+            if (link.Type == Api.Common.V1.Link.Types.WorkflowEvent.Descriptor.FullName)
+            {
+                return new() { WorkflowEvent = link.ToWorkflowEvent() };
+            }
+            if (link.Type == Api.Common.V1.Link.Types.Activity.Descriptor.FullName)
+            {
+                return new() { Activity = link.ToActivity() };
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Convert a Temporal proto link to a Nexus link by dispatching on its variant.
+        /// </summary>
+        /// <param name="link">Proto link.</param>
+        /// <returns>Nexus link, or <c>null</c> if the variant is unrecognized.</returns>
+        public static NexusLink? ToNexusLink(this Api.Common.V1.Link link)
+        {
+            if (link.WorkflowEvent is { } evt)
+            {
+                return evt.ToNexusLink();
+            }
+            if (link.Activity is { } act)
+            {
+                return act.ToNexusLink();
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Convert a workflow event to a Nexus link.
         /// </summary>
         /// <param name="evt">Event to convert.</param>

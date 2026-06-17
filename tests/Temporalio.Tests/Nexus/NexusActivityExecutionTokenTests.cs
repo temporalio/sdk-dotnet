@@ -5,24 +5,35 @@ using System.Text.Json;
 using Temporalio.Nexus;
 using Xunit;
 
-public class NexusActivityExecutionHandleTests
+public class NexusActivityExecutionTokenTests
 {
     [Fact]
-    public void ToToken_RoundTrips()
+    public void Build_RoundTrips()
     {
-        var handle = new NexusActivityExecutionHandle("my-namespace", "my-activity-id", 0);
-        var token = handle.ToToken();
-        var decoded = NexusActivityExecutionHandle.FromToken(token);
+        var token = NexusActivityExecutionToken.Build("my-namespace", "my-activity-id", "my-run-id");
+        var decoded = NexusActivityExecutionToken.Parse(token);
 
         Assert.Equal("my-namespace", decoded.Namespace);
         Assert.Equal("my-activity-id", decoded.ActivityId);
-        Assert.Equal(0, decoded.Version);
+        Assert.Equal("my-run-id", decoded.RunId);
+        Assert.Null(decoded.Version);
     }
 
     [Fact]
-    public void ToToken_UsesBase64Url_NoPadding()
+    public void Build_RoundTripsWithoutRunId()
     {
-        var token = new NexusActivityExecutionHandle("my-ns", "my-aid", 0).ToToken();
+        var token = NexusActivityExecutionToken.Build("ns", "aid", runId: null);
+        var decoded = NexusActivityExecutionToken.Parse(token);
+
+        Assert.Equal("ns", decoded.Namespace);
+        Assert.Equal("aid", decoded.ActivityId);
+        Assert.Null(decoded.RunId);
+    }
+
+    [Fact]
+    public void Build_UsesBase64Url_NoPadding()
+    {
+        var token = NexusActivityExecutionToken.Build("my-ns", "my-aid", "my-rid");
 
         Assert.DoesNotContain("+", token);
         Assert.DoesNotContain("/", token);
@@ -30,57 +41,58 @@ public class NexusActivityExecutionHandleTests
     }
 
     [Fact]
-    public void ToToken_JsonUsesCorrectKeys()
+    public void Build_JsonUsesCorrectKeys()
     {
-        var token = new NexusActivityExecutionHandle("ns", "aid", 0).ToToken();
+        var token = NexusActivityExecutionToken.Build("ns", "aid", "rid");
         var json = Encoding.UTF8.GetString(NexusWorkflowRunHandle.Base64UrlDecode(token));
         using var doc = JsonDocument.Parse(json);
         var root = doc.RootElement;
 
         Assert.Equal(
-            NexusActivityExecutionHandle.ActivityExecutionOperationTokenType,
+            NexusActivityExecutionToken.OperationTokenType,
             root.GetProperty("t").GetInt32());
         Assert.Equal("ns", root.GetProperty("ns").GetString());
         Assert.Equal("aid", root.GetProperty("aid").GetString());
+        Assert.Equal("rid", root.GetProperty("rid").GetString());
     }
 
     [Fact]
-    public void FromToken_RejectsWorkflowRunToken()
+    public void Parse_RejectsWorkflowRunToken()
     {
         // A workflow-run token (t=1) must not parse as activity-execution.
         var wfToken = new NexusWorkflowRunHandle("ns", "wid", 0).ToToken();
-        Assert.Throws<ArgumentException>(() => NexusActivityExecutionHandle.FromToken(wfToken));
+        Assert.Throws<ArgumentException>(() => NexusActivityExecutionToken.Parse(wfToken));
     }
 
     [Fact]
-    public void FromToken_RejectsMissingActivityId()
+    public void Parse_RejectsMissingActivityId()
     {
         var json = """{"t":2,"ns":"ns"}""";
         var token = NexusWorkflowRunHandle.Base64UrlEncode(Encoding.UTF8.GetBytes(json));
-        Assert.Throws<ArgumentException>(() => NexusActivityExecutionHandle.FromToken(token));
+        Assert.Throws<ArgumentException>(() => NexusActivityExecutionToken.Parse(token));
     }
 
     [Fact]
-    public void FromToken_RejectsUnsupportedVersion()
+    public void Parse_RejectsUnsupportedVersion()
     {
         var json = """{"t":2,"ns":"ns","aid":"aid","v":1}""";
         var token = NexusWorkflowRunHandle.Base64UrlEncode(Encoding.UTF8.GetBytes(json));
-        Assert.Throws<ArgumentException>(() => NexusActivityExecutionHandle.FromToken(token));
+        Assert.Throws<ArgumentException>(() => NexusActivityExecutionToken.Parse(token));
     }
 
     [Fact]
-    public void FromToken_RejectsInvalidBase64()
+    public void Parse_RejectsInvalidBase64()
     {
         Assert.Throws<ArgumentException>(
-            () => NexusActivityExecutionHandle.FromToken("!!!invalid!!!"));
+            () => NexusActivityExecutionToken.Parse("!!!invalid!!!"));
     }
 
     [Fact]
     public void LoadTokenType_DetectsActivityToken()
     {
-        var token = new NexusActivityExecutionHandle("ns", "aid", 0).ToToken();
+        var token = NexusActivityExecutionToken.Build("ns", "aid", "rid");
         Assert.Equal(
-            NexusActivityExecutionHandle.ActivityExecutionOperationTokenType,
+            NexusActivityExecutionToken.OperationTokenType,
             NexusWorkflowRunHandle.LoadTokenType(token));
     }
 
@@ -108,12 +120,13 @@ public class NexusActivityExecutionHandleTests
     }
 
     [Fact]
-    public void ToToken_SpecialCharactersRoundTrip()
+    public void Build_SpecialCharactersRoundTrip()
     {
-        var handle = new NexusActivityExecutionHandle("ns/with+special", "aid?id=1&foo=bar", 0);
-        var decoded = NexusActivityExecutionHandle.FromToken(handle.ToToken());
+        var token = NexusActivityExecutionToken.Build("ns/with+special", "aid?id=1&foo=bar", "rid/with+special");
+        var decoded = NexusActivityExecutionToken.Parse(token);
 
         Assert.Equal("ns/with+special", decoded.Namespace);
         Assert.Equal("aid?id=1&foo=bar", decoded.ActivityId);
+        Assert.Equal("rid/with+special", decoded.RunId);
     }
 }

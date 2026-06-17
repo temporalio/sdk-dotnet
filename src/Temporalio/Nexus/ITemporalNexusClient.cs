@@ -45,7 +45,8 @@ namespace Temporalio.Nexus
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <typeparam name="TResult">Workflow result type.</typeparam>
         /// <param name="workflowRunCall">Invocation of workflow run method with a result.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <param name="options">Start workflow options. ID is required; TaskQueue defaults to
+        /// the operation's task queue when omitted.</param>
         /// <returns>An async operation result containing the workflow-run token.</returns>
         Task<TemporalOperationResult<TResult>> StartWorkflowAsync<TWorkflow, TResult>(
             Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall, WorkflowOptions options);
@@ -56,7 +57,8 @@ namespace Temporalio.Nexus
         /// </summary>
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <param name="workflowRunCall">Invocation of workflow run method with no result.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <param name="options">Start workflow options. ID is required; TaskQueue defaults to
+        /// the operation's task queue when omitted.</param>
         /// <returns>An async operation result containing the workflow-run token.</returns>
         Task<TemporalOperationResult<NoValue>> StartWorkflowAsync<TWorkflow>(
             Expression<Func<TWorkflow, Task>> workflowRunCall, WorkflowOptions options);
@@ -68,7 +70,8 @@ namespace Temporalio.Nexus
         /// <typeparam name="TResult">Workflow result type.</typeparam>
         /// <param name="workflow">Workflow type name.</param>
         /// <param name="args">Arguments for the workflow.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <param name="options">Start workflow options. ID is required; TaskQueue defaults to
+        /// the operation's task queue when omitted.</param>
         /// <returns>An async operation result containing the workflow-run token.</returns>
         Task<TemporalOperationResult<TResult>> StartWorkflowAsync<TResult>(
             string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options);

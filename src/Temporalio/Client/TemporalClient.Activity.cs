@@ -12,6 +12,7 @@ using Temporalio.Client.Interceptors;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
+using Temporalio.Nexus;
 
 #if NETCOREAPP3_0_OR_GREATER
 using System.Runtime.CompilerServices;
@@ -182,6 +183,11 @@ namespace Temporalio.Client
 
                     var resp = await Client.Connection.WorkflowService.StartActivityExecutionAsync(
                         req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
+                    if (NexusOperationExecutionContext.HasCurrent &&
+                        resp.Link?.ToNexusLink() is { } nexusLink)
+                    {
+                        NexusOperationExecutionContext.Current.HandlerContext.OutboundLinks.Add(nexusLink);
+                    }
                     return new ActivityHandle<TResult>(
                         Client: Client,
                         Id: input.Options.Id!,

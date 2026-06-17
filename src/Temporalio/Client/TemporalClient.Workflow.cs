@@ -14,6 +14,7 @@ using Temporalio.Client.Interceptors;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
+using Temporalio.Nexus;
 
 #if NETCOREAPP3_0_OR_GREATER
 using System.Runtime.CompilerServices;
@@ -739,6 +740,19 @@ namespace Temporalio.Client
                     }
                     var resp = await Client.Connection.WorkflowService.StartWorkflowExecutionAsync(
                         req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
+                    if (NexusOperationExecutionContext.HasCurrent)
+                    {
+                        // Prefer the link returned by the server; fall back to a
+                        // WorkflowExecutionStarted link for older servers that don't populate it.
+                        var nexusLink = resp.Link?.ToNexusLink() ?? new Link.Types.WorkflowEvent
+                        {
+                            Namespace = req.Namespace,
+                            WorkflowId = req.WorkflowId,
+                            RunId = resp.RunId,
+                            EventRef = new() { EventId = 1, EventType = EventType.WorkflowExecutionStarted },
+                        }.ToNexusLink();
+                        NexusOperationExecutionContext.Current.HandlerContext.OutboundLinks.Add(nexusLink);
+                    }
                     return new WorkflowHandle<TWorkflow, TResult>(
                         Client: Client,
                         Id: req.WorkflowId,
