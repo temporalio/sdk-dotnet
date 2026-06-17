@@ -1,20 +1,80 @@
+using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using Google.Protobuf.Reflection;
 
-if (args.Length != 2)
-{
-    Console.Error.WriteLine(
-        "Usage: Temporalio.SystemNexus.Generator <generated-operations.cs> <descriptor-set.bin>");
-    return 2;
-}
+var currFile = new StackTrace(true).GetFrame(0)?.GetFileName();
+var projectDir = Path.GetFullPath(Path.Join(currFile, "../../../"));
+var generatorDir = Path.Join(projectDir, "src/Temporalio.SystemNexus.Generator");
+var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/crates/protos/protos");
+var apiProtoDir = Path.Join(protoDir, "api_upstream");
+var descriptorPath = Path.Join(generatorDir, "obj/SystemNexus/temporal_api.bin");
+var outputDir = Path.Join(projectDir, "src/Temporalio/SystemNexus/Generated");
+var operationsPath = Path.Join(outputDir, "Operations.cs");
 
-var operationsPath = args[0];
-var descriptorPath = args[1];
-
+EnsureNexGen();
+BuildDescriptor();
+GenerateNexusApi();
 TransformOperationsFile(operationsPath);
 GeneratePayloadVisitorRegistry(operationsPath, descriptorPath);
 return 0;
+
+void EnsureNexGen()
+{
+    var nexGenCommand = NexGenCommand();
+    if (RunProcess(nexGenCommand, new[] { "help" }, ignoreExitCode: true) == 0)
+    {
+        return;
+    }
+
+    if (Environment.GetEnvironmentVariable("NEX_GEN_BIN") is { Length: > 0 })
+    {
+        throw new InvalidOperationException($"Unable to run nex-gen command {nexGenCommand}");
+    }
+
+    RunProcess("cargo", new[] { "install", "--locked", "nex-gen", "--force" });
+}
+
+void BuildDescriptor()
+{
+    Directory.CreateDirectory(Path.GetDirectoryName(descriptorPath)!);
+    RunProcess(
+        "protoc",
+        new[]
+        {
+            "-I=" + apiProtoDir,
+            "-I=" + protoDir,
+            "--include_imports",
+            "--descriptor_set_out=" + descriptorPath,
+            Path.Join(apiProtoDir, "temporal/api/workflowservice/v1/request_response.proto"),
+        });
+}
+
+void GenerateNexusApi()
+{
+    if (Directory.Exists(outputDir))
+    {
+        new DirectoryInfo(outputDir).Delete(true);
+    }
+
+    Directory.CreateDirectory(outputDir);
+    RunProcess(
+        NexGenCommand(),
+        new[]
+        {
+            "generate",
+            "--lang",
+            "dotnet",
+            "--input",
+            Path.Join(generatorDir, "wit/workflow-service.wit"),
+            "--input",
+            Path.Join(generatorDir, "wit/deps"),
+            "--descriptors",
+            descriptorPath,
+            "--output",
+            outputDir,
+        });
+}
 
 static void TransformOperationsFile(string operationsPath)
 {
@@ -600,6 +660,35 @@ static string PropertyName(string protoName, string messageName)
     var propertyName = builder.ToString();
     return propertyName == messageName ? propertyName + "_" : propertyName;
 }
+
+static int RunProcess(string fileName, IEnumerable<string> arguments, bool ignoreExitCode = false)
+{
+    var process = new Process
+    {
+        StartInfo =
+        {
+            FileName = fileName,
+            UseShellExecute = false,
+        },
+    };
+    foreach (var argument in arguments)
+    {
+        process.StartInfo.ArgumentList.Add(argument);
+    }
+
+    Console.WriteLine("Running {0} {1}", fileName, string.Join(" ", arguments));
+    process.Start();
+    process.WaitForExit();
+    if (!ignoreExitCode && process.ExitCode != 0)
+    {
+        throw new InvalidOperationException($"{fileName} failed with exit code {process.ExitCode}");
+    }
+
+    return process.ExitCode;
+}
+
+static string NexGenCommand() =>
+    Environment.GetEnvironmentVariable("NEX_GEN_BIN") is { Length: > 0 } value ? value : "nex-gen";
 
 static string UniqueLocalName(MessageInfo message, FieldDescriptorProto field, string prefix) =>
     $"{prefix}_{Regex.Replace(message.FullName, @"[^A-Za-z0-9_]", "_")}_{field.Number}";

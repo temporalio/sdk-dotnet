@@ -10,11 +10,12 @@
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
     <PackageValidationBaselineVersion></PackageValidationBaselineVersion>
-    <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wit/**/*.cs" />
+    <None Include="wit/**" />
     <PackageReference Include="Google.Protobuf" />
     <PackageReference Remove="Microsoft.VisualStudio.Threading.Analyzers" />
     <PackageReference Remove="StyleCop.Analyzers" />
