@@ -1803,7 +1803,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var nexusExc = Assert.IsType<NexusOperationFailureException>(wfExc.InnerException);
         var handlerExc = Assert.IsType<HandlerException>(nexusExc.InnerException);
         Assert.Equal(HandlerErrorType.BadRequest, handlerExc.ErrorType);
-        Assert.Contains("Activity ID is required", handlerExc.Message);
+        Assert.Contains("ID required to start activity", handlerExc.Message);
     }
 
     [Fact]
