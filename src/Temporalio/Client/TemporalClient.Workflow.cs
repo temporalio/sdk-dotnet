@@ -369,7 +369,7 @@ namespace Temporalio.Client
                         }
                     }
                 }
-                ForwardNexusLinks(req.Links);
+                ForwardNexusRequestLinks(req.Links);
                 var resp = await Client.Connection.WorkflowService.SignalWorkflowExecutionAsync(
                     req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                 CaptureNexusResponseLink(resp.Link);
@@ -766,7 +766,7 @@ namespace Temporalio.Client
                         throw new ArgumentException("Cannot have start signal args without start signal");
                     }
                     // A plain start does not produce a response link.
-                    ForwardNexusLinks(req.Links);
+                    ForwardNexusRequestLinks(req.Links);
                     var resp = await Client.Connection.WorkflowService.StartWorkflowExecutionAsync(
                         req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
                     return new WorkflowHandle<TWorkflow, TResult>(
@@ -809,7 +809,7 @@ namespace Temporalio.Client
                     signalReq.SignalInput.Payloads_.AddRange(
                         await dataConverter.ToPayloadsAsync(input.Options.StartSignalArgs).ConfigureAwait(false));
                 }
-                ForwardNexusLinks(signalReq.Links);
+                ForwardNexusRequestLinks(signalReq.Links);
                 var signalResp = await Client.Connection.WorkflowService.SignalWithStartWorkflowExecutionAsync(
                     signalReq, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
                 CaptureNexusResponseLink(signalResp.SignalLink);
