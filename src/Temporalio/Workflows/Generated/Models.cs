@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using NexGen.Support;
 
 namespace Temporalio.Workflows
 {
@@ -26,7 +25,7 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Workflow type name or workflow expression identifying the workflow to start.
         /// </summary>
-        public string Workflow { get; init; }
+        public string Workflow { get; }
         /// <summary>
         /// Arguments for the workflow.
         /// </summary>
@@ -34,15 +33,15 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Unique identifier for the workflow execution.
         /// </summary>
-        public string Id { get; init; }
+        public string Id { get; }
         /// <summary>
         /// Task queue to run the workflow on.
         /// </summary>
-        public string TaskQueue { get; init; }
+        public string TaskQueue { get; }
         /// <summary>
         /// Signal name or signal expression to send with the start request.
         /// </summary>
-        public string Signal { get; init; }
+        public string Signal { get; }
         /// <summary>
         /// Arguments for the signal.
         /// </summary>
@@ -104,18 +103,18 @@ namespace Temporalio.Workflows
         public Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest ToProto()
         {
             var proto = new Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest();
-            proto.Namespace = NexGen.Support.TemporalWorkflowContext.WorkflowNamespace();
-            proto.WorkflowType = Workflow.ToProto(default(Temporalio.Api.Common.V1.WorkflowType)!);
+            proto.Namespace = TemporalWorkflowContext.WorkflowNamespace();
+            proto.WorkflowType = ProtoExtensions.ToWorkflowTypeProto(Workflow);
             if (Args is { } args)
             {
-                proto.Input = args.ToProto();
+                proto.Input = ProtoExtensions.ToPayloads(args);
             }
             proto.WorkflowId = Id;
-            proto.TaskQueue = TaskQueue.ToProto(default(Temporalio.Api.TaskQueue.V1.TaskQueue)!);
+            proto.TaskQueue = ProtoExtensions.ToTaskQueueProto(TaskQueue);
             proto.SignalName = Signal;
             if (SignalArgs is { } signalArgs)
             {
-                proto.SignalInput = signalArgs.ToProto();
+                proto.SignalInput = ProtoExtensions.ToPayloads(signalArgs);
             }
             if (ExecutionTimeout is { } executionTimeout)
             {
@@ -194,11 +193,11 @@ namespace Temporalio.Workflows
             var proto = new Temporalio.Api.Sdk.V1.UserMetadata();
             if (StaticSummary is { } staticSummary)
             {
-                proto.Summary = staticSummary.ToProto();
+                proto.Summary = ProtoExtensions.ToPayload(staticSummary);
             }
             if (StaticDetails is { } staticDetails)
             {
-                proto.Details = staticDetails.ToProto();
+                proto.Details = ProtoExtensions.ToPayload(staticDetails);
             }
             return proto;
         }

@@ -61,6 +61,10 @@ jobs:
           version: "23.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install nex-gen
+        if: ${{ matrix.checkTarget }}
+        run: cargo install --locked --version 0.1.4 --force nex-gen
+
       - name: Regen confirm unchanged
         if: ${{ matrix.checkTarget }}
         run: |

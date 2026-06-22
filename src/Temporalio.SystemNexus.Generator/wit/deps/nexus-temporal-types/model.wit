@@ -5,11 +5,17 @@ interface model {
   type placeholder = string;
 
   /// @nexus.proto "temporal.api.common.v1.Payload" typescript-package="@temporalio/proto"
-  /// @nexus.type python="typing.Any" typescript="common.Payload" dotnet="object?" typescript-package="@temporalio/common"
+  /// @nexus.type
+  ///   python="typing.Any"
+  ///   typescript="common.Payload"
+  ///   dotnet="object?"
+  ///   dotnet-to="ProtoExtensions.ToPayload"
+  ///   typescript-package="@temporalio/common"
   type payload = placeholder;
 
   /// @nexus.proto "temporal.api.common.v1.Payloads"
   ///   typescript-package="@temporalio/proto"
+  /// @nexus.type dotnet="IReadOnlyCollection<object?>" dotnet-to="ProtoExtensions.ToPayloads"
   type payloads = list<payload>;
 
   /// Callable result annotation for workflow functions.
@@ -40,7 +46,11 @@ interface model {
   signal-call: func(callable-prefix: callable-prefix, signal-args: payloads) -> signal-result;
 
   /// @nexus.proto "temporal.api.common.v1.WorkflowType" typescript-package="@temporalio/proto"
-  /// @nexus.type python="str" typescript="string" dotnet="string"
+  /// @nexus.type
+  ///   python="str"
+  ///   typescript="string"
+  ///   dotnet="string"
+  ///   dotnet-to="ProtoExtensions.ToWorkflowTypeProto"
   type workflow-type = placeholder;
 
   /// @nexus.function
@@ -50,6 +60,7 @@ interface model {
   ///   result-type-parameter="WorkflowResult"
   ///   alternate-type="workflow-type"
   ///   dotnet-name-extractor="TemporalFunctionNames.WorkflowName"
+  ///   dotnet-call-extractor="TemporalFunctionNames.ExtractCall"
   /// @nexus.add-rpc-compatible-with "workflow-type"
   type workflow-function = placeholder;
 
@@ -60,6 +71,7 @@ interface model {
   ///   python-converter="signal_function_to_proto"
   ///   typescript-converter="signalFunctionToProto"
   ///   dotnet-name-extractor="TemporalFunctionNames.SignalName"
+  ///   dotnet-call-extractor="TemporalFunctionNames.ExtractCall"
   /// @nexus.add-rpc-compatible-with "string"
   /// @nexus.typescript-with-arguments
   ///   signature="signal-call"
@@ -80,7 +92,11 @@ interface model {
   type retry-policy = placeholder;
 
   /// @nexus.proto "temporal.api.taskqueue.v1.TaskQueue" typescript-package="@temporalio/proto"
-  /// @nexus.type python="str" typescript="string" dotnet="string"
+  /// @nexus.type
+  ///   python="str"
+  ///   typescript="string"
+  ///   dotnet="string"
+  ///   dotnet-to="ProtoExtensions.ToTaskQueueProto"
   type task-queue = placeholder;
 
   /// @nexus.proto "temporal.api.common.v1.Memo" typescript-package="@temporalio/proto"

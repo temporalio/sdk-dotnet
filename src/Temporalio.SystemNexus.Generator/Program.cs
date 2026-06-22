@@ -9,19 +9,24 @@ var generatorDir = Path.Join(projectDir, "src/Temporalio.SystemNexus.Generator")
 var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/crates/protos/protos");
 var apiProtoDir = Path.Join(protoDir, "api_upstream");
 var descriptorPath = Path.Join(generatorDir, "obj/SystemNexus/temporal_api.bin");
-var outputDir = Path.Join(projectDir, "src/Temporalio/SystemNexus/Generated");
-var operationsPath = Path.Join(outputDir, "Operations.cs");
+var stagingOutputDir = Path.Join(generatorDir, "obj/SystemNexus/Generated");
+var workflowsGeneratedDir = Path.Join(projectDir, "src/Temporalio/Workflows/Generated");
+var workerGeneratedDir = Path.Join(projectDir, "src/Temporalio/Worker/Generated");
+var obsoleteOutputDir = Path.Join(projectDir, "src/Temporalio/SystemNexus/Generated");
+var operationsPath = Path.Join(workflowsGeneratedDir, "Operations.cs");
 
 EnsureNexGen();
 BuildDescriptor();
 GenerateNexusApi();
-GeneratePayloadVisitorRegistry(operationsPath, descriptorPath);
+PostProcessGeneratedNexusApi();
+GeneratePayloadVisitorRegistry(operationsPath, descriptorPath, workerGeneratedDir);
 return 0;
 
 void EnsureNexGen()
 {
     var nexGenCommand = NexGenCommand();
-    if (RunProcess(nexGenCommand, new[] { "help" }, ignoreExitCode: true) == 0)
+    var helpArgs = new[] { "help" };
+    if (RunProcess(nexGenCommand, helpArgs, ignoreExitCode: true) == 0)
     {
         return;
     }
@@ -31,7 +36,8 @@ void EnsureNexGen()
         throw new InvalidOperationException($"Unable to run nex-gen command {nexGenCommand}");
     }
 
-    RunProcess("cargo", new[] { "install", "--locked", "nex-gen", "--force" });
+    var installArgs = new[] { "install", "--locked", "nex-gen", "--force" };
+    RunProcess("cargo", installArgs);
 }
 
 void BuildDescriptor()
@@ -51,12 +57,12 @@ void BuildDescriptor()
 
 void GenerateNexusApi()
 {
-    if (Directory.Exists(outputDir))
+    if (Directory.Exists(stagingOutputDir))
     {
-        new DirectoryInfo(outputDir).Delete(true);
+        new DirectoryInfo(stagingOutputDir).Delete(true);
     }
 
-    Directory.CreateDirectory(outputDir);
+    Directory.CreateDirectory(stagingOutputDir);
     RunProcess(
         NexGenCommand(),
         new[]
@@ -73,11 +79,54 @@ void GenerateNexusApi()
             "--descriptors",
             descriptorPath,
             "--output",
-            outputDir,
+            stagingOutputDir,
         });
 }
 
-static void GeneratePayloadVisitorRegistry(string operationsPath, string descriptorPath)
+void PostProcessGeneratedNexusApi()
+{
+    RecreateDirectory(workflowsGeneratedDir);
+    RecreateDirectory(workerGeneratedDir);
+
+    if (Directory.Exists(obsoleteOutputDir))
+    {
+        new DirectoryInfo(obsoleteOutputDir).Delete(true);
+    }
+
+    WriteWorkflowGeneratedFile("Models.cs");
+    WriteWorkflowGeneratedFile("Operations.cs");
+    WriteWorkflowGeneratedFile("Service.cs");
+    WriteWorkflowGeneratedFile(Path.Join("Support", "TemporalSupport.cs"), "TemporalSupport.cs");
+}
+
+void WriteWorkflowGeneratedFile(string stagingRelativePath, string? outputFileName = null)
+{
+    var sourcePath = Path.Join(stagingOutputDir, stagingRelativePath);
+    var destinationPath = Path.Join(
+        workflowsGeneratedDir,
+        outputFileName ?? Path.GetFileName(stagingRelativePath));
+    var contents = File.ReadAllText(sourcePath);
+    contents = contents.Replace("using NexGen.Support;\n", string.Empty);
+    contents = contents.Replace("using Temporalio.Workflows;\n", string.Empty);
+    contents = contents.Replace("namespace NexGen.Support", "namespace Temporalio.Workflows");
+    contents = contents.Replace("NexGen.Support.", string.Empty);
+    File.WriteAllText(destinationPath, contents);
+}
+
+static void RecreateDirectory(string path)
+{
+    if (Directory.Exists(path))
+    {
+        new DirectoryInfo(path).Delete(true);
+    }
+
+    Directory.CreateDirectory(path);
+}
+
+static void GeneratePayloadVisitorRegistry(
+    string operationsPath,
+    string descriptorPath,
+    string outputDir)
 {
     var generatedDir = Path.GetDirectoryName(operationsPath) ??
         throw new InvalidOperationException($"No directory for {operationsPath}");
@@ -171,7 +220,7 @@ static void GeneratePayloadVisitorRegistry(string operationsPath, string descrip
     builder.AppendLine("    }");
     builder.AppendLine("}");
 
-    File.WriteAllText(Path.Combine(generatedDir, "SystemNexusPayloadVisitor.cs"), builder.ToString());
+    File.WriteAllText(Path.Combine(outputDir, "SystemNexusPayloadVisitor.cs"), builder.ToString());
 }
 
 static List<OperationInfo> ParseOperations(string serviceSource)
@@ -286,17 +335,29 @@ static void EmitVisitMethod(
         EmitVisitMethod(builder, referenced, messages, containsPayloadMemo, emittedMethods);
     }
 
-    builder.AppendLine($"        private static async Task {VisitMethodName(message)}(");
+    var fieldLines = VisitFieldLines(message, messages, containsPayloadMemo).ToList();
+    var hasAwaits = fieldLines.Any(line => line.Contains("await ", StringComparison.Ordinal));
+    builder.Append("        private static ");
+    if (hasAwaits)
+    {
+        builder.Append("async ");
+    }
+
+    builder.AppendLine($"Task {VisitMethodName(message)}(");
     builder.AppendLine($"            {message.CsharpType} value,");
     builder.AppendLine("            PayloadVisitor visitPayload,");
     builder.AppendLine("            PayloadsVisitor visitPayloads)");
     builder.AppendLine("        {");
-    foreach (var line in VisitFieldLines(message, messages, containsPayloadMemo))
+    foreach (var line in fieldLines)
     {
         builder.AppendLine($"            {line}");
     }
 
-    builder.AppendLine("            await Task.CompletedTask.ConfigureAwait(false);");
+    if (!hasAwaits)
+    {
+        builder.AppendLine("            return Task.CompletedTask;");
+    }
+
     builder.AppendLine("        }");
     builder.AppendLine();
 }
@@ -322,6 +383,7 @@ static IEnumerable<MessageInfo> FieldReferencedMessagesWithPayloads(
 {
     if (!TryGetMessage(field.TypeName, messages, out var fieldMessage) ||
         IsPayload(fieldMessage) ||
+        IsPayloads(fieldMessage) ||
         IsSearchAttributes(fieldMessage))
     {
         yield break;
@@ -556,11 +618,12 @@ static string PropertyName(string protoName, string messageName)
 
 static int RunProcess(string fileName, IEnumerable<string> arguments, bool ignoreExitCode = false)
 {
-    var process = new Process
+    using var process = new Process
     {
         StartInfo =
         {
             FileName = fileName,
+            RedirectStandardError = true,
             UseShellExecute = false,
         },
     };
@@ -571,7 +634,13 @@ static int RunProcess(string fileName, IEnumerable<string> arguments, bool ignor
 
     Console.WriteLine("Running {0} {1}", fileName, string.Join(" ", arguments));
     process.Start();
+    var stderr = process.StandardError.ReadToEnd();
     process.WaitForExit();
+    if (stderr.Length > 0)
+    {
+        Console.Error.Write(stderr);
+    }
+
     if (!ignoreExitCode && process.ExitCode != 0)
     {
         throw new InvalidOperationException($"{fileName} failed with exit code {process.ExitCode}");

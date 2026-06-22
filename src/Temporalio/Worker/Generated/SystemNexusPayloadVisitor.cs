@@ -54,18 +54,6 @@ namespace Temporalio.Worker
             return true;
         }
 
-        private static async Task Visit_temporal_api_common_v1_Payloads(
-            global::Temporalio.Api.Common.V1.Payloads value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
-        {
-            foreach (var payload_temporal_api_common_v1_Payloads_1 in value.Payloads_)
-            {
-                await visitPayload(payload_temporal_api_common_v1_Payloads_1).ConfigureAwait(false);
-            }
-            await Task.CompletedTask.ConfigureAwait(false);
-        }
-
         private static async Task Visit_temporal_api_common_v1_Memo(
             global::Temporalio.Api.Common.V1.Memo value,
             PayloadVisitor visitPayload,
@@ -78,7 +66,6 @@ namespace Temporalio.Worker
                     await visitPayload(item_temporal_api_common_v1_Memo_1).ConfigureAwait(false);
                 }
             }
-            await Task.CompletedTask.ConfigureAwait(false);
         }
 
         private static async Task Visit_temporal_api_common_v1_Header(
@@ -93,7 +80,6 @@ namespace Temporalio.Worker
                     await visitPayload(item_temporal_api_common_v1_Header_1).ConfigureAwait(false);
                 }
             }
-            await Task.CompletedTask.ConfigureAwait(false);
         }
 
         private static async Task Visit_temporal_api_sdk_v1_UserMetadata(
@@ -109,7 +95,6 @@ namespace Temporalio.Worker
             {
                 await visitPayload(value.Details).ConfigureAwait(false);
             }
-            await Task.CompletedTask.ConfigureAwait(false);
         }
 
         private static async Task Visit_temporal_api_workflowservice_v1_SignalWithStartWorkflowExecutionRequest(
@@ -137,15 +122,14 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_sdk_v1_UserMetadata(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
             }
-            await Task.CompletedTask.ConfigureAwait(false);
         }
 
-        private static async Task Visit_temporal_api_workflowservice_v1_SignalWithStartWorkflowExecutionResponse(
+        private static Task Visit_temporal_api_workflowservice_v1_SignalWithStartWorkflowExecutionResponse(
             global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse value,
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            await Task.CompletedTask.ConfigureAwait(false);
+            return Task.CompletedTask;
         }
 
     }
