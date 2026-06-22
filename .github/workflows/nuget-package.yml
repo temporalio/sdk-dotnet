@@ -1,10 +1,11 @@
-name: Build Package
+name: NuGet Package
 on:
   push:
     branches:
       - main
       - "releases/*"
   workflow_dispatch: {}
+  workflow_call: {}
 permissions:
   contents: read
 
@@ -70,7 +71,7 @@ jobs:
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           submodules: recursive
 
@@ -144,7 +145,7 @@ jobs:
       RestoreLockedMode: true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           submodules: recursive
 
@@ -154,7 +155,7 @@ jobs:
           path: bridge-libraries
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
+        uses: actions/setup-dotnet@9a946fdbd5fb07b82b2f5a4466058b876ab72bb2 # v5
         with:
           dotnet-version: 10.x
 
@@ -209,7 +210,7 @@ jobs:
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           submodules: recursive
 
@@ -219,44 +220,11 @@ jobs:
           name: nuget-package
           path: ${{ github.workspace }}/nuget-package
 
-      - name: Setup .NET (non-Alpine)
-        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
-        if: ${{ !contains(matrix.os, 'alpine') }}
+      - name: Run smoke test
+        uses: ./.github/actions/smoke-test
         with:
-          # Specific .NET version required because GitHub macos ARM image has
-          # bad pre-installed .NET version
-          dotnet-version: 10.x
-
-      - name: Run smoke test (Alpine)
-        if: ${{ contains(matrix.os, 'alpine') }}
-        # Use Docker specifically for Alpine ARM 64 to avoid JS action limitations
-        run: |
-          docker run --rm -v "$(pwd):/workspace" -w /workspace \
-            mcr.microsoft.com/dotnet/sdk:10.0-alpine \
-            sh -c ' \
-                dotnet add tests/Temporalio.SmokeTest package Temporalio -s "/workspace/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease \
-             && dotnet run --project tests/Temporalio.SmokeTest \
-            '
-
-      - name: Run smoke test (Linux/macOS)
-        if: ${{ !contains(matrix.os, 'alpine') && !contains(matrix.os, 'windows') }}
-        run: |
-          dotnet add tests/Temporalio.SmokeTest package Temporalio -s "$GITHUB_WORKSPACE/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
-          dotnet run --project tests/Temporalio.SmokeTest
-
-      - name: Run smoke test (Windows)
-        if: ${{ contains(matrix.os, 'windows') }}
-        run: |
-          dotnet add tests/Temporalio.SmokeTest package Temporalio -s "$env:GITHUB_WORKSPACE/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
-          dotnet run --project tests/Temporalio.SmokeTest
-
-      - name: Setup msbuild (Windows x64 only)
-        if: ${{ matrix.os == 'windows-latest' }}
-        uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57 # v3
-
-      - name: Run .NET framework smoke test (Windows x64 only)
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          dotnet add tests/Temporalio.SmokeTestDotNetFramework package Temporalio -s "$env:GITHUB_WORKSPACE/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
-          msbuild tests/Temporalio.SmokeTestDotNetFramework -t:restore,build -p:Platform=x64
-          tests/Temporalio.SmokeTestDotNetFramework/bin/x64/Debug/Temporalio.SmokeTestDotNetFramework.exe
+          # Local folder feed (relative to repo root so it resolves both on the
+          # host and inside the Alpine container) plus nuget.org for dependencies.
+          package-source: "nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json"
+          is-alpine: ${{ contains(matrix.os, 'alpine') }}
+          run-dotnet-framework: ${{ matrix.os == 'windows-latest' }}

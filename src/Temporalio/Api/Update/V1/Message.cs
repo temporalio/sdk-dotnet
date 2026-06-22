@@ -38,23 +38,26 @@ namespace Temporalio.Api.Update.V1 {
             "AEIHCgV2YWx1ZSIrCgRNZXRhEhEKCXVwZGF0ZV9pZBgBIAEoCRIQCghpZGVu",
             "dGl0eRgCIAEoCSJ1CgVJbnB1dBIuCgZoZWFkZXIYASABKAsyHi50ZW1wb3Jh",
             "bC5hcGkuY29tbW9uLnYxLkhlYWRlchIMCgRuYW1lGAIgASgJEi4KBGFyZ3MY",
-            "AyABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWRzImMKB1Jl",
-            "cXVlc3QSKgoEbWV0YRgBIAEoCzIcLnRlbXBvcmFsLmFwaS51cGRhdGUudjEu",
-            "TWV0YRIsCgVpbnB1dBgCIAEoCzIdLnRlbXBvcmFsLmFwaS51cGRhdGUudjEu",
-            "SW5wdXQizAEKCVJlamVjdGlvbhIjChtyZWplY3RlZF9yZXF1ZXN0X21lc3Nh",
-            "Z2VfaWQYASABKAkSLAokcmVqZWN0ZWRfcmVxdWVzdF9zZXF1ZW5jaW5nX2V2",
-            "ZW50X2lkGAIgASgDEjkKEHJlamVjdGVkX3JlcXVlc3QYAyABKAsyHy50ZW1w",
-            "b3JhbC5hcGkudXBkYXRlLnYxLlJlcXVlc3QSMQoHZmFpbHVyZRgEIAEoCzIg",
-            "LnRlbXBvcmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUimgEKCkFjY2VwdGFu",
-            "Y2USIwobYWNjZXB0ZWRfcmVxdWVzdF9tZXNzYWdlX2lkGAEgASgJEiwKJGFj",
-            "Y2VwdGVkX3JlcXVlc3Rfc2VxdWVuY2luZ19ldmVudF9pZBgCIAEoAxI5ChBh",
-            "Y2NlcHRlZF9yZXF1ZXN0GAMgASgLMh8udGVtcG9yYWwuYXBpLnVwZGF0ZS52",
-            "MS5SZXF1ZXN0ImgKCFJlc3BvbnNlEioKBG1ldGEYASABKAsyHC50ZW1wb3Jh",
-            "bC5hcGkudXBkYXRlLnYxLk1ldGESMAoHb3V0Y29tZRgCIAEoCzIfLnRlbXBv",
-            "cmFsLmFwaS51cGRhdGUudjEuT3V0Y29tZUKJAQoZaW8udGVtcG9yYWwuYXBp",
-            "LnVwZGF0ZS52MUIMTWVzc2FnZVByb3RvUAFaI2dvLnRlbXBvcmFsLmlvL2Fw",
-            "aS91cGRhdGUvdjE7dXBkYXRlqgIYVGVtcG9yYWxpby5BcGkuVXBkYXRlLlYx",
-            "6gIbVGVtcG9yYWxpbzo6QXBpOjpVcGRhdGU6OlYxYgZwcm90bzM="));
+            "AyABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWRzIuQBCgdS",
+            "ZXF1ZXN0EioKBG1ldGEYASABKAsyHC50ZW1wb3JhbC5hcGkudXBkYXRlLnYx",
+            "Lk1ldGESLAoFaW5wdXQYAiABKAsyHS50ZW1wb3JhbC5hcGkudXBkYXRlLnYx",
+            "LklucHV0EhIKCnJlcXVlc3RfaWQYAyABKAkSPgoUY29tcGxldGlvbl9jYWxs",
+            "YmFja3MYBCADKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkNhbGxiYWNr",
+            "EisKBWxpbmtzGAUgAygLMhwudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5MaW5r",
+            "IswBCglSZWplY3Rpb24SIwobcmVqZWN0ZWRfcmVxdWVzdF9tZXNzYWdlX2lk",
+            "GAEgASgJEiwKJHJlamVjdGVkX3JlcXVlc3Rfc2VxdWVuY2luZ19ldmVudF9p",
+            "ZBgCIAEoAxI5ChByZWplY3RlZF9yZXF1ZXN0GAMgASgLMh8udGVtcG9yYWwu",
+            "YXBpLnVwZGF0ZS52MS5SZXF1ZXN0EjEKB2ZhaWx1cmUYBCABKAsyIC50ZW1w",
+            "b3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlIpoBCgpBY2NlcHRhbmNlEiMK",
+            "G2FjY2VwdGVkX3JlcXVlc3RfbWVzc2FnZV9pZBgBIAEoCRIsCiRhY2NlcHRl",
+            "ZF9yZXF1ZXN0X3NlcXVlbmNpbmdfZXZlbnRfaWQYAiABKAMSOQoQYWNjZXB0",
+            "ZWRfcmVxdWVzdBgDIAEoCzIfLnRlbXBvcmFsLmFwaS51cGRhdGUudjEuUmVx",
+            "dWVzdCJoCghSZXNwb25zZRIqCgRtZXRhGAEgASgLMhwudGVtcG9yYWwuYXBp",
+            "LnVwZGF0ZS52MS5NZXRhEjAKB291dGNvbWUYAiABKAsyHy50ZW1wb3JhbC5h",
+            "cGkudXBkYXRlLnYxLk91dGNvbWVCiQEKGWlvLnRlbXBvcmFsLmFwaS51cGRh",
+            "dGUudjFCDE1lc3NhZ2VQcm90b1ABWiNnby50ZW1wb3JhbC5pby9hcGkvdXBk",
+            "YXRlL3YxO3VwZGF0ZaoCGFRlbXBvcmFsaW8uQXBpLlVwZGF0ZS5WMeoCG1Rl",
+            "bXBvcmFsaW86OkFwaTo6VXBkYXRlOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.UpdateReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -63,7 +66,7 @@ namespace Temporalio.Api.Update.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Update.V1.Outcome), global::Temporalio.Api.Update.V1.Outcome.Parser, new[]{ "Success", "Failure" }, new[]{ "Value" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Update.V1.Meta), global::Temporalio.Api.Update.V1.Meta.Parser, new[]{ "UpdateId", "Identity" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Update.V1.Input), global::Temporalio.Api.Update.V1.Input.Parser, new[]{ "Header", "Name", "Args" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Update.V1.Request), global::Temporalio.Api.Update.V1.Request.Parser, new[]{ "Meta", "Input" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Update.V1.Request), global::Temporalio.Api.Update.V1.Request.Parser, new[]{ "Meta", "Input", "RequestId", "CompletionCallbacks", "Links" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Update.V1.Rejection), global::Temporalio.Api.Update.V1.Rejection.Parser, new[]{ "RejectedRequestMessageId", "RejectedRequestSequencingEventId", "RejectedRequest", "Failure" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Update.V1.Acceptance), global::Temporalio.Api.Update.V1.Acceptance.Parser, new[]{ "AcceptedRequestMessageId", "AcceptedRequestSequencingEventId", "AcceptedRequest" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Update.V1.Response), global::Temporalio.Api.Update.V1.Response.Parser, new[]{ "Meta", "Outcome" }, null, null, null, null)
@@ -1363,6 +1366,9 @@ namespace Temporalio.Api.Update.V1 {
     public Request(Request other) : this() {
       meta_ = other.meta_ != null ? other.meta_.Clone() : null;
       input_ = other.input_ != null ? other.input_.Clone() : null;
+      requestId_ = other.requestId_;
+      completionCallbacks_ = other.completionCallbacks_.Clone();
+      links_ = other.links_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1396,6 +1402,49 @@ namespace Temporalio.Api.Update.V1 {
       }
     }
 
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 3;
+    private string requestId_ = "";
+    /// <summary>
+    /// The request ID of the request.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RequestId {
+      get { return requestId_; }
+      set {
+        requestId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "completion_callbacks" field.</summary>
+    public const int CompletionCallbacksFieldNumber = 4;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Common.V1.Callback> _repeated_completionCallbacks_codec
+        = pb::FieldCodec.ForMessage(34, global::Temporalio.Api.Common.V1.Callback.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Common.V1.Callback> completionCallbacks_ = new pbc::RepeatedField<global::Temporalio.Api.Common.V1.Callback>();
+    /// <summary>
+    /// Callbacks to be called by the server when this update reaches a terminal state.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Common.V1.Callback> CompletionCallbacks {
+      get { return completionCallbacks_; }
+    }
+
+    /// <summary>Field number for the "links" field.</summary>
+    public const int LinksFieldNumber = 5;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Common.V1.Link> _repeated_links_codec
+        = pb::FieldCodec.ForMessage(42, global::Temporalio.Api.Common.V1.Link.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Common.V1.Link> links_ = new pbc::RepeatedField<global::Temporalio.Api.Common.V1.Link>();
+    /// <summary>
+    /// Links to be associated with this update.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Common.V1.Link> Links {
+      get { return links_; }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1413,6 +1462,9 @@ namespace Temporalio.Api.Update.V1 {
       }
       if (!object.Equals(Meta, other.Meta)) return false;
       if (!object.Equals(Input, other.Input)) return false;
+      if (RequestId != other.RequestId) return false;
+      if(!completionCallbacks_.Equals(other.completionCallbacks_)) return false;
+      if(!links_.Equals(other.links_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1422,6 +1474,9 @@ namespace Temporalio.Api.Update.V1 {
       int hash = 1;
       if (meta_ != null) hash ^= Meta.GetHashCode();
       if (input_ != null) hash ^= Input.GetHashCode();
+      if (RequestId.Length != 0) hash ^= RequestId.GetHashCode();
+      hash ^= completionCallbacks_.GetHashCode();
+      hash ^= links_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1448,6 +1503,12 @@ namespace Temporalio.Api.Update.V1 {
         output.WriteRawTag(18);
         output.WriteMessage(Input);
       }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RequestId);
+      }
+      completionCallbacks_.WriteTo(output, _repeated_completionCallbacks_codec);
+      links_.WriteTo(output, _repeated_links_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1466,6 +1527,12 @@ namespace Temporalio.Api.Update.V1 {
         output.WriteRawTag(18);
         output.WriteMessage(Input);
       }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RequestId);
+      }
+      completionCallbacks_.WriteTo(ref output, _repeated_completionCallbacks_codec);
+      links_.WriteTo(ref output, _repeated_links_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1482,6 +1549,11 @@ namespace Temporalio.Api.Update.V1 {
       if (input_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Input);
       }
+      if (RequestId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RequestId);
+      }
+      size += completionCallbacks_.CalculateSize(_repeated_completionCallbacks_codec);
+      size += links_.CalculateSize(_repeated_links_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -1506,6 +1578,11 @@ namespace Temporalio.Api.Update.V1 {
         }
         Input.MergeFrom(other.Input);
       }
+      if (other.RequestId.Length != 0) {
+        RequestId = other.RequestId;
+      }
+      completionCallbacks_.Add(other.completionCallbacks_);
+      links_.Add(other.links_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -1535,6 +1612,18 @@ namespace Temporalio.Api.Update.V1 {
             input.ReadMessage(Input);
             break;
           }
+          case 26: {
+            RequestId = input.ReadString();
+            break;
+          }
+          case 34: {
+            completionCallbacks_.AddEntriesFrom(input, _repeated_completionCallbacks_codec);
+            break;
+          }
+          case 42: {
+            links_.AddEntriesFrom(input, _repeated_links_codec);
+            break;
+          }
         }
       }
     #endif
@@ -1562,6 +1651,18 @@ namespace Temporalio.Api.Update.V1 {
               Input = new global::Temporalio.Api.Update.V1.Input();
             }
             input.ReadMessage(Input);
+            break;
+          }
+          case 26: {
+            RequestId = input.ReadString();
+            break;
+          }
+          case 34: {
+            completionCallbacks_.AddEntriesFrom(ref input, _repeated_completionCallbacks_codec);
+            break;
+          }
+          case 42: {
+            links_.AddEntriesFrom(ref input, _repeated_links_codec);
             break;
           }
         }

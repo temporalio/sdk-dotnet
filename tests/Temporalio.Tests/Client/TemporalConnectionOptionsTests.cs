@@ -232,6 +232,56 @@ public unsafe class TemporalConnectionOptionsTests
             interopOptions.dns_load_balancing_options->resolution_interval_millis);
     }
 
+    [Fact]
+    public void ToInteropOptions_GrpcCompression_NotSet()
+    {
+        var options = new TemporalConnectionOptions("localhost:7233")
+        {
+            Identity = "test-identity",
+        };
+
+        using var scope = new Scope();
+        var interopOptions = options.ToInteropOptions(scope);
+
+        Assert.Equal(
+            Bridge.Interop.TemporalCoreClientGrpcCompression.Gzip,
+            interopOptions.grpc_compression);
+    }
+
+    [Fact]
+    public void ToInteropOptions_GrpcCompression_Gzip()
+    {
+        var options = new TemporalConnectionOptions("localhost:7233")
+        {
+            Identity = "test-identity",
+            GrpcCompression = new GrpcCompression.Gzip(),
+        };
+
+        using var scope = new Scope();
+        var interopOptions = options.ToInteropOptions(scope);
+
+        Assert.Equal(
+            Bridge.Interop.TemporalCoreClientGrpcCompression.Gzip,
+            interopOptions.grpc_compression);
+    }
+
+    [Fact]
+    public void ToInteropOptions_GrpcCompression_None()
+    {
+        var options = new TemporalConnectionOptions("localhost:7233")
+        {
+            Identity = "test-identity",
+            GrpcCompression = new GrpcCompression.None(),
+        };
+
+        using var scope = new Scope();
+        var interopOptions = options.ToInteropOptions(scope);
+
+        Assert.Equal(
+            Bridge.Interop.TemporalCoreClientGrpcCompression.None,
+            interopOptions.grpc_compression);
+    }
+
     private static void AssertKeyValue(Bridge.Interop.TemporalCoreByteArrayRef byteArrayRef, string expectedKey, string expectedValue)
     {
         byte[] expectedKeyBytes = Encoding.UTF8.GetBytes(expectedKey);

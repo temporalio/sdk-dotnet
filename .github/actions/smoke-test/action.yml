@@ -1,0 +1,97 @@
+name: Smoke test Temporalio package
+description: >
+  Restore the Temporalio package from a given source and run the smoke test
+  projects on the current runner. Callers own the platform matrix and pass the
+  per-leg flags (is-alpine, run-dotnet-framework).
+
+inputs:
+  package-source:
+    description: >
+      Semicolon-separated NuGet source(s) passed to `dotnet add package -s`. For
+      a local folder feed, use a path relative to the repo root (e.g.
+      "nuget-package/Temporalio/bin/Release").
+    required: true
+  version:
+    description: "Exact Temporalio version to restore (empty = highest available)."
+    required: false
+    default: ""
+  is-alpine:
+    description: "Set to 'true' on Alpine legs (runs in a dotnet SDK container)."
+    required: false
+    default: "false"
+  run-dotnet-framework:
+    description: "Set to 'true' to also run the net462 smoke test (Windows x64 only)."
+    required: false
+    default: "false"
+  dotnet-version:
+    description: ".NET SDK version to install on non-Alpine runners."
+    required: false
+    default: "10.x"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup .NET (non-Alpine)
+      if: ${{ inputs.is-alpine != 'true' }}
+      uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
+      with:
+        # Specific .NET version required because GitHub macos ARM image has
+        # bad pre-installed .NET version
+        dotnet-version: ${{ inputs.dotnet-version }}
+
+    - name: Run smoke test (Alpine)
+      if: ${{ inputs.is-alpine == 'true' }}
+      shell: bash
+      # Use Docker specifically for Alpine ARM 64 to avoid JS action limitations.
+      env:
+        PACKAGE_SOURCE: ${{ inputs.package-source }}
+        VERSION: ${{ inputs.version }}
+      run: |
+        docker run --rm -v "$(pwd):/workspace" -w /workspace \
+          -e PACKAGE_SOURCE -e VERSION \
+          mcr.microsoft.com/dotnet/sdk:10.0-alpine \
+          sh -c '
+            version_arg=""
+            [ -n "$VERSION" ] && version_arg="--version $VERSION"
+            dotnet add tests/Temporalio.SmokeTest package Temporalio $version_arg -s "$PACKAGE_SOURCE" --prerelease \
+              && dotnet run --project tests/Temporalio.SmokeTest
+          '
+
+    - name: Run smoke test (Linux/macOS)
+      if: ${{ inputs.is-alpine != 'true' && runner.os != 'Windows' }}
+      shell: bash
+      env:
+        PACKAGE_SOURCE: ${{ inputs.package-source }}
+        VERSION: ${{ inputs.version }}
+      run: |
+        version_arg=()
+        [ -n "$VERSION" ] && version_arg=(--version "$VERSION")
+        dotnet add tests/Temporalio.SmokeTest package Temporalio "${version_arg[@]}" -s "$PACKAGE_SOURCE" --prerelease
+        dotnet run --project tests/Temporalio.SmokeTest
+
+    - name: Run smoke test (Windows)
+      if: ${{ inputs.is-alpine != 'true' && runner.os == 'Windows' }}
+      shell: pwsh
+      env:
+        PACKAGE_SOURCE: ${{ inputs.package-source }}
+        VERSION: ${{ inputs.version }}
+      run: |
+        $versionArg = if ($env:VERSION) { @("--version", $env:VERSION) } else { @() }
+        dotnet add tests/Temporalio.SmokeTest package Temporalio @versionArg -s "$env:PACKAGE_SOURCE" --prerelease
+        dotnet run --project tests/Temporalio.SmokeTest
+
+    - name: Setup msbuild (Windows x64 only)
+      if: ${{ inputs.run-dotnet-framework == 'true' }}
+      uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57 # v3
+
+    - name: Run .NET framework smoke test (Windows x64 only)
+      if: ${{ inputs.run-dotnet-framework == 'true' }}
+      shell: pwsh
+      env:
+        PACKAGE_SOURCE: ${{ inputs.package-source }}
+        VERSION: ${{ inputs.version }}
+      run: |
+        $versionArg = if ($env:VERSION) { @("--version", $env:VERSION) } else { @() }
+        dotnet add tests/Temporalio.SmokeTestDotNetFramework package Temporalio @versionArg -s "$env:PACKAGE_SOURCE" --prerelease
+        msbuild tests/Temporalio.SmokeTestDotNetFramework -t:restore,build -p:Platform=x64
+        tests/Temporalio.SmokeTestDotNetFramework/bin/x64/Debug/Temporalio.SmokeTestDotNetFramework.exe

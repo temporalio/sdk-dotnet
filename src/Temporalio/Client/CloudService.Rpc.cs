@@ -538,6 +538,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke GetServiceAccountNamespaceAssignments.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetServiceAccountNamespaceAssignmentsResponse> GetServiceAccountNamespaceAssignmentsAsync(GetServiceAccountNamespaceAssignmentsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetServiceAccountNamespaceAssignments", req, GetServiceAccountNamespaceAssignmentsResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke GetServiceAccounts.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -593,6 +604,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke GetUserGroupNamespaceAssignments.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetUserGroupNamespaceAssignmentsResponse> GetUserGroupNamespaceAssignmentsAsync(GetUserGroupNamespaceAssignmentsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetUserGroupNamespaceAssignments", req, GetUserGroupNamespaceAssignmentsResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke GetUserGroups.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -601,6 +623,17 @@ namespace Temporalio.Client
         public Task<GetUserGroupsResponse> GetUserGroupsAsync(GetUserGroupsRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("GetUserGroups", req, GetUserGroupsResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetUserNamespaceAssignments.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetUserNamespaceAssignmentsResponse> GetUserNamespaceAssignmentsAsync(GetUserNamespaceAssignmentsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetUserNamespaceAssignments", req, GetUserNamespaceAssignmentsResponse.Parser, options);
         }
 
         /// <summary>

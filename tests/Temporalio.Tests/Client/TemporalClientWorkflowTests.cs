@@ -353,7 +353,7 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         Assert.NotEmpty(secondPage.NextPageToken);
 
         var thirdPage = await Client.ListWorkflowsPaginatedAsync($"WorkflowId = '{workflowId}'", secondPage.NextPageToken, options);
-        Assert.Equal(1, thirdPage.Workflows.Count);
+        Assert.Single(thirdPage.Workflows);
         Assert.Null(thirdPage.NextPageToken);
     }
 

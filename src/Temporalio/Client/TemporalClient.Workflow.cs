@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Google.Protobuf;
+using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
@@ -14,6 +15,7 @@ using Temporalio.Client.Interceptors;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
+using Temporalio.Nexus;
 
 #if NETCOREAPP3_0_OR_GREATER
 using System.Runtime.CompilerServices;
@@ -367,8 +369,10 @@ namespace Temporalio.Client
                         }
                     }
                 }
-                await Client.Connection.WorkflowService.SignalWorkflowExecutionAsync(
+                ForwardNexusRequestLinks(req.Links);
+                var resp = await Client.Connection.WorkflowService.SignalWorkflowExecutionAsync(
                     req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
+                CaptureNexusResponseLink(resp.Link);
             }
 
             /// <inheritdoc />
@@ -675,6 +679,30 @@ namespace Temporalio.Client
                     NextPageToken: resp.NextPageToken.IsEmpty ? null : resp.NextPageToken.ToByteArray());
             }
 
+            // Forward the inbound Nexus task links onto an outbound request when this call is issued
+            // from inside a Nexus operation handler, so the resulting history event links back to
+            // the caller. No-op outside a Nexus operation context.
+            private static void ForwardNexusRequestLinks(RepeatedField<Link> links)
+            {
+                if (NexusOperationExecutionContext.HasCurrent)
+                {
+                    links.AddRange(NexusOperationExecutionContext.Current.RequestLinks);
+                }
+            }
+
+            // Capture a response link returned by an outbound RPC (signal / signalWithStart) onto
+            // the current Nexus operation context so the task handler can attach it to the
+            // operation's StartOperationResponse. No-op outside a Nexus operation context; null/unset
+            // links are dropped by TryAddResponseLink (servers older than 1.31, or without
+            // EnableCHASMSignalBacklinks, leave the response link unset).
+            private static void CaptureNexusResponseLink(Link? responseLink)
+            {
+                if (NexusOperationExecutionContext.HasCurrent)
+                {
+                    NexusOperationExecutionContext.Current.TryAddResponseLink(responseLink);
+                }
+            }
+
 #if NETCOREAPP3_0_OR_GREATER
             private async IAsyncEnumerable<WorkflowExecution> ListWorkflowsInternalAsync(
                 ListWorkflowsInput input,
@@ -737,6 +765,8 @@ namespace Temporalio.Client
                     {
                         throw new ArgumentException("Cannot have start signal args without start signal");
                     }
+                    // A plain start does not produce a response link.
+                    ForwardNexusRequestLinks(req.Links);
                     var resp = await Client.Connection.WorkflowService.StartWorkflowExecutionAsync(
                         req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
                     return new WorkflowHandle<TWorkflow, TResult>(
@@ -779,8 +809,10 @@ namespace Temporalio.Client
                     signalReq.SignalInput.Payloads_.AddRange(
                         await dataConverter.ToPayloadsAsync(input.Options.StartSignalArgs).ConfigureAwait(false));
                 }
+                ForwardNexusRequestLinks(signalReq.Links);
                 var signalResp = await Client.Connection.WorkflowService.SignalWithStartWorkflowExecutionAsync(
                     signalReq, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
+                CaptureNexusResponseLink(signalResp.SignalLink);
                 // Notice we do _not_ set first execution run ID for signal with start
                 return new WorkflowHandle<TWorkflow, TResult>(
                     Client: Client,

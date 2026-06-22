@@ -283,6 +283,15 @@ namespace Temporalio.Bridge
                     options.DnsLoadBalancing == null
                         ? null
                         : scope.Pointer(options.DnsLoadBalancing.ToInteropOptions()),
+                grpc_compression = options.GrpcCompression switch
+                {
+                    Temporalio.Client.GrpcCompression.Gzip =>
+                        Interop.TemporalCoreClientGrpcCompression.Gzip,
+                    Temporalio.Client.GrpcCompression.None =>
+                        Interop.TemporalCoreClientGrpcCompression.None,
+                    _ => throw new ArgumentException(
+                        $"Unsupported gRPC compression: {options.GrpcCompression.GetType()}"),
+                },
             };
         }
 

@@ -1,0 +1,104 @@
+name: Release Publish
+run-name: Release ${{ github.ref_name }}
+
+# Automated NuGet publishing and smoke testing.
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/nuget-package.yml
+    permissions:
+      contents: read
+
+  read-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.read.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+
+      - name: Read version
+        id: read
+        run: |
+          version=$(grep -oPm1 '(?<=<Version>)[^<]+' Directory.Build.props)
+          if [ -z "$version" ]; then
+            echo "Could not read <Version> from Directory.Build.props" >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Releasing version: $version"
+
+  publish-int:
+    needs:
+      - build
+      - read-version
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/nuget-publish.yml
+    with:
+      environment: nugetint
+      index-url: https://apiint.nugettest.org/v3/index.json
+      token-service-url: https://int.nugettest.org/api/v2/token
+      version: ${{ needs.read-version.outputs.version }}
+
+  smoke-int:
+    needs:
+      - publish-int
+      - read-version
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          submodules: recursive
+      - name: Smoke test against int.nugettest.org
+        uses: ./.github/actions/smoke-test
+        with:
+          # New package resolves from int; transitive/third-party deps from prod.
+          package-source: "https://apiint.nugettest.org/v3/index.json;https://api.nuget.org/v3/index.json"
+          version: ${{ needs.read-version.outputs.version }}
+          run-dotnet-framework: true
+
+  publish-prod:
+    needs:
+      - smoke-int
+      - read-version
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/nuget-publish.yml
+    with:
+      environment: nugetprod
+      index-url: https://api.nuget.org/v3/index.json
+      token-service-url: https://www.nuget.org/api/v2/token
+      version: ${{ needs.read-version.outputs.version }}
+
+  smoke-prod:
+    needs:
+      - publish-prod
+      - read-version
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          submodules: recursive
+      - name: Smoke test against nuget.org
+        uses: ./.github/actions/smoke-test
+        with:
+          package-source: "https://api.nuget.org/v3/index.json"
+          version: ${{ needs.read-version.outputs.version }}
+          run-dotnet-framework: true

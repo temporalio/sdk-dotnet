@@ -27,38 +27,44 @@ namespace Temporalio.Api.Cloud.Billing.V1 {
             "Cit0ZW1wb3JhbC9hcGkvY2xvdWQvYmlsbGluZy92MS9tZXNzYWdlLnByb3Rv",
             "Eh10ZW1wb3JhbC5hcGkuY2xvdWQuYmlsbGluZy52MRoeZ29vZ2xlL3Byb3Rv",
             "YnVmL2R1cmF0aW9uLnByb3RvGh9nb29nbGUvcHJvdG9idWYvdGltZXN0YW1w",
-            "LnByb3RvIt8BChFCaWxsaW5nUmVwb3J0U3BlYxI4ChRzdGFydF90aW1lX2lu",
+            "LnByb3RvIv0DChFCaWxsaW5nUmVwb3J0U3BlYxI4ChRzdGFydF90aW1lX2lu",
             "Y2x1c2l2ZRgBIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASNgoS",
             "ZW5kX3RpbWVfZXhjbHVzaXZlGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRp",
             "bWVzdGFtcBJDCiBkb3dubG9hZF91cmxfZXhwaXJhdGlvbl9kdXJhdGlvbhgD",
             "IAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhITCgtkZXNjcmlwdGlv",
-            "bhgEIAEoCSKoBgoNQmlsbGluZ1JlcG9ydBIKCgJpZBgBIAEoCRJOCgVzdGF0",
-            "ZRgCIAEoDjI/LnRlbXBvcmFsLmFwaS5jbG91ZC5iaWxsaW5nLnYxLkJpbGxp",
-            "bmdSZXBvcnQuQmlsbGluZ1JlcG9ydFN0YXRlEj4KBHNwZWMYAyABKAsyMC50",
-            "ZW1wb3JhbC5hcGkuY2xvdWQuYmlsbGluZy52MS5CaWxsaW5nUmVwb3J0U3Bl",
-            "YxJMCg1kb3dubG9hZF9pbmZvGAQgAygLMjUudGVtcG9yYWwuYXBpLmNsb3Vk",
-            "LmJpbGxpbmcudjEuQmlsbGluZ1JlcG9ydC5Eb3dubG9hZBIyCg5yZXF1ZXN0",
-            "ZWRfdGltZRgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASMgoO",
-            "Z2VuZXJhdGVkX3RpbWUYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0",
-            "YW1wEhoKEmFzeW5jX29wZXJhdGlvbl9pZBgHIAEoCRqAAgoIRG93bmxvYWQS",
-            "CwoDdXJsGAEgASgJEjcKE3VybF9leHBpcmF0aW9uX3RpbWUYAiABKAsyGi5n",
-            "b29nbGUucHJvdG9idWYuVGltZXN0YW1wElUKC2ZpbGVfZm9ybWF0GAMgASgO",
-            "MkAudGVtcG9yYWwuYXBpLmNsb3VkLmJpbGxpbmcudjEuQmlsbGluZ1JlcG9y",
-            "dC5Eb3dubG9hZC5GaWxlRm9ybWF0EhcKD2ZpbGVfc2l6ZV9ieXRlcxgEIAEo",
-            "AyI+CgpGaWxlRm9ybWF0EhsKF0ZJTEVfRk9STUFUX1VOU1BFQ0lGSUVEEAAS",
-            "EwoPRklMRV9GT1JNQVRfQ1NWEAEipQEKEkJpbGxpbmdSZXBvcnRTdGF0ZRIk",
-            "CiBCSUxMSU5HX1JFUE9SVF9TVEFURV9VTlNQRUNJRklFRBAAEiQKIEJJTExJ",
-            "TkdfUkVQT1JUX1NUQVRFX0lOX1BST0dSRVNTEAESIgoeQklMTElOR19SRVBP",
-            "UlRfU1RBVEVfR0VORVJBVEVEEAISHwobQklMTElOR19SRVBPUlRfU1RBVEVf",
-            "RkFJTEVEEANCpwEKIGlvLnRlbXBvcmFsLmFwaS5jbG91ZC5iaWxsaW5nLnYx",
-            "QgxNZXNzYWdlUHJvdG9QAVorZ28udGVtcG9yYWwuaW8vYXBpL2Nsb3VkL2Jp",
-            "bGxpbmcvdjE7YmlsbGluZ6oCH1RlbXBvcmFsaW8uQXBpLkNsb3VkLkJpbGxp",
-            "bmcuVjHqAiNUZW1wb3JhbGlvOjpBcGk6OkNsb3VkOjpCaWxsaW5nOjpWMWIG",
-            "cHJvdG8z"));
+            "bhgEIAEoCRJeCgtncmFudWxhcml0eRgFIAEoDjJJLnRlbXBvcmFsLmFwaS5j",
+            "bG91ZC5iaWxsaW5nLnYxLkJpbGxpbmdSZXBvcnRTcGVjLkJpbGxpbmdSZXBv",
+            "cnRHcmFudWxhcml0eSK7AQoYQmlsbGluZ1JlcG9ydEdyYW51bGFyaXR5EioK",
+            "JkJJTExJTkdfUkVQT1JUX0dSQU5VTEFSSVRZX1VOU1BFQ0lGSUVEEAASJQoh",
+            "QklMTElOR19SRVBPUlRfR1JBTlVMQVJJVFlfSE9VUkxZEAESJAogQklMTElO",
+            "R19SRVBPUlRfR1JBTlVMQVJJVFlfREFJTFkQAhImCiJCSUxMSU5HX1JFUE9S",
+            "VF9HUkFOVUxBUklUWV9NT05USExZEAMiqAYKDUJpbGxpbmdSZXBvcnQSCgoC",
+            "aWQYASABKAkSTgoFc3RhdGUYAiABKA4yPy50ZW1wb3JhbC5hcGkuY2xvdWQu",
+            "YmlsbGluZy52MS5CaWxsaW5nUmVwb3J0LkJpbGxpbmdSZXBvcnRTdGF0ZRI+",
+            "CgRzcGVjGAMgASgLMjAudGVtcG9yYWwuYXBpLmNsb3VkLmJpbGxpbmcudjEu",
+            "QmlsbGluZ1JlcG9ydFNwZWMSTAoNZG93bmxvYWRfaW5mbxgEIAMoCzI1LnRl",
+            "bXBvcmFsLmFwaS5jbG91ZC5iaWxsaW5nLnYxLkJpbGxpbmdSZXBvcnQuRG93",
+            "bmxvYWQSMgoOcmVxdWVzdGVkX3RpbWUYBSABKAsyGi5nb29nbGUucHJvdG9i",
+            "dWYuVGltZXN0YW1wEjIKDmdlbmVyYXRlZF90aW1lGAYgASgLMhouZ29vZ2xl",
+            "LnByb3RvYnVmLlRpbWVzdGFtcBIaChJhc3luY19vcGVyYXRpb25faWQYByAB",
+            "KAkagAIKCERvd25sb2FkEgsKA3VybBgBIAEoCRI3ChN1cmxfZXhwaXJhdGlv",
+            "bl90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBJVCgtm",
+            "aWxlX2Zvcm1hdBgDIAEoDjJALnRlbXBvcmFsLmFwaS5jbG91ZC5iaWxsaW5n",
+            "LnYxLkJpbGxpbmdSZXBvcnQuRG93bmxvYWQuRmlsZUZvcm1hdBIXCg9maWxl",
+            "X3NpemVfYnl0ZXMYBCABKAMiPgoKRmlsZUZvcm1hdBIbChdGSUxFX0ZPUk1B",
+            "VF9VTlNQRUNJRklFRBAAEhMKD0ZJTEVfRk9STUFUX0NTVhABIqUBChJCaWxs",
+            "aW5nUmVwb3J0U3RhdGUSJAogQklMTElOR19SRVBPUlRfU1RBVEVfVU5TUEVD",
+            "SUZJRUQQABIkCiBCSUxMSU5HX1JFUE9SVF9TVEFURV9JTl9QUk9HUkVTUxAB",
+            "EiIKHkJJTExJTkdfUkVQT1JUX1NUQVRFX0dFTkVSQVRFRBACEh8KG0JJTExJ",
+            "TkdfUkVQT1JUX1NUQVRFX0ZBSUxFRBADQqcBCiBpby50ZW1wb3JhbC5hcGku",
+            "Y2xvdWQuYmlsbGluZy52MUIMTWVzc2FnZVByb3RvUAFaK2dvLnRlbXBvcmFs",
+            "LmlvL2FwaS9jbG91ZC9iaWxsaW5nL3YxO2JpbGxpbmeqAh9UZW1wb3JhbGlv",
+            "LkFwaS5DbG91ZC5CaWxsaW5nLlYx6gIjVGVtcG9yYWxpbzo6QXBpOjpDbG91",
+            "ZDo6QmlsbGluZzo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Billing.V1.BillingReportSpec), global::Temporalio.Api.Cloud.Billing.V1.BillingReportSpec.Parser, new[]{ "StartTimeInclusive", "EndTimeExclusive", "DownloadUrlExpirationDuration", "Description" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Billing.V1.BillingReportSpec), global::Temporalio.Api.Cloud.Billing.V1.BillingReportSpec.Parser, new[]{ "StartTimeInclusive", "EndTimeExclusive", "DownloadUrlExpirationDuration", "Description", "Granularity" }, null, new[]{ typeof(global::Temporalio.Api.Cloud.Billing.V1.BillingReportSpec.Types.BillingReportGranularity) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Billing.V1.BillingReport), global::Temporalio.Api.Cloud.Billing.V1.BillingReport.Parser, new[]{ "Id", "State", "Spec", "DownloadInfo", "RequestedTime", "GeneratedTime", "AsyncOperationId" }, null, new[]{ typeof(global::Temporalio.Api.Cloud.Billing.V1.BillingReport.Types.BillingReportState) }, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Billing.V1.BillingReport.Types.Download), global::Temporalio.Api.Cloud.Billing.V1.BillingReport.Types.Download.Parser, new[]{ "Url", "UrlExpirationTime", "FileFormat", "FileSizeBytes" }, null, new[]{ typeof(global::Temporalio.Api.Cloud.Billing.V1.BillingReport.Types.Download.Types.FileFormat) }, null, null)})
           }));
     }
@@ -104,6 +110,7 @@ namespace Temporalio.Api.Cloud.Billing.V1 {
       endTimeExclusive_ = other.endTimeExclusive_ != null ? other.endTimeExclusive_.Clone() : null;
       downloadUrlExpirationDuration_ = other.downloadUrlExpirationDuration_ != null ? other.downloadUrlExpirationDuration_.Clone() : null;
       description_ = other.description_;
+      granularity_ = other.granularity_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -175,6 +182,23 @@ namespace Temporalio.Api.Cloud.Billing.V1 {
       }
     }
 
+    /// <summary>Field number for the "granularity" field.</summary>
+    public const int GranularityFieldNumber = 5;
+    private global::Temporalio.Api.Cloud.Billing.V1.BillingReportSpec.Types.BillingReportGranularity granularity_ = global::Temporalio.Api.Cloud.Billing.V1.BillingReportSpec.Types.BillingReportGranularity.Unspecified;
+    /// <summary>
+    /// The data granularity of the billing report.
+    /// Optional, default is hourly.
+    /// temporal:versioning:min_version=v0.16.0
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Cloud.Billing.V1.BillingReportSpec.Types.BillingReportGranularity Granularity {
+      get { return granularity_; }
+      set {
+        granularity_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -194,6 +218,7 @@ namespace Temporalio.Api.Cloud.Billing.V1 {
       if (!object.Equals(EndTimeExclusive, other.EndTimeExclusive)) return false;
       if (!object.Equals(DownloadUrlExpirationDuration, other.DownloadUrlExpirationDuration)) return false;
       if (Description != other.Description) return false;
+      if (Granularity != other.Granularity) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -205,6 +230,7 @@ namespace Temporalio.Api.Cloud.Billing.V1 {
       if (endTimeExclusive_ != null) hash ^= EndTimeExclusive.GetHashCode();
       if (downloadUrlExpirationDuration_ != null) hash ^= DownloadUrlExpirationDuration.GetHashCode();
       if (Description.Length != 0) hash ^= Description.GetHashCode();
+      if (Granularity != global::Temporalio.Api.Cloud.Billing.V1.BillingReportSpec.Types.BillingReportGranularity.Unspecified) hash ^= Granularity.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -239,6 +265,10 @@ namespace Temporalio.Api.Cloud.Billing.V1 {
         output.WriteRawTag(34);
         output.WriteString(Description);
       }
+      if (Granularity != global::Temporalio.Api.Cloud.Billing.V1.BillingReportSpec.Types.BillingReportGranularity.Unspecified) {
+        output.WriteRawTag(40);
+        output.WriteEnum((int) Granularity);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -265,6 +295,10 @@ namespace Temporalio.Api.Cloud.Billing.V1 {
         output.WriteRawTag(34);
         output.WriteString(Description);
       }
+      if (Granularity != global::Temporalio.Api.Cloud.Billing.V1.BillingReportSpec.Types.BillingReportGranularity.Unspecified) {
+        output.WriteRawTag(40);
+        output.WriteEnum((int) Granularity);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -286,6 +320,9 @@ namespace Temporalio.Api.Cloud.Billing.V1 {
       }
       if (Description.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Description);
+      }
+      if (Granularity != global::Temporalio.Api.Cloud.Billing.V1.BillingReportSpec.Types.BillingReportGranularity.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Granularity);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -319,6 +356,9 @@ namespace Temporalio.Api.Cloud.Billing.V1 {
       }
       if (other.Description.Length != 0) {
         Description = other.Description;
+      }
+      if (other.Granularity != global::Temporalio.Api.Cloud.Billing.V1.BillingReportSpec.Types.BillingReportGranularity.Unspecified) {
+        Granularity = other.Granularity;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -358,6 +398,10 @@ namespace Temporalio.Api.Cloud.Billing.V1 {
           }
           case 34: {
             Description = input.ReadString();
+            break;
+          }
+          case 40: {
+            Granularity = (global::Temporalio.Api.Cloud.Billing.V1.BillingReportSpec.Types.BillingReportGranularity) input.ReadEnum();
             break;
           }
         }
@@ -400,10 +444,29 @@ namespace Temporalio.Api.Cloud.Billing.V1 {
             Description = input.ReadString();
             break;
           }
+          case 40: {
+            Granularity = (global::Temporalio.Api.Cloud.Billing.V1.BillingReportSpec.Types.BillingReportGranularity) input.ReadEnum();
+            break;
+          }
         }
       }
     }
     #endif
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the BillingReportSpec message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Types {
+      public enum BillingReportGranularity {
+        [pbr::OriginalName("BILLING_REPORT_GRANULARITY_UNSPECIFIED")] Unspecified = 0,
+        [pbr::OriginalName("BILLING_REPORT_GRANULARITY_HOURLY")] Hourly = 1,
+        [pbr::OriginalName("BILLING_REPORT_GRANULARITY_DAILY")] Daily = 2,
+        [pbr::OriginalName("BILLING_REPORT_GRANULARITY_MONTHLY")] Monthly = 3,
+      }
+
+    }
+    #endregion
 
   }
 
