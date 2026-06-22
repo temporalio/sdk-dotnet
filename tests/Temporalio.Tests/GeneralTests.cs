@@ -21,6 +21,7 @@ public class GeneralTests : TestBase
             ns.StartsWith("Temporalio.") &&
             !ns.StartsWith("Temporalio.Api.") &&
             !ns.StartsWith("Temporalio.Bridge.") &&
+            !typeof(Delegate).IsAssignableFrom(t) &&
             t.GetMethod("Clone", BindingFlags.Public | BindingFlags.Instance) != null));
         // Ensure at least one we know of is there
         Assert.Contains(typeof(Temporalio.Client.Schedules.ScheduleListOptions), types);
