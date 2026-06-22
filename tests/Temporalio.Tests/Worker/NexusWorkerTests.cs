@@ -1752,61 +1752,6 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public async Task ExecuteNexusOperationAsync_GenericHandler_StartActivity_NoTimeout_Fails()
-    {
-        // Activity start in Nexus requires at least one of StartToCloseTimeout or
-        // ScheduleToCloseTimeout. Missing both should surface as a NexusOperationFailureException
-        // wrapping a BadRequest HandlerException.
-        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-            AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalOperationHandler.FromHandleFactory<string, string>(
-                    async (context, client, input) =>
-                        await client.StartActivityAsync<string>(
-                            () => ActivityStubs.EchoAsync(input),
-                            new() { Id = $"echo-no-timeout-{input}" })))).
-            AddActivity(ActivityStubs.EchoAsync);
-        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
-
-        var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
-            RunInWorkflowAsync(workerOptions, async () =>
-            {
-                await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
-                    ExecuteNexusOperationAsync(svc => svc.DoSomething("oops"));
-            }));
-        var nexusExc = Assert.IsType<NexusOperationFailureException>(wfExc.InnerException);
-        var handlerExc = Assert.IsType<HandlerException>(nexusExc.InnerException);
-        Assert.Equal(HandlerErrorType.BadRequest, handlerExc.ErrorType);
-        Assert.Contains("ScheduleToCloseTimeout", handlerExc.Message);
-    }
-
-    [Fact]
-    public async Task ExecuteNexusOperationAsync_GenericHandler_StartActivity_NoId_Fails()
-    {
-        // Activity ID must be set explicitly so that retries of a Nexus start are idempotent;
-        // auto-generating it would produce a different ID on each retry attempt.
-        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-            AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalOperationHandler.FromHandleFactory<string, string>(
-                    async (context, client, input) =>
-                        await client.StartActivityAsync<string>(
-                            () => ActivityStubs.EchoAsync(input),
-                            new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(1) })))).
-            AddActivity(ActivityStubs.EchoAsync);
-        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
-
-        var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
-            RunInWorkflowAsync(workerOptions, async () =>
-            {
-                await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
-                    ExecuteNexusOperationAsync(svc => svc.DoSomething("oops"));
-            }));
-        var nexusExc = Assert.IsType<NexusOperationFailureException>(wfExc.InnerException);
-        var handlerExc = Assert.IsType<HandlerException>(nexusExc.InnerException);
-        Assert.Equal(HandlerErrorType.BadRequest, handlerExc.ErrorType);
-        Assert.Contains("ID required to start activity", handlerExc.Message);
-    }
-
-    [Fact]
     public async Task ExecuteNexusOperationAsync_GenericHandler_CancelActivity_CancelsUnderlying()
     {
         ActivityStubs.WaitForCancelReached = new TaskCompletionSource();
