@@ -68,6 +68,8 @@ void GenerateNexusApi()
             Path.Join(generatorDir, "wit/workflow-service.wit"),
             "--input",
             Path.Join(generatorDir, "wit/deps"),
+            "--support-file",
+            Path.Join(generatorDir, "wit/deps/nexus-temporal-types/dotnet/TemporalSupport.cs"),
             "--descriptors",
             descriptorPath,
             "--output",
