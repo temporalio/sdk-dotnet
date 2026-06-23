@@ -28,6 +28,11 @@ namespace Temporalio.Workflows
         public TimeSpan? TaskTimeout { get; set; }
 
         /// <summary>
+        /// Gets or sets the delay before the first workflow task of the continued run is scheduled.
+        /// </summary>
+        public TimeSpan? BackoffStartInterval { get; set; }
+
+        /// <summary>
         /// Gets or sets the retry policy for continue as new. If unset, defaults to the current
         /// workflow's retry policy.
         /// </summary>
