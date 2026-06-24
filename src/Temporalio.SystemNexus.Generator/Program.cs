@@ -19,7 +19,7 @@ EnsureNexGen();
 BuildDescriptor();
 GenerateNexusApi();
 PostProcessGeneratedNexusApi();
-GeneratePayloadVisitorRegistry(operationsPath, descriptorPath, workerGeneratedDir);
+GeneratePayloadVisitor(operationsPath, descriptorPath, workerGeneratedDir);
 return 0;
 
 void EnsureNexGen()
@@ -123,7 +123,7 @@ static void RecreateDirectory(string path)
     Directory.CreateDirectory(path);
 }
 
-static void GeneratePayloadVisitorRegistry(
+static void GeneratePayloadVisitor(
     string operationsPath,
     string descriptorPath,
     string outputDir)
@@ -132,16 +132,6 @@ static void GeneratePayloadVisitorRegistry(
         throw new InvalidOperationException($"No directory for {operationsPath}");
     var servicePath = Path.Combine(generatedDir, "Service.cs");
     var source = File.ReadAllText(servicePath);
-    var namespaceMatch = Regex.Match(
-        source,
-        @"namespace\s+(?<namespace>[A-Za-z0-9_.]+)\s*\{",
-        RegexOptions.Multiline);
-    if (!namespaceMatch.Success)
-    {
-        throw new InvalidOperationException($"No generated namespace found in {servicePath}");
-    }
-
-    var generatedNamespace = namespaceMatch.Groups["namespace"].Value;
     var operations = ParseOperations(source);
     if (operations.Count == 0)
     {
@@ -169,14 +159,15 @@ static void GeneratePayloadVisitorRegistry(
     builder.AppendLine("using System.Collections.Generic;");
     builder.AppendLine("using System.Threading.Tasks;");
     builder.AppendLine("using Temporalio.Api.Common.V1;");
-    builder.AppendLine($"using {generatedNamespace};");
     builder.AppendLine();
     builder.AppendLine("namespace Temporalio.Worker");
     builder.AppendLine("{");
     builder.AppendLine("    internal static partial class SystemNexusPayloadVisitor");
     builder.AppendLine("    {");
-    builder.AppendLine("        private static readonly IReadOnlyDictionary<Type, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>> EnvelopeVisitors =");
-    builder.AppendLine("            new Dictionary<Type, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>>");
+    builder.AppendLine("        private const string TemporalSystemEndpoint = \"__temporal_system\";");
+    builder.AppendLine();
+    builder.AppendLine("        private static readonly IReadOnlyDictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>> EnvelopeVisitors =");
+    builder.AppendLine("            new Dictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>>");
     builder.AppendLine("            {");
 
     foreach (var operation in operationMessages)
@@ -188,20 +179,19 @@ static void GeneratePayloadVisitorRegistry(
     builder.AppendLine("            };");
     builder.AppendLine();
     builder.AppendLine("        private static async Task<bool> TryVisitAsync(");
-    builder.AppendLine("            string service,");
-    builder.AppendLine("            string operation,");
-    builder.AppendLine("            bool input,");
+    builder.AppendLine("            string? endpoint,");
     builder.AppendLine("            Payload payload,");
     builder.AppendLine("            PayloadVisitor visitPayload,");
     builder.AppendLine("            PayloadsVisitor visitPayloads,");
     builder.AppendLine("            EnvelopeVisitor? visitEnvelope)");
     builder.AppendLine("        {");
-    builder.AppendLine("            if (!NexGenOperationRegistry.Operations.TryGetValue((service, operation), out var definition))");
+    builder.AppendLine("            if (!IsSystemNexusEndpoint(endpoint))");
     builder.AppendLine("            {");
     builder.AppendLine("                return false;");
     builder.AppendLine("            }");
     builder.AppendLine();
-    builder.AppendLine("            if (!EnvelopeVisitors.TryGetValue(input ? definition.InputType : definition.OutputType, out var visit))");
+    builder.AppendLine("            if (!payload.Metadata.TryGetValue(\"messageType\", out var messageType) ||");
+    builder.AppendLine("                !EnvelopeVisitors.TryGetValue(messageType.ToStringUtf8(), out var visit))");
     builder.AppendLine("            {");
     builder.AppendLine("                return false;");
     builder.AppendLine("            }");
@@ -209,6 +199,8 @@ static void GeneratePayloadVisitorRegistry(
     builder.AppendLine("            await visit(payload, visitPayload, visitPayloads, visitEnvelope).ConfigureAwait(false);");
     builder.AppendLine("            return true;");
     builder.AppendLine("        }");
+    builder.AppendLine();
+    builder.AppendLine("        private static bool IsSystemNexusEndpoint(string? endpoint) => endpoint == TemporalSystemEndpoint;");
     builder.AppendLine();
 
     foreach (var operation in operationMessages)
@@ -309,7 +301,7 @@ static void EmitEnvelopeVisitor(
         return;
     }
 
-    builder.AppendLine($"                [typeof({message.CsharpType})] = (payload, visitPayload, visitPayloads, visitEnvelope) =>");
+    builder.AppendLine($"                [\"{message.FullName}\"] = (payload, visitPayload, visitPayloads, visitEnvelope) =>");
     builder.AppendLine($"                    VisitEnvelopeAsync<{message.CsharpType}>(");
     builder.AppendLine("                        payload,");
     builder.AppendLine($"                        {VisitMethodName(message)},");

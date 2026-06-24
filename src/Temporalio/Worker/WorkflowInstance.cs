@@ -824,7 +824,7 @@ namespace Temporalio.Worker
         public IWorkflowCodecHelperInstance.NexusOperationInfo? GetPendingNexusOperationInfo(uint seq)
         {
             nexusOperationsPending.TryGetValue(seq, out var pending);
-            return pending == null ? null : new(pending.Service, pending.Operation);
+            return pending == null ? null : new(pending.Endpoint);
         }
 
         /// <inheritdoc/>
@@ -2591,8 +2591,7 @@ namespace Temporalio.Worker
 
                 var seq = ++instance.nexusOperationCounter;
                 var inputPayload = SystemNexusPayloadVisitor.TryToInputPayload(
-                    input.Service,
-                    input.OperationName,
+                    input.ClientOptions.Endpoint,
                     input.Arg,
                     out var systemNexusInputPayload) ?
                     systemNexusInputPayload :
@@ -2631,8 +2630,7 @@ namespace Temporalio.Worker
 
                 var handleSource = new TaskCompletionSource<NexusWorkflowOperationHandle<TResult>>();
                 var pending = new PendingNexusOperationInfo(
-                    Service: input.Service,
-                    Operation: input.OperationName,
+                    Endpoint: input.ClientOptions.Endpoint,
                     StartCompletionSource: new(),
                     ResultCompletionSource: new());
                 instance.nexusOperationsPending[seq] = pending;
@@ -3095,8 +3093,7 @@ namespace Temporalio.Worker
             TaskCompletionSource<ResolveRequestCancelExternalWorkflow> CompletionSource);
 
         private record PendingNexusOperationInfo(
-            string Service,
-            string Operation,
+            string? Endpoint,
             TaskCompletionSource<ResolveNexusOperationStart> StartCompletionSource,
             TaskCompletionSource<NexusOperationResult> ResultCompletionSource);
 

@@ -6,23 +6,24 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Temporalio.Api.Common.V1;
-using Temporalio.Workflows;
 
 namespace Temporalio.Worker
 {
     internal static partial class SystemNexusPayloadVisitor
     {
-        private static readonly IReadOnlyDictionary<Type, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>> EnvelopeVisitors =
-            new Dictionary<Type, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>>
+        private const string TemporalSystemEndpoint = "__temporal_system";
+
+        private static readonly IReadOnlyDictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>> EnvelopeVisitors =
+            new Dictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>>
             {
-                [typeof(global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest)] = (payload, visitPayload, visitPayloads, visitEnvelope) =>
+                ["temporal.api.workflowservice.v1.SignalWithStartWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads, visitEnvelope) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_SignalWithStartWorkflowExecutionRequest,
                         visitPayload,
                         visitPayloads,
                         visitEnvelope),
-                [typeof(global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse)] = (payload, visitPayload, visitPayloads, visitEnvelope) =>
+                ["temporal.api.workflowservice.v1.SignalWithStartWorkflowExecutionResponse"] = (payload, visitPayload, visitPayloads, visitEnvelope) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_SignalWithStartWorkflowExecutionResponse,
@@ -32,20 +33,19 @@ namespace Temporalio.Worker
             };
 
         private static async Task<bool> TryVisitAsync(
-            string service,
-            string operation,
-            bool input,
+            string? endpoint,
             Payload payload,
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads,
             EnvelopeVisitor? visitEnvelope)
         {
-            if (!NexGenOperationRegistry.Operations.TryGetValue((service, operation), out var definition))
+            if (!IsSystemNexusEndpoint(endpoint))
             {
                 return false;
             }
 
-            if (!EnvelopeVisitors.TryGetValue(input ? definition.InputType : definition.OutputType, out var visit))
+            if (!payload.Metadata.TryGetValue("messageType", out var messageType) ||
+                !EnvelopeVisitors.TryGetValue(messageType.ToStringUtf8(), out var visit))
             {
                 return false;
             }
@@ -53,6 +53,8 @@ namespace Temporalio.Worker
             await visit(payload, visitPayload, visitPayloads, visitEnvelope).ConfigureAwait(false);
             return true;
         }
+
+        private static bool IsSystemNexusEndpoint(string? endpoint) => endpoint == TemporalSystemEndpoint;
 
         private static async Task Visit_temporal_api_common_v1_Memo(
             global::Temporalio.Api.Common.V1.Memo value,

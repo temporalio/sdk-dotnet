@@ -6,7 +6,6 @@ using Google.Protobuf;
 using Google.Protobuf.Collections;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
-using Temporalio.Workflows;
 
 namespace Temporalio.Worker
 {
@@ -21,14 +20,12 @@ namespace Temporalio.Worker
         internal delegate Task EnvelopeVisitor(Payload payload);
 
         internal static bool TryToInputPayload(
-            string service,
-            string operation,
+            string? endpoint,
             object? value,
             out Payload payload)
         {
             payload = null!;
-            if (!NexGenOperationRegistry.Operations.TryGetValue((service, operation), out var definition) ||
-                !definition.InputType.IsInstanceOfType(value))
+            if (!IsSystemNexusEndpoint(endpoint))
             {
                 return false;
             }
@@ -43,22 +40,20 @@ namespace Temporalio.Worker
         }
 
         internal static Task<bool> TryVisitInputAsync(
-            string service,
-            string operation,
+            string? endpoint,
             Payload payload,
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads,
             EnvelopeVisitor? visitEnvelope = null) =>
-            TryVisitAsync(service, operation, input: true, payload, visitPayload, visitPayloads, visitEnvelope);
+            TryVisitAsync(endpoint, payload, visitPayload, visitPayloads, visitEnvelope);
 
         internal static Task<bool> TryVisitOutputAsync(
-            string service,
-            string operation,
+            string? endpoint,
             Payload payload,
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads,
             EnvelopeVisitor? visitEnvelope = null) =>
-            TryVisitAsync(service, operation, input: false, payload, visitPayload, visitPayloads, visitEnvelope);
+            TryVisitAsync(endpoint, payload, visitPayload, visitPayloads, visitEnvelope);
 
         private static async Task VisitEnvelopeAsync<T>(
             Payload payload,

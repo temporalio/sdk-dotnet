@@ -51,8 +51,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Pending Nexus operation info.
         /// </summary>
-        /// <param name="Service">Service name.</param>
-        /// <param name="Operation">Operation name.</param>
-        internal record NexusOperationInfo(string Service, string Operation);
+        /// <param name="Endpoint">Endpoint name.</param>
+        internal record NexusOperationInfo(string? Endpoint);
     }
 }
