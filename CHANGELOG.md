@@ -26,3 +26,4 @@ to docs, or any other relevant information.
   workflow so its history events link back to the caller, and the link the server returns for the
   signaled event is attached to the caller workflow's Nexus operation history event. This makes the
   caller and callee mutually navigable in the UI for signal-based Nexus operations.
+- Exposed `BackoffStartInterval` for continue-as-new, to allow the new workflow to start after a delay.

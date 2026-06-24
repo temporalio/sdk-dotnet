@@ -1015,6 +1015,11 @@ namespace Temporalio.Worker
                     {
                         cmd.WorkflowTaskTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(taskTimeout);
                     }
+                    if (e.Input.Options?.BackoffStartInterval is TimeSpan backoffStartInterval)
+                    {
+                        cmd.BackoffStartInterval =
+                            Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(backoffStartInterval);
+                    }
                     if (e.Input.Options?.Memo is IReadOnlyDictionary<string, object> memo)
                     {
                         cmd.Memo.Add(memo.ToDictionary(

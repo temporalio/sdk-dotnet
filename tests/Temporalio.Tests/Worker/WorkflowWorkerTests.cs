@@ -1750,6 +1750,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                         ["PastRunIdCount"] = pastRunIds.Count,
                     },
                     RetryPolicy = new() { MaximumAttempts = pastRunIds.Count + 1000 },
+                    BackoffStartInterval = TimeSpan.FromMilliseconds(1),
                 });
         }
     }
@@ -1769,6 +1770,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             var result = await handle.GetResultAsync();
             Assert.Equal(5, result.Count);
             Assert.Equal(handle.FirstExecutionRunId, result[0]);
+            var firstRunHandle = handle with { RunId = handle.FirstExecutionRunId };
+            var continuedEvent = (await firstRunHandle.FetchHistoryAsync()).Events.First(
+                evt => evt.WorkflowExecutionContinuedAsNewEventAttributes != null);
+            Assert.Equal(
+                TimeSpan.FromMilliseconds(1),
+                continuedEvent.WorkflowExecutionContinuedAsNewEventAttributes.BackoffStartInterval.ToTimeSpan());
         });
     }
 
