@@ -245,6 +245,12 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("enum TemporalCoreClientGrpcCompression")]
         public TemporalCoreClientGrpcCompression grpc_compression;
+
+        [NativeTypeName("uint64_t")]
+        public ulong payloads_size_warn;
+
+        [NativeTypeName("uint64_t")]
+        public ulong memo_size_warn;
     }
 
     internal unsafe partial struct TemporalCoreByteArray
@@ -1223,6 +1229,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("struct TemporalCoreByteArrayRefArray")]
         public TemporalCoreByteArrayRefArray storage_drivers;
+
+        [NativeTypeName("bool")]
+        public byte disable_payload_error_limit;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]

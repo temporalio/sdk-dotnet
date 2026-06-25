@@ -292,6 +292,9 @@ namespace Temporalio.Bridge
                     _ => throw new ArgumentException(
                         $"Unsupported gRPC compression: {options.GrpcCompression.GetType()}"),
                 },
+                // 0 tells core to use its default warning threshold.
+                payloads_size_warn = (ulong)Math.Max(0, options.PayloadsSizeWarn),
+                memo_size_warn = (ulong)Math.Max(0, options.MemoSizeWarn),
             };
         }
 
@@ -646,6 +649,7 @@ namespace Temporalio.Bridge
                     AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
                 plugins = scope.ByteArrayArray(pluginNames),
                 storage_drivers = scope.ByteArrayArray(storageDrivers),
+                disable_payload_error_limit = (byte)(options.DisablePayloadErrorLimit ? 1 : 0),
             };
         }
 

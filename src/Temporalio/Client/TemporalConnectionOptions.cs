@@ -85,6 +85,20 @@ namespace Temporalio.Client
         public GrpcCompression GrpcCompression { get; set; } = new GrpcCompression.Gzip();
 
         /// <summary>
+        /// Gets or sets the warning threshold, in bytes, for the aggregate outbound payload size of
+        /// a request. Over-threshold payloads are logged (<c>[TMPRL1103]</c>) but still sent to the
+        /// server. <c>0</c> (the default) uses the core default of 512KiB.
+        /// </summary>
+        public int PayloadsSizeWarn { get; set; }
+
+        /// <summary>
+        /// Gets or sets the warning threshold, in bytes, for outbound memo size. Over-threshold
+        /// memos are logged (<c>[TMPRL1103]</c>) but still sent to the server. <c>0</c> (the
+        /// default) uses the core default of 2KiB.
+        /// </summary>
+        public int MemoSizeWarn { get; set; }
+
+        /// <summary>
         /// Gets or sets the gRPC metadata for all calls (i.e. the headers).
         /// </summary>
         /// <remarks>
