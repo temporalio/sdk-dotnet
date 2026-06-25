@@ -24,7 +24,7 @@ namespace Temporalio.Runtime
             var coreLevel = core.ToString().ToUpper();
             var otherLevel = other.ToString().ToUpper();
             FilterString =
-                $"{otherLevel},temporalio_sdk_core={coreLevel},temporalio_client={coreLevel},temporalio_sdk={coreLevel}";
+                $"{otherLevel},temporalio_common={coreLevel},temporalio_sdk_core={coreLevel},temporalio_client={coreLevel},temporalio_sdk={coreLevel}";
         }
 
         /// <summary>
