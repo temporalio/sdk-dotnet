@@ -494,6 +494,20 @@ public class TemporalClientNexusOperationTests : WorkflowEnvironmentTestBase
                     Api.Enums.V1.EventType.WorkflowExecutionStarted,
                     link.WorkflowEvent.EventRef.EventType);
             });
+
+            // The started workflow's WorkflowExecutionStarted event should carry the nexus
+            // operation link on its completion callback so the workflow's completion can be
+            // tied back to the nexus operation.
+            var wfHandle = Client.GetWorkflowHandle(handler.CapturedHandle.WorkflowId);
+            var startedEvent = Assert.Single(
+                (await wfHandle.FetchHistoryAsync()).Events,
+                evt => evt.WorkflowExecutionStartedEventAttributes != null);
+            var callback = Assert.Single(
+                startedEvent.WorkflowExecutionStartedEventAttributes.CompletionCallbacks);
+            var backlink = Assert.Single(callback.Links);
+            Assert.Equal(Client.Options.Namespace, backlink.NexusOperation.Namespace);
+            Assert.Equal(operationId, backlink.NexusOperation.OperationId);
+            Assert.Equal(handle.RunId, backlink.NexusOperation.RunId);
         });
     }
 

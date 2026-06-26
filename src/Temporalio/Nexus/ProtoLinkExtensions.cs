@@ -57,8 +57,9 @@ namespace Temporalio.Nexus
                 queryParams["requestID"] = reqIdRef.RequestId;
             }
 
-            // Build URI with empty authority so there is no host. UriBuilder cannot be used here
-            // because it defaults Host to "localhost".
+            // Build URI with empty authority so there is no host. UriBuilder cannot be used
+            // here because even with Host explicitly set to "", it emits "temporal:/path"
+            // (single slash) rather than the canonical "temporal:///path" form other SDKs use.
             var uriStr = "temporal:///namespaces/" + Uri.EscapeDataString(evt.Namespace) +
                 "/workflows/" + Uri.EscapeDataString(evt.WorkflowId) + "/" +
                 Uri.EscapeDataString(evt.RunId) + "/history";
@@ -77,8 +78,9 @@ namespace Temporalio.Nexus
         /// <returns>Nexus link.</returns>
         public static NexusLink ToNexusLink(this Api.Common.V1.Link.Types.NexusOperation nexusOp)
         {
-            // Build URI with empty authority so there is no host. UriBuilder cannot be used here
-            // because it defaults Host to "localhost".
+            // Build URI with empty authority so there is no host. UriBuilder cannot be used
+            // here because even with Host explicitly set to "", it emits "temporal:/path"
+            // (single slash) rather than the canonical "temporal:///path" form other SDKs use.
             var uriStr = "temporal:///namespaces/" + Uri.EscapeDataString(nexusOp.Namespace) +
                 "/nexus-operations/" + Uri.EscapeDataString(nexusOp.OperationId) +
                 "/" + Uri.EscapeDataString(nexusOp.RunId) + "/details";
@@ -109,7 +111,7 @@ namespace Temporalio.Nexus
             var t when t == Api.Common.V1.Link.Types.WorkflowEvent.Descriptor.FullName =>
                 new Api.Common.V1.Link { WorkflowEvent = link.ToWorkflowEvent() },
             var t when t == Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName =>
-                new Api.Common.V1.Link { NexusOperation = link.ToNexusOperationLink() },
+                new Api.Common.V1.Link { NexusOperation = link.ToNexusOperation() },
             _ => throw new ArgumentException($"Unknown link type: {link.Type}"),
         };
 
@@ -119,7 +121,7 @@ namespace Temporalio.Nexus
         /// <param name="link">Nexus link.</param>
         /// <returns>Nexus operation link.</returns>
         /// <exception cref="ArgumentException">If the link is invalid.</exception>
-        public static Api.Common.V1.Link.Types.NexusOperation ToNexusOperationLink(this NexusLink link)
+        public static Api.Common.V1.Link.Types.NexusOperation ToNexusOperation(this NexusLink link)
         {
             var pathPieces = ParseTemporalLinkPath(link, "nexus-operations", "details");
             return new Api.Common.V1.Link.Types.NexusOperation

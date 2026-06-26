@@ -21,7 +21,7 @@ public class ProtoLinkExtensionsTests
             Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName,
             nexusLink.Type);
 
-        var roundTripped = nexusLink.ToNexusOperationLink();
+        var roundTripped = nexusLink.ToNexusOperation();
         Assert.Equal(nexusOp.Namespace, roundTripped.Namespace);
         Assert.Equal(nexusOp.OperationId, roundTripped.OperationId);
         Assert.Equal(nexusOp.RunId, roundTripped.RunId);
@@ -38,7 +38,7 @@ public class ProtoLinkExtensionsTests
         };
 
         var nexusLink = nexusOp.ToNexusLink();
-        var roundTripped = nexusLink.ToNexusOperationLink();
+        var roundTripped = nexusLink.ToNexusOperation();
         Assert.Equal(nexusOp.Namespace, roundTripped.Namespace);
         Assert.Equal(nexusOp.OperationId, roundTripped.OperationId);
         Assert.Equal(nexusOp.RunId, roundTripped.RunId);
@@ -50,7 +50,7 @@ public class ProtoLinkExtensionsTests
         var link = new NexusLink(
             new Uri("https://somehost/namespaces/ns/nexus-operations/op/run/details"),
             Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName);
-        Assert.Throws<ArgumentException>(() => link.ToNexusOperationLink());
+        Assert.Throws<ArgumentException>(() => link.ToNexusOperation());
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public class ProtoLinkExtensionsTests
         var link = new NexusLink(
             new Uri("temporal://somehost/namespaces/ns/nexus-operations/op/run/details"),
             Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName);
-        Assert.Throws<ArgumentException>(() => link.ToNexusOperationLink());
+        Assert.Throws<ArgumentException>(() => link.ToNexusOperation());
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public class ProtoLinkExtensionsTests
         var link = new NexusLink(
             new Uri("temporal:///namespaces/ns/workflows/wf/run/history"),
             Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName);
-        Assert.Throws<ArgumentException>(() => link.ToNexusOperationLink());
+        Assert.Throws<ArgumentException>(() => link.ToNexusOperation());
     }
 
     [Fact]
@@ -118,7 +118,7 @@ public class ProtoLinkExtensionsTests
         Assert.Equal(
             Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName,
             nexusLink.Type);
-        Assert.Equal(protoLink.NexusOperation, nexusLink.ToNexusOperationLink());
+        Assert.Equal(protoLink.NexusOperation, nexusLink.ToNexusOperation());
     }
 
     [Fact]
