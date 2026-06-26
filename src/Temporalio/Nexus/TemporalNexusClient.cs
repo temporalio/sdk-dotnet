@@ -75,5 +75,45 @@ namespace Temporalio.Nexus
                 options).ConfigureAwait(false);
             return TemporalOperationResult<TResult>.AsyncResult(handle.ToToken());
         }
+
+        /// <inheritdoc/>
+        public Task<TemporalOperationResult<TResult>> StartActivityAsync<TResult>(
+            Expression<Func<Task<TResult>>> activityCall, StartActivityOptions options)
+        {
+            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            return StartActivityAsync<TResult>(
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
+                args,
+                options);
+        }
+
+        /// <inheritdoc/>
+        public async Task<TemporalOperationResult<NoValue>> StartActivityAsync(
+            Expression<Func<Task>> activityCall, StartActivityOptions options)
+        {
+            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var token = await NexusActivityStartHelper.StartActivityAsync(
+                TemporalClient,
+                nexusStartContext,
+                temporalContext,
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
+                args,
+                options).ConfigureAwait(false);
+            return TemporalOperationResult<NoValue>.AsyncResult(token);
+        }
+
+        /// <inheritdoc/>
+        public async Task<TemporalOperationResult<TResult>> StartActivityAsync<TResult>(
+            string activity, IReadOnlyCollection<object?> args, StartActivityOptions options)
+        {
+            var token = await NexusActivityStartHelper.StartActivityAsync(
+                TemporalClient,
+                nexusStartContext,
+                temporalContext,
+                activity,
+                args,
+                options).ConfigureAwait(false);
+            return TemporalOperationResult<TResult>.AsyncResult(token);
+        }
     }
 }

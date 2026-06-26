@@ -2,6 +2,7 @@ namespace Temporalio.Tests.Worker;
 
 using NexusRpc;
 using NexusRpc.Handlers;
+using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.History.V1;
@@ -1976,6 +1977,220 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                 ExecuteNexusOperationAsync(svc => svc.DoIt());
             Assert.Equal("hello-no-input", result);
         });
+    }
+
+    public static class ActivityStubs
+    {
+        private static volatile TaskCompletionSource? waitForCancelReached;
+
+        public static TaskCompletionSource? WaitForCancelReached
+        {
+            get => waitForCancelReached;
+            set => waitForCancelReached = value;
+        }
+
+        [Activity]
+        public static Task<string> EchoAsync(string input) =>
+            Task.FromResult($"echo-activity:{input}");
+
+        [Activity]
+        public static async Task WaitForCancelAsync()
+        {
+            var ctx = ActivityExecutionContext.Current;
+            waitForCancelReached?.TrySetResult();
+            while (!ctx.CancellationToken.IsCancellationRequested)
+            {
+                ctx.Heartbeat();
+                await Task.Delay(100, ctx.CancellationToken);
+            }
+            ctx.CancellationToken.ThrowIfCancellationRequested();
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_GenericHandler_StartActivity_Succeeds()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                TemporalOperationHandler.FromHandleFactory<string, string>(
+                    async (context, client, input) =>
+                        await client.StartActivityAsync<string>(
+                            () => ActivityStubs.EchoAsync(input),
+                            new()
+                            {
+                                Id = $"echo-{input}",
+                                ScheduleToCloseTimeout = TimeSpan.FromMinutes(1),
+                            })))).
+            AddActivity(ActivityStubs.EchoAsync);
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        var handle = await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+            Assert.Equal("echo-activity:some-name", result);
+        });
+
+        // TODO(quinn): re-enable once dev-server supports activity links
+        // // Outbound link on the start event points to the activity
+        // var startEvent = Assert.Single(
+        //     (await handle.FetchHistoryAsync()).Events,
+        //     evt => evt.NexusOperationStartedEventAttributes != null);
+        // var link = Assert.Single(startEvent.Links);
+        // Assert.NotNull(link.Activity);
+        // Assert.False(string.IsNullOrEmpty(link.Activity.ActivityId));
+        // Assert.False(string.IsNullOrEmpty(link.Activity.RunId));
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_GenericHandler_StartActivityByName_Succeeds()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                TemporalOperationHandler.FromHandleFactory<string, string>(
+                    async (context, client, input) =>
+                        await client.StartActivityAsync<string>(
+                            "Echo",
+                            new object?[] { input },
+                            new()
+                            {
+                                Id = $"echo-byname-{input}",
+                                ScheduleToCloseTimeout = TimeSpan.FromMinutes(1),
+                            })))).
+            AddActivity(ActivityStubs.EchoAsync);
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("by-name"));
+            Assert.Equal("echo-activity:by-name", result);
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_GenericHandler_CancelActivity_CancelsUnderlying()
+    {
+        ActivityStubs.WaitForCancelReached = new TaskCompletionSource();
+        try
+        {
+            var activityId = $"act-{Guid.NewGuid()}";
+            var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddNexusService(new HandlerFactoryStringService(() =>
+                    TemporalOperationHandler.FromHandleFactory<string, string>(
+                        async (context, client, input) =>
+                            await client.StartActivityAsync<string>(
+                                "WaitForCancel",
+                                Array.Empty<object?>(),
+                                new()
+                                {
+                                    Id = activityId,
+                                    ScheduleToCloseTimeout = TimeSpan.FromMinutes(2),
+                                    HeartbeatTimeout = TimeSpan.FromSeconds(10),
+                                })))).
+                AddActivity(ActivityStubs.WaitForCancelAsync);
+            var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+            var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                RunInWorkflowAsync(workerOptions, async () =>
+                {
+                    using var cancelSource = new CancellationTokenSource();
+                    var handle = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                        StartNexusOperationAsync(
+                            svc => svc.DoSomething("some-name"),
+                            new() { CancellationToken = cancelSource.Token });
+#pragma warning disable CA1849, VSTHRD103 // https://github.com/temporalio/sdk-dotnet/issues/327
+                    cancelSource.Cancel();
+#pragma warning restore CA1849, VSTHRD103
+                    await handle.GetResultAsync();
+                }));
+            var nexusExc = Assert.IsType<NexusOperationFailureException>(wfExc.InnerException);
+            Assert.IsType<CanceledFailureException>(nexusExc.InnerException);
+
+            // Underlying activity was canceled by the default CancelActivityExecutionAsync
+            await AssertMore.EventuallyAsync(async () =>
+            {
+                var desc = await Client.GetActivityHandle(activityId).DescribeAsync();
+                Assert.Equal(Api.Enums.V1.ActivityExecutionStatus.Canceled, desc.Status);
+            });
+        }
+        finally
+        {
+            ActivityStubs.WaitForCancelReached = null;
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_GenericHandler_CancelActivityOverride_Invoked()
+    {
+        ActivityStubs.WaitForCancelReached = new TaskCompletionSource();
+        try
+        {
+            var activityId = $"act-{Guid.NewGuid()}";
+            CancelActivityOverrideHandler? capturedHandler = null;
+            var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddNexusService(new HandlerFactoryStringService(() =>
+                {
+                    capturedHandler ??= new CancelActivityOverrideHandler(
+                        async (context, client, input) =>
+                            await client.StartActivityAsync<string>(
+                                "WaitForCancel",
+                                Array.Empty<object?>(),
+                                new()
+                                {
+                                    Id = activityId,
+                                    ScheduleToCloseTimeout = TimeSpan.FromMinutes(2),
+                                    HeartbeatTimeout = TimeSpan.FromSeconds(10),
+                                }));
+                    return capturedHandler;
+                })).
+                AddActivity(ActivityStubs.WaitForCancelAsync);
+            var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+            await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                RunInWorkflowAsync(workerOptions, async () =>
+                {
+                    using var cancelSource = new CancellationTokenSource();
+                    var handle = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                        StartNexusOperationAsync(
+                            svc => svc.DoSomething("some-name"),
+                            new() { CancellationToken = cancelSource.Token });
+#pragma warning disable CA1849, VSTHRD103
+                    cancelSource.Cancel();
+#pragma warning restore CA1849, VSTHRD103
+                    await handle.GetResultAsync();
+                }));
+
+            Assert.NotNull(capturedHandler);
+            Assert.True(capturedHandler!.CancelCallCount > 0);
+            Assert.Equal(activityId, capturedHandler.CapturedActivityId);
+        }
+        finally
+        {
+            ActivityStubs.WaitForCancelReached = null;
+        }
+    }
+
+    private class CancelActivityOverrideHandler : TemporalOperationHandler<string, string>
+    {
+        public CancelActivityOverrideHandler(
+            Func<TemporalOperationStartContext, ITemporalNexusClient, string,
+                Task<TemporalOperationResult<string>>> startFunc)
+            : base(startFunc)
+        {
+        }
+
+        public int CancelCallCount { get; private set; }
+
+        public string? CapturedActivityId { get; private set; }
+
+        protected override Task CancelActivityExecutionAsync(
+            TemporalOperationCancelContext context, CancelActivityExecutionInput input)
+        {
+            CancelCallCount++;
+            CapturedActivityId = input.ActivityId;
+            return base.CancelActivityExecutionAsync(context, input);
+        }
     }
 
     [NexusService]

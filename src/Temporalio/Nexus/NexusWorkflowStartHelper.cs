@@ -1,10 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using NexusRpc.Handlers;
-using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 
@@ -16,8 +12,6 @@ namespace Temporalio.Nexus
     /// </summary>
     internal static class NexusWorkflowStartHelper
     {
-        private const string NexusOperationTokenHeader = "Nexus-Operation-Token";
-
         /// <summary>
         /// Start a workflow and return the workflow-run handle. This handles all Nexus plumbing:
         /// cloning options, setting task queue, processing links, injecting callbacks, and
@@ -27,7 +21,8 @@ namespace Temporalio.Nexus
         /// <param name="temporalContext">Temporal operation context for client, info, and logging.</param>
         /// <param name="workflow">Workflow type name.</param>
         /// <param name="args">Workflow arguments.</param>
-        /// <param name="options">Workflow start options. ID and TaskQueue are required.</param>
+        /// <param name="options">Workflow start options. ID is required; TaskQueue defaults to
+        /// the operation's task queue when omitted.</param>
         /// <returns>Workflow-run handle for the started workflow.</returns>
         internal static async Task<NexusWorkflowRunHandle> StartWorkflowAsync(
             OperationStartContext nexusStartContext,
@@ -58,63 +53,21 @@ namespace Temporalio.Nexus
                     AttachRequestId = true,
                 };
             }
-            if (nexusStartContext.InboundLinks.Count > 0)
+            if (NexusOperationStartHelper.CreateInboundLinks(
+                    nexusStartContext, temporalContext) is { } links)
             {
-                options.Links = nexusStartContext.InboundLinks.Select(link =>
-                {
-                    try
-                    {
-                        return new Link { WorkflowEvent = link.ToWorkflowEvent() };
-                    }
-                    catch (ArgumentException e)
-                    {
-                        temporalContext.Logger.LogWarning(e, "Invalid Nexus link: {Url}", link.Uri);
-                        return null;
-                    }
-                }).OfType<Link>().ToList();
+                options.Links = links;
             }
-            if (nexusStartContext.CallbackUrl is { } callbackUrl)
+            if (NexusOperationStartHelper.CreateCallback(
+                    nexusStartContext, token, options.Links) is { } callback)
             {
-                var callback = new Callback() { Nexus = new() { Url = callbackUrl } };
-                var callbackHeadersHasToken = false;
-                if (nexusStartContext.CallbackHeaders is { } callbackHeaders)
-                {
-                    foreach (var kv in callbackHeaders)
-                    {
-                        callback.Nexus.Header.Add(kv.Key, kv.Value);
-                        if (string.Equals(
-                                kv.Key, NexusOperationTokenHeader, StringComparison.OrdinalIgnoreCase))
-                        {
-                            callbackHeadersHasToken = true;
-                        }
-                    }
-                }
-                // Set operation token if not already present (header is case-insensitive)
-                if (!callbackHeadersHasToken)
-                {
-                    callback.Nexus.Header[NexusOperationTokenHeader] = token;
-                }
-                if (options.Links is { } links)
-                {
-                    callback.Links.AddRange(links);
-                }
                 options.CompletionCallbacks = new[] { callback };
             }
             options.RequestId = nexusStartContext.RequestId;
 
             // Do the start call
-            var wfHandle = await client.StartWorkflowAsync(
+            await client.StartWorkflowAsync(
                 workflow, args, options).ConfigureAwait(false);
-
-            // Add the outbound link
-            nexusStartContext.OutboundLinks.Add(new Link.Types.WorkflowEvent
-            {
-                Namespace = namespace_,
-                WorkflowId = workflowId,
-                RunId = wfHandle.FirstExecutionRunId ??
-                    throw new InvalidOperationException("Handle unexpectedly missing run ID"),
-                EventRef = new() { EventId = 1, EventType = EventType.WorkflowExecutionStarted },
-            }.ToNexusLink());
 
             return handle;
         }

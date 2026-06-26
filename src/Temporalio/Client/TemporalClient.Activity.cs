@@ -12,6 +12,7 @@ using Temporalio.Client.Interceptors;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
+using Temporalio.Nexus;
 
 #if NETCOREAPP3_0_OR_GREATER
 using System.Runtime.CompilerServices;
@@ -118,7 +119,7 @@ namespace Temporalio.Client
                             Name = input.Options.TaskQueue!,
                         },
                         Identity = Client.Connection.Options.Identity,
-                        RequestId = Guid.NewGuid().ToString(),
+                        RequestId = input.Options.RequestId ?? Guid.NewGuid().ToString(),
                         IdReusePolicy = input.Options.IdReusePolicy,
                         IdConflictPolicy = input.Options.IdConflictPolicy,
                         RetryPolicy = input.Options.RetryPolicy?.ToProto(),
@@ -126,7 +127,16 @@ namespace Temporalio.Client
                             input.Options.StaticSummary, input.Options.StaticDetails).
                             ConfigureAwait(false),
                         Priority = input.Options.Priority?.ToProto(),
+                        OnConflictOptions = input.Options.OnConflictOptions,
                     };
+                    if (input.Options.CompletionCallbacks is { } completionCallbacks)
+                    {
+                        req.CompletionCallbacks.AddRange(completionCallbacks);
+                    }
+                    if (input.Options.Links is { } activityLinks)
+                    {
+                        req.Links.AddRange(activityLinks);
+                    }
                     if (input.Args.Count > 0)
                     {
                         req.Input = new Payloads();
@@ -173,6 +183,11 @@ namespace Temporalio.Client
 
                     var resp = await Client.Connection.WorkflowService.StartActivityExecutionAsync(
                         req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
+                    if (NexusOperationExecutionContext.HasCurrent &&
+                        resp.Link?.ToNexusLink() is { } nexusLink)
+                    {
+                        NexusOperationExecutionContext.Current.HandlerContext.OutboundLinks.Add(nexusLink);
+                    }
                     return new ActivityHandle<TResult>(
                         Client: Client,
                         Id: input.Options.Id!,
