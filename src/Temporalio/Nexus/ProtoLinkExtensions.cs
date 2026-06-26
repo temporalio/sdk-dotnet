@@ -86,6 +86,38 @@ namespace Temporalio.Nexus
         }
 
         /// <summary>
+        /// Convert a proto Link to a Nexus link, dispatching on the populated oneof variant.
+        /// </summary>
+        /// <param name="link">Proto link.</param>
+        /// <returns>Nexus link.</returns>
+        /// <exception cref="ArgumentException">If the link variant is not set or unknown.</exception>
+        public static NexusLink ToNexusLink(this Api.Common.V1.Link link) => link.VariantCase switch
+        {
+            Api.Common.V1.Link.VariantOneofCase.WorkflowEvent => link.WorkflowEvent.ToNexusLink(),
+            Api.Common.V1.Link.VariantOneofCase.NexusOperation => link.NexusOperation.ToNexusLink(),
+            _ => throw new ArgumentException($"Unknown link variant: {link.VariantCase}"),
+        };
+
+        /// <summary>
+        /// Convert a Nexus link to a proto Link, dispatching on the link's type.
+        /// </summary>
+        /// <param name="link">Nexus link.</param>
+        /// <returns>Proto link with the appropriate oneof variant populated.</returns>
+        /// <exception cref="ArgumentException">If the link type is unknown or the link is invalid.</exception>
+        public static Api.Common.V1.Link ToProtoLink(this NexusLink link)
+        {
+            if (link.Type == Api.Common.V1.Link.Types.WorkflowEvent.Descriptor.FullName)
+            {
+                return new Api.Common.V1.Link { WorkflowEvent = link.ToWorkflowEvent() };
+            }
+            if (link.Type == Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName)
+            {
+                return new Api.Common.V1.Link { NexusOperation = link.ToNexusOperationLink() };
+            }
+            throw new ArgumentException($"Unknown link type: {link.Type}");
+        }
+
+        /// <summary>
         /// Convert a Nexus link to a nexus operation link.
         /// </summary>
         /// <param name="link">Nexus link.</param>

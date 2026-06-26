@@ -125,15 +125,14 @@ namespace Temporalio.Nexus
         /// <summary>
         /// Append a link returned by an outbound RPC the operation handler issued (e.g. signal,
         /// signalWithStart, start). The task handler drains the accumulated links when building the
-        /// operation's StartOperationResponse. Null and non-WorkflowEvent links are ignored.
+        /// operation's StartOperationResponse, dropping any whose variant it cannot convert. Null
+        /// links are ignored.
         /// </summary>
         /// <param name="link">Response link to add.</param>
-        /// <returns><c>true</c> if the link was added; <c>false</c> if it was null or not a
-        /// WorkflowEvent-shaped link.</returns>
+        /// <returns><c>true</c> if the link was added; <c>false</c> if it was null.</returns>
         internal bool TryAddResponseLink(Api.Common.V1.Link? link)
         {
-            if (link == null ||
-                link.VariantCase != Api.Common.V1.Link.VariantOneofCase.WorkflowEvent)
+            if (link == null)
             {
                 return false;
             }

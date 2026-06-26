@@ -57,14 +57,28 @@ public class NexusOperationExecutionContextTests
     }
 
     [Fact]
-    public void TryAddResponseLink_IgnoresNonWorkflowEventLink()
+    public void TryAddResponseLink_AcceptsNexusOperationLink()
     {
         var context = NewContext();
-        // A link with no variant set (e.g. an unset response link) must be dropped.
-        Assert.False(context.TryAddResponseLink(new Link()));
-        // A non-WorkflowEvent variant must also be dropped.
-        Assert.False(context.TryAddResponseLink(new Link { BatchJob = new() { JobId = "batch" } }));
-        Assert.Empty(context.ResponseLinks);
+        var link = new Link
+        {
+            NexusOperation = new() { Namespace = "ns", OperationId = "op", RunId = "run" },
+        };
+        Assert.True(context.TryAddResponseLink(link));
+        Assert.Equal(new[] { link }, context.ResponseLinks);
+    }
+
+    [Fact]
+    public void TryAddResponseLink_AcceptsUnsupportedVariants()
+    {
+        // The gate accepts any non-null link; the drain in NexusWorker is responsible for
+        // dropping links whose variant cannot be converted to a NexusLink.
+        var context = NewContext();
+        var unsetLink = new Link();
+        var batchLink = new Link { BatchJob = new() { JobId = "batch" } };
+        Assert.True(context.TryAddResponseLink(unsetLink));
+        Assert.True(context.TryAddResponseLink(batchLink));
+        Assert.Equal(new[] { unsetLink, batchLink }, context.ResponseLinks);
     }
 
     private static NexusOperationExecutionContext NewContext()
