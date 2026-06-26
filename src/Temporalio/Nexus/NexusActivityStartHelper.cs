@@ -24,7 +24,7 @@ namespace Temporalio.Nexus
         /// <param name="options">Activity start options. Either ScheduleToCloseTimeout or
         /// StartToCloseTimeout must be set; TaskQueue defaults to the operation's task queue.</param>
         /// <returns>Base64url-encoded operation token.</returns>
-        internal static async Task<string> StartActivityAndGetTokenAsync(
+        internal static async Task<string> StartActivityAsync(
             ITemporalClient client,
             OperationStartContext nexusStartContext,
             NexusOperationExecutionContext temporalContext,
@@ -40,7 +40,7 @@ namespace Temporalio.Nexus
             var activityId = options.Id!;
 
             // Build the callback-header token without a run ID (we don't have it yet).
-            var callbackToken = NexusActivityExecutionToken.Build(namespace_, activityId, runId: null);
+            var callbackToken = NexusActivityExecutionToken.Create(namespace_, activityId, runId: null);
 
             if (options.IdConflictPolicy == Api.Enums.V1.ActivityIdConflictPolicy.UseExisting)
             {
@@ -51,12 +51,12 @@ namespace Temporalio.Nexus
                     AttachRequestId = true,
                 };
             }
-            if (NexusOperationStartCommon.BuildInboundLinks(
+            if (NexusOperationStartHelper.CreateInboundLinks(
                     nexusStartContext, temporalContext) is { } links)
             {
                 options.Links = links;
             }
-            if (NexusOperationStartCommon.BuildCallback(
+            if (NexusOperationStartHelper.CreateCallback(
                     nexusStartContext, callbackToken, options.Links) is { } callback)
             {
                 options.CompletionCallbacks = new[] { callback };
@@ -68,7 +68,7 @@ namespace Temporalio.Nexus
                 activity, args, options).ConfigureAwait(false);
 
             // Return a token that includes the run ID from the start response.
-            return NexusActivityExecutionToken.Build(namespace_, activityId, handle.RunId);
+            return NexusActivityExecutionToken.Create(namespace_, activityId, handle.RunId);
         }
     }
 }

@@ -53,12 +53,12 @@ namespace Temporalio.Nexus
                     AttachRequestId = true,
                 };
             }
-            if (NexusOperationStartCommon.BuildInboundLinks(
+            if (NexusOperationStartHelper.CreateInboundLinks(
                     nexusStartContext, temporalContext) is { } links)
             {
                 options.Links = links;
             }
-            if (NexusOperationStartCommon.BuildCallback(
+            if (NexusOperationStartHelper.CreateCallback(
                     nexusStartContext, token, options.Links) is { } callback)
             {
                 options.CompletionCallbacks = new[] { callback };

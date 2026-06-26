@@ -12,7 +12,7 @@ namespace Temporalio.Nexus
     /// <see cref="NexusActivityStartHelper"/> for translating inbound Nexus links and building the
     /// completion callback.
     /// </summary>
-    internal static class NexusOperationStartCommon
+    internal static class NexusOperationStartHelper
     {
         /// <summary>
         /// Header name used to carry the Nexus operation token on completion callbacks.
@@ -26,7 +26,7 @@ namespace Temporalio.Nexus
         /// <param name="nexusStartContext">Nexus start context.</param>
         /// <param name="temporalContext">Temporal operation context (used for logging).</param>
         /// <returns>List of proto links, or <c>null</c> if there are no inbound links.</returns>
-        internal static IReadOnlyCollection<Link>? BuildInboundLinks(
+        internal static IReadOnlyCollection<Link>? CreateInboundLinks(
             OperationStartContext nexusStartContext,
             NexusOperationExecutionContext temporalContext)
         {
@@ -55,9 +55,9 @@ namespace Temporalio.Nexus
         /// <param name="nexusStartContext">Nexus start context.</param>
         /// <param name="token">Operation token to inject as a callback header.</param>
         /// <param name="links">Links to attach to the callback (typically from
-        /// <see cref="BuildInboundLinks"/>).</param>
+        /// <see cref="CreateInboundLinks"/>).</param>
         /// <returns>Callback to attach to start options, or <c>null</c> if no callback URL is set.</returns>
-        internal static Callback? BuildCallback(
+        internal static Callback? CreateCallback(
             OperationStartContext nexusStartContext,
             string token,
             IReadOnlyCollection<Link>? links)

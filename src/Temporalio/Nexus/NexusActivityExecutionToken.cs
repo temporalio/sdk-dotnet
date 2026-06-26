@@ -24,7 +24,7 @@ namespace Temporalio.Nexus
         /// <param name="runId">Activity run ID. May be <c>null</c> when building the token used in
         /// the completion-callback header (which is sent before the run ID is known).</param>
         /// <returns>Base64url-encoded operation token.</returns>
-        internal static string Build(string namespace_, string activityId, string? runId) =>
+        internal static string Create(string namespace_, string activityId, string? runId) =>
             NexusWorkflowRunHandle.Base64UrlEncode(JsonSerializer.SerializeToUtf8Bytes(
                 new Token(namespace_, activityId, runId, null),
                 NexusWorkflowRunHandle.TokenSerializerOptions));

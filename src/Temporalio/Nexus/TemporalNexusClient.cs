@@ -92,7 +92,7 @@ namespace Temporalio.Nexus
             Expression<Func<Task>> activityCall, StartActivityOptions options)
         {
             var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
-            var token = await NexusActivityStartHelper.StartActivityAndGetTokenAsync(
+            var token = await NexusActivityStartHelper.StartActivityAsync(
                 TemporalClient,
                 nexusStartContext,
                 temporalContext,
@@ -106,7 +106,7 @@ namespace Temporalio.Nexus
         public async Task<TemporalOperationResult<TResult>> StartActivityAsync<TResult>(
             string activity, IReadOnlyCollection<object?> args, StartActivityOptions options)
         {
-            var token = await NexusActivityStartHelper.StartActivityAndGetTokenAsync(
+            var token = await NexusActivityStartHelper.StartActivityAsync(
                 TemporalClient,
                 nexusStartContext,
                 temporalContext,

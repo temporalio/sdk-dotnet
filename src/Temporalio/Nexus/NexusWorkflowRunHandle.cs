@@ -94,7 +94,7 @@ namespace Temporalio.Nexus
         /// <param name="token">Base64url-encoded token string.</param>
         /// <returns>Token type code (the JSON <c>t</c> field).</returns>
         /// <exception cref="ArgumentException">If the token is empty or malformed.</exception>
-        internal static int LoadTokenType(string token)
+        internal static int ParseTokenType(string token)
         {
             if (string.IsNullOrEmpty(token))
             {

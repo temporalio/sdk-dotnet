@@ -115,7 +115,7 @@ namespace Temporalio.Nexus
             int tokenType;
             try
             {
-                tokenType = NexusWorkflowRunHandle.LoadTokenType(context.OperationToken);
+                tokenType = NexusWorkflowRunHandle.ParseTokenType(context.OperationToken);
             }
             catch (ArgumentException e)
             {
