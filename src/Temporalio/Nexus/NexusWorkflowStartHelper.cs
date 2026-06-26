@@ -64,6 +64,10 @@ namespace Temporalio.Nexus
                 {
                     try
                     {
+                        if (link.Type == Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName)
+                        {
+                            return new Link { NexusOperation = link.ToNexusOperationLink() };
+                        }
                         return new Link { WorkflowEvent = link.ToWorkflowEvent() };
                     }
                     catch (ArgumentException e)
