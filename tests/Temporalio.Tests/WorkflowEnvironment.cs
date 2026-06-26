@@ -86,6 +86,8 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
                         "--dynamic-config-value",
                         "frontend.enableExecuteMultiOperation=true",
                         "--dynamic-config-value",
+                        "history.enableSignalWithStartFromWorkflow=true",
+                        "--dynamic-config-value",
                         "system.enableDeploymentVersions=true",
                         // Enable standalone activities
                         "--dynamic-config-value", "frontend.activityAPIsEnabled=true",

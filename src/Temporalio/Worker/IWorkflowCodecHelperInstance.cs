@@ -40,5 +40,18 @@ namespace Temporalio.Worker
         /// <param name="seq">Sequence.</param>
         /// <returns>Context.</returns>
         ISerializationContext.Workflow? GetPendingExternalSignalSerializationContext(uint seq);
+
+        /// <summary>
+        /// Gets the pending Nexus operation info for the given sequence.
+        /// </summary>
+        /// <param name="seq">Sequence.</param>
+        /// <returns>Info.</returns>
+        NexusOperationInfo? GetPendingNexusOperationInfo(uint seq);
+
+        /// <summary>
+        /// Pending Nexus operation info.
+        /// </summary>
+        /// <param name="Endpoint">Endpoint name.</param>
+        internal record NexusOperationInfo(string? Endpoint);
     }
 }
