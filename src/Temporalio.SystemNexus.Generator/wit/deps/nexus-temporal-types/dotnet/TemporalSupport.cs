@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Google.Protobuf.WellKnownTypes;
@@ -21,16 +20,8 @@ namespace NexGen.Support
 
     internal static class TemporalFunctionNames
     {
-        internal static (MethodInfo Method, IReadOnlyCollection<object?> Args) ExtractCall<TDelegate>(Expression<TDelegate> expression)
-        {
-            if (expression.Body is not MethodCallExpression call)
-            {
-                throw new ArgumentException("Expression must be a single method call", nameof(expression));
-            }
-            var method = call.Method;
-            var args = call.Arguments.Select(arg => Expression.Lambda<Func<object?>>(Expression.Convert(arg, typeof(object))).Compile()()).ToArray();
-            return (method, args);
-        }
+        internal static (MethodInfo Method, IReadOnlyCollection<object?> Args) ExtractCall<TInstance, TResult>(
+            Expression<Func<TInstance, TResult>> expression) => ExpressionUtil.ExtractCall(expression);
 
         internal static string WorkflowName(MethodInfo method)
         {

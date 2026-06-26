@@ -4,6 +4,7 @@
 #pragma warning disable CS1591
 
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace Temporalio.Workflows
@@ -12,6 +13,8 @@ namespace Temporalio.Workflows
     /// <summary>
     /// Request fields for signaling a workflow, starting it first if needed.
     /// </summary>
+    /// <remarks>WARNING: This API is experimental and may change in the future.</remarks>
+    [GeneratedCode("nex-gen", null)]
     internal class SignalWithStartWorkflowRequest
     {
         internal SignalWithStartWorkflowRequest(string workflow, string id, string taskQueue, string signal)
@@ -177,6 +180,7 @@ namespace Temporalio.Workflows
 
     }
 
+    [GeneratedCode("nex-gen", null)]
     internal class UserMetadata
     {
         /// <summary>

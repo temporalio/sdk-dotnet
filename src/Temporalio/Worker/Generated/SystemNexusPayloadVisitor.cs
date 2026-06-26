@@ -3,12 +3,14 @@
 #nullable enable
 
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Temporalio.Api.Common.V1;
 
 namespace Temporalio.Worker
 {
+    [GeneratedCode("Temporalio.SystemNexus.Generator", null)]
     internal static partial class SystemNexusPayloadVisitor
     {
         private const string TemporalSystemEndpoint = "__temporal_system";

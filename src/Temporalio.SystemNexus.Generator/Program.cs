@@ -156,12 +156,14 @@ static void GeneratePayloadVisitor(
     builder.AppendLine("#nullable enable");
     builder.AppendLine();
     builder.AppendLine("using System;");
+    builder.AppendLine("using System.CodeDom.Compiler;");
     builder.AppendLine("using System.Collections.Generic;");
     builder.AppendLine("using System.Threading.Tasks;");
     builder.AppendLine("using Temporalio.Api.Common.V1;");
     builder.AppendLine();
     builder.AppendLine("namespace Temporalio.Worker");
     builder.AppendLine("{");
+    builder.AppendLine("    [GeneratedCode(\"Temporalio.SystemNexus.Generator\", null)]");
     builder.AppendLine("    internal static partial class SystemNexusPayloadVisitor");
     builder.AppendLine("    {");
     builder.AppendLine("        private const string TemporalSystemEndpoint = \"__temporal_system\";");

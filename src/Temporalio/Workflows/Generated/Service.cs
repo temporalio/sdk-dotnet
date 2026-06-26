@@ -4,11 +4,14 @@
 #pragma warning disable CS1591
 
 using System;
+using System.CodeDom.Compiler;
 using NexusRpc;
 
 namespace Temporalio.Workflows
 {
 
+    /// <remarks>WARNING: This API is experimental and may change in the future.</remarks>
+    [GeneratedCode("nex-gen", null)]
     [NexusService("temporal.api.workflowservice.v1.WorkflowService")]
     internal interface IWorkflowService
     {
@@ -16,6 +19,8 @@ namespace Temporalio.Workflows
         /// Signal a workflow, starting it first if needed.
         /// </summary>
         /// <returns>A workflow handle to the started workflow.</returns>
+        /// <remarks>WARNING: This API is experimental and may change in the future.</remarks>
+        [GeneratedCode("nex-gen", null)]
         [NexusOperation("SignalWithStartWorkflowExecution")]
         Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse SignalWithStartWorkflow(Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest request);
 
