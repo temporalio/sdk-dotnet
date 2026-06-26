@@ -69,7 +69,7 @@ public class NexusOperationExecutionContextTests
     }
 
     [Fact]
-    public void TryAddResponseLink_AcceptsUnsupportedVariants()
+    public void TryAddResponseLink_AcceptsAllNonNullVariants_DroppingDeferredToDrain()
     {
         // The gate accepts any non-null link; the drain in NexusWorker is responsible for
         // dropping links whose variant cannot be converted to a NexusLink.

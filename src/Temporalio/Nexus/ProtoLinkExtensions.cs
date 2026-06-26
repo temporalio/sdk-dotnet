@@ -104,18 +104,14 @@ namespace Temporalio.Nexus
         /// <param name="link">Nexus link.</param>
         /// <returns>Proto link with the appropriate oneof variant populated.</returns>
         /// <exception cref="ArgumentException">If the link type is unknown or the link is invalid.</exception>
-        public static Api.Common.V1.Link ToProtoLink(this NexusLink link)
+        public static Api.Common.V1.Link ToProtoLink(this NexusLink link) => link.Type switch
         {
-            if (link.Type == Api.Common.V1.Link.Types.WorkflowEvent.Descriptor.FullName)
-            {
-                return new Api.Common.V1.Link { WorkflowEvent = link.ToWorkflowEvent() };
-            }
-            if (link.Type == Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName)
-            {
-                return new Api.Common.V1.Link { NexusOperation = link.ToNexusOperationLink() };
-            }
-            throw new ArgumentException($"Unknown link type: {link.Type}");
-        }
+            var t when t == Api.Common.V1.Link.Types.WorkflowEvent.Descriptor.FullName =>
+                new Api.Common.V1.Link { WorkflowEvent = link.ToWorkflowEvent() },
+            var t when t == Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName =>
+                new Api.Common.V1.Link { NexusOperation = link.ToNexusOperationLink() },
+            _ => throw new ArgumentException($"Unknown link type: {link.Type}"),
+        };
 
         /// <summary>
         /// Convert a Nexus link to a nexus operation link.
@@ -125,22 +121,7 @@ namespace Temporalio.Nexus
         /// <exception cref="ArgumentException">If the link is invalid.</exception>
         public static Api.Common.V1.Link.Types.NexusOperation ToNexusOperationLink(this NexusLink link)
         {
-            if (link.Uri.Scheme != "temporal")
-            {
-                throw new ArgumentException("Invalid scheme");
-            }
-            if (link.Uri.Host.Length > 0)
-            {
-                throw new ArgumentException("Unexpected host");
-            }
-            var pathPieces = link.Uri.AbsolutePath.TrimStart('/').Split('/');
-            if (pathPieces.Length != 6 ||
-                pathPieces[0] != "namespaces" ||
-                pathPieces[2] != "nexus-operations" ||
-                pathPieces[5] != "details")
-            {
-                throw new ArgumentException("Invalid path");
-            }
+            var pathPieces = ParseTemporalLinkPath(link, "nexus-operations", "details");
             return new Api.Common.V1.Link.Types.NexusOperation
             {
                 Namespace = Uri.UnescapeDataString(pathPieces[1]),
@@ -157,22 +138,7 @@ namespace Temporalio.Nexus
         /// <exception cref="ArgumentException">If the link is invalid.</exception>
         public static Api.Common.V1.Link.Types.WorkflowEvent ToWorkflowEvent(this NexusLink link)
         {
-            if (link.Uri.Scheme != "temporal")
-            {
-                throw new ArgumentException("Invalid scheme");
-            }
-            if (link.Uri.Host.Length > 0)
-            {
-                throw new ArgumentException("Unexpected host");
-            }
-            var pathPieces = link.Uri.AbsolutePath.TrimStart('/').Split('/');
-            if (pathPieces.Length != 6 ||
-                pathPieces[0] != "namespaces" ||
-                pathPieces[2] != "workflows" ||
-                pathPieces[5] != "history")
-            {
-                throw new ArgumentException("Invalid path");
-            }
+            var pathPieces = ParseTemporalLinkPath(link, "workflows", "history");
             var evt = new Api.Common.V1.Link.Types.WorkflowEvent
             {
                 Namespace = Uri.UnescapeDataString(pathPieces[1]),
@@ -244,6 +210,29 @@ namespace Temporalio.Nexus
             }
 
             return evt;
+        }
+
+        // Validate a Temporal-shaped link URI and return its path segments. Expected path shape
+        // is /namespaces/{namespace}/{kind}/{id}/{run}/{tail}.
+        private static string[] ParseTemporalLinkPath(NexusLink link, string expectedKind, string expectedTail)
+        {
+            if (link.Uri.Scheme != "temporal")
+            {
+                throw new ArgumentException("Invalid scheme");
+            }
+            if (link.Uri.Host.Length > 0)
+            {
+                throw new ArgumentException("Unexpected host");
+            }
+            var pathPieces = link.Uri.AbsolutePath.TrimStart('/').Split('/');
+            if (pathPieces.Length != 6 ||
+                pathPieces[0] != "namespaces" ||
+                pathPieces[2] != expectedKind ||
+                pathPieces[5] != expectedTail)
+            {
+                throw new ArgumentException("Invalid path");
+            }
+            return pathPieces;
         }
     }
 }
