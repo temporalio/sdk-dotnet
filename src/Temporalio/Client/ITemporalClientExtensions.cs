@@ -44,6 +44,49 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Signal and (optionally) start a workflow via lambda invoking the signalWithStart method.
+        /// </summary>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <param name="client">Client to use.</param>
+        /// <param name="workflowRunCall">Invocation of workflow run method with a result.</param>
+        /// <param name="signalCall">Invocation of signal method without a result.</param>
+        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <returns>Workflow handle for the started workflow.</returns>
+        /// <exception cref="ArgumentException">Invalid run call or options.</exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
+        public static async Task<WorkflowHandle<TWorkflow>> SignalWorkflowWithStartAsync<TWorkflow>(
+            this ITemporalClient client,
+            Expression<Func<TWorkflow, Task>> workflowRunCall,
+            Expression<Func<TWorkflow, Task>> signalCall,
+            WorkflowOptions options)
+        {
+            options.SignalWithStart(signalCall);
+            return await client.StartWorkflowAsync(workflowRunCall, options).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Signal and (optionally) start a workflow via lambda invoking the signalWithStart method.
+        /// </summary>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <typeparam name="TResult">Workflow result type.</typeparam>
+        /// <param name="client">Client to use.</param>
+        /// <param name="workflowRunCall">Invocation of workflow run method with a result.</param>
+        /// <param name="signalCall">Invocation of signal method without a result.</param>
+        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <returns>Workflow handle for the started workflow.</returns>
+        /// <exception cref="ArgumentException">Invalid run call or options.</exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
+        public static async Task<WorkflowHandle<TWorkflow, TResult>> SignalWorkflowWithStartAsync<TWorkflow, TResult>(
+            this ITemporalClient client,
+            Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall,
+            Expression<Func<TWorkflow, Task>> signalCall,
+            WorkflowOptions options)
+        {
+            options.SignalWithStart(signalCall);
+            return await client.StartWorkflowAsync(workflowRunCall, options).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Shortcut for
         /// <see cref="ITemporalClient.StartWorkflowAsync{T}(Expression{Func{T, Task}}, WorkflowOptions)" />
         /// +
