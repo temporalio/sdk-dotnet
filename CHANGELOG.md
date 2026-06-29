@@ -27,3 +27,8 @@ to docs, or any other relevant information.
   signaled event is attached to the caller workflow's Nexus operation history event. This makes the
   caller and callee mutually navigable in the UI for signal-based Nexus operations.
 - Exposed `BackoffStartInterval` for continue-as-new, to allow the new workflow to start after a delay.
+
+### Changed
+
+- Reduced CPU usage of type-safe calls (e.g. `ExecuteChildWorkflowAsync(wf => wf.RunAsync(arg))`)
+  by evaluating non-constant arguments via expression interpretation instead of full IL compilation, when supported by the runtime.
