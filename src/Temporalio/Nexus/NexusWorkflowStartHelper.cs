@@ -64,7 +64,7 @@ namespace Temporalio.Nexus
                 {
                     try
                     {
-                        return new Link { WorkflowEvent = link.ToWorkflowEvent() };
+                        return link.ToProtoLink();
                     }
                     catch (ArgumentException e)
                     {
