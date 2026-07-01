@@ -244,7 +244,7 @@ public unsafe class TemporalConnectionOptionsTests
         var interopOptions = options.ToInteropOptions(scope);
 
         Assert.Equal(
-            Bridge.Interop.TemporalCoreClientGrpcCompression.Gzip,
+            Bridge.Interop.TemporalCoreClientGrpcCompression.None,
             interopOptions.grpc_compression);
     }
 
