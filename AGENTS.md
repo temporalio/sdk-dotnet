@@ -69,10 +69,9 @@ The following environment variables override the test environment to run against
 
 - Format and build (with analyzers clean) before submitting.
 - Ensure all tests pass locally.
-- Add a high-level, user-facing entry to the `## [Unreleased]` section of `CHANGELOG.md` for any
-  user-facing change (new feature, behavior change, deprecation, breaking change, notable bug fix,
-  or security fix). Internal-only changes (refactors, tests, CI, docs) do not need an entry. See
-  `CONTRIBUTING.md`.
+- For any user-facing change, add a high-level entry to the `## [Unreleased]` section of
+  `CHANGELOG.md`, following the guidance at the top of that file. Internal-only changes (refactors,
+  tests, CI, docs) do not need an entry.
 - Keep commit messages short and in the imperative mood.
 - Provide a clear PR description outlining what changed and why.
 - Reviewers expect new features or fixes to include corresponding tests when applicable.
