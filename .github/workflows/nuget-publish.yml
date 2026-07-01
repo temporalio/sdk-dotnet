@@ -23,6 +23,14 @@ on:
         description: "Trusted Publishing OIDC token-exchange endpoint for this gallery."
         required: true
         type: string
+      audience:
+        description: >
+          OIDC audience (aud claim) the gallery's token service expects. Must
+          match the gallery, e.g. https://www.nuget.org for prod or
+          https://int.nugettest.org for the int test server.
+        required: false
+        type: string
+        default: https://www.nuget.org
       version:
         description: "Version expected to appear in the gallery listing."
         required: true
@@ -63,6 +71,7 @@ jobs:
         with:
           user: Temporal
           token-service-url: ${{ inputs.token-service-url }}
+          audience: ${{ inputs.audience }}
 
       - name: Push packages
         env:
