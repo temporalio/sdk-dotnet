@@ -21,11 +21,15 @@ to docs, or any other relevant information.
 
 ### Added
 
-- Nexus operation link propagation for signals. When a Nexus operation handler signals a workflow
-  (including signal-with-start), the inbound Nexus request links are now forwarded onto the signaled
-  workflow so its history events link back to the caller, and the link the server returns for the
-  signaled event is attached to the caller workflow's Nexus operation history event. This makes the
-  caller and callee mutually navigable in the UI for signal-based Nexus operations.
+- Added `TemporalConnectionOptions.GrpcCompression` to control transport-level gRPC compression for
+  all calls made over the connection. Use `GrpcCompression.Gzip` to compress or `GrpcCompression.None`
+  to opt out. The default is `GrpcCompression.None`.
+- Nexus operation link propagation. When a Nexus operation handler issues an outbound RPC (signal,
+  signal-with-start, or starting a workflow), the inbound Nexus request links are now forwarded onto
+  the target workflow so its history events link back to the caller, and the link the server returns
+  for that event is attached to the caller workflow's Nexus operation history event. This makes the
+  caller and callee mutually navigable in the UI for both workflow-based and standalone Nexus
+  operations.
 - Exposed `BackoffStartInterval` for continue-as-new, to allow the new workflow to start after a delay.
 
 ### Changed
