@@ -28,7 +28,7 @@ to docs, or any other relevant information.
   signal-with-start, or starting a workflow), the inbound Nexus request links are now forwarded onto
   the target workflow so its history events link back to the caller, and the link the server returns
   for that event is attached to the caller workflow's Nexus operation history event. This makes the
-  caller and callee mutually navigable in the UI for both signal-based and standalone Nexus
+  caller and callee mutually navigable in the UI for both workflow-based and standalone Nexus
   operations.
 - Exposed `BackoffStartInterval` for continue-as-new, to allow the new workflow to start after a delay.
 
