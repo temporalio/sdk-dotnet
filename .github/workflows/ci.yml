@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-arm, macos-intel, macos-arm, windows-latest, windows-arm]
+        os: [ubuntu-latest, ubuntu-arm, macos-arm, windows-latest, windows-arm]
         include:
           - os: windows-latest
             checkTarget: true
@@ -25,8 +25,6 @@ jobs:
             cloudTestTarget: true
           - os: ubuntu-arm
             runsOn: ubuntu-24.04-arm64-2-core
-          - os: macos-intel
-            runsOn: macos-15-intel
           - os: macos-arm
             runsOn: macos-14
           - os: windows-arm
