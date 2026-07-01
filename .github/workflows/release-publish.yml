@@ -48,6 +48,7 @@ jobs:
       environment: nugetint
       index-url: https://apiint.nugettest.org/v3/index.json
       token-service-url: https://int.nugettest.org/api/v2/token
+      audience: https://int.nugettest.org
       version: ${{ needs.read-version.outputs.version }}
 
   smoke-int:
