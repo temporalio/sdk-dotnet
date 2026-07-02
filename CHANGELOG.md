@@ -19,6 +19,8 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### [1.16.0] - 2026-07-01
+
 ### Added
 
 - Added `TemporalConnectionOptions.GrpcCompression` to control transport-level gRPC compression for
