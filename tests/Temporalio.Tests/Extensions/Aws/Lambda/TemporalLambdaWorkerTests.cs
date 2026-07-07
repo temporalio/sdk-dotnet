@@ -85,9 +85,10 @@ public class TemporalLambdaWorkerTests
                 },
             });
 
-        Assert.Equal(1, configureCalls);
+        Assert.Equal(0, configureCalls);
         await handler(null, new FakeLambdaContext());
 
+        Assert.Equal(1, configureCalls);
         Assert.NotNull(capturedClientOptions);
         Assert.NotNull(capturedWorkerOptions);
         Assert.Equal("localhost:7233", capturedClientOptions.TargetHost);
@@ -367,14 +368,16 @@ public class TemporalLambdaWorkerTests
     [Fact]
     public async Task CreateHandler_TaskQueueCanComeFromEnvironment()
     {
-        Assert.Throws<InvalidOperationException>(() =>
-            TemporalLambdaWorker.CreateHandler(
-                Version,
-                _ => { },
-                new TemporalLambdaWorkerHandlerOptions
-                {
-                    GetEnvironmentVariable = _ => null,
-                }));
+        var missingTaskQueueHandler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            _ => { },
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                GetEnvironmentVariable = _ => null,
+            });
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            missingTaskQueueHandler(null, new FakeLambdaContext()));
 
         TemporalWorkerOptions? capturedWorkerOptions = null;
         var handler = TemporalLambdaWorker.CreateHandler(
@@ -758,6 +761,57 @@ public class TemporalLambdaWorkerTests
                 line => line.Contains("shutdown hook failed", StringComparison.Ordinal)));
         Assert.Equal(2, connectCalls);
         Assert.Equal(2, workerCreations);
+    }
+
+    [Fact]
+    public async Task CreateHandler_SyncConfigureRunsPerInvocationWithFreshConfig()
+    {
+        var configureCalls = 0;
+        var capturedConfigs = new List<TemporalLambdaWorkerOptions>();
+        var capturedTargets = new List<string?>();
+        var capturedTaskQueues = new List<string?>();
+        var hookCalls = new List<string>();
+        var handler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            config =>
+            {
+                var call = ++configureCalls;
+                capturedConfigs.Add(config);
+                Assert.Equal("env-task-queue", config.WorkerOptions.TaskQueue);
+
+                config.ClientOptions.TargetHost = $"target-{call}";
+                config.WorkerOptions.TaskQueue = $"task-queue-{call}";
+                config.AddShutdownHook(_ =>
+                {
+                    hookCalls.Add($"hook-{call}");
+                    return Task.CompletedTask;
+                });
+            },
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                GetEnvironmentVariable = name =>
+                    name == "TEMPORAL_TASK_QUEUE" ? "env-task-queue" : null,
+                ConnectClientAsync = options =>
+                {
+                    capturedTargets.Add(options.TargetHost);
+                    return Task.FromResult<object>(new object());
+                },
+                CreateWorker = (_, options) =>
+                {
+                    capturedTaskQueues.Add(options.TaskQueue);
+                    return new FakeLambdaWorker(_ => Task.CompletedTask);
+                },
+            });
+
+        await handler(null, new FakeLambdaContext());
+        await handler(null, new FakeLambdaContext());
+
+        Assert.Equal(2, configureCalls);
+        Assert.Equal(2, capturedConfigs.Count);
+        Assert.NotSame(capturedConfigs[0], capturedConfigs[1]);
+        Assert.Equal(new[] { "target-1", "target-2" }, capturedTargets);
+        Assert.Equal(new[] { "task-queue-1", "task-queue-2" }, capturedTaskQueues);
+        Assert.Equal(new[] { "hook-1", "hook-2" }, hookCalls);
     }
 
     [Fact]

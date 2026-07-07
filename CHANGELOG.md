@@ -28,6 +28,11 @@ to docs, or any other relevant information.
 - Removed public `TemporalLambdaWorkerOptions.ShutdownHooks` list mutation. Use
   `TemporalLambdaWorkerOptions.AddShutdownHook(...)` to register Lambda shutdown hooks.
 
+### Changed
+
+- Synchronous `TemporalLambdaWorker.CreateHandler` configuration callbacks now run once per Lambda
+  invocation, matching asynchronous configuration callbacks.
+
 ### [1.16.0] - 2026-07-01
 
 ### Added
