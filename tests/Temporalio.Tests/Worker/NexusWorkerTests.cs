@@ -2598,29 +2598,22 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             Assert.IsType<ArgumentException>(exc.InnerException).Message);
     }
 
-    public class ThrowFromTemporalOperationException : Exception
-    {
-        public ThrowFromTemporalOperationException(string message)
-            : base(message)
-        {
-        }
-    }
-
     [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationAttrThrowingService
     {
         [TemporalOperation]
         public Task<TemporalOperationResult<string>> DoSomething(
             TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
-            throw new ThrowFromTemporalOperationException($"boom: {input}");
+            throw new HandlerException(HandlerErrorType.BadRequest, $"boom: {input}");
     }
 
     [Fact]
     public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_ExceptionPropagatesUnwrapped()
     {
-        // The compiled Expression call should propagate user exceptions directly, not wrapped in
-        // TargetInvocationException (the way MethodInfo.Invoke would). We assert the wire failure
-        // reflects the original message.
+        // Compiled Expression call should propagate the user exception directly (no
+        // TargetInvocationException wrapping the way MethodInfo.Invoke would). We use a
+        // non-retryable HandlerException so the failure surfaces immediately rather than
+        // triggering Nexus operation retries.
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new TemporalOperationAttrThrowingService());
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
@@ -2631,7 +2624,6 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var nexusExc = Assert.IsType<NexusOperationFailureException>(wfExc.InnerException);
         var handlerExc = Assert.IsType<HandlerException>(nexusExc.InnerException);
         Assert.Contains("boom: hi", handlerExc.Message);
-        // The message must NOT contain TargetInvocationException wrapping.
         Assert.DoesNotContain("TargetInvocationException", handlerExc.Message);
     }
 
