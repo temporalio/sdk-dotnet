@@ -80,7 +80,7 @@ public class TemporalLambdaWorkerTests
                 },
                 CreateWorker = (_, options) =>
                 {
-                    capturedWorkerOptions = options;
+                    capturedWorkerOptions = SimulateWorkerPluginConfiguration(options);
                     return new FakeLambdaWorker(_ => Task.CompletedTask);
                 },
             });
@@ -143,7 +143,7 @@ public class TemporalLambdaWorkerTests
                 ConnectClientAsync = _ => Task.FromResult<object>(new object()),
                 CreateWorker = (_, options) =>
                 {
-                    capturedWorkerOptions = options;
+                    capturedWorkerOptions = SimulateWorkerPluginConfiguration(options);
                     return new FakeLambdaWorker(_ => Task.CompletedTask);
                 },
             });
@@ -253,7 +253,7 @@ public class TemporalLambdaWorkerTests
                 ConnectClientAsync = _ => Task.FromResult<object>(new object()),
                 CreateWorker = (_, options) =>
                 {
-                    capturedWorkerOptions = options;
+                    capturedWorkerOptions = SimulateWorkerPluginConfiguration(options);
                     return new FakeLambdaWorker(_ => Task.CompletedTask);
                 },
             });
@@ -290,12 +290,7 @@ public class TemporalLambdaWorkerTests
                 ConnectClientAsync = _ => Task.FromResult<object>(new object()),
                 CreateWorker = (_, options) =>
                 {
-                    foreach (var plugin in options.Plugins ?? Array.Empty<ITemporalWorkerPlugin>())
-                    {
-                        plugin.ConfigureWorker(options);
-                    }
-                    options.ApplyPostPluginConfiguration();
-                    capturedWorkerOptions = options;
+                    capturedWorkerOptions = SimulateWorkerPluginConfiguration(options);
                     return new FakeLambdaWorker(_ => Task.CompletedTask);
                 },
             });
@@ -327,12 +322,7 @@ public class TemporalLambdaWorkerTests
                 ConnectClientAsync = _ => Task.FromResult<object>(new object()),
                 CreateWorker = (_, options) =>
                 {
-                    foreach (var plugin in options.Plugins ?? Array.Empty<ITemporalWorkerPlugin>())
-                    {
-                        plugin.ConfigureWorker(options);
-                    }
-                    options.ApplyPostPluginConfiguration();
-                    capturedWorkerOptions = options;
+                    capturedWorkerOptions = SimulateWorkerPluginConfiguration(options);
                     return new FakeLambdaWorker(_ => Task.CompletedTask);
                 },
             });
@@ -990,6 +980,18 @@ namespace = ""{nameSpace}""
             Array.Empty<Type>(),
             0,
             _ => Task.CompletedTask);
+
+    private static TemporalWorkerOptions SimulateWorkerPluginConfiguration(
+        TemporalWorkerOptions options)
+    {
+        var plugins = new List<ITemporalWorkerPlugin>(
+            options.Plugins ?? Array.Empty<ITemporalWorkerPlugin>());
+        foreach (var plugin in plugins)
+        {
+            plugin.ConfigureWorker(options);
+        }
+        return options;
+    }
 
     [Workflow]
     public sealed class WorkflowWithoutVersioningBehavior

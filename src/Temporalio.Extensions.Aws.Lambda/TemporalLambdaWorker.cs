@@ -198,14 +198,15 @@ namespace Temporalio.Extensions.Aws.Lambda
                     "WorkerOptions.TaskQueue must be set or TEMPORAL_TASK_QUEUE must be present");
             }
 
-            var postPluginConfiguration = config.WorkerOptions.PostPluginConfiguration;
-            config.WorkerOptions.PostPluginConfiguration = options =>
-            {
-                postPluginConfiguration?.Invoke(options);
-                ApplyDeploymentVersion(options, version);
-                ClearConcurrencyLimitsIfTunerSet(options);
-            };
-            config.WorkerOptions.ApplyPostPluginConfiguration();
+            AppendWorkerPlugin(
+                config.WorkerOptions,
+                new InternalWorkerPlugin(
+                    "Temporalio.Extensions.Aws.Lambda",
+                    options =>
+                    {
+                        ApplyDeploymentVersion(options, version);
+                        ClearConcurrencyLimitsIfTunerSet(options);
+                    }));
 
             return new LambdaWorkerHandlerState(
                 (TemporalClientConnectOptions)config.ClientOptions.Clone(),
@@ -213,6 +214,19 @@ namespace Temporalio.Extensions.Aws.Lambda
                 config.ShutdownDeadlineBuffer,
                 new List<Func<CancellationToken, Task>>(config.ShutdownHooks),
                 handlerOptions);
+        }
+
+        private static void AppendWorkerPlugin(
+            TemporalWorkerOptions workerOptions,
+            ITemporalWorkerPlugin plugin)
+        {
+            var plugins = new List<ITemporalWorkerPlugin>();
+            if (workerOptions.Plugins != null)
+            {
+                plugins.AddRange(workerOptions.Plugins);
+            }
+            plugins.Add(plugin);
+            workerOptions.Plugins = plugins;
         }
 
         private static void ApplyDeploymentVersion(

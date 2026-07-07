@@ -57,7 +57,6 @@ namespace Temporalio.Worker
                 {
                     plugin.ConfigureWorker(Options);
                 }
-                Options.ApplyPostPluginConfiguration();
 
                 // Ensure later accesses use the modified version of options.
                 options = Options;
