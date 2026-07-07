@@ -211,7 +211,9 @@ namespace Temporalio.Client
         /// Workflow was already started according to ID reuse and conflict policy.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
+#pragma warning disable VSTHRD003 // Our own completion source's task
         public Task<THandle> GetHandleAsync() => handleCompletionSource.Task;
+#pragma warning restore VSTHRD003
 
         /// <inheritdoc/>
         internal override void SetResult(WorkflowHandle result) =>
