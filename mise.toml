@@ -1,0 +1,4 @@
+min_version = "2026.6.14"
+
+[tools]
+protoc = "23.4"

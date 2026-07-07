@@ -30,12 +30,25 @@ jobs:
         with:
           dotnet-version: '10.x'
 
-      - name: Install protoc
-        uses: arduino/setup-protoc@c65c819552d16ad3c9b72d9dfd5ba5237b9c906b # v3
+      - name: Read mise version
+        id: mise-version
+        shell: bash
+        run: |
+          version=$(sed -n 's/^min_version = "\([^"]*\)".*/\1/p' mise.toml)
+          if [ -z "$version" ]; then
+            echo "::error::Could not read min_version from mise.toml"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Run mise install
+        uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
         with:
-          # TODO: Upgrade proto once https://github.com/arduino/setup-protoc/issues/99 is fixed
-          version: '23.x'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          version: ${{ steps.mise-version.outputs.version }}
+
+      - name: Set PROTOC
+        shell: bash
+        run: printf 'PROTOC=%s\n' "$(mise which protoc)" >> "$GITHUB_ENV"
 
       - name: Build
         run: dotnet build --configuration Release

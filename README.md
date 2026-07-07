@@ -1374,9 +1374,9 @@ patch from the windows build when it fails because of a mismatch. It uploads the
 
 ### Regenerating protos
 
-Must have `protoc` on the `PATH`. Note, for now users should use `protoc` 23.x until
-[our GH action downloader](https://github.com/arduino/setup-protoc/issues/99) can support later versions.
-[Here](https://github.com/protocolbuffers/protobuf/releases/tag/v23.4) is the latest 23.x release as of this writing.
+Must have `protoc` on the `PATH`. This project uses [mise](https://mise.jdx.dev/) to manage the `protoc` version,
+matching what CI uses. After [installing mise](https://mise.jdx.dev/getting-started.html), run `mise install` in the
+repository root to install the version pinned in [`mise.toml`](mise.toml) and put `protoc` on your `PATH`.
 
 Then:
 
