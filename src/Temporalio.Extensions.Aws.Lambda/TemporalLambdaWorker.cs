@@ -183,10 +183,6 @@ namespace Temporalio.Extensions.Aws.Lambda
             {
                 throw new InvalidOperationException("WorkerOptions must be set");
             }
-            if (config.ShutdownHooks == null)
-            {
-                throw new InvalidOperationException("ShutdownHooks must be set");
-            }
             if (config.ShutdownDeadlineBuffer < TimeSpan.Zero)
             {
                 throw new InvalidOperationException("ShutdownDeadlineBuffer cannot be negative");
@@ -205,14 +201,6 @@ namespace Temporalio.Extensions.Aws.Lambda
                 ClearConcurrencyLimitsIfTunerSet(options);
             };
             config.WorkerOptions.ApplyPostPluginConfiguration();
-
-            foreach (var hook in config.ShutdownHooks)
-            {
-                if (hook == null)
-                {
-                    throw new InvalidOperationException("ShutdownHooks cannot contain null entries");
-                }
-            }
 
             return new LambdaWorkerHandlerState(
                 (TemporalClientConnectOptions)config.ClientOptions.Clone(),

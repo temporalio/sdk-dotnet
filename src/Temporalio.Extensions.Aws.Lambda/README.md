@@ -51,7 +51,7 @@ private static readonly Func<object?, ILambdaContext, Task> WorkerHandler =
             config.WorkerOptions.AddActivity(PaymentActivities.ChargeAsync);
 
             config.ClientOptions.ApiKey = await LoadTemporalApiKeyAsync();
-            config.ShutdownHooks.Add(async cancellationToken =>
+            config.AddShutdownHook(async cancellationToken =>
             {
                 await FlushPerInvocationResourceAsync(cancellationToken);
             });
@@ -112,7 +112,7 @@ config.ShutdownDeadlineBuffer = TimeSpan.FromSeconds(15);
 Add shutdown hooks for per-invocation cleanup:
 
 ```csharp
-config.ShutdownHooks.Add(async cancellationToken =>
+config.AddShutdownHook(async cancellationToken =>
 {
     await FlushTelemetryAsync(cancellationToken);
 });

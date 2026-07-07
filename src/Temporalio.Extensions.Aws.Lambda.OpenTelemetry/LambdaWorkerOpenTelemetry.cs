@@ -54,7 +54,7 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
             config.ClientOptions.Interceptors = AddTracingInterceptor(
                 config.ClientOptions.Interceptors);
             config.ClientOptions.Runtime = CreateRuntime(resolvedOptions);
-            config.ShutdownHooks.Add(
+            config.AddShutdownHook(
                 cancellationToken => ForceFlushAsync(
                     tracerProvider,
                     config.ShutdownDeadlineBuffer,

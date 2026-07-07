@@ -14,6 +14,7 @@ namespace Temporalio.Extensions.Aws.Lambda
     {
         private static readonly TimeSpan DefaultShutdownDeadlineBuffer = TimeSpan.FromSeconds(7);
 
+        private readonly List<Func<CancellationToken, Task>> shutdownHooks = new();
         private Func<TemporalClientConnectOptions>? loadClientOptions;
         private TemporalClientConnectOptions? clientOptions;
         private bool clientOptionsSet;
@@ -82,11 +83,22 @@ namespace Temporalio.Extensions.Aws.Lambda
         public TimeSpan ShutdownDeadlineBuffer { get; set; } = DefaultShutdownDeadlineBuffer;
 
         /// <summary>
-        /// Gets or sets hooks to run after each invocation's worker has shut down.
+        /// Gets hooks to run after each invocation's worker has shut down.
         /// </summary>
-#pragma warning disable CA2227 // The public API intentionally allows replacing the list during configuration.
-        public IList<Func<CancellationToken, Task>> ShutdownHooks { get; set; } =
-            new List<Func<CancellationToken, Task>>();
-#pragma warning restore CA2227
+        internal IReadOnlyList<Func<CancellationToken, Task>> ShutdownHooks => shutdownHooks;
+
+        /// <summary>
+        /// Adds a hook to run after each invocation's worker has shut down.
+        /// </summary>
+        /// <param name="hook">Hook to run.</param>
+        public void AddShutdownHook(Func<CancellationToken, Task> hook)
+        {
+            if (hook == null)
+            {
+                throw new ArgumentNullException(nameof(hook));
+            }
+
+            shutdownHooks.Add(hook);
+        }
     }
 }

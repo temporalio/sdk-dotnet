@@ -147,7 +147,7 @@ public class LambdaWorkerOpenTelemetryTests
         {
             ShutdownDeadlineBuffer = TimeSpan.FromMilliseconds(1),
         };
-        config.ShutdownHooks.Add(_ => Task.CompletedTask);
+        config.AddShutdownHook(_ => Task.CompletedTask);
 
         LambdaWorkerOpenTelemetry.ApplyDefaults(
             config,

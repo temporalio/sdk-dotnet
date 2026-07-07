@@ -118,6 +118,14 @@ public class TemporalLambdaWorkerTests
     }
 
     [Fact]
+    public void AddShutdownHook_NullHook_Throws()
+    {
+        var config = new TemporalLambdaWorkerOptions();
+
+        Assert.Throws<ArgumentNullException>(() => config.AddShutdownHook(null!));
+    }
+
+    [Fact]
     public async Task CreateHandler_DefaultsVersioningBehaviorToAutoUpgrade()
     {
         TemporalWorkerOptions? capturedWorkerOptions = null;
@@ -585,7 +593,7 @@ public class TemporalLambdaWorkerTests
                 config.ClientOptions.TargetHost = "localhost:7233";
                 config.WorkerOptions.TaskQueue = "task-queue";
                 config.ShutdownDeadlineBuffer = TimeSpan.FromMilliseconds(10);
-                config.ShutdownHooks.Add(_ =>
+                config.AddShutdownHook(_ =>
                 {
                     hookRan = true;
                     return Task.CompletedTask;
@@ -708,17 +716,17 @@ public class TemporalLambdaWorkerTests
             {
                 config.ClientOptions.TargetHost = "localhost:7233";
                 config.WorkerOptions.TaskQueue = "task-queue";
-                config.ShutdownHooks.Add(_ =>
+                config.AddShutdownHook(_ =>
                 {
                     hookCalls.Add("first");
                     return Task.CompletedTask;
                 });
-                config.ShutdownHooks.Add(_ =>
+                config.AddShutdownHook(_ =>
                 {
                     hookCalls.Add("second");
                     throw new InvalidOperationException("hook failed");
                 });
-                config.ShutdownHooks.Add(_ =>
+                config.AddShutdownHook(_ =>
                 {
                     hookCalls.Add("third");
                     return Task.CompletedTask;
@@ -771,7 +779,7 @@ public class TemporalLambdaWorkerTests
 
                 config.ClientOptions.TargetHost = $"target-{call}";
                 config.WorkerOptions.TaskQueue = $"task-queue-{call}";
-                config.ShutdownHooks.Add(_ =>
+                config.AddShutdownHook(_ =>
                 {
                     hookCalls.Add($"hook-{call}");
                     return Task.CompletedTask;
@@ -849,7 +857,7 @@ public class TemporalLambdaWorkerTests
             config =>
             {
                 config.WorkerOptions.TaskQueue = "task-queue";
-                config.ShutdownHooks.Add(_ =>
+                config.AddShutdownHook(_ =>
                 {
                     hookCalls.Add("connect");
                     return Task.CompletedTask;
@@ -870,7 +878,7 @@ public class TemporalLambdaWorkerTests
             config =>
             {
                 config.WorkerOptions.TaskQueue = "task-queue";
-                config.ShutdownHooks.Add(_ =>
+                config.AddShutdownHook(_ =>
                 {
                     hookCalls.Add("worker");
                     return Task.CompletedTask;
