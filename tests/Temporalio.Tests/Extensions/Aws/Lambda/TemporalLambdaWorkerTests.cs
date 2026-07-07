@@ -756,7 +756,7 @@ public class TemporalLambdaWorkerTests
     public async Task CreateHandler_AsyncConfigureRunsPerInvocationWithFreshConfig()
     {
         var configureCalls = 0;
-        var capturedConfigs = new List<LambdaWorkerConfig>();
+        var capturedConfigs = new List<TemporalLambdaWorkerOptions>();
         var capturedTargets = new List<string?>();
         var capturedTaskQueues = new List<string?>();
         var hookCalls = new List<string>();
@@ -891,7 +891,7 @@ public class TemporalLambdaWorkerTests
     }
 
     private static Func<object?, ILambdaContext, Task> CreateCapturingHandler(
-        Action<LambdaWorkerConfig> configure,
+        Action<TemporalLambdaWorkerOptions> configure,
         Action<TemporalClientConnectOptions> captureClientOptions) =>
         TemporalLambdaWorker.CreateHandler(
             Version,

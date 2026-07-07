@@ -59,7 +59,7 @@ private static readonly Func<object?, ILambdaContext, Task> WorkerHandler =
 ```
 
 The async `configure` callback is awaited once per Lambda invocation, before the Temporal client connects. It receives a
-fresh `LambdaWorkerConfig` each time, so use shutdown hooks for any per-invocation cleanup.
+fresh `TemporalLambdaWorkerOptions` each time, so use shutdown hooks for any per-invocation cleanup.
 
 ## Configuration
 
@@ -70,16 +70,7 @@ Client connection settings are pre-populated from a `temporal.toml` file and/or 
 2. Otherwise, `temporal.toml` in `$LAMBDA_TASK_ROOT`, typically `/var/task`, when `LAMBDA_TASK_ROOT` is set.
 3. Otherwise, `temporal.toml` in the current working directory.
 
-The file is optional. If it does not exist, only environment variables are used. You can also load Lambda-aware client
-options directly:
-
-```csharp
-using Temporalio.Common.EnvConfig;
-using Temporalio.Extensions.Aws.Lambda;
-
-config.ClientOptions = TemporalLambdaWorker.LoadClientConnectOptions(
-    new ClientEnvConfig.ProfileLoadOptions { Profile = "production" });
-```
+The file is optional. If it does not exist, only environment variables are used.
 
 To bypass config loading, assign explicit client options in `configure`:
 
@@ -109,6 +100,14 @@ shutdown timeout, a smaller workflow cache, simple poller limits, and disabled e
 handler creation; with async configure it happens for every invocation.
 
 ## Shutdown Hooks
+
+The worker runs until the Lambda remaining time reaches `ShutdownDeadlineBuffer`, then begins shutdown. Increase the
+buffer if your worker needs more time to stop polling, finish shutdown hooks, or flush telemetry before the Lambda
+deadline. Set it in `configure`:
+
+```csharp
+config.ShutdownDeadlineBuffer = TimeSpan.FromSeconds(15);
+```
 
 Add shutdown hooks for per-invocation cleanup:
 

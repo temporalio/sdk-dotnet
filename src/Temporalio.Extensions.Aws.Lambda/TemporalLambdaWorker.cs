@@ -32,7 +32,7 @@ namespace Temporalio.Extensions.Aws.Lambda
         /// <returns>A Lambda handler delegate.</returns>
         public static Func<object?, ILambdaContext, Task> CreateHandler(
             WorkerDeploymentVersion version,
-            Action<LambdaWorkerConfig> configure) =>
+            Action<TemporalLambdaWorkerOptions> configure) =>
             CreateHandler(
                 version,
                 configure,
@@ -49,7 +49,7 @@ namespace Temporalio.Extensions.Aws.Lambda
         /// <returns>A Lambda handler delegate.</returns>
         public static Func<object?, ILambdaContext, Task> CreateHandler(
             WorkerDeploymentVersion version,
-            Func<LambdaWorkerConfig, Task> configureAsync) =>
+            Func<TemporalLambdaWorkerOptions, Task> configureAsync) =>
             CreateHandler(
                 version,
                 configureAsync,
@@ -63,7 +63,7 @@ namespace Temporalio.Extensions.Aws.Lambda
         /// </summary>
         /// <param name="options">Options for loading the configuration profile.</param>
         /// <returns>Client connection options.</returns>
-        public static TemporalClientConnectOptions LoadClientConnectOptions(
+        internal static TemporalClientConnectOptions LoadClientConnectOptions(
             ClientEnvConfig.ProfileLoadOptions? options = null)
         {
             var loadOptions = options == null ?
@@ -95,7 +95,7 @@ namespace Temporalio.Extensions.Aws.Lambda
         /// <returns>A Lambda handler delegate.</returns>
         internal static Func<object?, ILambdaContext, Task> CreateHandler(
             WorkerDeploymentVersion version,
-            Action<LambdaWorkerConfig> configure,
+            Action<TemporalLambdaWorkerOptions> configure,
             TemporalLambdaWorkerHandlerOptions handlerOptions)
         {
             ValidateCreateHandlerArgs(version, configure, nameof(configure), handlerOptions);
@@ -114,7 +114,7 @@ namespace Temporalio.Extensions.Aws.Lambda
         /// <returns>A Lambda handler delegate.</returns>
         internal static Func<object?, ILambdaContext, Task> CreateHandler(
             WorkerDeploymentVersion version,
-            Func<LambdaWorkerConfig, Task> configureAsync,
+            Func<TemporalLambdaWorkerOptions, Task> configureAsync,
             TemporalLambdaWorkerHandlerOptions handlerOptions)
         {
             ValidateCreateHandlerArgs(version, configureAsync, nameof(configureAsync), handlerOptions);
@@ -124,6 +124,7 @@ namespace Temporalio.Extensions.Aws.Lambda
 
         private static void ValidateCreateHandlerArgs(
             WorkerDeploymentVersion version,
+            // Keep an explicit parameter name until this project can require C# 10's CallerArgumentExpression.
             object configure,
             string configureParamName,
             TemporalLambdaWorkerHandlerOptions handlerOptions)
@@ -150,12 +151,12 @@ namespace Temporalio.Extensions.Aws.Lambda
             }
         }
 
-        private static LambdaWorkerConfig CreateConfig(
+        private static TemporalLambdaWorkerOptions CreateConfig(
             WorkerDeploymentVersion version,
             TemporalLambdaWorkerHandlerOptions handlerOptions)
         {
             var loadClientConnectOptions = handlerOptions.LoadClientConnectOptions;
-            var config = new LambdaWorkerConfig(
+            var config = new TemporalLambdaWorkerOptions(
                 loadClientConnectOptions == null ?
                     null :
                     () => loadClientConnectOptions(null));
@@ -171,7 +172,7 @@ namespace Temporalio.Extensions.Aws.Lambda
 
         private static LambdaWorkerHandlerState PrepareHandlerState(
             WorkerDeploymentVersion version,
-            LambdaWorkerConfig config,
+            TemporalLambdaWorkerOptions config,
             TemporalLambdaWorkerHandlerOptions handlerOptions)
         {
             if (config.ClientOptions == null)
@@ -399,12 +400,12 @@ namespace Temporalio.Extensions.Aws.Lambda
         private sealed class AsyncLambdaWorkerHandlerState
         {
             private readonly WorkerDeploymentVersion version;
-            private readonly Func<LambdaWorkerConfig, Task> configureAsync;
+            private readonly Func<TemporalLambdaWorkerOptions, Task> configureAsync;
             private readonly TemporalLambdaWorkerHandlerOptions handlerOptions;
 
             public AsyncLambdaWorkerHandlerState(
                 WorkerDeploymentVersion version,
-                Func<LambdaWorkerConfig, Task> configureAsync,
+                Func<TemporalLambdaWorkerOptions, Task> configureAsync,
                 TemporalLambdaWorkerHandlerOptions handlerOptions)
             {
                 this.version = version;

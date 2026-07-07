@@ -38,7 +38,7 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
         /// per-invocation shutdown hook to force-flush traces before the Lambda invocation ends.
         /// </remarks>
         public static void ApplyDefaults(
-            LambdaWorkerConfig config,
+            TemporalLambdaWorkerOptions config,
             LambdaWorkerOpenTelemetryOptions? options = null)
         {
             if (config == null)

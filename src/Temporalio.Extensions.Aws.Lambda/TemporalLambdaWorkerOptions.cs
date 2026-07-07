@@ -8,32 +8,29 @@ using Temporalio.Worker;
 namespace Temporalio.Extensions.Aws.Lambda
 {
     /// <summary>
-    /// Configuration for <see cref="TemporalLambdaWorker.CreateHandler(Temporalio.Common.WorkerDeploymentVersion, Action{LambdaWorkerConfig})" />.
+    /// Options for <see cref="TemporalLambdaWorker.CreateHandler(Temporalio.Common.WorkerDeploymentVersion, Action{TemporalLambdaWorkerOptions})" />.
     /// </summary>
-    public class LambdaWorkerConfig
+    public class TemporalLambdaWorkerOptions
     {
-        /// <summary>
-        /// Default time reserved after the worker run budget for worker shutdown and hooks.
-        /// </summary>
-        public static readonly TimeSpan DefaultShutdownDeadlineBuffer = TimeSpan.FromSeconds(7);
+        private static readonly TimeSpan DefaultShutdownDeadlineBuffer = TimeSpan.FromSeconds(7);
 
         private Func<TemporalClientConnectOptions>? loadClientOptions;
         private TemporalClientConnectOptions? clientOptions;
         private bool clientOptionsSet;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LambdaWorkerConfig"/> class.
+        /// Initializes a new instance of the <see cref="TemporalLambdaWorkerOptions"/> class.
         /// </summary>
-        public LambdaWorkerConfig()
+        public TemporalLambdaWorkerOptions()
             : this(null)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LambdaWorkerConfig"/> class.
+        /// Initializes a new instance of the <see cref="TemporalLambdaWorkerOptions"/> class.
         /// </summary>
         /// <param name="loadClientOptions">Lazy client options loader.</param>
-        internal LambdaWorkerConfig(Func<TemporalClientConnectOptions>? loadClientOptions)
+        internal TemporalLambdaWorkerOptions(Func<TemporalClientConnectOptions>? loadClientOptions)
         {
             this.loadClientOptions = loadClientOptions;
             WorkerOptions.MaxConcurrentActivities = 2;

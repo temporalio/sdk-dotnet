@@ -123,7 +123,7 @@ public class LambdaWorkerOpenTelemetryTests
     public void ApplyDefaults_PreservesInterceptorsAndAddsTracing()
     {
         var existingInterceptor = new NoopClientInterceptor();
-        var config = new LambdaWorkerConfig
+        var config = new TemporalLambdaWorkerOptions
         {
             ClientOptions = new TemporalClientConnectOptions
             {
@@ -143,7 +143,7 @@ public class LambdaWorkerOpenTelemetryTests
     [Fact]
     public async Task ApplyDefaults_ConfiguresRuntimeAndShutdownHook()
     {
-        var config = new LambdaWorkerConfig
+        var config = new TemporalLambdaWorkerOptions
         {
             ShutdownDeadlineBuffer = TimeSpan.FromMilliseconds(1),
         };
