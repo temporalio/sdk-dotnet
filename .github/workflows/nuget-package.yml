@@ -6,8 +6,6 @@ on:
       - "releases/*"
   workflow_dispatch: {}
   workflow_call: {}
-  # TEMPORARY: run on PRs to validate the mise-based protoc setup (esp. container legs) end-to-end. Revert before merge.
-  pull_request:
 permissions:
   contents: read
 
