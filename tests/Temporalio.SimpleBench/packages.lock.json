@@ -132,12 +132,15 @@
         "resolved": "1.2.0.435",
         "contentHash": "ouwPWZxbOV3SmCZxIRqHvljkSzkCyi1tDoMzQtDb/bRP8ctASV/iRJr+A2Gdj0QLaLmWnqTWDrH82/iP+X80Lg=="
       },
+      "nexusrpc": {
+        "type": "Project"
+      },
       "temporalio": {
         "type": "Project",
         "dependencies": {
           "Google.Protobuf": "[3.26.1, )",
           "Microsoft.Extensions.Logging.Abstractions": "[2.2.0, )",
-          "NexusRpc": "[0.3.0, )"
+          "NexusRpc": "[0.4.0, )"
         }
       },
       "Google.Protobuf": {
@@ -154,12 +157,6 @@
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.9"
         }
-      },
-      "NexusRpc": {
-        "type": "CentralTransitive",
-        "requested": "[0.3.0, )",
-        "resolved": "0.3.0",
-        "contentHash": "Kr+NMSZ5428AvxpzShdJcQxc9w6HT8SM6FXQMekC4K9wGpmC1m/L2pQJydpvVTwRBu3qAIYKPI37KWexF4Gtcg=="
       }
     }
   }

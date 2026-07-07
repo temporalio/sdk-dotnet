@@ -44,6 +44,23 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [NexusServiceHandler(typeof(IStringService))]
+    public class TemporalOperationStringService
+    {
+        private readonly Func<TemporalOperationStartContext, ITemporalNexusClient, string,
+            Task<TemporalOperationResult<string>>> startFunc;
+
+        public TemporalOperationStringService(
+            Func<TemporalOperationStartContext, ITemporalNexusClient, string,
+                Task<TemporalOperationResult<string>>> startFunc) =>
+            this.startFunc = startFunc;
+
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            startFunc(ctx, client, input);
+    }
+
+    [NexusServiceHandler(typeof(IStringService))]
     public class AsyncFuncStringService
     {
         private readonly AsyncFuncOperationHandler handler;
@@ -1701,12 +1718,11 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     {
         // Build the worker options w/ the nexus service using the new generic handler
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-            AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalOperationHandler.FromHandleFactory<string, string>(
-                    async (context, client, input) =>
-                        await client.StartWorkflowAsync(
-                            (SimpleWorkflow wf) => wf.RunAsync(input),
-                            new() { Id = $"wf-{Guid.NewGuid()}" })))).
+            AddNexusService(new TemporalOperationStringService(
+                async (context, client, input) =>
+                    await client.StartWorkflowAsync(
+                        (SimpleWorkflow wf) => wf.RunAsync(input),
+                        new() { Id = $"wf-{Guid.NewGuid()}" }))).
             AddWorkflow<SimpleWorkflow>();
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
 
@@ -1724,12 +1740,11 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     {
         // Build the worker options w/ the nexus service using the new generic handler
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-            AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalOperationHandler.FromHandleFactory<string, string>(
-                    async (context, client, input) =>
-                        await client.StartWorkflowAsync(
-                            (WaitForeverWorkflow wf) => wf.RunAsync(input),
-                            new() { Id = $"wf-{Guid.NewGuid()}" })))).
+            AddNexusService(new TemporalOperationStringService(
+                async (context, client, input) =>
+                    await client.StartWorkflowAsync(
+                        (WaitForeverWorkflow wf) => wf.RunAsync(input),
+                        new() { Id = $"wf-{Guid.NewGuid()}" }))).
             AddWorkflow<WaitForeverWorkflow>();
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
 
@@ -1758,10 +1773,9 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     {
         // Build the worker options w/ a handler that returns a sync result
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-            AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalOperationHandler.FromHandleFactory<string, string>(
-                    (context, client, input) =>
-                        Task.FromResult(TemporalOperationResult<string>.SyncResult($"Hello, {input}")))));
+            AddNexusService(new TemporalOperationStringService(
+                (context, client, input) =>
+                    Task.FromResult(TemporalOperationResult<string>.SyncResult($"Hello, {input}"))));
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
 
         await RunInWorkflowAsync(workerOptions, async () =>
@@ -1779,16 +1793,15 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         TemporalOperationStartContext? capturedContext = null;
         ITemporalNexusClient? capturedClient = null;
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-            AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalOperationHandler.FromHandleFactory<string, string>(
-                    async (context, client, input) =>
-                    {
-                        capturedContext = context;
-                        capturedClient = client;
-                        return await client.StartWorkflowAsync(
-                            (SimpleWorkflow wf) => wf.RunAsync(input),
-                            new() { Id = $"wf-{Guid.NewGuid()}" });
-                    }))).
+            AddNexusService(new TemporalOperationStringService(
+                async (context, client, input) =>
+                {
+                    capturedContext = context;
+                    capturedClient = client;
+                    return await client.StartWorkflowAsync(
+                        (SimpleWorkflow wf) => wf.RunAsync(input),
+                        new() { Id = $"wf-{Guid.NewGuid()}" });
+                })).
             AddWorkflow<SimpleWorkflow>();
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
 
@@ -1832,12 +1845,11 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // operation is canceled (as opposed to canceling the caller workflow itself).
         var workflowId = $"wf-{Guid.NewGuid()}";
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-            AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalOperationHandler.FromHandleFactory<string, string>(
-                    async (context, client, input) =>
-                        await client.StartWorkflowAsync(
-                            (WaitForeverWorkflow wf) => wf.RunAsync(input),
-                            new() { Id = workflowId })))).
+            AddNexusService(new TemporalOperationStringService(
+                async (context, client, input) =>
+                    await client.StartWorkflowAsync(
+                        (WaitForeverWorkflow wf) => wf.RunAsync(input),
+                        new() { Id = workflowId }))).
             AddWorkflow<WaitForeverWorkflow>();
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
 
@@ -1907,13 +1919,12 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     {
         // Use the by-name overload of TemporalNexusClient.StartWorkflowAsync
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-            AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalOperationHandler.FromHandleFactory<string, string>(
-                    async (context, client, input) =>
-                        await client.StartWorkflowAsync<string>(
-                            "SimpleWorkflow",
-                            new object?[] { input },
-                            new() { Id = $"wf-{Guid.NewGuid()}" })))).
+            AddNexusService(new TemporalOperationStringService(
+                async (context, client, input) =>
+                    await client.StartWorkflowAsync<string>(
+                        "SimpleWorkflow",
+                        new object?[] { input },
+                        new() { Id = $"wf-{Guid.NewGuid()}" }))).
             AddWorkflow<SimpleWorkflow>();
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
 
@@ -1933,16 +1944,15 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // NexusWorkflowStartHelper.
         var workflowId = $"wf-{Guid.NewGuid()}";
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-            AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalOperationHandler.FromHandleFactory<string, string>(
-                    async (context, client, input) =>
-                        await client.StartWorkflowAsync(
-                            (WaitForSignalWorkflow wf) => wf.RunAsync(input),
-                            new()
-                            {
-                                Id = workflowId,
-                                IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
-                            })))).
+            AddNexusService(new TemporalOperationStringService(
+                async (context, client, input) =>
+                    await client.StartWorkflowAsync(
+                        (WaitForSignalWorkflow wf) => wf.RunAsync(input),
+                        new()
+                        {
+                            Id = workflowId,
+                            IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
+                        }))).
             AddWorkflow<WaitForSignalWorkflow>();
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
 
@@ -1963,12 +1973,11 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteNexusOperationAsync_GenericHandler_NoInputOverload_Succeeds()
     {
-        // Exercise the no-input FromHandleFactory<TResult> overload
+        // Exercise the no-input [TemporalOperation] path (2-arg method signature)
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-            AddNexusService(new HandlerFactoryNoInputService(() =>
-                TemporalOperationHandler.FromHandleFactory<string>(
-                    (context, client) =>
-                        Task.FromResult(TemporalOperationResult<string>.SyncResult("hello-no-input")))));
+            AddNexusService(new TemporalOperationNoInputStringService(
+                (context, client) =>
+                    Task.FromResult(TemporalOperationResult<string>.SyncResult("hello-no-input"))));
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
 
         await RunInWorkflowAsync(workerOptions, async () =>
@@ -2201,6 +2210,23 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [NexusServiceHandler(typeof(INoInputService))]
+    public class TemporalOperationNoInputStringService
+    {
+        private readonly Func<TemporalOperationStartContext, ITemporalNexusClient,
+            Task<TemporalOperationResult<string>>> startFunc;
+
+        public TemporalOperationNoInputStringService(
+            Func<TemporalOperationStartContext, ITemporalNexusClient,
+                Task<TemporalOperationResult<string>>> startFunc) =>
+            this.startFunc = startFunc;
+
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoIt(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client) =>
+            startFunc(ctx, client);
+    }
+
+    [NexusServiceHandler(typeof(INoInputService))]
     public class HandlerFactoryNoInputService
     {
         private readonly Func<IOperationHandler<NoValue, string>> handlerFactory;
@@ -2210,6 +2236,403 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
 
         [NexusOperationHandler]
         public IOperationHandler<NoValue, string> DoIt() => handlerFactory();
+    }
+
+    [NexusServiceHandler(typeof(IStringService))]
+    public class TemporalOperationAttrService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            client.StartWorkflowAsync(
+                (SimpleWorkflow wf) => wf.RunAsync(input),
+                new() { Id = $"wf-{Guid.NewGuid()}" });
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_WorkflowStart()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new TemporalOperationAttrService()).
+            AddWorkflow<SimpleWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("world"));
+            Assert.Equal("Hello from workflow, world", result);
+        });
+    }
+
+    [NexusServiceHandler(typeof(IStringService))]
+    public class TemporalOperationAttrSyncService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult($"sync: {input}"));
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_SyncResult()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new TemporalOperationAttrSyncService());
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("hi"));
+            Assert.Equal("sync: hi", result);
+        });
+    }
+
+    [NexusServiceHandler(typeof(INoInputService))]
+    public class TemporalOperationAttrNoInputService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoIt(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult("no-input-result"));
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_NoInput()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new TemporalOperationAttrNoInputService());
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<INoInputService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoIt());
+            Assert.Equal("no-input-result", result);
+        });
+    }
+
+    [NexusServiceHandler(typeof(IVoidService))]
+    public class TemporalOperationAttrVoidService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<NoValue>> NoReturn(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string param) =>
+            client.StartWorkflowAsync(
+                (NoReturnWorkflow wf) => wf.RunAsync(param),
+                new() { Id = $"wf-{Guid.NewGuid()}" });
+
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> NoParam(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client) =>
+            client.StartWorkflowAsync(
+                (NoParamWorkflow wf) => wf.RunAsync(),
+                new() { Id = $"wf-{Guid.NewGuid()}" });
+
+        [TemporalOperation]
+        public Task<TemporalOperationResult<NoValue>> NoReturnOrParam(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client) =>
+            client.StartWorkflowAsync(
+                (NoReturnOrParamWorkflow wf) => wf.RunAsync(),
+                new() { Id = $"wf-{Guid.NewGuid()}" });
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_VoidTypes()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new TemporalOperationAttrVoidService()).
+            AddWorkflow<NoReturnWorkflow>().
+            AddWorkflow<NoParamWorkflow>().
+            AddWorkflow<NoReturnOrParamWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var client = Workflow.CreateNexusWorkflowClient<IVoidService>(endpoint);
+            await client.ExecuteNexusOperationAsync(svc => svc.NoReturn("some-param"));
+            Assert.Equal("done", await client.ExecuteNexusOperationAsync(svc => svc.NoParam()));
+            await client.ExecuteNexusOperationAsync(svc => svc.NoReturnOrParam());
+        });
+    }
+
+    [NexusService]
+    public interface ITwoOpService
+    {
+        [NexusOperation]
+        string ViaTemporalAttr(string name);
+
+        [NexusOperation]
+        string ViaHandlerFactory(string name);
+    }
+
+    [NexusServiceHandler(typeof(ITwoOpService))]
+    public class MixedAttributesService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> ViaTemporalAttr(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult($"temporal: {input}"));
+
+        [NexusOperationHandler]
+        public IOperationHandler<string, string> ViaHandlerFactory() =>
+            OperationHandler.Sync<string, string>((ctx, name) => $"factory: {name}");
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_MixedWithHandlerFactory()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new MixedAttributesService());
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var client = Workflow.CreateNexusWorkflowClient<ITwoOpService>(endpoint);
+            Assert.Equal(
+                "temporal: hi",
+                await client.ExecuteNexusOperationAsync(svc => svc.ViaTemporalAttr("hi")));
+            Assert.Equal(
+                "factory: hi",
+                await client.ExecuteNexusOperationAsync(svc => svc.ViaHandlerFactory("hi")));
+        });
+    }
+
+    [NexusServiceHandler(typeof(IStringService))]
+    public class TemporalOperationAttrBadReturnService
+    {
+        [TemporalOperation]
+        public Task<string> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(input);
+    }
+
+    [Fact]
+    public void AddNexusService_TemporalOperationBadReturnType_Throws()
+    {
+        var exc = Assert.Throws<ArgumentException>(() =>
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddNexusService(new TemporalOperationAttrBadReturnService()));
+        Assert.Contains("Failed obtaining operation handler from DoSomething", exc.Message);
+        Assert.Contains(
+            "must return Task<TemporalOperationResult<String>>",
+            Assert.IsType<ArgumentException>(exc.InnerException).Message);
+    }
+
+    [NexusServiceHandler(typeof(IStringService))]
+    public class TemporalOperationAttrBadParamsService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomething(string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+    }
+
+    [Fact]
+    public void AddNexusService_TemporalOperationBadParams_Throws()
+    {
+        var exc = Assert.Throws<ArgumentException>(() =>
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddNexusService(new TemporalOperationAttrBadParamsService()));
+        Assert.Contains("Failed obtaining operation handler from DoSomething", exc.Message);
+        Assert.Contains(
+            "must accept parameters (TemporalOperationStartContext, ITemporalNexusClient, String)",
+            Assert.IsType<ArgumentException>(exc.InnerException).Message);
+    }
+
+#pragma warning disable CA1052 // Intentionally non-static so registration reaches signature check
+    [NexusServiceHandler(typeof(IStringService))]
+    public class TemporalOperationAttrStaticService
+    {
+        [TemporalOperation]
+        public static Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+    }
+#pragma warning restore CA1052
+
+    [Fact]
+    public void AddNexusService_TemporalOperationStaticMethod_Throws()
+    {
+        var exc = Assert.Throws<ArgumentException>(() =>
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddNexusService(new TemporalOperationAttrStaticService()));
+        Assert.Contains("Failed obtaining operation handler from DoSomething", exc.Message);
+        Assert.Contains(
+            "must not be static",
+            Assert.IsType<ArgumentException>(exc.InnerException).Message);
+    }
+
+    [NexusService]
+    public interface IGenericInputService
+    {
+        [NexusOperation]
+        int Sum(List<int> values);
+    }
+
+    [NexusServiceHandler(typeof(IGenericInputService))]
+    public class TemporalOperationAttrGenericInputService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<int>> Sum(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, List<int> values) =>
+            Task.FromResult(TemporalOperationResult<int>.SyncResult(values.Sum()));
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_CompositeGenericInput()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new TemporalOperationAttrGenericInputService());
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<IGenericInputService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.Sum(new List<int> { 1, 2, 3 }));
+            Assert.Equal(6, result);
+        });
+    }
+
+    [NexusServiceHandler(typeof(IGenericInputService))]
+    public class TemporalOperationAttrGenericInputMismatchService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<int>> Sum(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, List<string> values) =>
+            Task.FromResult(TemporalOperationResult<int>.SyncResult(0));
+    }
+
+    [Fact]
+    public void AddNexusService_TemporalOperationGenericInputMismatch_Throws()
+    {
+        var exc = Assert.Throws<ArgumentException>(() =>
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddNexusService(new TemporalOperationAttrGenericInputMismatchService()));
+        Assert.Contains("Failed obtaining operation handler from Sum", exc.Message);
+        Assert.Contains(
+            "must accept parameters",
+            Assert.IsType<ArgumentException>(exc.InnerException).Message);
+    }
+
+    [NexusServiceHandler(typeof(IStringService))]
+    public class TemporalOperationAttrRawReturnService
+    {
+        [TemporalOperation]
+        public Task<int> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(0);
+    }
+
+    [Fact]
+    public void AddNexusService_TemporalOperationRawReturn_Throws()
+    {
+        var exc = Assert.Throws<ArgumentException>(() =>
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddNexusService(new TemporalOperationAttrRawReturnService()));
+        Assert.Contains("Failed obtaining operation handler from DoSomething", exc.Message);
+        Assert.Contains(
+            "must return Task<TemporalOperationResult<String>>",
+            Assert.IsType<ArgumentException>(exc.InnerException).Message);
+    }
+
+    [NexusServiceHandler(typeof(IStringService))]
+    public class TemporalOperationAttrDualAnnotationService
+    {
+        [TemporalOperation]
+        [NexusOperationHandler]
+        public Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+    }
+
+    [Fact]
+    public void AddNexusService_TemporalOperationDualAnnotation_Throws()
+    {
+        // The built-in [NexusOperationHandler] path claims the method first, and it
+        // rejects the signature (return type isn't IOperationHandler<,>).
+        Assert.Throws<ArgumentException>(() =>
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddNexusService(new TemporalOperationAttrDualAnnotationService()));
+    }
+
+    [NexusServiceHandler(typeof(IStringService))]
+    public class TemporalOperationAttrFieldService
+    {
+        private readonly string prefix;
+
+        public TemporalOperationAttrFieldService(string prefix) => this.prefix = prefix;
+
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult($"{prefix}: {input}"));
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_BindsToInstance()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new TemporalOperationAttrFieldService("hello"));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("world"));
+            Assert.Equal("hello: world", result);
+        });
+    }
+
+    [NexusServiceHandler(typeof(IStringService))]
+    public class TemporalOperationAttrPrivateService
+    {
+        [TemporalOperation]
+        private Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+    }
+
+    [Fact]
+    public void AddNexusService_TemporalOperationPrivateMethod_Throws()
+    {
+        var exc = Assert.Throws<ArgumentException>(() =>
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddNexusService(new TemporalOperationAttrPrivateService()));
+        Assert.Contains("Failed obtaining operation handler from DoSomething", exc.Message);
+        Assert.Contains(
+            "must be public",
+            Assert.IsType<ArgumentException>(exc.InnerException).Message);
+    }
+
+    public class ThrowFromTemporalOperationException : Exception
+    {
+        public ThrowFromTemporalOperationException(string message)
+            : base(message)
+        {
+        }
+    }
+
+    [NexusServiceHandler(typeof(IStringService))]
+    public class TemporalOperationAttrThrowingService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            throw new ThrowFromTemporalOperationException($"boom: {input}");
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_ExceptionPropagatesUnwrapped()
+    {
+        // The compiled Expression call should propagate user exceptions directly, not wrapped in
+        // TargetInvocationException (the way MethodInfo.Invoke would). We assert the wire failure
+        // reflects the original message.
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new TemporalOperationAttrThrowingService());
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+            RunInWorkflowAsync(workerOptions, () =>
+                Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("hi"))));
+        var nexusExc = Assert.IsType<NexusOperationFailureException>(wfExc.InnerException);
+        var handlerExc = Assert.IsType<HandlerException>(nexusExc.InnerException);
+        Assert.Contains("boom: hi", handlerExc.Message);
+        // The message must NOT contain TargetInvocationException wrapping.
+        Assert.DoesNotContain("TargetInvocationException", handlerExc.Message);
     }
 
     private class CancelOverrideHandler : TemporalOperationHandler<string, string>

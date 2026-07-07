@@ -103,13 +103,19 @@
           "System.Runtime.CompilerServices.Unsafe": "4.5.3"
         }
       },
+      "nexusrpc": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.Bcl.HashCode": "[6.0.0, )"
+        }
+      },
       "temporalio": {
         "type": "Project",
         "dependencies": {
           "Google.Protobuf": "[3.26.1, )",
           "Microsoft.Bcl.HashCode": "[6.0.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[2.2.0, )",
-          "NexusRpc": "[0.3.0, )",
+          "NexusRpc": "[0.4.0, )",
           "System.Text.Json": "[9.0.4, )"
         }
       },
@@ -134,15 +140,6 @@
         "requested": "[2.2.0, )",
         "resolved": "2.2.0",
         "contentHash": "B2WqEox8o+4KUOpL7rZPyh6qYjik8tHi2tN8Z9jZkHzED8ElYgZa/h6K+xliB435SqUcWT290Fr2aa8BtZjn8A=="
-      },
-      "NexusRpc": {
-        "type": "CentralTransitive",
-        "requested": "[0.3.0, )",
-        "resolved": "0.3.0",
-        "contentHash": "Kr+NMSZ5428AvxpzShdJcQxc9w6HT8SM6FXQMekC4K9wGpmC1m/L2pQJydpvVTwRBu3qAIYKPI37KWexF4Gtcg==",
-        "dependencies": {
-          "Microsoft.Bcl.HashCode": "6.0.0"
-        }
       },
       "System.Text.Json": {
         "type": "CentralTransitive",

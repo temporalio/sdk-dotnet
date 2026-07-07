@@ -16,7 +16,7 @@ namespace Temporalio.Nexus
     /// <para>WARNING: Temporal operation handlers are experimental.</para>
     /// <para>Usage example — starting a workflow from a Nexus operation:</para>
     /// <code>
-    /// [OperationImpl]
+    /// [NexusOperationHandler]
     /// public IOperationHandler&lt;TransferInput, TransferResult&gt; StartTransfer() =>
     ///     TemporalOperationHandler.FromHandleFactory&lt;TransferInput, TransferResult&gt;(
     ///         async (context, client, input) =>
@@ -26,7 +26,7 @@ namespace Temporalio.Nexus
     /// </code>
     /// <para>To perform a synchronous operation (e.g., sending a signal and returning immediately):</para>
     /// <code>
-    /// [OperationImpl]
+    /// [NexusOperationHandler]
     /// public IOperationHandler&lt;CancelOrderInput, NoValue&gt; CancelOrder() =>
     ///     TemporalOperationHandler.FromHandleFactory&lt;CancelOrderInput, NoValue&gt;(
     ///         async (context, client, input) =>
@@ -37,6 +37,8 @@ namespace Temporalio.Nexus
     ///             return TemporalOperationResult&lt;NoValue&gt;.SyncResult(default);
     ///         });
     /// </code>
+    /// <para>Alternatively, use <see cref="TemporalOperationAttribute"/> on a method to skip the
+    /// factory-function boilerplate and have the method body itself act as the start handler.</para>
     /// </remarks>
     public static class TemporalOperationHandler
     {

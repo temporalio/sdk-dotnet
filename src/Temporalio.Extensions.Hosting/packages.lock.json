@@ -374,13 +374,20 @@
         "resolved": "4.6.1",
         "contentHash": "+RJT4qaekpZ7DDLhf+LTjq+E48jieKiY9ulJ+BoxKmZblIJfIJT8Ufcaa/clQqnYvWs8jugfGSMu8ylS0caG0w=="
       },
+      "nexusrpc": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.Bcl.HashCode": "[6.0.0, )",
+          "System.ValueTuple": "[4.6.1, )"
+        }
+      },
       "temporalio": {
         "type": "Project",
         "dependencies": {
           "Google.Protobuf": "[3.26.1, )",
           "Microsoft.Bcl.HashCode": "[6.0.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[2.2.0, )",
-          "NexusRpc": "[0.3.0, )",
+          "NexusRpc": "[0.4.0, )",
           "System.Text.Json": "[9.0.4, )"
         }
       },
@@ -439,16 +446,6 @@
           "Microsoft.Extensions.Options": "8.0.2",
           "System.Buffers": "4.5.1",
           "System.Text.Json": "8.0.5"
-        }
-      },
-      "NexusRpc": {
-        "type": "CentralTransitive",
-        "requested": "[0.3.0, )",
-        "resolved": "0.3.0",
-        "contentHash": "Kr+NMSZ5428AvxpzShdJcQxc9w6HT8SM6FXQMekC4K9wGpmC1m/L2pQJydpvVTwRBu3qAIYKPI37KWexF4Gtcg==",
-        "dependencies": {
-          "Microsoft.Bcl.HashCode": "6.0.0",
-          "System.ValueTuple": "4.6.1"
         }
       },
       "System.Diagnostics.DiagnosticSource": {
@@ -864,13 +861,19 @@
           "System.Runtime.CompilerServices.Unsafe": "4.5.3"
         }
       },
+      "nexusrpc": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.Bcl.HashCode": "[6.0.0, )"
+        }
+      },
       "temporalio": {
         "type": "Project",
         "dependencies": {
           "Google.Protobuf": "[3.26.1, )",
           "Microsoft.Bcl.HashCode": "[6.0.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[2.2.0, )",
-          "NexusRpc": "[0.3.0, )",
+          "NexusRpc": "[0.4.0, )",
           "System.Text.Json": "[9.0.4, )"
         }
       },
@@ -929,15 +932,6 @@
           "Microsoft.Extensions.Options": "8.0.2",
           "System.Buffers": "4.5.1",
           "System.Text.Json": "8.0.5"
-        }
-      },
-      "NexusRpc": {
-        "type": "CentralTransitive",
-        "requested": "[0.3.0, )",
-        "resolved": "0.3.0",
-        "contentHash": "Kr+NMSZ5428AvxpzShdJcQxc9w6HT8SM6FXQMekC4K9wGpmC1m/L2pQJydpvVTwRBu3qAIYKPI37KWexF4Gtcg==",
-        "dependencies": {
-          "Microsoft.Bcl.HashCode": "6.0.0"
         }
       },
       "System.Diagnostics.DiagnosticSource": {
@@ -1261,12 +1255,15 @@
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
+      "nexusrpc": {
+        "type": "Project"
+      },
       "temporalio": {
         "type": "Project",
         "dependencies": {
           "Google.Protobuf": "[3.26.1, )",
           "Microsoft.Extensions.Logging.Abstractions": "[2.2.0, )",
-          "NexusRpc": "[0.3.0, )"
+          "NexusRpc": "[0.4.0, )"
         }
       },
       "Google.Protobuf": {
@@ -1310,12 +1307,6 @@
           "System.Runtime.CompilerServices.Unsafe": "6.0.0",
           "System.Text.Json": "8.0.5"
         }
-      },
-      "NexusRpc": {
-        "type": "CentralTransitive",
-        "requested": "[0.3.0, )",
-        "resolved": "0.3.0",
-        "contentHash": "Kr+NMSZ5428AvxpzShdJcQxc9w6HT8SM6FXQMekC4K9wGpmC1m/L2pQJydpvVTwRBu3qAIYKPI37KWexF4Gtcg=="
       },
       "System.Diagnostics.DiagnosticSource": {
         "type": "CentralTransitive",
