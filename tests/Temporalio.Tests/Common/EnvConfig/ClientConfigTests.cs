@@ -480,8 +480,7 @@ api_key = ""my-api-key""
             Assert.True(profileDisabled.Tls.Disabled);
 
             var optionsDisabled = profileDisabled.ToClientConnectionOptions();
-            Assert.NotNull(optionsDisabled.Tls);
-            Assert.True(optionsDisabled.Tls.Disabled);
+            Assert.Null(optionsDisabled.Tls);
 
             // Test TLS with certs
             var profileCerts = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
@@ -698,9 +697,7 @@ server_name = ""should-be-ignored""
                 ConfigSource = DataSource.FromUTF8String(tomlTrue),
             });
             Assert.True(profileTrue.Tls!.Disabled); // explicitly disabled=true
-            var optionsTrue = profileTrue.ToClientConnectionOptions();
-            Assert.NotNull(optionsTrue.Tls);
-            Assert.True(optionsTrue.Tls.Disabled); // TLS disabled even with API key
+            Assert.Null(profileTrue.ToClientConnectionOptions().Tls); // TLS disabled even with API key
         }
 
         // === ERROR HANDLING TESTS (4 tests) ===
