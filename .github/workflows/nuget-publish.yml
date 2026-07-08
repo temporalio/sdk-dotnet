@@ -53,7 +53,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@9a946fdbd5fb07b82b2f5a4466058b876ab72bb2 # v5
         with:
-          dotnet-version: 10.x
+          global-json-file: global.json
 
       # Request the short-lived (~1h, single-use) API key immediately before the
       # push so it cannot expire in transit.

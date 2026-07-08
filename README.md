@@ -1297,7 +1297,7 @@ To fix this, the `WEBSITE_LOAD_USER_PROFILE` environment can be set to `1` to lo
 
 Prerequisites:
 
-* [.NET](https://learn.microsoft.com/en-us/dotnet/core/install/)
+* [.NET SDK](https://learn.microsoft.com/en-us/dotnet/core/install/) — version pinned in [`global.json`](global.json)
 * [Rust](https://www.rust-lang.org/) (i.e. `cargo` on the `PATH`)
 * [Protobuf Compiler](https://protobuf.dev/) (i.e. `protoc` on the `PATH`)
 * This repository, cloned recursively

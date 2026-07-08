@@ -23,10 +23,6 @@ inputs:
     description: "Set to 'true' to also run the net462 smoke test (Windows x64 only)."
     required: false
     default: "false"
-  dotnet-version:
-    description: ".NET SDK version to install on non-Alpine runners."
-    required: false
-    default: "10.x"
 
 runs:
   using: composite
@@ -35,9 +31,7 @@ runs:
       if: ${{ inputs.is-alpine != 'true' }}
       uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
       with:
-        # Specific .NET version required because GitHub macos ARM image has
-        # bad pre-installed .NET version
-        dotnet-version: ${{ inputs.dotnet-version }}
+        global-json-file: global.json
 
     - name: Run smoke test (Alpine)
       if: ${{ inputs.is-alpine == 'true' }}
