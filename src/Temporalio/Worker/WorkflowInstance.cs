@@ -556,17 +556,21 @@ namespace Temporalio.Worker
                         // If there's no timeout, it'll never return false, so just wait
                         if (options.Timeout == null)
                         {
+#pragma warning disable VSTHRD003 // Awaiting our own completion source's task
                             await source.Task.ConfigureAwait(true);
+#pragma warning restore VSTHRD003
                             return true;
                         }
                         // Try a timeout that we cancel if never hit
                         using (var delayCancelSource = new CancellationTokenSource())
                         {
+#pragma warning disable VSTHRD003 // Awaiting our own completion source's task
                             var completedTask = await Task.WhenAny(source.Task, DelayWithOptionsAsync(
                                 new(
                                     delay: options.Timeout.GetValueOrDefault(),
                                     summary: options.TimeoutSummary,
                                     cancellationToken: delayCancelSource.Token))).ConfigureAwait(true);
+#pragma warning restore VSTHRD003
                             // Do not timeout
                             if (completedTask == source.Task)
                             {
@@ -2041,7 +2045,9 @@ namespace Temporalio.Worker
                 // Handle
                 return instance.QueueNewTaskAsync(async () =>
                 {
+#pragma warning disable VSTHRD003 // Awaiting our own completion source's task
                     var res = await pending.CompletionSource.Task.ConfigureAwait(true);
+#pragma warning restore VSTHRD003
                     instance.externalCancelsPending.Remove(cmd.Seq);
                     // Throw if failed
                     if (res.Failure != null)
@@ -2120,7 +2126,9 @@ namespace Temporalio.Worker
                         }
                     }))
                     {
+#pragma warning disable VSTHRD003 // Awaiting our own completion source's task
                         await source.Task.ConfigureAwait(true);
+#pragma warning restore VSTHRD003
                     }
                 });
             }
@@ -2478,7 +2486,9 @@ namespace Temporalio.Worker
                         }))
                         {
                             // Wait for start
+#pragma warning disable VSTHRD003 // Awaiting our own completion source's task
                             var startRes = await pending.StartCompletionSource.Task.ConfigureAwait(true);
+#pragma warning restore VSTHRD003
                             // Handle the start result
                             ChildWorkflowHandleImpl<TWorkflow, TResult> handle;
                             switch (startRes.StatusCase)
@@ -2522,7 +2532,9 @@ namespace Temporalio.Worker
                             handleSource.SetResult(handle);
 
                             // Wait for completion
+#pragma warning disable VSTHRD003 // Awaiting our own completion source's task
                             var completeRes = await pending.ResultCompletionSource.Task.ConfigureAwait(true);
+#pragma warning restore VSTHRD003
 
                             // Handle completion
                             switch (completeRes.StatusCase)
@@ -2639,7 +2651,9 @@ namespace Temporalio.Worker
                         try
                         {
                             // Wait for start
+#pragma warning disable VSTHRD003 // Awaiting our own completion source's task
                             var startRes = await pending.StartCompletionSource.Task.ConfigureAwait(true);
+#pragma warning restore VSTHRD003
 
                             // If there is a start sync fail, we have to fail the handle task and
                             // there's nothing more we can do here
@@ -2662,7 +2676,9 @@ namespace Temporalio.Worker
                             handleSource.SetResult(handle);
 
                             // Wait for completion and set on handle
+#pragma warning disable VSTHRD003 // Awaiting our own completion source's task
                             var completeRes = await pending.ResultCompletionSource.Task.ConfigureAwait(true);
+#pragma warning restore VSTHRD003
                             handle.CompletionSource.SetResult(completeRes);
                         }
                         catch (Exception e)
@@ -2715,7 +2731,9 @@ namespace Temporalio.Worker
                         }
                     }))
                     {
+#pragma warning disable VSTHRD003 // Awaiting our own completion source's task
                         var res = await pending.CompletionSource.Task.ConfigureAwait(true);
+#pragma warning restore VSTHRD003
                         instance.externalSignalsPending.Remove(cmd.Seq);
                         // Throw if failed
                         if (res.Failure != null)
@@ -2779,7 +2797,9 @@ namespace Temporalio.Worker
                             }
                         }))
                         {
+#pragma warning disable VSTHRD003 // Awaiting our own completion source's task
                             res = await pending.CompletionSource.Task.ConfigureAwait(true);
+#pragma warning restore VSTHRD003
                         }
 
                         // Apply result. Only DoBackoff will cause loop to continue.
@@ -2879,7 +2899,9 @@ namespace Temporalio.Worker
             /// <inheritdoc />
             public override async Task<TLocalResult> GetResultAsync<TLocalResult>()
             {
+#pragma warning disable VSTHRD003 // Awaiting our own completion source's task
                 var payload = await CompletionSource.Task.ConfigureAwait(true);
+#pragma warning restore VSTHRD003
                 // Use default if they are ignoring result or payload not present
                 if (typeof(TLocalResult) == typeof(ValueTuple) || payload == null)
                 {
@@ -3022,7 +3044,9 @@ namespace Temporalio.Worker
 
             public override async Task<TLocalResult> GetResultAsync<TLocalResult>()
             {
+#pragma warning disable VSTHRD003 // Awaiting our own completion source's task
                 var res = await CompletionSource.Task.ConfigureAwait(true);
+#pragma warning restore VSTHRD003
                 // If completed, return that
                 if (res.Completed is { } completed)
                 {

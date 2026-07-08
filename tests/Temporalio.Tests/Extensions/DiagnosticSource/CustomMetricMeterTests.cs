@@ -380,7 +380,11 @@ public class CustomMetricMeterTests : WorkflowEnvironmentTestBase
             }
         };
         meterListener.SetMeasurementEventCallback<long>(
+            // Intentionally fire-and-forget: scheduling this task off the workflow scheduler
+            // is the "bad thing" this test relies on the tracing listener to detect.
+#pragma warning disable VSTHRD110 // Unobserved task is the point of the test
             (inst, value, tags, state) => Task.Run(() => { }));
+#pragma warning restore VSTHRD110
         meterListener.Start();
 
         // Create runtime/client with meter

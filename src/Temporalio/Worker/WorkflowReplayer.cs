@@ -293,7 +293,9 @@ namespace Temporalio.Worker
                 lastHistory = history;
                 pendingResult = new();
                 bridgeReplayer.PushHistory(history.Id, new() { Events = { history.Events } });
+#pragma warning disable VSTHRD003 // Our own completion source's task
                 return pendingResult.Task;
+#pragma warning restore VSTHRD003
             }
 
             /// <summary>
