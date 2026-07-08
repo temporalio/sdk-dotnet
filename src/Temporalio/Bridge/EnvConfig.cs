@@ -24,9 +24,7 @@ namespace Temporalio.Bridge
 
             try
             {
-                var envVarsRef = options.OverrideEnvVars?.Count > 0
-                    ? scope.ByteArray(JsonSerializer.Serialize(options.OverrideEnvVars))
-                    : ByteArrayRef.Empty.Ref;
+                var envVarsRef = ToEnvVarsRef(scope, options.OverrideEnvVars);
 
                 unsafe
                 {
@@ -60,9 +58,7 @@ namespace Temporalio.Bridge
 
             try
             {
-                var envVarsRef = options.OverrideEnvVars?.Count > 0
-                    ? scope.ByteArray(JsonSerializer.Serialize(options.OverrideEnvVars))
-                    : ByteArrayRef.Empty.Ref;
+                var envVarsRef = ToEnvVarsRef(scope, options.OverrideEnvVars);
 
                 unsafe
                 {
@@ -86,6 +82,18 @@ namespace Temporalio.Bridge
                 throw new InvalidOperationException($"Failed to deserialize client config profile: {ex.Message}", ex);
             }
         }
+
+        /// <summary>
+        /// Convert environment variable overrides into the byte array reference sent to core.
+        /// </summary>
+        /// <param name="scope">Scope owning the created byte array reference.</param>
+        /// <param name="overrideEnvVars">Environment variable overrides, or null to use the process environment.</param>
+        /// <returns>Byte array reference for the core load options.</returns>
+        internal static Interop.TemporalCoreByteArrayRef ToEnvVarsRef(
+            Scope scope, IReadOnlyDictionary<string, string>? overrideEnvVars) =>
+            overrideEnvVars == null ?
+                ByteArrayRef.Empty.Ref :
+                scope.ByteArray(JsonSerializer.Serialize(overrideEnvVars));
 
         /// <summary>
         /// Creates a ClientConfigProfile from typed JSON data.
