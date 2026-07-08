@@ -1,6 +1,9 @@
 using Temporalio.Common.EnvConfig;
 using Xunit;
 using Xunit.Abstractions;
+using BridgeByteArrayRef = Temporalio.Bridge.ByteArrayRef;
+using BridgeEnvConfig = Temporalio.Bridge.EnvConfig;
+using BridgeScope = Temporalio.Bridge.Scope;
 
 namespace Temporalio.Tests.Common.EnvConfig
 {
@@ -196,7 +199,7 @@ client_key_data = ""client-key-data""
             Assert.Equal("test-namespace", options.Namespace);
         }
 
-        // === ENVIRONMENT VARIABLES TESTS (4 tests) ===
+        // === ENVIRONMENT VARIABLES TESTS (5 tests) ===
         [Fact]
         public void Test_Load_Profile_Grpc_Meta_Env_Overrides()
         {
@@ -285,6 +288,18 @@ x-custom-header = ""custom-value""
             });
 
             Assert.Equal("default-address", profile.Address);
+        }
+
+        [Fact]
+        public unsafe void Test_Load_Profile_Empty_Env_Override_Uses_Explicit_Empty_Environment()
+        {
+            using var scope = new BridgeScope();
+
+            var unsetEnvVars = BridgeEnvConfig.ToEnvVarsRef(scope, null);
+            var emptyEnvVars = BridgeEnvConfig.ToEnvVarsRef(scope, new Dictionary<string, string>());
+
+            Assert.Equal(UIntPtr.Zero, unsetEnvVars.size);
+            Assert.Equal("{}", BridgeByteArrayRef.ToUtf8(emptyEnvVars));
         }
 
         // === CONTROL FLAGS TESTS (3 tests) ===
