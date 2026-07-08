@@ -19,6 +19,11 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed `ClientEnvConfig` empty `OverrideEnvVars` handling so an explicit empty dictionary no
+  longer falls back to process environment variables.
+
 ### [1.16.0] - 2026-07-01
 
 ### Added
