@@ -35,7 +35,8 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
         /// <remarks>
         /// This creates an OTLP trace exporter and tracer provider, configures Core SDK metrics
         /// through a Temporal runtime, adds the Temporal tracing interceptor, and registers a
-        /// per-invocation shutdown hook to force-flush traces before the Lambda invocation ends.
+        /// per-invocation shutdown hook to force-flush traces and dispose the tracer provider
+        /// before the Lambda invocation ends.
         /// Any existing <see cref="Temporalio.Client.TemporalConnectionOptions.Runtime" /> is
         /// replaced.
         /// </remarks>
@@ -49,7 +50,7 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
             }
 
             var resolvedOptions = ResolveOptions(options);
-#pragma warning disable CA2000 // Provider is intentionally retained for Lambda warm invocations.
+#pragma warning disable CA2000 // The per-invocation shutdown hook owns provider disposal.
             var tracerProvider = CreateTracerProvider(resolvedOptions);
 #pragma warning restore CA2000
 
@@ -57,10 +58,26 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
                 config.ClientOptions.Interceptors);
             config.ClientOptions.Runtime = CreateRuntime(resolvedOptions);
             config.AddShutdownHook(
-                cancellationToken => ForceFlushAsync(
-                    tracerProvider,
-                    config.ShutdownDeadlineBuffer,
-                    cancellationToken));
+                async cancellationToken =>
+                {
+                    // CreateHandler runs configuration once per invocation, so this provider is
+                    // invocation-scoped rather than warm-container-scoped. ForceFlush is the only
+                    // bounded part of provider shutdown: Dispose is synchronous and has no
+                    // cancellation-aware API. Run disposal after the flush attempt so exporting gets
+                    // first use of the remaining Lambda deadline, while still releasing provider
+                    // resources before the next warm invocation can accumulate another provider.
+                    try
+                    {
+                        await ForceFlushAsync(
+                            tracerProvider,
+                            config.ShutdownDeadlineBuffer,
+                            cancellationToken).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        tracerProvider.Dispose();
+                    }
+                });
         }
 
         /// <summary>

@@ -68,5 +68,5 @@ Attach the ADOT collector Lambda layer and set:
 OPENTELEMETRY_COLLECTOR_CONFIG_URI=/var/task/otel-collector-config.yaml
 ```
 
-The helper uses AWS X-Ray-compatible trace IDs. It force-flushes traces on every Lambda invocation but does not shut down
-the tracer provider, so warm Lambda invocations can continue using it.
+The helper uses AWS X-Ray-compatible trace IDs. It force-flushes traces on every Lambda invocation and disposes the
+tracer provider during the Lambda shutdown hook.

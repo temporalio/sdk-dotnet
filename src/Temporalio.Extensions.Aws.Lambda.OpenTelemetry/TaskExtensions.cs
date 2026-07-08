@@ -17,6 +17,7 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
         /// <returns>A task that completes when the input task completes.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="task" /> is null.</exception>
         /// <exception cref="OperationCanceledException">Cancellation is requested before the task completes.</exception>
+#pragma warning disable VSTHRD003 // This helper intentionally awaits a caller-owned task
         public static async Task WaitAsync(this Task task, CancellationToken cancellationToken)
         {
             if (task == null)
@@ -44,6 +45,7 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
 
             await task.ConfigureAwait(false);
         }
+#pragma warning restore VSTHRD003
 
         /// <summary>
         /// Observes a task fault without awaiting it.
