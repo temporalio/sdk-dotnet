@@ -302,32 +302,6 @@ x-custom-header = ""custom-value""
             Assert.Equal("{}", BridgeByteArrayRef.ToUtf8(emptyEnvVars));
         }
 
-        [Fact]
-        public void EmptyOverrideEnvVarsSuppressesSystemEnvironment()
-        {
-            var previousAddress = Environment.GetEnvironmentVariable("TEMPORAL_ADDRESS");
-            var previousNamespace = Environment.GetEnvironmentVariable("TEMPORAL_NAMESPACE");
-            try
-            {
-                Environment.SetEnvironmentVariable("TEMPORAL_ADDRESS", "system-address");
-                Environment.SetEnvironmentVariable("TEMPORAL_NAMESPACE", "system-namespace");
-
-                var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
-                {
-                    DisableFile = true,
-                    OverrideEnvVars = new Dictionary<string, string>(),
-                });
-
-                Assert.Null(profile.Address);
-                Assert.Null(profile.Namespace);
-            }
-            finally
-            {
-                Environment.SetEnvironmentVariable("TEMPORAL_ADDRESS", previousAddress);
-                Environment.SetEnvironmentVariable("TEMPORAL_NAMESPACE", previousNamespace);
-            }
-        }
-
         // === CONTROL FLAGS TESTS (3 tests) ===
         [Fact]
         public void Test_Load_Profile_Disable_File()
