@@ -289,9 +289,12 @@ var client = await TemporalClient.ConnectAsync(
 ```
 
 By default, the loader checks `TEMPORAL_CONFIG_FILE`; if unset, it looks for `temporal.toml` in the
-user config directory under `temporalio`. The selected profile is `TEMPORAL_PROFILE`, or `default`
-when unset. Environment variables such as `TEMPORAL_ADDRESS`, `TEMPORAL_NAMESPACE`,
-`TEMPORAL_API_KEY`, TLS certificate/key settings, and `TEMPORAL_GRPC_META_*` override file values.
+user config directory under `temporalio`. If no file exists at the discovered or specified path, the
+loader still succeeds using default connection options plus any environment variable overrides. The
+selected profile is `TEMPORAL_PROFILE`, or `default` when unset. Supported environment variables
+override file values; see
+[Temporal environment configuration](https://docs.temporal.io/develop/environment-configuration)
+for the complete list.
 
 Use `ClientEnvConfig.ProfileLoadOptions` to choose a profile, provide an explicit config source, or
 disable file or environment loading.
