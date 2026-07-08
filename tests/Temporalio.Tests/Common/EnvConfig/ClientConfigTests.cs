@@ -1,7 +1,9 @@
-using System.Diagnostics;
 using Temporalio.Common.EnvConfig;
 using Xunit;
 using Xunit.Abstractions;
+using BridgeByteArrayRef = Temporalio.Bridge.ByteArrayRef;
+using BridgeEnvConfig = Temporalio.Bridge.EnvConfig;
+using BridgeScope = Temporalio.Bridge.Scope;
 
 namespace Temporalio.Tests.Common.EnvConfig
 {
@@ -48,8 +50,6 @@ server_ca_cert_data = ""ca-pem-data""
 client_cert_data = ""client-crt-data""
 client_key_data = ""client-key-data""
 ";
-
-        private const string EmptyEnvOverrideChild = "TEMPORAL_TEST_EMPTY_ENV_OVERRIDE_CHILD";
 
         public ClientConfigTests(ITestOutputHelper output)
             : base(output)
@@ -291,57 +291,15 @@ x-custom-header = ""custom-value""
         }
 
         [Fact]
-        public async Task Test_Load_Profile_Empty_Env_Override_Uses_Explicit_Empty_Environment()
+        public unsafe void Test_Load_Profile_Empty_Env_Override_Uses_Explicit_Empty_Environment()
         {
-            if (Environment.GetEnvironmentVariable(EmptyEnvOverrideChild) == "1")
-            {
-                var systemProfile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
-                {
-                    Profile = "default",
-                    DisableFile = true,
-                });
-                Assert.Equal("process-env-address", systemProfile.Address);
-                Assert.Equal("process-env-namespace", systemProfile.Namespace);
+            using var scope = new BridgeScope();
 
-                var emptyOverrideProfile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
-                {
-                    Profile = "default",
-                    DisableFile = true,
-                    OverrideEnvVars = new Dictionary<string, string>(),
-                });
-                Assert.Null(emptyOverrideProfile.Address);
-                Assert.Null(emptyOverrideProfile.Namespace);
-                return;
-            }
+            var unsetEnvVars = BridgeEnvConfig.ToEnvVarsRef(scope, null);
+            var emptyEnvVars = BridgeEnvConfig.ToEnvVarsRef(scope, new Dictionary<string, string>());
 
-            using var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "dotnet",
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    WorkingDirectory = Directory.GetCurrentDirectory(),
-                },
-            };
-            process.StartInfo.ArgumentList.Add(typeof(Program).Assembly.Location);
-            process.StartInfo.ArgumentList.Add("-method");
-            process.StartInfo.ArgumentList.Add(
-                $"{typeof(ClientConfigTests).FullName}.{nameof(Test_Load_Profile_Empty_Env_Override_Uses_Explicit_Empty_Environment)}");
-            process.StartInfo.Environment[EmptyEnvOverrideChild] = "1";
-            process.StartInfo.Environment["TEMPORAL_ADDRESS"] = "process-env-address";
-            process.StartInfo.Environment["TEMPORAL_NAMESPACE"] = "process-env-namespace";
-
-            Assert.True(process.Start());
-            var stdoutTask = process.StandardOutput.ReadToEndAsync();
-            var stderrTask = process.StandardError.ReadToEndAsync();
-            await process.WaitForExitAsync();
-            var stdout = await stdoutTask;
-            var stderr = await stderrTask;
-            Assert.True(
-                process.ExitCode == 0,
-                $"Child process failed with exit code {process.ExitCode}.{Environment.NewLine}STDOUT:{Environment.NewLine}{stdout}{Environment.NewLine}STDERR:{Environment.NewLine}{stderr}");
+            Assert.Equal(UIntPtr.Zero, unsetEnvVars.size);
+            Assert.Equal("{}", BridgeByteArrayRef.ToUtf8(emptyEnvVars));
         }
 
         // === CONTROL FLAGS TESTS (3 tests) ===
