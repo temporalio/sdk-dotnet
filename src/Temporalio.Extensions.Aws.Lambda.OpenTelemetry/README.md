@@ -34,6 +34,7 @@ private static readonly Func<object?, ILambdaContext, Task> WorkerHandler =
 `ApplyDefaults` configures Temporal tracing with `TracingInterceptor`, creates an OTLP trace exporter and tracer
 provider, configures Core SDK metrics through a `TemporalRuntime`, and registers a per-invocation shutdown hook that
 force-flushes traces before the Lambda invocation ends.
+It replaces any runtime already set on `config.ClientOptions`.
 
 ## Defaults
 

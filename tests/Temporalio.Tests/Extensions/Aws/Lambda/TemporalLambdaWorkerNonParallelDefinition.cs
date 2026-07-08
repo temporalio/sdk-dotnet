@@ -2,7 +2,8 @@ namespace Temporalio.Tests.Extensions.Aws.Lambda;
 
 using Xunit;
 
-[CollectionDefinition("TemporalLambdaWorkerNonParallel", DisableParallelization = true)]
+[CollectionDefinition(Name, DisableParallelization = true)]
 public sealed class TemporalLambdaWorkerNonParallelDefinition
 {
+    public const string Name = "TemporalLambdaWorkerNonParallel";
 }

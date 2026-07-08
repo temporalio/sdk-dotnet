@@ -36,6 +36,8 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
         /// This creates an OTLP trace exporter and tracer provider, configures Core SDK metrics
         /// through a Temporal runtime, adds the Temporal tracing interceptor, and registers a
         /// per-invocation shutdown hook to force-flush traces before the Lambda invocation ends.
+        /// Any existing <see cref="Temporalio.Client.TemporalConnectionOptions.Runtime" /> is
+        /// replaced.
         /// </remarks>
         public static void ApplyDefaults(
             TemporalLambdaWorkerOptions config,
@@ -112,27 +114,18 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
 
             var flushTask = Task.Run(
                 () => tracerProvider.ForceFlush(ToTimeoutMilliseconds(shutdownDeadlineBuffer)));
-            if (flushTask == await Task.WhenAny(
-                flushTask,
-                Task.Delay(Timeout.Infinite, cancellationToken)).ConfigureAwait(false))
+            try
             {
-                await flushTask.ConfigureAwait(false);
+                await flushTask.WaitAsync(cancellationToken).ConfigureAwait(false);
             }
-            else
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
-                ObserveTaskException(flushTask);
+                flushTask.Forget();
             }
         }
 
         private static string FirstNonEmpty(params string?[] values) =>
             values.First(value => !string.IsNullOrEmpty(value))!;
-
-        private static void ObserveTaskException(Task task) =>
-            _ = task.ContinueWith(
-                completedTask => _ = completedTask.Exception,
-                CancellationToken.None,
-                TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
-                TaskScheduler.Default);
 
         private static TracerProvider CreateTracerProvider(
             ResolvedLambdaWorkerOpenTelemetryOptions options) =>

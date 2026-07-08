@@ -11,7 +11,7 @@ using Temporalio.Worker.Tuning;
 using Temporalio.Workflows;
 using Xunit;
 
-[Collection("TemporalLambdaWorkerNonParallel")]
+[Collection(TemporalLambdaWorkerNonParallelDefinition.Name)]
 public class TemporalLambdaWorkerTests
 {
     private static readonly WorkerDeploymentVersion Version = new("deployment", "build");
