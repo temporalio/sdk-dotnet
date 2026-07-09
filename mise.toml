@@ -1,4 +1,5 @@
 min_version = "2026.6.14"
 
 [tools]
+dotnet = "10.0.300"
 protoc = "23.4"

@@ -19,19 +19,14 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### Added
+
+- Added AWS Lambda worker support packages, including OpenTelemetry helpers for Lambda workers.
+
 ### Fixed
 
 - Fixed `ClientEnvConfig` empty `OverrideEnvVars` handling so an explicit empty dictionary no
   longer falls back to process environment variables.
-### Breaking Changes
-
-- Removed public `TemporalLambdaWorkerOptions.ShutdownHooks` list mutation. Use
-  `TemporalLambdaWorkerOptions.AddShutdownHook(...)` to register Lambda shutdown hooks.
-
-### Changed
-
-- Synchronous `TemporalLambdaWorker.CreateHandler` configuration callbacks now run once per Lambda
-  invocation, matching asynchronous configuration callbacks.
 
 ### [1.16.0] - 2026-07-01
 
