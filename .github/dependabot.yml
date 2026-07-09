@@ -40,6 +40,11 @@ updates:
     # Security updates still flow through, since update-types ignores don't
     # apply to them. Build- and test-only dependencies are left updatable.
     ignore:
+      - dependency-name: "Amazon.Lambda.Core"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
       - dependency-name: "Google.Protobuf"
         update-types:
           - "version-update:semver-major"
