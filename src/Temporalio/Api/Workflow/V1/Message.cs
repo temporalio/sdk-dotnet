@@ -10735,7 +10735,7 @@ namespace Temporalio.Api.Workflow.V1 {
     /// from the current timestamp on every call.
     ///
     /// This field must be updated as a whole; updating individual sub-fields is not supported.
-    /// When setting the update mask in `UpdateWorkflowExecutionOptionsRequest`,
+    /// When setting the update mask in `UpdateWorkflowExecutionOptionsRequest`, 
     /// `BatchOperationUpdateWorkflowExecutionOptions`, etc., use a mask that covers the entire field.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
