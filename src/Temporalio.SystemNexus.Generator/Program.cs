@@ -101,8 +101,11 @@ void WriteWorkflowGeneratedFile(string stagingRelativePath, string? outputFileNa
         workflowsGeneratedDir,
         outputFileName ?? Path.GetFileName(stagingRelativePath));
     var contents = File.ReadAllText(sourcePath);
-    contents = contents.Replace("using NexGen.Support;\n", string.Empty);
-    contents = contents.Replace("using Temporalio.Workflows;\n", string.Empty);
+    contents = Regex.Replace(
+        contents,
+        @"^using (NexGen\.Support|Temporalio\.Workflows);\r?\n",
+        string.Empty,
+        RegexOptions.Multiline);
     contents = contents.Replace("namespace NexGen.Support", "namespace Temporalio.Workflows");
     contents = contents.Replace("NexGen.Support.", string.Empty);
     File.WriteAllText(destinationPath, contents);
