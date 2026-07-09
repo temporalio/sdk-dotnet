@@ -203,21 +203,19 @@ namespace Temporalio.Worker
             NexusOperationExecutionContext.AsyncLocalCurrent.Value = executionContext;
             // Stash the inbound links in common.v1.Link form on the operation context so the RPCs
             // the handler issues (e.g. signal, signalWithStart, start) can attach them to their
-            // request's links field. ToWorkflowEvent only succeeds for WorkflowEvent-shaped links;
-            // links of other shapes (e.g. non-temporal URLs) are intentionally dropped because the
-            // RPCs the handler issues require the WorkflowEvent variant. Log so a debugging session
-            // can see what was dropped.
+            // request's links field. Unparseable links are dropped with a warning so a debugging
+            // session can see what was dropped.
             executionContext.RequestLinks = context.InboundLinks.Select(link =>
             {
                 try
                 {
-                    return new Api.Common.V1.Link { WorkflowEvent = link.ToWorkflowEvent() };
+                    return link.ToProtoLink();
                 }
                 catch (ArgumentException e)
                 {
                     logger.LogWarning(
                         e,
-                        "Dropping inbound Nexus link from outbound link propagation: type='{Type}', url='{Url}' (not a parseable temporal WorkflowEvent link)",
+                        "Dropping inbound Nexus link from outbound link propagation: type='{Type}', url='{Url}'",
                         link.Type,
                         link.Uri);
                     return null;
@@ -231,8 +229,22 @@ namespace Temporalio.Worker
                 // Drain any response links captured from outbound RPCs the handler issued (e.g.
                 // signal, signalWithStart, start) and attach them to both the sync and async
                 // response so the caller workflow's history event links to each event on the callee.
-                var responseLinks = executionContext.ResponseLinks
-                    .Select(l => l.WorkflowEvent.ToNexusLink());
+                // Links whose variant isn't a supported shape are dropped with a warning.
+                var responseLinks = executionContext.ResponseLinks.Select(l =>
+                {
+                    try
+                    {
+                        return l.ToNexusLink();
+                    }
+                    catch (ArgumentException e)
+                    {
+                        logger.LogWarning(
+                            e,
+                            "Dropping outbound RPC response link with unsupported variant: {Variant}",
+                            l.VariantCase);
+                        return null;
+                    }
+                }).OfType<NexusLink>();
                 var links = context.OutboundLinks
                     .Concat(responseLinks)
                     .Select(l => new Api.Nexus.V1.Link() { Type = l.Type, Url = l.Uri.ToString(), });

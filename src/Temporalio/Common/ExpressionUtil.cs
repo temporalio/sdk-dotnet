@@ -113,8 +113,10 @@ namespace Temporalio.Common
                 }
                 var expr = Expression.Lambda<Func<object?>>(Expression.Convert(e, typeof(object)));
 
-                // For our use case, we always want to use interpretation if we can
-#if NET471_OR_GREATER
+                // Prefer interpretation over full IL compilation: it is far cheaper for these
+                // single-use lambdas by avoiding Reflection.Emit + JIT work. The compile targets
+                // for net470 and lower lack the overload.
+#if NETSTANDARD2_0 || NETCOREAPP || NET471_OR_GREATER
                 return expr.Compile(true)();
 #else
                 return expr.Compile()();

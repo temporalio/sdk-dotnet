@@ -40,8 +40,10 @@ namespace Temporalio.Client
         /// </summary>
         /// <remarks>WARNING: This setting is experimental.</remarks>
         /// <returns>Static summary.</returns>
+#pragma warning disable VSTHRD003 // Awaiting our own lazily-created task
         public async Task<string?> GetStaticSummaryAsync() =>
             (await userMetadata.Value.ConfigureAwait(false)).Summary;
+#pragma warning restore VSTHRD003
 
         /// <summary>
         /// Gets the general fixed details for this workflow execution that may appear in UI/CLI.
@@ -49,7 +51,9 @@ namespace Temporalio.Client
         /// </summary>
         /// <remarks>WARNING: This setting is experimental.</remarks>
         /// <returns>Static details.</returns>
+#pragma warning disable VSTHRD003 // Awaiting our own lazily-created task
         public async Task<string?> GetStaticDetailsAsync() =>
             (await userMetadata.Value.ConfigureAwait(false)).Details;
+#pragma warning restore VSTHRD003
     }
 }

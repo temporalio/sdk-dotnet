@@ -61,7 +61,7 @@ namespace Temporalio.Extensions.Hosting
             MethodInfo method)
         {
             // Invoker can be async (i.e. returns Task<object?>)
-            async Task<object?> Invoker(object?[] args)
+            async Task<object?> InvokerAsync(object?[] args)
             {
                 // Wrap in a scope if scope doesn't already exist. Keep track of whether we created
                 // it so we can dispose of it.
@@ -142,7 +142,7 @@ namespace Temporalio.Extensions.Hosting
                     ActivityScope.ScopedInstance = null;
                 }
             }
-            return ActivityDefinition.Create(method, Invoker);
+            return ActivityDefinition.Create(method, InvokerAsync);
         }
 
         /// <summary>

@@ -31,27 +31,23 @@ jobs:
             out-prefix: linux-x64
             # We use the Python manylinux image for glibc compatibility
             container: quay.io/pypa/manylinux2014_x86_64
-            protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-x86_64.zip
           - os: ubuntu-arm
             out-file: libtemporalio_sdk_core_c_bridge.so
             out-prefix: linux-arm64
             runsOn: ubuntu-24.04-arm64-2-core
             # We use the Python manylinux image for glibc compatibility
             container: quay.io/pypa/manylinux2014_aarch64
-            protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-aarch_64.zip
           - os: alpine-latest
             out-file: libtemporalio_sdk_core_c_bridge.so
             out-prefix: linux-musl-x64
             # Need Alpine container since GH runner doesn't have one
             container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
-            protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-x86_64.zip
             runsOn: ubuntu-latest
           - os: alpine-arm
             out-file: libtemporalio_sdk_core_c_bridge.so
             out-prefix: linux-musl-arm64
             # Need Alpine container since GH runner doesn't have one
             container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
-            protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-aarch_64.zip
             runsOn: ubuntu-24.04-arm64-2-core
           - os: macos-intel
             out-file: libtemporalio_sdk_core_c_bridge.dylib
@@ -71,9 +67,20 @@ jobs:
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           submodules: recursive
+
+      - name: Read mise version
+        id: mise-version
+        shell: bash
+        run: |
+          version=$(sed -n 's/^min_version = "\([^"]*\)".*/\1/p' mise.toml)
+          if [ -z "$version" ]; then
+            echo "::error::Could not read min_version from mise.toml"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Install Rust
         if: ${{ !matrix.container }}
@@ -90,12 +97,16 @@ jobs:
           key: ${{ matrix.os }}
           cache-bin: false # https://github.com/Swatinem/rust-cache/issues/341
 
-      - name: Install protoc
+      - name: Run mise install
         if: ${{ !matrix.container }}
-        uses: arduino/setup-protoc@c65c819552d16ad3c9b72d9dfd5ba5237b9c906b # v3
+        uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
         with:
-          version: "23.x"
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          version: ${{ steps.mise-version.outputs.version }}
+
+      - name: Set PROTOC
+        if: ${{ !matrix.container }}
+        shell: bash
+        run: printf 'PROTOC=%s\n' "$(mise which protoc)" >> "$GITHUB_ENV"
 
       - name: Build (non-Docker)
         if: ${{ !matrix.container }}
@@ -104,14 +115,17 @@ jobs:
       - name: Build (Docker non-Alpine)
         if: ${{ matrix.container && matrix.os != 'alpine-latest' && matrix.os != 'alpine-arm' }}
         run: |
+          # MISE_INSTALL_MUSL forces the static musl mise; its gnu build needs glibc 2.18, newer than manylinux2014's 2.17.
           docker run --rm -v "$(pwd):/workspace" -w /workspace \
             ${{ matrix.container }} \
             sh -c ' \
                 curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y \
              && . $HOME/.cargo/env \
-             && curl -LO ${{ matrix.protobuf-url }} \
-             && unzip protoc-*.zip -d /usr/local/protobuf \
-             && export PATH="$PATH:/usr/local/protobuf/bin" \
+             && curl https://mise.run | MISE_VERSION=v${{ steps.mise-version.outputs.version }} MISE_INSTALL_MUSL=1 sh \
+             && export PATH="$HOME/.local/bin:$PATH" \
+             && mise trust /workspace/mise.toml \
+             && mise install \
+             && export PROTOC="$(mise which protoc)" \
              && cargo build --manifest-path src/Temporalio/Bridge/sdk-core/crates/sdk-core-c-bridge/Cargo.toml --profile release-lto \
             '
 
@@ -124,9 +138,11 @@ jobs:
                 curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y \
              && . $HOME/.cargo/env \
              && apk add --no-cache build-base \
-             && curl -LO ${{ matrix.protobuf-url }} \
-             && unzip protoc-*.zip -d /usr/local/protobuf \
-             && export PATH="$PATH:/usr/local/protobuf/bin" \
+             && curl https://mise.run | MISE_VERSION=v${{ steps.mise-version.outputs.version }} MISE_INSTALL_MUSL=1 sh \
+             && export PATH="$HOME/.local/bin:$PATH" \
+             && mise trust /workspace/mise.toml \
+             && mise install \
+             && export PROTOC="$(mise which protoc)" \
              && RUSTFLAGS="-C target-feature=-crt-static" cargo build --manifest-path src/Temporalio/Bridge/sdk-core/crates/sdk-core-c-bridge/Cargo.toml --profile release-lto \
             '
 
@@ -145,7 +161,7 @@ jobs:
       RestoreLockedMode: true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           submodules: recursive
 
@@ -157,7 +173,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@9a946fdbd5fb07b82b2f5a4466058b876ab72bb2 # v5
         with:
-          dotnet-version: 10.x
+          global-json-file: global.json
 
       - name: Build package
         run: dotnet pack -c Release /p:BridgeLibraryRoot=${{ github.workspace }}/bridge-libraries
@@ -169,6 +185,10 @@ jobs:
           path: |
             src/Temporalio/bin/Release/*.nupkg
             src/Temporalio/bin/Release/*.snupkg
+            src/Temporalio.Extensions.Aws.Lambda/bin/Release/*.nupkg
+            src/Temporalio.Extensions.Aws.Lambda/bin/Release/*.snupkg
+            src/Temporalio.Extensions.Aws.Lambda.OpenTelemetry/bin/Release/*.nupkg
+            src/Temporalio.Extensions.Aws.Lambda.OpenTelemetry/bin/Release/*.snupkg
             src/Temporalio.Extensions.DiagnosticSource/bin/Release/*.nupkg
             src/Temporalio.Extensions.DiagnosticSource/bin/Release/*.snupkg
             src/Temporalio.Extensions.Hosting/bin/Release/*.nupkg
@@ -210,7 +230,7 @@ jobs:
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           submodules: recursive
 

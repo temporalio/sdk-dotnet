@@ -115,6 +115,29 @@ public class TemporalClientNexusOperationTests : WorkflowEnvironmentTestBase
                 (Func<OperationStartContext, string, NoValue>)((ctx, input) => default!));
     }
 
+    [NexusServiceHandler(typeof(ITestService))]
+    public class CapturingWorkflowBackedEchoHandler
+    {
+        public NexusWorkflowRunHandle<string>? CapturedHandle { get; private set; }
+
+        [NexusOperationHandler]
+        public IOperationHandler<string, string> Echo() =>
+            WorkflowRunOperationHandler.FromHandleFactory(
+                async (WorkflowRunOperationContext context, string input) =>
+                {
+                    var handle = await context.StartWorkflowAsync(
+                        (EchoWorkflow wf) => wf.RunAsync(input),
+                        new() { Id = $"wf-{Guid.NewGuid()}" });
+                    CapturedHandle = handle;
+                    return handle;
+                });
+
+        [NexusOperationHandler]
+        public IOperationHandler<string, NoValue> NoResult() =>
+            OperationHandler.Sync<string, NoValue>(
+                (Func<OperationStartContext, string, NoValue>)((ctx, input) => default!));
+    }
+
     [Fact]
     public async Task ExecuteNexusOperationAsync_SimpleWithResult_Succeeds()
     {
@@ -434,6 +457,57 @@ public class TemporalClientNexusOperationTests : WorkflowEnvironmentTestBase
             Assert.Equal(
                 operationId,
                 ((TerminateNexusOperationInput)interceptor.Events[^1].Input).Id);
+        });
+    }
+
+    [Fact]
+    public async Task StartNexusOperationAsync_WorkflowBacked_OutboundLinkPointsToStartedWorkflow()
+    {
+        var handler = new CapturingWorkflowBackedEchoHandler();
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var workerOptions = new TemporalWorkerOptions(taskQueue).
+            AddNexusService(handler).
+            AddWorkflow<EchoWorkflow>();
+        var endpointName = $"nexus-endpoint-{taskQueue}";
+        await Env.TestEnv.CreateNexusEndpointAsync(endpointName, taskQueue);
+
+        using var worker = new TemporalWorker(Client, workerOptions);
+        await worker.ExecuteAsync(async () =>
+        {
+            var nexusClient = Client.CreateNexusClient<ITestService>(endpointName);
+            var operationId = $"op-{Guid.NewGuid()}";
+            var handle = await nexusClient.StartNexusOperationAsync<string>(
+                svc => svc.Echo("hello"),
+                new(operationId) { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+            Assert.Equal("echo:hello", await handle.GetResultAsync());
+
+            Assert.NotNull(handler.CapturedHandle);
+
+            await AssertMore.EventuallyAsync(async () =>
+            {
+                var desc = await handle.DescribeAsync();
+                var link = Assert.Single(desc.RawDescription.Info.Links);
+                Assert.Equal(Client.Options.Namespace, link.WorkflowEvent.Namespace);
+                Assert.Equal(handler.CapturedHandle.WorkflowId, link.WorkflowEvent.WorkflowId);
+                Assert.Equal(1, link.WorkflowEvent.EventRef.EventId);
+                Assert.Equal(
+                    Api.Enums.V1.EventType.WorkflowExecutionStarted,
+                    link.WorkflowEvent.EventRef.EventType);
+            });
+
+            // The started workflow's WorkflowExecutionStarted event should carry the nexus
+            // operation link on its completion callback so the workflow's completion can be
+            // tied back to the nexus operation.
+            var wfHandle = Client.GetWorkflowHandle(handler.CapturedHandle.WorkflowId);
+            var startedEvent = Assert.Single(
+                (await wfHandle.FetchHistoryAsync()).Events,
+                evt => evt.WorkflowExecutionStartedEventAttributes != null);
+            var callback = Assert.Single(
+                startedEvent.WorkflowExecutionStartedEventAttributes.CompletionCallbacks);
+            var backlink = Assert.Single(callback.Links);
+            Assert.Equal(Client.Options.Namespace, backlink.NexusOperation.Namespace);
+            Assert.Equal(operationId, backlink.NexusOperation.OperationId);
+            Assert.Equal(handle.RunId, backlink.NexusOperation.RunId);
         });
     }
 

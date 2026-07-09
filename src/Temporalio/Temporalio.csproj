@@ -26,6 +26,9 @@
   <!-- Allow tests to use internals -->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Temporalio.Extensions.Aws.Lambda</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Temporalio.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>

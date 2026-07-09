@@ -109,8 +109,9 @@ namespace Temporalio.Nexus
 
         /// <summary>
         /// Gets or sets the <c>common.v1.Link</c>s extracted from the inbound Nexus task so they can
-        /// be attached to RPCs issued by the operation handler. Only WorkflowEvent-shaped links are
-        /// stored; empty if none.
+        /// be attached to RPCs issued by the operation handler. Empty if none. Links whose variant
+        /// cannot be converted by <see cref="ProtoLinkExtensions"/> are dropped during inbound
+        /// conversion.
         /// </summary>
         internal IReadOnlyCollection<Api.Common.V1.Link> RequestLinks { get; set; } =
             Array.Empty<Api.Common.V1.Link>();
@@ -125,15 +126,14 @@ namespace Temporalio.Nexus
         /// <summary>
         /// Append a link returned by an outbound RPC the operation handler issued (e.g. signal,
         /// signalWithStart, start). The task handler drains the accumulated links when building the
-        /// operation's StartOperationResponse. Null and non-WorkflowEvent links are ignored.
+        /// operation's StartOperationResponse, dropping any whose variant it cannot convert. Null
+        /// links are ignored.
         /// </summary>
         /// <param name="link">Response link to add.</param>
-        /// <returns><c>true</c> if the link was added; <c>false</c> if it was null or not a
-        /// WorkflowEvent-shaped link.</returns>
+        /// <returns><c>true</c> if the link was added; <c>false</c> if it was null.</returns>
         internal bool TryAddResponseLink(Api.Common.V1.Link? link)
         {
-            if (link == null ||
-                link.VariantCase != Api.Common.V1.Link.VariantOneofCase.WorkflowEvent)
+            if (link == null)
             {
                 return false;
             }

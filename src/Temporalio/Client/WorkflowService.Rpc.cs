@@ -43,6 +43,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke CountWorkers.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<CountWorkersResponse> CountWorkersAsync(CountWorkersRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("CountWorkers", req, CountWorkersResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke CountWorkflowExecutions.
         /// </summary>
         /// <param name="req">Request for the call.</param>

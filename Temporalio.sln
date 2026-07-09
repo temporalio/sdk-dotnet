@@ -17,7 +17,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporalio.Extensions.Hosti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporalio.Extensions.DiagnosticSource", "src\Temporalio.Extensions.DiagnosticSource\Temporalio.Extensions.DiagnosticSource.csproj", "{CC7EA7CD-BBE7-448C-8A4B-F8B2D1E55990}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporalio.Extensions.Aws.Lambda", "src\Temporalio.Extensions.Aws.Lambda\Temporalio.Extensions.Aws.Lambda.csproj", "{B7CDF2C9-1D1D-446C-AF90-6C758D7DF19D}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporalio.SimpleBench", "tests\Temporalio.SimpleBench\Temporalio.SimpleBench.csproj", "{2610AFAE-FD3A-4583-8CA5-4869E1347A3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporalio.Extensions.Aws.Lambda.OpenTelemetry", "src\Temporalio.Extensions.Aws.Lambda.OpenTelemetry\Temporalio.Extensions.Aws.Lambda.OpenTelemetry.csproj", "{9A2C7274-7ED2-4C92-BE92-13887C3309B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,10 +52,18 @@ Global
 		{CC7EA7CD-BBE7-448C-8A4B-F8B2D1E55990}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC7EA7CD-BBE7-448C-8A4B-F8B2D1E55990}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC7EA7CD-BBE7-448C-8A4B-F8B2D1E55990}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7CDF2C9-1D1D-446C-AF90-6C758D7DF19D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7CDF2C9-1D1D-446C-AF90-6C758D7DF19D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7CDF2C9-1D1D-446C-AF90-6C758D7DF19D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7CDF2C9-1D1D-446C-AF90-6C758D7DF19D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2610AFAE-FD3A-4583-8CA5-4869E1347A3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2610AFAE-FD3A-4583-8CA5-4869E1347A3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2610AFAE-FD3A-4583-8CA5-4869E1347A3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2610AFAE-FD3A-4583-8CA5-4869E1347A3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A2C7274-7ED2-4C92-BE92-13887C3309B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A2C7274-7ED2-4C92-BE92-13887C3309B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A2C7274-7ED2-4C92-BE92-13887C3309B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A2C7274-7ED2-4C92-BE92-13887C3309B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7AE1422A-0937-40D7-9A62-431DD0E2F6D5} = {758B61E2-9AB6-46BF-B53C-16BD140BF56B}
@@ -59,6 +71,8 @@ Global
 		{D4AC2E2B-1C24-491D-9175-874D448D30FE} = {758B61E2-9AB6-46BF-B53C-16BD140BF56B}
 		{E8D1975A-5AF7-4375-BAD0-3C256DCB7F87} = {758B61E2-9AB6-46BF-B53C-16BD140BF56B}
 		{CC7EA7CD-BBE7-448C-8A4B-F8B2D1E55990} = {758B61E2-9AB6-46BF-B53C-16BD140BF56B}
+		{B7CDF2C9-1D1D-446C-AF90-6C758D7DF19D} = {758B61E2-9AB6-46BF-B53C-16BD140BF56B}
 		{2610AFAE-FD3A-4583-8CA5-4869E1347A3C} = {F2683DAA-F157-448E-96C8-DF7BB019886D}
+		{9A2C7274-7ED2-4C92-BE92-13887C3309B4} = {758B61E2-9AB6-46BF-B53C-16BD140BF56B}
 	EndGlobalSection
 EndGlobal
