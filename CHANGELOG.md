@@ -22,6 +22,7 @@ to docs, or any other relevant information.
 ### Added
 
 - Added AWS Lambda worker support packages, including OpenTelemetry helpers for Lambda workers.
+- Added experimental workflow-side `Workflow.SignalWithStartWorkflowAsync` support.
 
 ### Fixed
 
