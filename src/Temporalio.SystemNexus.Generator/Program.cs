@@ -8,6 +8,7 @@ var projectDir = Path.GetFullPath(Path.Join(currFile, "../../../"));
 var generatorDir = Path.Join(projectDir, "src/Temporalio.SystemNexus.Generator");
 var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/crates/protos/protos");
 var apiProtoDir = Path.Join(protoDir, "api_upstream");
+var nexusWitDir = Path.Join(apiProtoDir, "nexus");
 var descriptorPath = Path.Join(generatorDir, "obj/SystemNexus/temporal_api.bin");
 var stagingOutputDir = Path.Join(generatorDir, "obj/SystemNexus/Generated");
 var workflowsGeneratedDir = Path.Join(projectDir, "src/Temporalio/Workflows/Generated");
@@ -31,13 +32,7 @@ void EnsureNexGen()
         return;
     }
 
-    if (Environment.GetEnvironmentVariable("NEX_GEN_BIN") is { Length: > 0 })
-    {
-        throw new InvalidOperationException($"Unable to run nex-gen command {nexGenCommand}");
-    }
-
-    var installArgs = new[] { "install", "--locked", "nex-gen", "--force" };
-    RunProcess("cargo", installArgs);
+    throw new InvalidOperationException($"Unable to run nex-gen command {nexGenCommand}");
 }
 
 void BuildDescriptor()
@@ -71,9 +66,9 @@ void GenerateNexusApi()
             "--lang",
             "dotnet",
             "--input",
-            Path.Join(generatorDir, "wit/workflow-service.wit"),
+            Path.Join(nexusWitDir, "workflow-service.wit"),
             "--input",
-            Path.Join(generatorDir, "wit/deps"),
+            Path.Join(nexusWitDir, "deps"),
             "--support-file",
             Path.Join(generatorDir, "wit/deps/nexus-temporal-types/dotnet/TemporalSupport.cs"),
             "--descriptors",

@@ -72,7 +72,7 @@ jobs:
 
       - name: Install nex-gen
         if: ${{ matrix.checkTarget }}
-        run: cargo install --locked --version 0.1.4 --force nex-gen
+        run: cargo install --locked --version 0.1.5 --force nex-gen
 
       - name: Regen confirm unchanged
         if: ${{ matrix.checkTarget }}
