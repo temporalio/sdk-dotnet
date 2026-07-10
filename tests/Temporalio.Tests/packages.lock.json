@@ -470,7 +470,7 @@
         "type": "Project",
         "dependencies": {
           "Amazon.Lambda.Core": "[3.1.0, )",
-          "Temporalio": "[1.16.0, )"
+          "Temporalio": "[1.17.0, )"
         }
       },
       "temporalio.extensions.aws.lambda.opentelemetry": {
@@ -479,29 +479,29 @@
           "OpenTelemetry": "[1.15.3, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.15.3, )",
           "OpenTelemetry.Extensions.AWS": "[1.15.1, )",
-          "Temporalio": "[1.16.0, )",
-          "Temporalio.Extensions.Aws.Lambda": "[1.16.0, )",
-          "Temporalio.Extensions.OpenTelemetry": "[1.16.0, )"
+          "Temporalio": "[1.17.0, )",
+          "Temporalio.Extensions.Aws.Lambda": "[1.17.0, )",
+          "Temporalio.Extensions.OpenTelemetry": "[1.17.0, )"
         }
       },
       "temporalio.extensions.diagnosticsource": {
         "type": "Project",
         "dependencies": {
-          "Temporalio": "[1.16.0, )"
+          "Temporalio": "[1.17.0, )"
         }
       },
       "temporalio.extensions.hosting": {
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.Hosting": "[8.0.1, )",
-          "Temporalio": "[1.16.0, )"
+          "Temporalio": "[1.17.0, )"
         }
       },
       "temporalio.extensions.opentelemetry": {
         "type": "Project",
         "dependencies": {
           "OpenTelemetry.Api": "[1.15.3, )",
-          "Temporalio": "[1.16.0, )"
+          "Temporalio": "[1.17.0, )"
         }
       },
       "Amazon.Lambda.Core": {

@@ -257,7 +257,7 @@
         "type": "Project",
         "dependencies": {
           "Amazon.Lambda.Core": "[3.1.0, )",
-          "Temporalio": "[1.16.0, )"
+          "Temporalio": "[1.17.0, )"
         }
       },
       "temporalio.extensions.opentelemetry": {
@@ -265,7 +265,7 @@
         "dependencies": {
           "OpenTelemetry.Api": "[1.15.3, )",
           "System.Diagnostics.DiagnosticSource": "[10.0.0, )",
-          "Temporalio": "[1.16.0, )"
+          "Temporalio": "[1.17.0, )"
         }
       },
       "Amazon.Lambda.Core": {
