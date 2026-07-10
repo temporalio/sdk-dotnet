@@ -6,6 +6,10 @@ on:
       - "releases/*"
   workflow_dispatch: {}
   workflow_call: {}
+  # Temporary to create test NuGet package
+  pull_request:
+    branches:
+      - main
 permissions:
   contents: read
 
