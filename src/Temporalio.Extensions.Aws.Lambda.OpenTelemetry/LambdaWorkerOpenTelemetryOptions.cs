@@ -3,7 +3,7 @@ using System;
 namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
 {
     /// <summary>
-    /// Options for <see cref="LambdaWorkerOpenTelemetry.ApplyDefaults"/>.
+    /// Options for <see cref="TemporalLambdaWorkerOptionsExtensions.ApplyOpenTelemetryDefaults"/>.
     /// </summary>
     public class LambdaWorkerOpenTelemetryOptions
     {

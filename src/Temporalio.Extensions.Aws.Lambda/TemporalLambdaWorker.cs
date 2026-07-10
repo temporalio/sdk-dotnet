@@ -101,9 +101,9 @@ namespace Temporalio.Extensions.Aws.Lambda
             ValidateCreateHandlerArgs(version, configure, nameof(configure), handlerOptions);
             var state = new ConfiguringLambdaWorkerHandlerState(
                 version,
-                config =>
+                options =>
                 {
-                    configure(config);
+                    configure(options);
                     return Task.CompletedTask;
                 },
                 handlerOptions);
@@ -156,63 +156,63 @@ namespace Temporalio.Extensions.Aws.Lambda
             }
         }
 
-        private static TemporalLambdaWorkerOptions CreateConfig(
+        private static TemporalLambdaWorkerOptions CreateOptions(
             WorkerDeploymentVersion version,
             TemporalLambdaWorkerHandlerOptions handlerOptions)
         {
             var loadClientConnectOptions = handlerOptions.LoadClientConnectOptions;
-            var config = new TemporalLambdaWorkerOptions(
+            var options = new TemporalLambdaWorkerOptions(
                 loadClientConnectOptions == null ?
                     null :
                     () => loadClientConnectOptions(null));
             var environmentTaskQueue = handlerOptions.GetEnvironmentVariable(TaskQueueEnvironmentVariable);
             if (environmentTaskQueue != null)
             {
-                config.WorkerOptions.TaskQueue = environmentTaskQueue;
+                options.WorkerOptions.TaskQueue = environmentTaskQueue;
             }
-            ApplyDeploymentVersion(config.WorkerOptions, version);
+            ApplyDeploymentVersion(options.WorkerOptions, version);
 
-            return config;
+            return options;
         }
 
         private static LambdaWorkerHandlerState PrepareHandlerState(
             WorkerDeploymentVersion version,
-            TemporalLambdaWorkerOptions config,
+            TemporalLambdaWorkerOptions options,
             TemporalLambdaWorkerHandlerOptions handlerOptions)
         {
-            if (config.ClientOptions == null)
+            if (options.ClientOptions == null)
             {
                 throw new InvalidOperationException("ClientOptions must be set");
             }
-            if (config.WorkerOptions == null)
+            if (options.WorkerOptions == null)
             {
                 throw new InvalidOperationException("WorkerOptions must be set");
             }
-            if (config.ShutdownDeadlineBuffer < TimeSpan.Zero)
+            if (options.ShutdownDeadlineBuffer < TimeSpan.Zero)
             {
                 throw new InvalidOperationException("ShutdownDeadlineBuffer cannot be negative");
             }
-            if (string.IsNullOrWhiteSpace(config.WorkerOptions.TaskQueue))
+            if (string.IsNullOrWhiteSpace(options.WorkerOptions.TaskQueue))
             {
                 throw new InvalidOperationException(
                     "WorkerOptions.TaskQueue must be set or TEMPORAL_TASK_QUEUE must be present");
             }
 
             AppendWorkerPlugin(
-                config.WorkerOptions,
+                options.WorkerOptions,
                 new InternalWorkerPlugin(
                     "Temporalio.Extensions.Aws.Lambda",
-                    options =>
+                    workerOptions =>
                     {
-                        ApplyDeploymentVersion(options, version);
-                        ClearConcurrencyLimitsIfTunerSet(options);
+                        ApplyDeploymentVersion(workerOptions, version);
+                        ClearConcurrencyLimitsIfTunerSet(workerOptions);
                     }));
 
             return new LambdaWorkerHandlerState(
-                (TemporalClientConnectOptions)config.ClientOptions.Clone(),
-                (TemporalWorkerOptions)config.WorkerOptions.Clone(),
-                config.ShutdownDeadlineBuffer,
-                new List<Func<CancellationToken, Task>>(config.ShutdownHooks),
+                (TemporalClientConnectOptions)options.ClientOptions.Clone(),
+                (TemporalWorkerOptions)options.WorkerOptions.Clone(),
+                options.ShutdownDeadlineBuffer,
+                new List<Func<CancellationToken, Task>>(options.ShutdownHooks),
                 handlerOptions);
         }
 
@@ -427,9 +427,9 @@ namespace Temporalio.Extensions.Aws.Lambda
                     throw new ArgumentNullException(nameof(context));
                 }
 
-                var config = CreateConfig(version, handlerOptions);
-                await configureAsync(config).ConfigureAwait(false);
-                var state = PrepareHandlerState(version, config, handlerOptions);
+                var options = CreateOptions(version, handlerOptions);
+                await configureAsync(options).ConfigureAwait(false);
+                var state = PrepareHandlerState(version, options, handlerOptions);
                 await state.HandleAsync(input, context).ConfigureAwait(false);
             }
         }

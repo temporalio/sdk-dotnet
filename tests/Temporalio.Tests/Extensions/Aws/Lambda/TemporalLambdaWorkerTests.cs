@@ -24,45 +24,45 @@ public class TemporalLambdaWorkerTests
         TemporalWorkerOptions? capturedWorkerOptions = null;
         var handler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config =>
+            options =>
             {
                 configureCalls++;
-                Assert.Equal(2, config.WorkerOptions.MaxConcurrentActivities);
-                Assert.Equal(10, config.WorkerOptions.MaxConcurrentWorkflowTasks);
-                Assert.Equal(2, config.WorkerOptions.MaxConcurrentLocalActivities);
-                Assert.Equal(5, config.WorkerOptions.MaxConcurrentNexusTasks);
-                Assert.Equal(TimeSpan.FromSeconds(5), config.WorkerOptions.GracefulShutdownTimeout);
-                Assert.Equal(30, config.WorkerOptions.MaxCachedWorkflows);
-                Assert.Equal(2, config.WorkerOptions.MaxConcurrentWorkflowTaskPolls);
-                Assert.Equal(1, config.WorkerOptions.MaxConcurrentActivityTaskPolls);
-                Assert.Equal(1, config.WorkerOptions.MaxConcurrentNexusTaskPolls);
-                Assert.Null(config.WorkerOptions.WorkflowTaskPollerBehavior);
-                Assert.Null(config.WorkerOptions.ActivityTaskPollerBehavior);
-                Assert.Null(config.WorkerOptions.NexusTaskPollerBehavior);
-                Assert.True(config.WorkerOptions.DisableEagerActivityExecution);
-                Assert.NotNull(config.WorkerOptions.DeploymentOptions);
-                Assert.Equal(Version, config.WorkerOptions.DeploymentOptions.Version);
-                Assert.True(config.WorkerOptions.DeploymentOptions.UseWorkerVersioning);
+                Assert.Equal(2, options.WorkerOptions.MaxConcurrentActivities);
+                Assert.Equal(10, options.WorkerOptions.MaxConcurrentWorkflowTasks);
+                Assert.Equal(2, options.WorkerOptions.MaxConcurrentLocalActivities);
+                Assert.Equal(5, options.WorkerOptions.MaxConcurrentNexusTasks);
+                Assert.Equal(TimeSpan.FromSeconds(5), options.WorkerOptions.GracefulShutdownTimeout);
+                Assert.Equal(30, options.WorkerOptions.MaxCachedWorkflows);
+                Assert.Equal(2, options.WorkerOptions.MaxConcurrentWorkflowTaskPolls);
+                Assert.Equal(1, options.WorkerOptions.MaxConcurrentActivityTaskPolls);
+                Assert.Equal(1, options.WorkerOptions.MaxConcurrentNexusTaskPolls);
+                Assert.Null(options.WorkerOptions.WorkflowTaskPollerBehavior);
+                Assert.Null(options.WorkerOptions.ActivityTaskPollerBehavior);
+                Assert.Null(options.WorkerOptions.NexusTaskPollerBehavior);
+                Assert.True(options.WorkerOptions.DisableEagerActivityExecution);
+                Assert.NotNull(options.WorkerOptions.DeploymentOptions);
+                Assert.Equal(Version, options.WorkerOptions.DeploymentOptions.Version);
+                Assert.True(options.WorkerOptions.DeploymentOptions.UseWorkerVersioning);
                 Assert.Equal(
                     VersioningBehavior.AutoUpgrade,
-                    config.WorkerOptions.DeploymentOptions.DefaultVersioningBehavior);
-                Assert.Equal("env-task-queue", config.WorkerOptions.TaskQueue);
-                Assert.Equal("loaded-address", config.ClientOptions.TargetHost);
-                Assert.Equal("loaded-namespace", config.ClientOptions.Namespace);
+                    options.WorkerOptions.DeploymentOptions.DefaultVersioningBehavior);
+                Assert.Equal("env-task-queue", options.WorkerOptions.TaskQueue);
+                Assert.Equal("loaded-address", options.ClientOptions.TargetHost);
+                Assert.Equal("loaded-namespace", options.ClientOptions.Namespace);
 
-                config.ClientOptions.TargetHost = "localhost:7233";
-                config.WorkerOptions.TaskQueue = "configured-task-queue";
-                config.WorkerOptions.MaxConcurrentActivities = 8;
-                config.WorkerOptions.MaxConcurrentActivityTaskPolls = 4;
-                config.WorkerOptions.MaxCachedWorkflows = 12;
-                config.WorkerOptions.DisableEagerActivityExecution = false;
-                config.WorkerOptions.DeploymentOptions = new WorkerDeploymentOptions(
+                options.ClientOptions.TargetHost = "localhost:7233";
+                options.WorkerOptions.TaskQueue = "configured-task-queue";
+                options.WorkerOptions.MaxConcurrentActivities = 8;
+                options.WorkerOptions.MaxConcurrentActivityTaskPolls = 4;
+                options.WorkerOptions.MaxCachedWorkflows = 12;
+                options.WorkerOptions.DisableEagerActivityExecution = false;
+                options.WorkerOptions.DeploymentOptions = new WorkerDeploymentOptions(
                     new WorkerDeploymentVersion("ignored", "ignored"),
                     useWorkerVersioning: false)
                 {
                     DefaultVersioningBehavior = VersioningBehavior.Pinned,
                 };
-                config.WorkerOptions.Activities.Add(DummyActivity());
+                options.WorkerOptions.Activities.Add(DummyActivity());
             },
             new TemporalLambdaWorkerHandlerOptions
             {
@@ -121,9 +121,9 @@ public class TemporalLambdaWorkerTests
     [Fact]
     public void AddShutdownHook_NullHook_Throws()
     {
-        var config = new TemporalLambdaWorkerOptions();
+        var options = new TemporalLambdaWorkerOptions();
 
-        Assert.Throws<ArgumentNullException>(() => config.AddShutdownHook(null!));
+        Assert.Throws<ArgumentNullException>(() => options.AddShutdownHook(null!));
     }
 
     [Fact]
@@ -132,11 +132,11 @@ public class TemporalLambdaWorkerTests
         TemporalWorkerOptions? capturedWorkerOptions = null;
         var handler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config =>
+            options =>
             {
-                config.ClientOptions.TargetHost = "localhost:7233";
-                config.WorkerOptions.TaskQueue = "task-queue";
-                config.WorkerOptions.AddWorkflow<WorkflowWithoutVersioningBehavior>();
+                options.ClientOptions.TargetHost = "localhost:7233";
+                options.WorkerOptions.TaskQueue = "task-queue";
+                options.WorkerOptions.AddWorkflow<WorkflowWithoutVersioningBehavior>();
             },
             new TemporalLambdaWorkerHandlerOptions
             {
@@ -166,9 +166,9 @@ public class TemporalLambdaWorkerTests
         TemporalClientConnectOptions? capturedClientOptions = null;
         var handler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config =>
+            options =>
             {
-                config.WorkerOptions.TaskQueue = "task-queue";
+                options.WorkerOptions.TaskQueue = "task-queue";
             },
             new TemporalLambdaWorkerHandlerOptions
             {
@@ -203,14 +203,14 @@ public class TemporalLambdaWorkerTests
         TemporalClientConnectOptions? capturedClientOptions = null;
         var handler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config =>
+            options =>
             {
-                config.ClientOptions = new TemporalClientConnectOptions
+                options.ClientOptions = new TemporalClientConnectOptions
                 {
                     TargetHost = "explicit-address",
                     Namespace = "explicit-namespace",
                 };
-                config.WorkerOptions.TaskQueue = "task-queue";
+                options.WorkerOptions.TaskQueue = "task-queue";
             },
             new TemporalLambdaWorkerHandlerOptions
             {
@@ -242,11 +242,11 @@ public class TemporalLambdaWorkerTests
         TemporalWorkerOptions? capturedWorkerOptions = null;
         var handler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config =>
+            options =>
             {
-                config.ClientOptions.TargetHost = "localhost:7233";
-                config.WorkerOptions.TaskQueue = "task-queue";
-                config.WorkerOptions.Tuner = tuner;
+                options.ClientOptions.TargetHost = "localhost:7233";
+                options.WorkerOptions.TaskQueue = "task-queue";
+                options.WorkerOptions.Tuner = tuner;
             },
             new TemporalLambdaWorkerHandlerOptions
             {
@@ -279,11 +279,11 @@ public class TemporalLambdaWorkerTests
         TemporalWorkerOptions? capturedWorkerOptions = null;
         var handler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config =>
+            options =>
             {
-                config.ClientOptions.TargetHost = "localhost:7233";
-                config.WorkerOptions.TaskQueue = "task-queue";
-                config.WorkerOptions.Plugins = new[] { new TunerPlugin(tuner) };
+                options.ClientOptions.TargetHost = "localhost:7233";
+                options.WorkerOptions.TaskQueue = "task-queue";
+                options.WorkerOptions.Plugins = new[] { new TunerPlugin(tuner) };
             },
             new TemporalLambdaWorkerHandlerOptions
             {
@@ -311,11 +311,11 @@ public class TemporalLambdaWorkerTests
         TemporalWorkerOptions? capturedWorkerOptions = null;
         var handler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config =>
+            options =>
             {
-                config.ClientOptions.TargetHost = "localhost:7233";
-                config.WorkerOptions.TaskQueue = "task-queue";
-                config.WorkerOptions.Plugins = new[] { new VersioningPlugin() };
+                options.ClientOptions.TargetHost = "localhost:7233";
+                options.WorkerOptions.TaskQueue = "task-queue";
+                options.WorkerOptions.Plugins = new[] { new VersioningPlugin() };
             },
             new TemporalLambdaWorkerHandlerOptions
             {
@@ -372,7 +372,7 @@ public class TemporalLambdaWorkerTests
         TemporalWorkerOptions? capturedWorkerOptions = null;
         var handler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config => config.ClientOptions.TargetHost = "localhost:7233",
+            options => options.ClientOptions.TargetHost = "localhost:7233",
             new TemporalLambdaWorkerHandlerOptions
             {
                 GetEnvironmentVariable = name =>
@@ -547,10 +547,10 @@ public class TemporalLambdaWorkerTests
             InvokedFunctionArn = "function-arn",
         };
         var handler = CreateCapturingHandler(
-            config =>
+            options =>
             {
-                config.ClientOptions.TargetHost = "localhost:7233";
-                config.WorkerOptions.TaskQueue = "task-queue";
+                options.ClientOptions.TargetHost = "localhost:7233";
+                options.WorkerOptions.TaskQueue = "task-queue";
             },
             options => capturedClientOptions = options);
 
@@ -560,11 +560,11 @@ public class TemporalLambdaWorkerTests
         Assert.Equal("request-id@function-arn", capturedClientOptions.Identity);
 
         handler = CreateCapturingHandler(
-            config =>
+            options =>
             {
-                config.ClientOptions.TargetHost = "localhost:7233";
-                config.ClientOptions.Identity = "user-identity";
-                config.WorkerOptions.TaskQueue = "task-queue";
+                options.ClientOptions.TargetHost = "localhost:7233";
+                options.ClientOptions.Identity = "user-identity";
+                options.WorkerOptions.TaskQueue = "task-queue";
             },
             options => capturedClientOptions = options);
 
@@ -581,12 +581,12 @@ public class TemporalLambdaWorkerTests
         CancellationToken workerToken = default;
         var handler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config =>
+            options =>
             {
-                config.ClientOptions.TargetHost = "localhost:7233";
-                config.WorkerOptions.TaskQueue = "task-queue";
-                config.ShutdownDeadlineBuffer = TimeSpan.FromMilliseconds(10);
-                config.AddShutdownHook(_ =>
+                options.ClientOptions.TargetHost = "localhost:7233";
+                options.WorkerOptions.TaskQueue = "task-queue";
+                options.ShutdownDeadlineBuffer = TimeSpan.FromMilliseconds(10);
+                options.AddShutdownHook(_ =>
                 {
                     hookRan = true;
                     return Task.CompletedTask;
@@ -617,11 +617,11 @@ public class TemporalLambdaWorkerTests
             TimeSpan.FromSeconds(1));
         var handler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config =>
+            options =>
             {
-                config.ClientOptions.TargetHost = "localhost:7233";
-                config.WorkerOptions.TaskQueue = "task-queue";
-                config.ShutdownDeadlineBuffer = TimeSpan.FromMilliseconds(10);
+                options.ClientOptions.TargetHost = "localhost:7233";
+                options.WorkerOptions.TaskQueue = "task-queue";
+                options.ShutdownDeadlineBuffer = TimeSpan.FromMilliseconds(10);
             },
             new TemporalLambdaWorkerHandlerOptions
             {
@@ -652,11 +652,11 @@ public class TemporalLambdaWorkerTests
         var connectCalls = 0;
         var throwingHandler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config =>
+            options =>
             {
-                config.ClientOptions.TargetHost = "localhost:7233";
-                config.WorkerOptions.TaskQueue = "task-queue";
-                config.ShutdownDeadlineBuffer = TimeSpan.FromMilliseconds(100);
+                options.ClientOptions.TargetHost = "localhost:7233";
+                options.WorkerOptions.TaskQueue = "task-queue";
+                options.ShutdownDeadlineBuffer = TimeSpan.FromMilliseconds(100);
             },
             new TemporalLambdaWorkerHandlerOptions
             {
@@ -676,11 +676,11 @@ public class TemporalLambdaWorkerTests
         var warningContext = new FakeLambdaContext { RemainingTime = TimeSpan.FromMilliseconds(40) };
         var warningHandler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config =>
+            options =>
             {
-                config.ClientOptions.TargetHost = "localhost:7233";
-                config.WorkerOptions.TaskQueue = "task-queue";
-                config.ShutdownDeadlineBuffer = TimeSpan.FromMilliseconds(10);
+                options.ClientOptions.TargetHost = "localhost:7233";
+                options.WorkerOptions.TaskQueue = "task-queue";
+                options.ShutdownDeadlineBuffer = TimeSpan.FromMilliseconds(10);
             },
             new TemporalLambdaWorkerHandlerOptions
             {
@@ -705,21 +705,21 @@ public class TemporalLambdaWorkerTests
         var context = new FakeLambdaContext();
         var handler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config =>
+            options =>
             {
-                config.ClientOptions.TargetHost = "localhost:7233";
-                config.WorkerOptions.TaskQueue = "task-queue";
-                config.AddShutdownHook(_ =>
+                options.ClientOptions.TargetHost = "localhost:7233";
+                options.WorkerOptions.TaskQueue = "task-queue";
+                options.AddShutdownHook(_ =>
                 {
                     hookCalls.Add("first");
                     return Task.CompletedTask;
                 });
-                config.AddShutdownHook(_ =>
+                options.AddShutdownHook(_ =>
                 {
                     hookCalls.Add("second");
                     throw new InvalidOperationException("hook failed");
                 });
-                config.AddShutdownHook(_ =>
+                options.AddShutdownHook(_ =>
                 {
                     hookCalls.Add("third");
                     return Task.CompletedTask;
@@ -763,15 +763,15 @@ public class TemporalLambdaWorkerTests
         var hookCalls = new List<string>();
         var handler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config =>
+            options =>
             {
                 var call = ++configureCalls;
-                capturedConfigs.Add(config);
-                Assert.Equal("env-task-queue", config.WorkerOptions.TaskQueue);
+                capturedConfigs.Add(options);
+                Assert.Equal("env-task-queue", options.WorkerOptions.TaskQueue);
 
-                config.ClientOptions.TargetHost = $"target-{call}";
-                config.WorkerOptions.TaskQueue = $"task-queue-{call}";
-                config.AddShutdownHook(_ =>
+                options.ClientOptions.TargetHost = $"target-{call}";
+                options.WorkerOptions.TaskQueue = $"task-queue-{call}";
+                options.AddShutdownHook(_ =>
                 {
                     hookCalls.Add($"hook-{call}");
                     return Task.CompletedTask;
@@ -814,16 +814,16 @@ public class TemporalLambdaWorkerTests
         var hookCalls = new List<string>();
         var handler = TemporalLambdaWorker.CreateHandler(
             Version,
-            async config =>
+            async options =>
             {
                 await Task.Yield();
                 var call = ++configureCalls;
-                capturedConfigs.Add(config);
-                Assert.Equal("env-task-queue", config.WorkerOptions.TaskQueue);
+                capturedConfigs.Add(options);
+                Assert.Equal("env-task-queue", options.WorkerOptions.TaskQueue);
 
-                config.ClientOptions.TargetHost = $"target-{call}";
-                config.WorkerOptions.TaskQueue = $"task-queue-{call}";
-                config.AddShutdownHook(_ =>
+                options.ClientOptions.TargetHost = $"target-{call}";
+                options.WorkerOptions.TaskQueue = $"task-queue-{call}";
+                options.AddShutdownHook(_ =>
                 {
                     hookCalls.Add($"hook-{call}");
                     return Task.CompletedTask;
@@ -862,18 +862,18 @@ public class TemporalLambdaWorkerTests
         var configureCalls = 0;
         var handler = TemporalLambdaWorker.CreateHandler(
             Version,
-            async config =>
+            async options =>
             {
-                _ = config;
+                _ = options;
                 await Task.Yield();
                 configureCalls++;
-                throw new InvalidOperationException("bad config");
+                throw new InvalidOperationException("bad options");
             },
             new TemporalLambdaWorkerHandlerOptions());
 
         var error = await Assert.ThrowsAsync<InvalidOperationException>(() =>
             handler(null, new FakeLambdaContext()));
-        Assert.Equal("bad config", error.Message);
+        Assert.Equal("bad options", error.Message);
         Assert.Equal(1, configureCalls);
     }
 
@@ -898,10 +898,10 @@ public class TemporalLambdaWorkerTests
         var hookCalls = new List<string>();
         var connectFailureHandler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config =>
+            options =>
             {
-                config.WorkerOptions.TaskQueue = "task-queue";
-                config.AddShutdownHook(_ =>
+                options.WorkerOptions.TaskQueue = "task-queue";
+                options.AddShutdownHook(_ =>
                 {
                     hookCalls.Add("connect");
                     return Task.CompletedTask;
@@ -919,10 +919,10 @@ public class TemporalLambdaWorkerTests
 
         var workerFailureHandler = TemporalLambdaWorker.CreateHandler(
             Version,
-            config =>
+            options =>
             {
-                config.WorkerOptions.TaskQueue = "task-queue";
-                config.AddShutdownHook(_ =>
+                options.WorkerOptions.TaskQueue = "task-queue";
+                options.AddShutdownHook(_ =>
                 {
                     hookCalls.Add("worker");
                     return Task.CompletedTask;

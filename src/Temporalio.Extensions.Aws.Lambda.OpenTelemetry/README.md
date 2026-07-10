@@ -10,7 +10,7 @@ Add the `Temporalio.Extensions.Aws.Lambda.OpenTelemetry` package from
 
 ## Quick Start
 
-Call `LambdaWorkerOpenTelemetry.ApplyDefaults` from the Lambda worker configure callback:
+Call `ApplyOpenTelemetryDefaults` from the Lambda worker configure callback:
 
 ```csharp
 using Amazon.Lambda.Core;
@@ -21,20 +21,20 @@ using Temporalio.Extensions.Aws.Lambda.OpenTelemetry;
 private static readonly Func<object?, ILambdaContext, Task> WorkerHandler =
     TemporalLambdaWorker.CreateHandler(
         new WorkerDeploymentVersion("payments-worker", "2026-05-27"),
-        config =>
+        options =>
         {
-            LambdaWorkerOpenTelemetry.ApplyDefaults(config);
+            options.ApplyOpenTelemetryDefaults();
 
-            config.WorkerOptions.TaskQueue = "payments";
-            config.WorkerOptions.AddWorkflow<PaymentWorkflow>();
-            config.WorkerOptions.AddActivity(PaymentActivities.ChargeAsync);
+            options.WorkerOptions.TaskQueue = "payments";
+            options.WorkerOptions.AddWorkflow<PaymentWorkflow>();
+            options.WorkerOptions.AddActivity(PaymentActivities.ChargeAsync);
         });
 ```
 
-`ApplyDefaults` configures Temporal tracing with `TracingInterceptor`, creates an OTLP trace exporter and tracer
+`ApplyOpenTelemetryDefaults` configures Temporal tracing with `TracingInterceptor`, creates an OTLP trace exporter and tracer
 provider, configures Core SDK metrics through a `TemporalRuntime`, and registers a per-invocation shutdown hook that
 force-flushes traces before the Lambda invocation ends.
-It replaces any runtime already set on `config.ClientOptions`.
+It replaces any runtime already set on `options.ClientOptions`.
 
 ## Defaults
 
@@ -50,8 +50,7 @@ increase the chance that at least one metrics export happens during each invocat
 periodically and do not have an explicit per-invocation flush API.
 
 ```csharp
-LambdaWorkerOpenTelemetry.ApplyDefaults(
-    config,
+options.ApplyOpenTelemetryDefaults(
     new LambdaWorkerOpenTelemetryOptions
     {
         CollectorEndpoint = "http://localhost:4317",

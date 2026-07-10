@@ -21,11 +21,11 @@ public class Function
     private static readonly Func<object?, ILambdaContext, Task> WorkerHandler =
         TemporalLambdaWorker.CreateHandler(
             new WorkerDeploymentVersion("payments-worker", "2026-05-27"),
-            config =>
+            options =>
             {
-                config.WorkerOptions.TaskQueue = "payments";
-                config.WorkerOptions.AddWorkflow<PaymentWorkflow>();
-                config.WorkerOptions.AddActivity(PaymentActivities.ChargeAsync);
+                options.WorkerOptions.TaskQueue = "payments";
+                options.WorkerOptions.AddWorkflow<PaymentWorkflow>();
+                options.WorkerOptions.AddActivity(PaymentActivities.ChargeAsync);
             });
 
     public Task HandlerAsync(object? input, ILambdaContext context) =>
@@ -44,14 +44,14 @@ For setup that must be awaited per invocation, use the async overload:
 private static readonly Func<object?, ILambdaContext, Task> WorkerHandler =
     TemporalLambdaWorker.CreateHandler(
         new WorkerDeploymentVersion("payments-worker", "2026-05-27"),
-        async config =>
+        async options =>
         {
-            config.WorkerOptions.TaskQueue = "payments";
-            config.WorkerOptions.AddWorkflow<PaymentWorkflow>();
-            config.WorkerOptions.AddActivity(PaymentActivities.ChargeAsync);
+            options.WorkerOptions.TaskQueue = "payments";
+            options.WorkerOptions.AddWorkflow<PaymentWorkflow>();
+            options.WorkerOptions.AddActivity(PaymentActivities.ChargeAsync);
 
-            config.ClientOptions.ApiKey = await LoadTemporalApiKeyAsync();
-            config.AddShutdownHook(async cancellationToken =>
+            options.ClientOptions.ApiKey = await LoadTemporalApiKeyAsync();
+            options.AddShutdownHook(async cancellationToken =>
             {
                 await FlushPerInvocationResourceAsync(cancellationToken);
             });
@@ -75,7 +75,7 @@ The file is optional. If it does not exist, only environment variables are used.
 To bypass config loading, assign explicit client options in `configure`:
 
 ```csharp
-config.ClientOptions = new TemporalClientConnectOptions
+options.ClientOptions = new TemporalClientConnectOptions
 {
     TargetHost = "my-namespace.a1b2c.tmprl.cloud:7233",
     Namespace = "my-namespace.a1b2c",
@@ -91,7 +91,7 @@ with async configure, the invocation fails after the callback is awaited.
 `TemporalLambdaWorker.CreateHandler` requires a `WorkerDeploymentVersion` and always enables Worker Versioning by setting
 `WorkerOptions.DeploymentOptions` with `UseWorkerVersioning = true`. Use a deployment name and build ID that match your
 rollout process. The default versioning behavior is `AutoUpgrade`. If you need a different default versioning behavior,
-configure `config.WorkerOptions.DeploymentOptions.DefaultVersioningBehavior`; the handler preserves any non-`Unspecified`
+configure `options.WorkerOptions.DeploymentOptions.DefaultVersioningBehavior`; the handler preserves any non-`Unspecified`
 value while enforcing the deployment version passed to `CreateHandler`.
 
 The helper applies Lambda-oriented worker defaults before `configure`, including lower concurrency, a 5 second graceful
@@ -106,13 +106,13 @@ buffer if your worker needs more time to stop polling, finish shutdown hooks, or
 deadline. Set it in `configure`:
 
 ```csharp
-config.ShutdownDeadlineBuffer = TimeSpan.FromSeconds(15);
+options.ShutdownDeadlineBuffer = TimeSpan.FromSeconds(15);
 ```
 
 Add shutdown hooks for per-invocation cleanup:
 
 ```csharp
-config.AddShutdownHook(async cancellationToken =>
+options.AddShutdownHook(async cancellationToken =>
 {
     await FlushTelemetryAsync(cancellationToken);
 });
@@ -124,12 +124,12 @@ still run. Hooks added from async configure are scoped to that invocation.
 ## Observability
 
 For AWS Lambda OpenTelemetry defaults, add the `Temporalio.Extensions.Aws.Lambda.OpenTelemetry` package and call
-`LambdaWorkerOpenTelemetry.ApplyDefaults` in `configure`:
+`ApplyOpenTelemetryDefaults` in `configure`:
 
 ```csharp
 using Temporalio.Extensions.Aws.Lambda.OpenTelemetry;
 
-LambdaWorkerOpenTelemetry.ApplyDefaults(config);
+options.ApplyOpenTelemetryDefaults();
 ```
 
 This configures Temporal tracing, Core SDK OTLP metrics, AWS X-Ray-compatible trace IDs, and a per-invocation trace
@@ -140,8 +140,8 @@ You can still configure tracing and metrics manually using `Temporalio.Extension
 `TemporalRuntime`:
 
 ```csharp
-config.ClientOptions.Interceptors = new[] { new TracingInterceptor() };
-config.ClientOptions.Runtime = new TemporalRuntime(new TemporalRuntimeOptions
+options.ClientOptions.Interceptors = new[] { new TracingInterceptor() };
+options.ClientOptions.Runtime = new TemporalRuntime(new TemporalRuntimeOptions
 {
     Telemetry = new TelemetryOptions
     {

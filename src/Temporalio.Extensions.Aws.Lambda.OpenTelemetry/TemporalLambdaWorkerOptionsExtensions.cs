@@ -14,9 +14,10 @@ using TemporalOpenTelemetry = Temporalio.Extensions.OpenTelemetry;
 namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
 {
     /// <summary>
-    /// OpenTelemetry helpers for Temporal workers running inside AWS Lambda.
+    /// OpenTelemetry extensions for <see cref="TemporalLambdaWorkerOptions" /> for Temporal
+    /// workers running inside AWS Lambda.
     /// </summary>
-    public static class LambdaWorkerOpenTelemetry
+    public static class TemporalLambdaWorkerOptionsExtensions
     {
         private const string DefaultCollectorEndpoint = "http://localhost:4317";
         private const string DefaultServiceName = "temporal-lambda-worker";
@@ -30,8 +31,8 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
         /// <summary>
         /// Configure OpenTelemetry metrics and tracing with AWS Lambda defaults.
         /// </summary>
-        /// <param name="config">Lambda worker configuration to mutate.</param>
-        /// <param name="options">Optional OpenTelemetry configuration.</param>
+        /// <param name="options">Lambda worker configuration to mutate.</param>
+        /// <param name="openTelemetryOptions">Optional OpenTelemetry configuration.</param>
         /// <remarks>
         /// This creates an OTLP trace exporter and tracer provider, configures Core SDK metrics
         /// through a Temporal runtime, adds the Temporal tracing interceptor, and registers a
@@ -40,24 +41,24 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
         /// Any existing <see cref="Temporalio.Client.TemporalConnectionOptions.Runtime" /> is
         /// replaced.
         /// </remarks>
-        public static void ApplyDefaults(
-            TemporalLambdaWorkerOptions config,
-            LambdaWorkerOpenTelemetryOptions? options = null)
+        public static void ApplyOpenTelemetryDefaults(
+            this TemporalLambdaWorkerOptions options,
+            LambdaWorkerOpenTelemetryOptions? openTelemetryOptions = null)
         {
-            if (config == null)
+            if (options == null)
             {
-                throw new ArgumentNullException(nameof(config));
+                throw new ArgumentNullException(nameof(options));
             }
 
-            var resolvedOptions = ResolveOptions(options);
+            var resolvedOptions = ResolveOptions(openTelemetryOptions);
 #pragma warning disable CA2000 // The per-invocation shutdown hook owns provider disposal.
             var tracerProvider = CreateTracerProvider(resolvedOptions);
 #pragma warning restore CA2000
 
-            config.ClientOptions.Interceptors = AddTracingInterceptor(
-                config.ClientOptions.Interceptors);
-            config.ClientOptions.Runtime = CreateRuntime(resolvedOptions);
-            config.AddShutdownHook(
+            options.ClientOptions.Interceptors = AddTracingInterceptor(
+                options.ClientOptions.Interceptors);
+            options.ClientOptions.Runtime = CreateRuntime(resolvedOptions);
+            options.AddShutdownHook(
                 async cancellationToken =>
                 {
                     // CreateHandler runs configuration once per invocation, so this provider is
@@ -70,7 +71,7 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
                     {
                         await ForceFlushAsync(
                             tracerProvider,
-                            config.ShutdownDeadlineBuffer,
+                            options.ShutdownDeadlineBuffer,
                             cancellationToken).ConfigureAwait(false);
                     }
                     finally

@@ -9,7 +9,7 @@ using Temporalio.Extensions.Aws.Lambda.OpenTelemetry;
 using Xunit;
 using TemporalOpenTelemetry = Temporalio.Extensions.OpenTelemetry;
 
-public class LambdaWorkerOpenTelemetryTests
+public class TemporalLambdaWorkerOptionsExtensionsTests
 {
     private const string OTelExporterOtlpEndpointEnvironmentVariable =
         "OTEL_EXPORTER_OTLP_ENDPOINT";
@@ -18,10 +18,10 @@ public class LambdaWorkerOpenTelemetryTests
     private const string LambdaFunctionNameEnvironmentVariable = "AWS_LAMBDA_FUNCTION_NAME";
 
     [Fact]
-    public void ApplyDefaults_NullConfigThrows()
+    public void ApplyOpenTelemetryDefaults_NullConfigThrows()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            LambdaWorkerOpenTelemetry.ApplyDefaults(null!));
+            TemporalLambdaWorkerOptionsExtensions.ApplyOpenTelemetryDefaults(null!));
     }
 
     [Fact]
@@ -37,7 +37,7 @@ public class LambdaWorkerOpenTelemetryTests
             KeyValuePair.Create<string, string?>(
                 LambdaFunctionNameEnvironmentVariable,
                 "lambda-service"));
-        var resolved = LambdaWorkerOpenTelemetry.ResolveOptions(new LambdaWorkerOpenTelemetryOptions
+        var resolved = TemporalLambdaWorkerOptionsExtensions.ResolveOptions(new LambdaWorkerOpenTelemetryOptions
         {
             CollectorEndpoint = "http://explicit:4317",
             ServiceName = "explicit-service",
@@ -62,7 +62,7 @@ public class LambdaWorkerOpenTelemetryTests
             KeyValuePair.Create<string, string?>(
                 LambdaFunctionNameEnvironmentVariable,
                 "lambda-service"));
-        var resolved = LambdaWorkerOpenTelemetry.ResolveOptions();
+        var resolved = TemporalLambdaWorkerOptionsExtensions.ResolveOptions();
 
         Assert.Equal(new Uri("http://env:4317"), resolved.CollectorEndpoint);
         Assert.Equal("env-service", resolved.ServiceName);
@@ -82,7 +82,7 @@ public class LambdaWorkerOpenTelemetryTests
             KeyValuePair.Create<string, string?>(
                 LambdaFunctionNameEnvironmentVariable,
                 "lambda-service"));
-        var resolved = LambdaWorkerOpenTelemetry.ResolveOptions();
+        var resolved = TemporalLambdaWorkerOptionsExtensions.ResolveOptions();
 
         Assert.Equal(new Uri("http://localhost:4317"), resolved.CollectorEndpoint);
         Assert.Equal("lambda-service", resolved.ServiceName);
@@ -101,7 +101,7 @@ public class LambdaWorkerOpenTelemetryTests
             KeyValuePair.Create<string, string?>(
                 LambdaFunctionNameEnvironmentVariable,
                 null));
-        var resolved = LambdaWorkerOpenTelemetry.ResolveOptions();
+        var resolved = TemporalLambdaWorkerOptionsExtensions.ResolveOptions();
 
         Assert.Equal(new Uri("http://localhost:4317"), resolved.CollectorEndpoint);
         Assert.Equal("temporal-lambda-worker", resolved.ServiceName);
@@ -112,7 +112,7 @@ public class LambdaWorkerOpenTelemetryTests
     public void ResolveOptions_InvalidMetricsExportIntervalThrows()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            LambdaWorkerOpenTelemetry.ResolveOptions(
+            TemporalLambdaWorkerOptionsExtensions.ResolveOptions(
                 new LambdaWorkerOpenTelemetryOptions
                 {
                     MetricsExportInterval = TimeSpan.Zero,
@@ -120,7 +120,7 @@ public class LambdaWorkerOpenTelemetryTests
     }
 
     [Fact]
-    public void ApplyDefaults_PreservesInterceptorsAndAddsTracing()
+    public void ApplyOpenTelemetryDefaults_PreservesInterceptorsAndAddsTracing()
     {
         var existingInterceptor = new NoopClientInterceptor();
         var config = new TemporalLambdaWorkerOptions
@@ -131,7 +131,7 @@ public class LambdaWorkerOpenTelemetryTests
             },
         };
 
-        LambdaWorkerOpenTelemetry.ApplyDefaults(config);
+        config.ApplyOpenTelemetryDefaults();
 
         var interceptors = Assert.IsAssignableFrom<IReadOnlyCollection<IClientInterceptor>>(
             config.ClientOptions.Interceptors);
@@ -141,7 +141,7 @@ public class LambdaWorkerOpenTelemetryTests
     }
 
     [Fact]
-    public async Task ApplyDefaults_ConfiguresRuntimeAndShutdownHook()
+    public async Task ApplyOpenTelemetryDefaults_ConfiguresRuntimeAndShutdownHook()
     {
         var config = new TemporalLambdaWorkerOptions
         {
@@ -149,8 +149,7 @@ public class LambdaWorkerOpenTelemetryTests
         };
         config.AddShutdownHook(_ => Task.CompletedTask);
 
-        LambdaWorkerOpenTelemetry.ApplyDefaults(
-            config,
+        config.ApplyOpenTelemetryDefaults(
             new LambdaWorkerOpenTelemetryOptions
             {
                 CollectorEndpoint = "http://localhost:4317",
@@ -176,7 +175,7 @@ public class LambdaWorkerOpenTelemetryTests
 #pragma warning restore CA2000
 
 #pragma warning disable CA2025 // The task is completed before the provider exits scope.
-        var flushTask = LambdaWorkerOpenTelemetry.ForceFlushAsync(
+        var flushTask = TemporalLambdaWorkerOptionsExtensions.ForceFlushAsync(
             provider,
             TimeSpan.FromSeconds(10),
             CancellationToken.None);
@@ -209,7 +208,7 @@ public class LambdaWorkerOpenTelemetryTests
         using var cts = new CancellationTokenSource();
 
 #pragma warning disable CA2025 // The provider exits scope after the blocking flush is released.
-        var flushTask = LambdaWorkerOpenTelemetry.ForceFlushAsync(
+        var flushTask = TemporalLambdaWorkerOptionsExtensions.ForceFlushAsync(
             provider,
             TimeSpan.FromSeconds(10),
             cts.Token);
