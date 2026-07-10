@@ -5,6 +5,7 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
     /// <summary>
     /// Options for <see cref="LambdaWorkerOpenTelemetry.ApplyDefaults"/>.
     /// </summary>
+    /// <remarks>WARNING: AWS Lambda support is experimental.</remarks>
     public class LambdaWorkerOpenTelemetryOptions
     {
         /// <summary>
