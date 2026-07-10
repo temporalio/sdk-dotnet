@@ -24,6 +24,13 @@ to docs, or any other relevant information.
 - Added experimental AWS Lambda worker support packages, including OpenTelemetry helpers for Lambda workers.
 - Added experimental workflow-side `Workflow.SignalWithStartWorkflowAsync` support.
 
+### Changed
+
+- Changed the default `TemporalConnectionOptions.GrpcCompression` to `GrpcCompression.Gzip`, so
+  connections now compress outbound requests and accept gzip-compressed responses by default. If the remote
+  service does not support gzip compression, the connection is downgraded to uncompressed requests. Set it
+  to `GrpcCompression.None` to opt out.
+
 ### Fixed
 
 - Fixed `ClientEnvConfig` empty `OverrideEnvVars` handling so an explicit empty dictionary no

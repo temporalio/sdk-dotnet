@@ -79,11 +79,12 @@ namespace Temporalio.Client
         /// Gets or sets the transport-level gRPC compression for this connection.
         /// </summary>
         /// <remarks>
-        /// Defaults to <see cref="GrpcCompression.None"/>, which does not compress requests or
-        /// advertise acceptance of compressed responses. Set to <see cref="GrpcCompression.Gzip"/>
-        /// to compress outbound requests and accept compressed responses.
+        /// Defaults to <see cref="GrpcCompression.Gzip"/>, which compresses outbound requests and
+        /// advertises acceptance of gzip-compressed responses. If the remote service does not support
+        /// gzip compression, the connection is downgraded to uncompressed requests. Set to
+        /// <see cref="GrpcCompression.None"/> to opt out of compression.
         /// </remarks>
-        public GrpcCompression GrpcCompression { get; set; } = new GrpcCompression.None();
+        public GrpcCompression GrpcCompression { get; set; } = new GrpcCompression.Gzip();
 
         /// <summary>
         /// Gets or sets the gRPC metadata for all calls (i.e. the headers).
