@@ -117,7 +117,14 @@ namespace Temporalio.Nexus
                 ? Expression.Call(instanceExpr, method, ctxParam, clientParam, inputParam)
                 : Expression.Call(instanceExpr, method, ctxParam, clientParam);
             var lambda = Expression.Lambda(funcType, call, ctxParam, clientParam, inputParam);
+            // Prefer interpretation over full IL compilation: it is far cheaper for these
+            // single-use lambdas by avoiding Reflection.Emit + JIT work. The compile targets
+            // for net470 and lower lack the overload.
+#if NETSTANDARD2_0 || NETCOREAPP || NET471_OR_GREATER
+            return lambda.Compile(true);
+#else
             return lambda.Compile();
+#endif
         }
 
         private static string FormatTypeName(Type type)
