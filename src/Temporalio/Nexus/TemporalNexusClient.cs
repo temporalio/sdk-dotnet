@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using NexusRpc.Handlers;
 using Temporalio.Client;
@@ -21,6 +22,7 @@ namespace Temporalio.Nexus
     {
         private readonly OperationStartContext nexusStartContext;
         private readonly NexusOperationExecutionContext temporalContext;
+        private int asyncStarted;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalNexusClient"/> class.
@@ -74,6 +76,71 @@ namespace Temporalio.Nexus
                 args,
                 options).ConfigureAwait(false);
             return TemporalOperationResult<TResult>.AsyncResult(handle.ToToken());
+        }
+
+        /// <inheritdoc/>
+        public Task<TemporalOperationResult<TResult>> StartUpdateWorkflowAsync<TWorkflow, TResult>(
+            string workflowId,
+            Expression<Func<TWorkflow, Task<TResult>>> updateCall,
+            WorkflowUpdateStartOptions options)
+        {
+            var (method, args) = Common.ExpressionUtil.ExtractCall(updateCall);
+            return StartUpdateWorkflowAsync<TResult>(
+                workflowId,
+                Workflows.WorkflowUpdateDefinition.NameFromMethodForCall(method),
+                args,
+                options);
+        }
+
+        /// <inheritdoc/>
+        public Task<TemporalOperationResult<NoValue>> StartUpdateWorkflowAsync<TWorkflow>(
+            string workflowId,
+            Expression<Func<TWorkflow, Task>> updateCall,
+            WorkflowUpdateStartOptions options)
+        {
+            var (method, args) = Common.ExpressionUtil.ExtractCall(updateCall);
+            return StartUpdateWorkflowAsync<NoValue>(
+                workflowId,
+                Workflows.WorkflowUpdateDefinition.NameFromMethodForCall(method),
+                args,
+                options);
+        }
+
+        /// <inheritdoc/>
+        public async Task<TemporalOperationResult<TResult>> StartUpdateWorkflowAsync<TResult>(
+            string workflowId,
+            string update,
+            IReadOnlyCollection<object?> args,
+            WorkflowUpdateStartOptions options)
+        {
+            // Reserve the single async-operation slot for this operation invocation. Only a genuine
+            // async result consumes it; a sync result or a failure releases it.
+            if (Interlocked.CompareExchange(ref asyncStarted, 1, 0) != 0)
+            {
+                throw new HandlerException(
+                    HandlerErrorType.BadRequest,
+                    "only one async operation can be started per operation invocation");
+            }
+            var keepSlot = false;
+            try
+            {
+                var result = await NexusWorkflowStartHelper.StartUpdateWorkflowAsync<TResult>(
+                    nexusStartContext,
+                    temporalContext,
+                    workflowId,
+                    update,
+                    args,
+                    options).ConfigureAwait(false);
+                keepSlot = !result.IsSyncResult;
+                return result;
+            }
+            finally
+            {
+                if (!keepSlot)
+                {
+                    Interlocked.Exchange(ref asyncStarted, 0);
+                }
+            }
         }
     }
 }

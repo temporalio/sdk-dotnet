@@ -500,6 +500,12 @@ namespace Temporalio.Client
                 }
                 while (resp.Stage < UpdateWorkflowExecutionLifecycleStage.Accepted);
 
+                // Capture the response link for update-workflow-backed Nexus operations.
+                if (input.Options.ResponseInfo is { } responseInfo)
+                {
+                    responseInfo.Link = resp.Link;
+                }
+
                 // If the requested stage is completed, wait for result, but discard the update
                 // exception, that will come when _they_ call get result
                 var handle = new WorkflowUpdateHandle<TResult>(
@@ -976,6 +982,23 @@ namespace Temporalio.Client
                             req.Request.Input.Header.Fields[kvp.Key] =
                                 await codec.EncodeSingleAsync(kvp.Value).ConfigureAwait(false);
                         }
+                    }
+                }
+                // SDK-internal Nexus plumbing: request ID for de-duplication, completion callbacks,
+                // and links used by update-workflow-backed Nexus operations.
+                if (options is WorkflowUpdateStartOptions startOptions)
+                {
+                    if (startOptions.RequestId is { } nexusRequestId)
+                    {
+                        req.Request.RequestId = nexusRequestId;
+                    }
+                    if (startOptions.CompletionCallbacks is { } nexusCallbacks)
+                    {
+                        req.Request.CompletionCallbacks.AddRange(nexusCallbacks);
+                    }
+                    if (startOptions.Links is { } nexusLinks)
+                    {
+                        req.Request.Links.AddRange(nexusLinks);
                     }
                 }
                 return req;

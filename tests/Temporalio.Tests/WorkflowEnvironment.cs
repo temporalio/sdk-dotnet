@@ -28,6 +28,16 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
 
     public string KitchenSinkWorkerTaskQueue => kitchenSinkWorker.Value.TaskQueue;
 
+    /// <summary>
+    /// Gets a value indicating whether this environment supports UpdateWorkflow-backed Nexus
+    /// operations, which require the server to deliver update-completion callbacks
+    /// (<c>history.enableUpdateCallbacks</c>) together with a Nexus callback-endpoint template.
+    /// The pinned local dev server does not yet support these; once it does, add those flags to the
+    /// dev-server args below and this will report true, auto-enabling the gated integration tests.
+    /// For an external test server, set <c>TEMPORAL_TEST_NEXUS_UPDATE_CALLBACKS=true</c>.
+    /// </summary>
+    public bool SupportsNexusUpdateCallbacks { get; private set; }
+
     public async Task InitializeAsync()
     {
         // If an existing target is given via environment variable, use that
@@ -59,16 +69,13 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
                 options.ApiKey = apiKey;
             }
             env = new(await TemporalClient.ConnectAsync(options));
+            SupportsNexusUpdateCallbacks =
+                Environment.GetEnvironmentVariable("TEMPORAL_TEST_NEXUS_UPDATE_CALLBACKS") == "true";
         }
         else
         {
             // Otherwise, local server is good
-            env = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync(new()
-            {
-                DevServerOptions = new()
-                {
-                    DownloadVersion = "v1.7.2-standalone-nexus-operations",
-                    ExtraArgs = new List<string>
+            var extraArgs = new List<string>
                     {
                         // Disable search attribute cache
                         "--dynamic-config-value",
@@ -105,7 +112,22 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
                         // Enable draining worker pollers on shutdown
                         "--dynamic-config-value",
                         "frontend.enableCancelWorkerPollsOnShutdown=true",
-                    },
+
+                        // To enable UpdateWorkflow-backed Nexus operations, add (once the pinned
+                        // dev server supports them):
+                        //   "--dynamic-config-value", "history.enableUpdateCallbacks=true",
+                        //   plus the Nexus callback-endpoint template configuration.
+                        // Doing so flips SupportsNexusUpdateCallbacks to true and auto-enables the
+                        // gated integration tests.
+                    };
+            SupportsNexusUpdateCallbacks =
+                extraArgs.Exists(a => a.Contains("history.enableUpdateCallbacks"));
+            env = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync(new()
+            {
+                DevServerOptions = new()
+                {
+                    DownloadVersion = "v1.7.2-standalone-nexus-operations",
+                    ExtraArgs = extraArgs,
                 },
             });
         }
