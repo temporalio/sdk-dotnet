@@ -21,13 +21,14 @@ to docs, or any other relevant information.
 
 ### Added
 
-- Added AWS Lambda worker support packages, including OpenTelemetry helpers for Lambda workers.
+- Added experimental AWS Lambda worker support packages, including OpenTelemetry helpers for Lambda workers.
 - Added experimental workflow-side `Workflow.SignalWithStartWorkflowAsync` support.
 
 ### Fixed
 
 - Fixed `ClientEnvConfig` empty `OverrideEnvVars` handling so an explicit empty dictionary no
   longer falls back to process environment variables.
+- Fixed `ClientEnvConfig` TLS-disabled profiles to preserve disabled TLS in connection options.
 
 ### [1.16.0] - 2026-07-01
 

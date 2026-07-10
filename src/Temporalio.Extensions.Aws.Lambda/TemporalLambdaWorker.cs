@@ -16,6 +16,7 @@ namespace Temporalio.Extensions.Aws.Lambda
     /// <summary>
     /// Helpers for running a Temporal worker inside an AWS Lambda invocation.
     /// </summary>
+    /// <remarks>WARNING: AWS Lambda support is experimental.</remarks>
     public static class TemporalLambdaWorker
     {
         private const string ConfigFileEnvironmentVariable = "TEMPORAL_CONFIG_FILE";
