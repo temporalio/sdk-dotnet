@@ -681,7 +681,9 @@ can be used from workflows including:
     workflow calls elsewhere.
   * `GetExternalWorkflowHandle` - Get a handle to an external workflow to issue cancellation requests and signals.
   * `NewGuid` - Create a deterministically random UUIDv4 GUID.
-  * `Patched` and `DeprecatePatch` - Support for patch-based versioning inside the workflow.
+  * `Patched` and `DeprecatePatch` - Support for patch-based versioning inside the workflow. Workers
+    can set `PatchActivationCallback` to decide whether a newly introduced patch should activate
+    during rolling deployments.
   * `UpsertMemo` - Update the memo values for the workflow.
   * `UpsertTypedSearchAttributes` - Update the search attributes for the workflow.
 

@@ -363,6 +363,7 @@ namespace Temporalio.Worker
                     RuntimeMetricMeter: options.RuntimeMetricMeter,
                     WorkerLevelFailureExceptionTypes: options.WorkerLevelFailureExceptionTypes,
                     DisableEagerActivityExecution: options.DisableEagerActivityExecution,
+                    PatchActivationCallback: options.PatchActivationCallback,
                     AssertValidLocalActivity: options.AssertValidLocalActivity));
         }
     }

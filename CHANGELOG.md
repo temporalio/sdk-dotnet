@@ -32,6 +32,10 @@ to docs, or any other relevant information.
   connections now compress outbound requests and accept gzip-compressed responses by default. If the remote
   service does not support gzip compression, the connection is downgraded to uncompressed requests. Set it
   to `GrpcCompression.None` to opt out.
+- Added AWS Lambda worker support packages, including OpenTelemetry helpers for Lambda workers.
+- Added the experimental `TemporalWorkerOptions.PatchActivationCallback`, allowing workers to
+  decide whether a first non-replay `Workflow.Patched` call should activate a patch during rolling
+  deployments.
 
 ### Fixed
 

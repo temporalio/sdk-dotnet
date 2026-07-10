@@ -121,6 +121,7 @@ namespace Temporalio.Worker
                         RuntimeMetricMeter: MetricMeter,
                         WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes,
                         DisableEagerActivityExecution: options.DisableEagerActivityExecution,
+                        PatchActivationCallback: options.PatchActivationCallback,
                         AssertValidLocalActivity: (activityType) => (activityWorker ??
                                                                      throw new InvalidOperationException(
                                                                          $"Activity {activityType} is not registered on this worker," +

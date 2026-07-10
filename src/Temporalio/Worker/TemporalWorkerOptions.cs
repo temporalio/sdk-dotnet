@@ -289,6 +289,18 @@ namespace Temporalio.Worker
         public IReadOnlyCollection<Type>? WorkflowFailureExceptionTypes { get; set; }
 
         /// <summary>
+        /// Gets or sets the callback that decides whether the first non-replay call to
+        /// <see cref="Workflow.Patched" /> for a patch ID should activate that patch.
+        /// </summary>
+        /// <remarks>
+        /// The callback is only invoked for a newly encountered patch. Existing history markers,
+        /// replay, and <see cref="Workflow.DeprecatePatch" /> bypass the callback. Returning <c>false</c>
+        /// leaves the patch inactive and does not record a patch marker.
+        /// </remarks>
+        /// <remarks>WARNING: This property is experimental and may change in the future.</remarks>
+        public Func<PatchActivationInput, bool>? PatchActivationCallback { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether deadlock detection will be disabled for all
         /// workflows. If unset, this value defaults to true only if
         /// <see cref="Debugger.IsAttached" /> is <c>true</c> or the <c>TEMPORAL_DEBUG</c>

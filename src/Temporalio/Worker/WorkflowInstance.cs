@@ -76,6 +76,7 @@ namespace Temporalio.Worker
         private readonly Action<WorkflowInstance, Exception?> onTaskCompleted;
         private readonly IReadOnlyCollection<Type>? workerLevelFailureExceptionTypes;
         private readonly bool disableEagerActivityExecution;
+        private readonly Func<PatchActivationInput, bool>? patchActivationCallback;
         private readonly Handlers inProgressHandlers = new();
         private readonly WorkflowDefinitionOptions definitionOptions;
         private WorkflowActivationCompletion? completion;
@@ -221,6 +222,7 @@ namespace Temporalio.Worker
             TracingEventsEnabled = !details.DisableTracingEvents;
             workerLevelFailureExceptionTypes = details.WorkerLevelFailureExceptionTypes;
             disableEagerActivityExecution = details.DisableEagerActivityExecution;
+            patchActivationCallback = details.PatchActivationCallback;
             AssertValidLocalActivity = details.AssertValidLocalActivity;
             definitionOptions = new()
             {
@@ -450,7 +452,17 @@ namespace Temporalio.Worker
             {
                 return patched;
             }
-            patched = !IsReplaying || patchesNotified.Contains(patchId);
+            // Replay and history markers already determine the branch, and deprecation must keep
+            // existing patch semantics, so only a genuinely new patch consults the callback.
+            if (!deprecated && !IsReplaying && !patchesNotified.Contains(patchId) &&
+                patchActivationCallback != null)
+            {
+                patched = patchActivationCallback(new(Info, patchId));
+            }
+            else
+            {
+                patched = !IsReplaying || patchesNotified.Contains(patchId);
+            }
             patchesMemoized[patchId] = patched;
             if (patched)
             {
