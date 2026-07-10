@@ -29,6 +29,8 @@ to docs, or any other relevant information.
 - Fixed `ClientEnvConfig` empty `OverrideEnvVars` handling so an explicit empty dictionary no
   longer falls back to process environment variables.
 - Fixed `ClientEnvConfig` TLS-disabled profiles to preserve disabled TLS in connection options.
+- OTLP metric export failures are now logged through Core telemetry when OpenTelemetry's periodic metric reader reports an export error.
+- Worker heartbeat now samples host CPU/memory at the heartbeat interval (only when enabled) rather than every 100ms.
 
 ### [1.16.0] - 2026-07-01
 
