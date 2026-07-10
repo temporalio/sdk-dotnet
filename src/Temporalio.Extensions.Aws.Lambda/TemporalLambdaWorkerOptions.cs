@@ -10,6 +10,7 @@ namespace Temporalio.Extensions.Aws.Lambda
     /// <summary>
     /// Options for <see cref="TemporalLambdaWorker.CreateHandler(Temporalio.Common.WorkerDeploymentVersion, Action{TemporalLambdaWorkerOptions})" />.
     /// </summary>
+    /// <remarks>WARNING: AWS Lambda support is experimental.</remarks>
     public class TemporalLambdaWorkerOptions
     {
         private static readonly TimeSpan DefaultShutdownDeadlineBuffer = TimeSpan.FromSeconds(7);

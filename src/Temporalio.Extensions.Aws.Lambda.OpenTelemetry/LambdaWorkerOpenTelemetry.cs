@@ -16,6 +16,7 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
     /// <summary>
     /// OpenTelemetry helpers for Temporal workers running inside AWS Lambda.
     /// </summary>
+    /// <remarks>WARNING: AWS Lambda support is experimental.</remarks>
     public static class LambdaWorkerOpenTelemetry
     {
         private const string DefaultCollectorEndpoint = "http://localhost:4317";
