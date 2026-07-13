@@ -90,6 +90,9 @@ namespace Temporalio.Client
         /// Gets or sets the payload size-limit options for this connection. Defaults to a new
         /// <see cref="PayloadLimitsOptions"/>. See that type for the default thresholds.
         /// </summary>
+        /// <remarks>
+        /// WARNING: This API is experimental and may change in the future.
+        /// </remarks>
         public PayloadLimitsOptions PayloadLimits { get; set; } = new();
 
         /// <summary>

@@ -5,6 +5,9 @@ namespace Temporalio.Client
     /// <summary>
     /// Payload size-limit options for a connection.
     /// </summary>
+    /// <remarks>
+    /// WARNING: This API is experimental and may change in the future.
+    /// </remarks>
     public class PayloadLimitsOptions : ICloneable
     {
         /// <summary>
