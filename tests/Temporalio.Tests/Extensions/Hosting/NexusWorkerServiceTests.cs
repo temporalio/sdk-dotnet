@@ -4,6 +4,7 @@ using NexusRpc;
 using NexusRpc.Handlers;
 using Temporalio.Client;
 using Temporalio.Extensions.Hosting;
+using Temporalio.Nexus;
 using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
@@ -223,6 +224,71 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
 
         // Expect 1 since the nexus service and dependency are both transient and new instances are created for each call
         Assert.Equal(1, result);
+    }
+
+    // Service that uses the [TemporalOperation] attribute (the method itself is the start handler)
+    // rather than a [NexusOperationHandler] factory, with a constructor-injected dependency. This
+    // exercises dependency injection for [TemporalOperation] operations in a hosted worker.
+    [NexusServiceHandler(typeof(ITestNexusService))]
+    public class TestTemporalOperationNexusService
+    {
+        private readonly ITestCounterService counter;
+
+        public TestTemporalOperationNexusService(ITestCounterService counter) =>
+            this.counter = counter;
+
+        [TemporalOperation]
+        public Task<TemporalOperationResult<int>> Increment(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string unused) =>
+            Task.FromResult(TemporalOperationResult<int>.SyncResult(counter.Increment()));
+    }
+
+    // The [TemporalOperation] path must have the same dependency-injection lifetime behavior as the
+    // [NexusOperationHandler] factory path: a fresh scope (and, for scoped/transient services, a
+    // fresh service instance) per operation call. Expected counts mirror the [NexusOperationHandler]
+    // tests above.
+    [Theory]
+    [InlineData(ServiceLifetime.Singleton, ServiceLifetime.Singleton, 2)]
+    [InlineData(ServiceLifetime.Singleton, ServiceLifetime.Scoped, 2)]
+    [InlineData(ServiceLifetime.Singleton, ServiceLifetime.Transient, 2)]
+    [InlineData(ServiceLifetime.Scoped, ServiceLifetime.Singleton, 2)]
+    [InlineData(ServiceLifetime.Scoped, ServiceLifetime.Scoped, 1)]
+    [InlineData(ServiceLifetime.Scoped, ServiceLifetime.Transient, 1)]
+    [InlineData(ServiceLifetime.Transient, ServiceLifetime.Singleton, 2)]
+    [InlineData(ServiceLifetime.Transient, ServiceLifetime.Scoped, 1)]
+    [InlineData(ServiceLifetime.Transient, ServiceLifetime.Transient, 1)]
+    public async Task NexusWorkerService_TemporalOperation_DependencyInjection(
+        ServiceLifetime serviceLifetime, ServiceLifetime dependencyLifetime, int expected)
+    {
+        int result = await ExecuteHostedNexusWithWorkflow(
+            configureServices: services => services.Add(new ServiceDescriptor(
+                typeof(ITestCounterService), typeof(TestCounterService), dependencyLifetime)),
+            configureBuilder: builder => AddNexusService<TestTemporalOperationNexusService>(
+                builder, serviceLifetime),
+            workflowFunc: async client =>
+            {
+                await client.ExecuteNexusOperationAsync(svc => svc.Increment("unused"));
+                return await client.ExecuteNexusOperationAsync(svc => svc.Increment("unused"));
+            });
+
+        Assert.Equal(expected, result);
+    }
+
+    private static void AddNexusService<T>(
+        ITemporalWorkerServiceOptionsBuilder builder, ServiceLifetime lifetime)
+    {
+        switch (lifetime)
+        {
+            case ServiceLifetime.Singleton:
+                builder.AddSingletonNexusService<T>();
+                break;
+            case ServiceLifetime.Scoped:
+                builder.AddScopedNexusService<T>();
+                break;
+            default:
+                builder.AddTransientNexusService<T>();
+                break;
+        }
     }
 
     private async Task<int> ExecuteHostedNexusWithWorkflow(

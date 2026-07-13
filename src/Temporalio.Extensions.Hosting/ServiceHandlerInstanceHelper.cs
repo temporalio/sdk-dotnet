@@ -8,7 +8,7 @@ using NexusRpc.Handlers;
 namespace Temporalio.Extensions.Hosting
 {
     /// <summary>
-    /// Helper for contructing <see cref="ServiceHandlerInstance"/>.
+    /// Helper for constructing <see cref="ServiceHandlerInstance"/>.
     /// </summary>
     /// <remarks>
     /// This is internal and should be moved to NexusRpc in the future.
@@ -16,73 +16,72 @@ namespace Temporalio.Extensions.Hosting
     internal static class ServiceHandlerInstanceHelper
     {
         /// <summary>
-        /// Create a service handler instance from the given service handler type and handler factory.
+        /// Create a service handler instance from the given service handler type. Each method on the
+        /// type and its base types that maps by name to an operation on the service is offered to
+        /// <paramref name="operationFactory"/>, which decides whether the method is a handler and, if
+        /// so, returns it. The operation the handler is registered under is the one matched here by
+        /// method name, the same way NexusRpc matches handlers.
         /// </summary>
         /// <param name="serviceHandlerType">The type of the Nexus service handler.</param>
-        /// <param name="handlerFactory">A factory that converts method information into an operation handler.</param>
-        /// <returns>A <see cref="ServiceHandlerInstance"/> for the given <paramref name="serviceHandlerType"/> type.</returns>
-        public static ServiceHandlerInstance FromType(Type serviceHandlerType, Func<MethodInfo, IOperationHandler<object?, object?>> handlerFactory)
+        /// <param name="operationFactory">Factory invoked for each method that maps to an operation,
+        /// with that operation's definition. Returns the handler when the method is recognized, or
+        /// <c>null</c> to skip it.</param>
+        /// <returns>A <see cref="ServiceHandlerInstance"/> for the given
+        /// <paramref name="serviceHandlerType"/> type.</returns>
+        internal static ServiceHandlerInstance FromType(
+            Type serviceHandlerType,
+            Func<MethodInfo, OperationDefinition,
+                IOperationHandler<object?, object?>?> operationFactory)
         {
             var serviceDef = GetServiceDefinition(serviceHandlerType);
 
-            return new ServiceHandlerInstance(
-                serviceDef,
-                CreateHandlers(
-                    serviceDef,
-                    serviceHandlerType,
-                    handlerFactory));
-        }
+            // Collect all methods recursively
+            var methods = new List<MethodInfo>();
+            CollectTypeMethods(serviceHandlerType, methods);
 
-        /// <summary>
-        /// Creates a <see cref="ServiceDefinition"/> for the given service handler type.
-        /// </summary>
-        /// <param name="serviceHandlerType">The type of the Nexus service handler.</param>
-        /// <returns>A <see cref="ServiceDefinition"/> for the given  <paramref name="serviceHandlerType"/> type.</returns>
-        private static ServiceDefinition GetServiceDefinition(Type serviceHandlerType)
-        {
-            // Make sure the attribute is on the declaring type of the instance
-            var handlerAttr = serviceHandlerType.GetCustomAttribute<NexusServiceHandlerAttribute>() ??
-                throw new ArgumentException("Missing NexusServiceHandler attribute");
-            return ServiceDefinition.FromType(handlerAttr.ServiceType);
-        }
-
-        /// <summary>
-        /// Collects all public methods from the given type and its base types recursively.
-        /// </summary>
-        /// <param name="serviceHandlerType">The type of the Nexus service handler.</param>
-        /// <param name="methods">The list to which discovered methods are added.</param>
-        private static void CollectTypeMethods(Type serviceHandlerType, List<MethodInfo> methods)
-        {
-            // Add all declared public static/instance methods that do not already have one like
-            // it present
-            foreach (var method in serviceHandlerType.GetMethods(
-                BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly))
+            // Ask the factory for a handler per method that maps to an operation, collecting the
+            // ones it recognizes.
+            var opHandlers = new Dictionary<string, IOperationHandler<object?, object?>>();
+            foreach (var method in methods)
             {
-                // Only add if there isn't already one that matches the base definition
-                var baseDef = method.GetBaseDefinition();
-                if (!methods.Any(m => baseDef == m.GetBaseDefinition()))
+                var opDef = serviceDef.Operations.Values
+                    .FirstOrDefault(o => o.MethodInfo?.Name == method.Name);
+                if (opDef == null)
                 {
-                    methods.Add(method);
+                    continue;
                 }
+                IOperationHandler<object?, object?>? handler;
+                try
+                {
+                    handler = operationFactory(method, opDef);
+                }
+                catch (Exception e)
+                {
+                    throw new ArgumentException(
+                        $"Failed obtaining operation handler from {method.Name}", e);
+                }
+                if (handler == null)
+                {
+                    continue;
+                }
+                if (opHandlers.ContainsKey(opDef.Name))
+                {
+                    throw new ArgumentException($"Duplicate operation handler named {opDef.Name}");
+                }
+                opHandlers[opDef.Name] = handler;
             }
-            if (serviceHandlerType.BaseType is { } baseType)
-            {
-                CollectTypeMethods(baseType, methods);
-            }
+
+            return new ServiceHandlerInstance(serviceDef, opHandlers);
         }
 
         /// <summary>
-        /// Validates and adds an operation handler created from the given operation handler method.
+        /// Validate a <see cref="NexusOperationHandlerAttribute"/> factory method against the
+        /// operation it handles.
         /// </summary>
-        /// <param name="serviceDef">A <see cref="ServiceDefinition"/> for the given service handler type.</param>
-        /// <param name="method">The method from which an operation hander is created.</param>
-        /// <param name="handlerFactory">A factory that creates an operation handler for a given method.</param>
-        /// <param name="opHandlers">The mapping of operation names to operation handlers.</param>
-        private static void AddOperationHandler(
-            ServiceDefinition serviceDef,
-            MethodInfo method,
-            Func<MethodInfo, IOperationHandler<object?, object?>> handlerFactory,
-            Dictionary<string, IOperationHandler<object?, object?>> opHandlers)
+        /// <param name="opDef">Operation the method handles, matched by method name.</param>
+        /// <param name="method">The factory method to validate.</param>
+        internal static void ValidateNexusOperationHandler(
+            OperationDefinition opDef, MethodInfo method)
         {
             // Validate
             if (method.GetParameters().Length != 0)
@@ -97,10 +96,6 @@ namespace Temporalio.Extensions.Hosting
             {
                 throw new ArgumentException("Must be public");
             }
-
-            // Find definition by the method name
-            var opDef = serviceDef.Operations.Values.FirstOrDefault(o => o.MethodInfo?.Name == method.Name) ??
-                throw new ArgumentException("No matching NexusOperation on the service interface");
 
             // Check return
             var goodReturn = false;
@@ -119,54 +114,48 @@ namespace Temporalio.Extensions.Hosting
                 throw new ArgumentException(
                     $"Expected return type of IOperationHandler<{inType.Name}, {outType.Name}>");
             }
-
-            // Confirm not present already
-            if (opHandlers.ContainsKey(opDef.Name))
-            {
-                throw new ArgumentException($"Duplicate operation handler named ${opDef.Name}");
-            }
-
-            opHandlers[opDef.Name] = handlerFactory(method);
         }
 
         /// <summary>
-        /// Creates a mapping of operation names to operation handlers for the given service handler type.
+        /// Creates a <see cref="ServiceDefinition"/> for the given service handler type.
         /// </summary>
-        /// <param name="serviceDef">A <see cref="ServiceDefinition"/> for the given service handler type.</param>
         /// <param name="serviceHandlerType">The type of the Nexus service handler.</param>
-        /// <param name="handlerFactory">A factory that creates an operation handler for a given method.</param>
-        /// <returns>A mapping of operation names to operation handlers.</returns>
-        private static Dictionary<string, IOperationHandler<object?, object?>> CreateHandlers(
-            ServiceDefinition serviceDef,
-            Type serviceHandlerType,
-            Func<MethodInfo, IOperationHandler<object?, object?>> handlerFactory)
+        /// <returns>A <see cref="ServiceDefinition"/> for the given  <paramref name="serviceHandlerType"/> type.</returns>
+        private static ServiceDefinition GetServiceDefinition(Type serviceHandlerType)
         {
-            // Collect all methods recursively
-            var methods = new List<MethodInfo>();
-            CollectTypeMethods(serviceHandlerType, methods);
+            // Make sure the attribute is on the declaring type of the instance
+            var handlerAttr = serviceHandlerType.GetCustomAttribute<NexusServiceHandlerAttribute>() ??
+                throw new ArgumentException("Missing NexusServiceHandler attribute");
+            return ServiceDefinition.FromType(handlerAttr.ServiceType);
+        }
 
-            // Collect handlers from the method list
-            var opHandlers = new Dictionary<string, IOperationHandler<object?, object?>>();
-            foreach (var method in methods)
+        /// <summary>
+        /// Collects all methods (public and non-public) from the given type and its base types
+        /// recursively.
+        /// </summary>
+        /// <param name="serviceHandlerType">The type of the Nexus service handler.</param>
+        /// <param name="methods">The list to which discovered methods are added.</param>
+        private static void CollectTypeMethods(Type serviceHandlerType, List<MethodInfo> methods)
+        {
+            // Add all declared static/instance methods (public + non-public) that do not already
+            // have one like it present. Non-public methods are included so the operation factory can
+            // produce a clear error when an operation attribute is applied to a non-public method,
+            // matching NexusRpc's ServiceHandlerInstance.FromInstance behavior.
+            foreach (var method in serviceHandlerType.GetMethods(
+                BindingFlags.Public | BindingFlags.NonPublic |
+                BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly))
             {
-                // Only care about ones with operation attribute
-                if (method.GetCustomAttribute<NexusOperationHandlerAttribute>() == null)
+                // Only add if there isn't already one that matches the base definition
+                var baseDef = method.GetBaseDefinition();
+                if (!methods.Any(m => baseDef == m.GetBaseDefinition()))
                 {
-                    continue;
-                }
-
-                try
-                {
-                    AddOperationHandler(serviceDef, method, handlerFactory, opHandlers);
-                }
-                catch (Exception e)
-                {
-                    throw new ArgumentException(
-                        $"Failed obtaining operation handler from {method.Name}", e);
+                    methods.Add(method);
                 }
             }
-
-            return opHandlers;
+            if (serviceHandlerType.BaseType is { } baseType)
+            {
+                CollectTypeMethods(baseType, methods);
+            }
         }
     }
 }
