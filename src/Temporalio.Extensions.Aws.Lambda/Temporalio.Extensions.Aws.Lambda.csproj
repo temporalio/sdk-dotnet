@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <Description>Temporal SDK .NET AWS Lambda Worker Extension</Description>
-    <!-- New package, no previously published package baseline to compare against. -->
-    <EnablePackageValidation>false</EnablePackageValidation>
     <IncludeSymbols>true</IncludeSymbols>
     <LangVersion>9.0</LangVersion>
     <PackageReadmeFile>README.md</PackageReadmeFile>

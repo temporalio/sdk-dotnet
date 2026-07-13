@@ -19,6 +19,8 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### [1.17.0] - 2026-07-13
+
 ### Added
 
 - Added experimental AWS Lambda worker support packages, including OpenTelemetry helpers for Lambda workers.
