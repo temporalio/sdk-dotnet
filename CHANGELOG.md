@@ -19,6 +19,11 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### Fixed
+
+- Schedule policies now omit an unspecified catch-up window so the Temporal Server applies its
+  default (currently one year).
+
 ### [1.17.0] - 2026-07-13
 
 ### Added

@@ -17,6 +17,14 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public void SchedulePolicy_ToProto_DefaultCatchupWindowIsOmitted()
+    {
+        var policy = new SchedulePolicy();
+        Assert.Equal(TimeSpan.Zero, policy.CatchupWindow);
+        Assert.Null(policy.ToProto().CatchupWindow);
+    }
+
+    [Fact]
     public async Task CreateScheduleAsync_Basics_Succeeds()
     {
         await TestUtils.AssertNoSchedulesAsync(Client);
@@ -140,6 +148,8 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         await handle.UpdateAsync(_ => new(newSched));
         desc = await handle.DescribeAsync();
         Assert.NotEqual(expectedUpdateTime, desc.Info.LastUpdatedAt);
+        Assert.Equal(TimeSpan.Zero, newSched.Policy.CatchupWindow);
+        Assert.Equal(TimeSpan.FromDays(365), desc.Schedule.Policy.CatchupWindow);
         // Try to create a duplicate
         await Assert.ThrowsAsync<ScheduleAlreadyRunningException>(
             () => Client.CreateScheduleAsync(handle.Id, newSched));
