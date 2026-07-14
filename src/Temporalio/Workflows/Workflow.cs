@@ -1139,12 +1139,15 @@ namespace Temporalio.Workflows
         /// <returns>A task for the running task (but not necessarily the task that is returned
         /// from the function).</returns>
         public static Task RunTaskAsync(
-            Func<Task> function, CancellationToken? cancellationToken = null) =>
-            Task.Factory.StartNew(
+            Func<Task> function, CancellationToken? cancellationToken = null)
+        {
+            Context.AssertNotReadOnly("wait or schedule workflow work");
+            return Task.Factory.StartNew(
                 function,
                 cancellationToken ?? CancellationToken,
                 TaskCreationOptions.None,
                 TaskScheduler.Current).Unwrap();
+        }
 
         /// <summary>
         /// Workflow-safe form of <see cref="Task.Run{TResult}(Func{TResult}, CancellationToken)" />.
@@ -1156,12 +1159,15 @@ namespace Temporalio.Workflows
         /// <returns>A task for the running task (but not necessarily the task that is returned
         /// from the function).</returns>
         public static Task<TResult> RunTaskAsync<TResult>(
-            Func<Task<TResult>> function, CancellationToken? cancellationToken = null) =>
-            Task.Factory.StartNew(
+            Func<Task<TResult>> function, CancellationToken? cancellationToken = null)
+        {
+            Context.AssertNotReadOnly("wait or schedule workflow work");
+            return Task.Factory.StartNew(
                 function,
                 cancellationToken ?? CancellationToken,
                 TaskCreationOptions.None,
                 TaskScheduler.Current).Unwrap();
+        }
 
         /// <summary>
         /// Start a child workflow via lambda invoking the run method.

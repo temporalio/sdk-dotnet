@@ -2969,12 +2969,21 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [WorkflowQuery]
         public bool FirstPatchResult() => firstPatchResult;
 
+        [WorkflowQuery]
+        public bool PatchFromQuery(string patchId) => Workflow.Patched(patchId);
+
         [WorkflowSignal]
         public Task ReleaseAsync()
         {
             released = true;
             return Task.CompletedTask;
         }
+
+        [WorkflowUpdate]
+        public Task PatchFromUpdateAsync(string patchId) => Task.CompletedTask;
+
+        [WorkflowUpdateValidator(nameof(PatchFromUpdateAsync))]
+        public void ValidatePatchFromUpdate(string patchId) => _ = Workflow.Patched(patchId);
     }
 
     [Workflow]
@@ -3139,6 +3148,108 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 PatchActivationCallback = _ => throw new InvalidOperationException("Unexpected callback"),
             });
+    }
+
+    [Theory]
+    [InlineData("command", "Cannot issue workflow commands in this context")]
+    [InlineData("wait", "Cannot wait or schedule workflow work in this context")]
+    [InlineData("run-task", "Cannot wait or schedule workflow work in this context")]
+    [InlineData("random", "Cannot use workflow randomness in this context")]
+    [InlineData("patch", "Cannot patch in this context")]
+    [InlineData("current-details", "Cannot set current details in this context")]
+    [InlineData("handler-add", "Cannot modify workflow handlers in this context")]
+    [InlineData("handler-remove", "Cannot modify workflow handlers in this context")]
+    [InlineData("dynamic-handler", "Cannot modify workflow handlers in this context")]
+    [InlineData("continue-as-new", "Cannot continue as new in this context")]
+    public async Task ExecuteWorkflowAsync_PatchActivationCallback_RunsReadOnly(
+        string operation,
+        string expectedError)
+    {
+        await ExecuteWorkerAsync<PatchActivationWorkflow>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (PatchActivationWorkflow wf) => wf.RunAsync(operation, false),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                await AssertTaskFailureContainsEventuallyAsync(handle, expectedError);
+            },
+            new TemporalWorkerOptions
+            {
+                PatchActivationCallback = input =>
+                {
+                    switch (input.PatchId)
+                    {
+                        case "command":
+                            Workflow.UpsertMemo(MemoUpdate.ValueSet("key", "value"));
+                            break;
+                        case "wait":
+                            _ = Workflow.WaitConditionAsync(() => true);
+                            break;
+                        case "run-task":
+                            _ = Workflow.RunTaskAsync(() => Task.CompletedTask);
+                            break;
+                        case "random":
+                            _ = Workflow.Random.Next();
+                            break;
+                        case "patch":
+                            _ = Workflow.Patched("nested-patch");
+                            break;
+                        case "current-details":
+                            Workflow.CurrentDetails = "changed in callback";
+                            break;
+                        case "handler-add":
+                            Workflow.Queries["callback-query"] =
+                                WorkflowQueryDefinition.CreateWithoutAttribute(
+                                    "callback-query", () => true);
+                            break;
+                        case "handler-remove":
+                            Workflow.Queries.Remove(nameof(PatchActivationWorkflow.FirstPatchResult));
+                            break;
+                        case "dynamic-handler":
+                            Workflow.DynamicQuery = WorkflowQueryDefinition.CreateWithoutAttribute(
+                                null, (string _queryName, IRawValue[] _args) => true);
+                            break;
+                        case "continue-as-new":
+                            throw Workflow.CreateContinueAsNewException(
+                                (PatchActivationWorkflow wf) => wf.RunAsync("continued", false));
+                    }
+                    return true;
+                },
+            });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_PatchActivationCallback_RejectsReadOnlyCallsFromQueryAndValidator()
+    {
+        var calls = 0;
+        await ExecuteWorkerAsync<PatchActivationWorkflow>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (PatchActivationWorkflow wf) => wf.RunAsync("main-patch", true),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                Assert.False(await handle.QueryAsync(wf => wf.FirstPatchResult()));
+
+                var queryExc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
+                    () => handle.QueryAsync(wf => wf.PatchFromQuery("query-patch")));
+                Assert.Contains("Cannot patch in this context", queryExc.Message);
+
+                var updateExc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
+                    () => handle.ExecuteUpdateAsync(wf => wf.PatchFromUpdateAsync("validator-patch")));
+                Assert.Contains("Cannot patch in this context", updateExc.InnerException?.Message);
+
+                await handle.SignalAsync(wf => wf.ReleaseAsync());
+                Assert.Equal([false, false], await handle.GetResultAsync());
+            },
+            new TemporalWorkerOptions
+            {
+                PatchActivationCallback = _ =>
+                {
+                    Interlocked.Increment(ref calls);
+                    return false;
+                },
+            });
+        Assert.Equal(1, calls);
     }
 
     [Fact]

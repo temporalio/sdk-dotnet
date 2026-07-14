@@ -6,7 +6,7 @@ using System.Linq;
 namespace Temporalio.Worker
 {
     /// <summary>
-    /// Specialized dictionary that invokes a callback on each value set (but not value delete).
+    /// Specialized dictionary that invokes callbacks before mutation and after each value set.
     /// </summary>
     /// <typeparam name="TKey">Dictionary key type.</typeparam>
     /// <typeparam name="TValue">Dictionary value type.</typeparam>
@@ -18,18 +18,23 @@ namespace Temporalio.Worker
     {
         private readonly Dictionary<TKey, TValue> dict;
         private readonly Action<TKey, TValue> callback;
+        private readonly Action beforeMutation;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NotifyOnSetDictionary{TKey, TValue}"/> class.
         /// </summary>
         /// <param name="copyFrom">Dictionary to copy existing values from.</param>
         /// <param name="callback">Callback to invoke on value set.</param>
+        /// <param name="beforeMutation">Callback to invoke before any mutation.</param>
         public NotifyOnSetDictionary(
-            IEnumerable<KeyValuePair<TKey, TValue>> copyFrom, Action<TKey, TValue> callback)
+            IEnumerable<KeyValuePair<TKey, TValue>> copyFrom,
+            Action<TKey, TValue> callback,
+            Action beforeMutation)
         {
             // Can't use kvp enumerable constructor on Dictionary, too new
             dict = copyFrom.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
             this.callback = callback;
+            this.beforeMutation = beforeMutation;
         }
 
         /// <inheritdoc />
@@ -71,7 +76,11 @@ namespace Temporalio.Worker
         public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
 
         /// <inheritdoc />
-        public void Clear() => dict.Clear();
+        public void Clear()
+        {
+            beforeMutation();
+            dict.Clear();
+        }
 
         /// <inheritdoc />
         public bool Contains(KeyValuePair<TKey, TValue> item) =>
@@ -88,11 +97,18 @@ namespace Temporalio.Worker
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => dict.GetEnumerator();
 
         /// <inheritdoc />
-        public bool Remove(TKey key) => dict.Remove(key);
+        public bool Remove(TKey key)
+        {
+            beforeMutation();
+            return dict.Remove(key);
+        }
 
         /// <inheritdoc />
-        public bool Remove(KeyValuePair<TKey, TValue> item) =>
-            ((ICollection<KeyValuePair<TKey, TValue>>)dict).Remove(item);
+        public bool Remove(KeyValuePair<TKey, TValue> item)
+        {
+            beforeMutation();
+            return ((ICollection<KeyValuePair<TKey, TValue>>)dict).Remove(item);
+        }
 
         /// <inheritdoc />
         public bool TryGetValue(TKey key, out TValue value) =>
@@ -105,6 +121,7 @@ namespace Temporalio.Worker
 
         private void Set(TKey key, TValue value, bool overwrite)
         {
+            beforeMutation();
             if (!overwrite && ContainsKey(key))
             {
                 throw new ArgumentException("Key already exists");

@@ -295,7 +295,9 @@ namespace Temporalio.Worker
         /// <remarks>
         /// The callback is only invoked for a newly encountered patch. Existing history markers,
         /// replay, and <see cref="Workflow.DeprecatePatch" /> bypass the callback. Returning <c>false</c>
-        /// leaves the patch inactive and does not record a patch marker.
+        /// leaves the patch inactive and does not record a patch marker. The callback runs in a
+        /// read-only workflow context and therefore cannot use workflow randomness, wait, or
+        /// schedule workflow commands.
         /// </remarks>
         /// <remarks>WARNING: This property is experimental and may change in the future.</remarks>
         public Func<PatchActivationInput, bool>? PatchActivationCallback { get; set; }
