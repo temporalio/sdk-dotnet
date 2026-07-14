@@ -229,7 +229,7 @@ namespace Temporalio.Nexus
         public string WorkflowId { get; }
 
         /// <summary>
-        /// Gets the workflow run ID extracted from the operation token. May be empty.
+        /// Gets the workflow run ID extracted from the operation token.
         /// </summary>
         public string RunId { get; }
 

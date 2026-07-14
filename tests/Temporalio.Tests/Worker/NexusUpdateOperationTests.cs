@@ -15,13 +15,12 @@ using Xunit.Abstractions;
 /// End-to-end scaffold for UpdateWorkflow-backed Nexus operations, encoding the reviewer scenario
 /// punch-list from the feature's design.
 /// <para>
-/// Every test here is gated on <see cref="WorkflowEnvironment.SupportsNexusUpdateCallbacks"/> and is
-/// skipped unless the environment can deliver update-completion callbacks
+/// Every test here is gated on the <c>TEMPORAL_TEST_NEXUS_UPDATE_CALLBACKS</c> environment variable
+/// and is skipped unless the environment can deliver update-completion callbacks
 /// (<c>history.enableUpdateCallbacks</c> plus a Nexus callback-endpoint template). The pinned local
 /// dev server does not support these yet, so these tests are ALL currently blocked purely on that
-/// server-capability gap. When the dev server is upgraded and the flags are added in
-/// <see cref="WorkflowEnvironment"/>, the gate flips and these tests auto-run — no code change here
-/// required.
+/// server-capability gap. Set <c>TEMPORAL_TEST_NEXUS_UPDATE_CALLBACKS=true</c> when pointing at a
+/// capable server to run them — no code change here required.
 /// </para>
 /// </summary>
 public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
@@ -260,13 +259,13 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
 
     private void SkipIfUpdateCallbacksUnsupported()
     {
-        if (!Env.SupportsNexusUpdateCallbacks)
+        if (System.Environment.GetEnvironmentVariable("TEMPORAL_TEST_NEXUS_UPDATE_CALLBACKS") != "true")
         {
             throw new SkipException(
                 "Environment does not support UpdateWorkflow-backed Nexus operations. Requires the " +
                 "dev server to deliver update-completion callbacks (history.enableUpdateCallbacks) " +
                 "with a Nexus callback-endpoint template; the pinned dev server " +
-                "(v1.7.1-standalone-nexus-operations) does not yet support these. Set " +
+                "(v1.7.2-standalone-nexus-operations) does not yet support these. Set " +
                 "TEMPORAL_TEST_NEXUS_UPDATE_CALLBACKS=true when pointing at a capable server.");
         }
     }
