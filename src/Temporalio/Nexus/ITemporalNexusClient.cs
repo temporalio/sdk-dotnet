@@ -79,7 +79,7 @@ namespace Temporalio.Nexus
         /// </summary>
         /// <remarks>
         /// <para>Only <see cref="WorkflowUpdateStage.Accepted"/> is supported for
-        /// <c>WaitForStage</c>. The operation requires a callback URL to be present.</para>
+        /// <c>WaitForStage</c>. </para>
         /// <para>Returns an async result carrying an update-workflow token, unless the update has
         /// already completed (e.g. a retried request with the same update ID), in which case a sync
         /// result is returned; an update that completed with an error surfaces as a failed
