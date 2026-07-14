@@ -81,6 +81,11 @@ to docs, or any other relevant information.
 - Fixed `ClientEnvConfig` TLS-disabled profiles to preserve disabled TLS in connection options.
 - OTLP metric export failures are now logged through Core telemetry when OpenTelemetry's periodic metric reader reports an export error.
 - Worker heartbeat now samples host CPU/memory at the heartbeat interval (only when enabled) rather than every 100ms.
+### Added
+
+- Added the `[TemporalOperation]` attribute for declaring a Temporal-backed Nexus operation start
+  handler directly on a method within a `[NexusServiceHandler]` class. It is mutually
+  exclusive with `[NexusOperationHandler]` on the same method.
 
 ### [1.16.0] - 2026-07-01
 

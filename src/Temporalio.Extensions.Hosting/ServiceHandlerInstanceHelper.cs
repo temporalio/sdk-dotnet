@@ -48,6 +48,17 @@ namespace Temporalio.Extensions.Hosting
                     .FirstOrDefault(o => o.MethodInfo?.Name == method.Name);
                 if (opDef == null)
                 {
+                    // A built-in [NexusOperationHandler] method that maps to no operation is an
+                    // error, mirroring NexusRpc's ServiceHandlerInstance.FromInstance. Extension
+                    // attributes such as [TemporalOperation] are only consulted for name-matched
+                    // operations, so a method carrying only such an attribute is silently skipped.
+                    if (method.GetCustomAttribute<NexusOperationHandlerAttribute>() != null)
+                    {
+                        throw new ArgumentException(
+                            $"Failed obtaining operation handler from {method.Name}",
+                            new ArgumentException(
+                                "No matching NexusOperation on the service interface"));
+                    }
                     continue;
                 }
                 IOperationHandler<object?, object?>? handler;
