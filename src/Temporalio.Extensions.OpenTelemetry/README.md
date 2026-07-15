@@ -34,7 +34,8 @@ using var tracerProvider = Sdk.CreateTracerProviderBuilder().
     AddSource(
         TracingInterceptor.ClientSource.Name,
         TracingInterceptor.WorkflowsSource.Name,
-        TracingInterceptor.ActivitiesSource.Name).
+        TracingInterceptor.ActivitiesSource.Name,
+        TracingInterceptor.NexusSource.Name).
     AddConsoleExporter().
     Build();
 
