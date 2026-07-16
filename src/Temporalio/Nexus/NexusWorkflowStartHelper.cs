@@ -165,7 +165,7 @@ namespace Temporalio.Nexus
             // token derived from it) is never empty.
             if (string.IsNullOrEmpty(options.Id))
             {
-                options.Id = string.IsNullOrEmpty(nexusStartContext.RequestId)
+                options.Id = string.IsNullOrWhiteSpace(nexusStartContext.RequestId)
                     ? Guid.NewGuid().ToString()
                     : nexusStartContext.RequestId;
             }
@@ -178,7 +178,7 @@ namespace Temporalio.Nexus
             }
 
             var client = temporalContext.TemporalClient;
-            var namespace_ = client.Options.Namespace;
+            var @namespace_ = client.Options.Namespace;
 
             // Generate the operation token before starting the update; it is needed for the callback
             // header.

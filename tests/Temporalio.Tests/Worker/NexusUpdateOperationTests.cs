@@ -127,7 +127,7 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
                 taskQueue, endpoint, new(counter.Id, Amount: 5, UpdateId: "valid-update"));
             Assert.Equal(5, await caller.GetResultAsync<int>());
 
-            // Coverage: the operation was scheduled exactly once on the caller. 
+            // Coverage: the operation was scheduled exactly once on the caller.
             Assert.Single(
                 (await caller.FetchHistoryAsync()).Events,
                 e => e.EventType == EventType.NexusOperationScheduled);
@@ -205,10 +205,34 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
                 taskQueue, endpoint, new(counter.Id, Amount: 5, UpdateId: "reused-id"));
             Assert.Equal(5, await first.GetResultAsync<int>());
 
-            // Same update ID: the counter must not increment again.
+            // Same update ID against the now-completed update: the counter must not increment again.
             var second = await RunCallerAsync(
                 taskQueue, endpoint, new(counter.Id, Amount: 5, UpdateId: "reused-id"));
             Assert.Equal(5, await second.GetResultAsync<int>());
+
+            // Distinguish the two operations' execution modes via the caller histories. The
+            // presence of a NexusOperationStarted event is the reliable async/sync separator on
+            // this server: an async operation records scheduled -> started (with an operation
+            // token) -> completed, whereas an operation that completes synchronously inline records
+            // only scheduled -> completed.
+            var firstEvents = (await first.FetchHistoryAsync()).Events;
+            var secondEvents = (await second.FetchHistoryAsync()).Events;
+
+            // First op (fresh update ID): async. Per NEXUS-489 the operation only waits for the
+            // Accepted stage, so it starts asynchronously and carries an operation token.
+            var firstStarted = Assert.Single(
+                firstEvents, e => e.EventType == EventType.NexusOperationStarted);
+            Assert.NotEmpty(firstStarted.NexusOperationStartedEventAttributes.OperationToken);
+
+            // Second op (reusing the completed update ID): synchronous. It dedupes onto the already
+            // completed update and completes inline, so there is no NexusOperationStarted marker; it
+            // goes scheduled -> completed directly.
+            Assert.DoesNotContain(
+                secondEvents, e => e.EventType == EventType.NexusOperationStarted);
+            Assert.Contains(
+                secondEvents, e => e.EventType == EventType.NexusOperationScheduled);
+            Assert.Contains(
+                secondEvents, e => e.EventType == EventType.NexusOperationCompleted);
         });
     }
 
