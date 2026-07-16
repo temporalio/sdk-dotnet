@@ -99,6 +99,7 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
                         "--dynamic-config-value", "callback.allowedAddresses=[{\"Pattern\":\"*\",\"AllowInsecure\":true}]", // SDK tests use arbitrary callback URLs, permit that on the server
                         "--dynamic-config-value", "nexusoperation.enableStandalone=true",
                         "--dynamic-config-value", "history.enableChasmCallbacks=true",
+                        "--dynamic-config-value", "history.enableUpdateCallbacks=true",
                         // Enable Nexus cancellation types
                         "--dynamic-config-value",
                         "component.nexusoperations.recordCancelRequestCompletionEvents=true",

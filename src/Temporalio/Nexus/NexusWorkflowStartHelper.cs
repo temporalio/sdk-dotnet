@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NexusRpc;
@@ -227,6 +228,21 @@ namespace Temporalio.Nexus
             options.RequestId = nexusStartContext.RequestId;
             var responseInfo = new UpdateResponseInfo();
             options.ResponseInfo = responseInfo;
+
+            // Cancel the (potentially long-polling) update-start RPC if the Nexus operation is
+            // cancelled — e.g. worker shutdown or operation timeout. StartUpdateAsync with
+            // WaitForStage.Accepted blocks until the update is accepted; without forwarding the
+            // operation's cancellation token, a target task queue with no worker would leave this
+            // handler task blocked and wedge worker drain.
+            options.Rpc = options.Rpc is { } existingRpc
+                ? (RpcOptions)existingRpc.Clone()
+                : new RpcOptions();
+            using var linkedStartCts = options.Rpc.CancellationToken is { } userStartToken
+                ? CancellationTokenSource.CreateLinkedTokenSource(
+                    userStartToken, nexusStartContext.CancellationToken)
+                : null;
+            options.Rpc.CancellationToken =
+                linkedStartCts?.Token ?? nexusStartContext.CancellationToken;
 
             var updateHandle = await client.GetWorkflowHandle(workflowId)
                 .StartUpdateAsync<TResult>(update, args, options).ConfigureAwait(false);

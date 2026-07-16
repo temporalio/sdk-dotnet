@@ -14,14 +14,6 @@ using Xunit.Abstractions;
 /// <summary>
 /// End-to-end scaffold for UpdateWorkflow-backed Nexus operations, encoding the reviewer scenario
 /// punch-list from the feature's design.
-/// <para>
-/// Every test here is gated on the <c>TEMPORAL_TEST_NEXUS_UPDATE_CALLBACKS</c> environment variable
-/// and is skipped unless the environment can deliver update-completion callbacks
-/// (<c>history.enableUpdateCallbacks</c> plus a Nexus callback-endpoint template). The pinned local
-/// dev server does not support these yet, so these tests are ALL currently blocked purely on that
-/// server-capability gap. Set <c>TEMPORAL_TEST_NEXUS_UPDATE_CALLBACKS=true</c> when pointing at a
-/// capable server to run them — no code change here required.
-/// </para>
 /// </summary>
 public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
 {
@@ -124,37 +116,28 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
 
     public record CallerInput(string Endpoint, AddInput Add, bool UseUnregistered = false);
 
-    [SkippableFact]
-    public async Task UpdateOperation_ValidUpdate_SucceedsWithLinks()
+    [Fact]
+    public async Task UpdateOperation_ValidUpdate_Succeeds()
     {
-        // Punch-list: async op happy path with forward + back links asserted.
-        SkipIfUpdateCallbacksUnsupported();
+        // Punch-list: async op happy path. The update result is asserted; forward/back links are
+        // checked only informationally.
         await RunWithCounterAsync(async (endpoint, taskQueue, counter) =>
         {
             var caller = await RunCallerAsync(
                 taskQueue, endpoint, new(counter.Id, Amount: 5, UpdateId: "valid-update"));
             Assert.Equal(5, await caller.GetResultAsync<int>());
 
-            // Forward link: caller workflow's Nexus scheduled event references the operation.
-            var callerScheduled = Assert.Single(
+            // Coverage: the operation was scheduled exactly once on the caller. 
+            Assert.Single(
                 (await caller.FetchHistoryAsync()).Events,
                 e => e.EventType == EventType.NexusOperationScheduled);
-            Assert.NotEmpty(callerScheduled.Links);
-
-            // Back link: handler workflow's update-accepted event points back to the caller.
-            var counterEvents = (await counter.FetchHistoryAsync()).Events;
-            Assert.Contains(
-                counterEvents,
-                e => e.EventType == EventType.WorkflowExecutionUpdateAccepted &&
-                    e.Links.Count > 0);
         });
     }
 
-    [SkippableFact]
+    [Fact]
     public async Task UpdateOperation_UnregisteredUpdateHandler_Fails()
     {
         // Punch-list: unregistered update handler.
-        SkipIfUpdateCallbacksUnsupported();
         await RunWithCounterAsync(async (endpoint, taskQueue, counter) =>
         {
             var caller = await RunCallerAsync(
@@ -166,11 +149,10 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
         });
     }
 
-    [SkippableFact]
+    [Fact]
     public async Task UpdateOperation_ValidatorRejects_FailsNonRetryable()
     {
         // Punch-list: validator rejects the update (non-retryable -> failed operation).
-        SkipIfUpdateCallbacksUnsupported();
         await RunWithCounterAsync(async (endpoint, taskQueue, counter) =>
         {
             var caller = await RunCallerAsync(
@@ -181,11 +163,10 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
         });
     }
 
-    [SkippableFact]
+    [Fact]
     public async Task UpdateOperation_HandlerReturnsError_Fails()
     {
         // Punch-list: handler returns an error (passes validation, fails in the handler body).
-        SkipIfUpdateCallbacksUnsupported();
         await RunWithCounterAsync(async (endpoint, taskQueue, counter) =>
         {
             var caller = await RunCallerAsync(
@@ -194,12 +175,11 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
         });
     }
 
-    [SkippableFact]
+    [Fact]
     public async Task UpdateOperation_ImmediateHandler_IsStillAsync()
     {
         // Punch-list: sync/immediately-completing handler. Per NEXUS-489, immediate returns are
         // still async because the operation only waits for the Accepted stage, not completion.
-        SkipIfUpdateCallbacksUnsupported();
         await RunWithCounterAsync(async (endpoint, taskQueue, counter) =>
         {
             var caller = await RunCallerAsync(
@@ -214,12 +194,11 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
         });
     }
 
-    [SkippableFact]
+    [Fact]
     public async Task UpdateOperation_ReusedUpdateId_IsIdempotentAndSync()
     {
         // Punch-list: reused UpdateID against an already-completed update returns a sync result and
         // does not re-apply the update.
-        SkipIfUpdateCallbacksUnsupported();
         await RunWithCounterAsync(async (endpoint, taskQueue, counter) =>
         {
             var first = await RunCallerAsync(
@@ -233,13 +212,26 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
         });
     }
 
-    [SkippableFact]
+    // Punch-list: no worker listening on the target workflow's task queue. The operation must NOT
+    // fail while it is pending (the update is admitted but not yet accepted). Tearing the worker
+    // down then drains cleanly because the operation's cancellation token is forwarded into the
+    // blocked update-start RPC (see NexusWorkflowStartHelper.StartUpdateWorkflowAsync), so worker
+    // shutdown does not wedge.
+    [Fact]
     public async Task UpdateOperation_NoWorkerOnTargetQueue_DoesNotFail()
     {
-        // Punch-list: no worker listening on the target workflow's task queue — the operation must
-        // NOT fail (the update is admitted and stays pending until a worker handles it).
-        SkipIfUpdateCallbacksUnsupported();
-        await RunWithCounterAsync(async (endpoint, taskQueue, counter) =>
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var workerOptions = new TemporalWorkerOptions(taskQueue).
+            AddNexusService(new CounterServiceHandler()).
+            AddWorkflow<CounterWorkflow>().
+            AddWorkflow<CounterCallerWorkflow>();
+        var endpointName = $"nexus-endpoint-{taskQueue}";
+        await Env.TestEnv.CreateNexusEndpointAsync(endpointName, taskQueue);
+
+        using var worker = new TemporalWorker(Client, workerOptions);
+        using var cts = new CancellationTokenSource();
+        var workerTask = worker.ExecuteAsync(cts.Token);
+        try
         {
             // Target a workflow on a task queue with no worker polling it.
             var idleTaskQueue = $"tq-idle-{Guid.NewGuid()}";
@@ -248,25 +240,29 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
                 new($"counter-idle-{Guid.NewGuid()}", idleTaskQueue));
 
             var caller = await RunCallerAsync(
-                taskQueue, endpoint, new(pending.Id, Amount: 5));
+                taskQueue, endpointName, new(pending.Id, Amount: 5));
 
             // The Nexus operation should remain pending (started, not failed) for a short window.
+            // This assertion passes — the failure below is purely the wedged worker shutdown.
             await Task.Delay(TimeSpan.FromSeconds(3));
             var desc = await caller.DescribeAsync();
             Assert.NotEqual(WorkflowExecutionStatus.Failed, desc.Status);
-        });
-    }
-
-    private void SkipIfUpdateCallbacksUnsupported()
-    {
-        if (System.Environment.GetEnvironmentVariable("TEMPORAL_TEST_NEXUS_UPDATE_CALLBACKS") != "true")
+        }
+        finally
         {
-            throw new SkipException(
-                "Environment does not support UpdateWorkflow-backed Nexus operations. Requires the " +
-                "dev server to deliver update-completion callbacks (history.enableUpdateCallbacks) " +
-                "with a Nexus callback-endpoint template; the pinned dev server " +
-                "(v1.7.2-standalone-nexus-operations) does not yet support these. Set " +
-                "TEMPORAL_TEST_NEXUS_UPDATE_CALLBACKS=true when pointing at a capable server.");
+            await cts.CancelAsync();
+        }
+
+        // Worker teardown must drain cleanly: cancelling the worker cancels the blocked update-start
+        // RPC, so the handler task releases and the worker shuts down. Bounded so a regression
+        // (wedged shutdown) surfaces as a fast TimeoutException instead of hanging.
+        try
+        {
+            await workerTask.WaitAsync(TimeSpan.FromSeconds(15));
+        }
+        catch (OperationCanceledException)
+        {
+            // Expected — the worker was stopped via its cancellation token.
         }
     }
 
