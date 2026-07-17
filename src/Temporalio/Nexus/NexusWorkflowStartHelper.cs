@@ -136,15 +136,17 @@ namespace Temporalio.Nexus
         /// <param name="args">Update arguments.</param>
         /// <param name="options">Update start options. <c>WaitForStage</c> must be
         /// <see cref="WorkflowUpdateStage.Accepted"/>.</param>
+        /// <param name="runId">Target workflow run ID, or null for the latest run.</param>
         /// <returns>An async result carrying the update-workflow token, or a sync result if the
         /// update already completed.</returns>
-        internal static async Task<TemporalOperationResult<TResult>> StartUpdateWorkflowAsync<TResult>(
+        internal static async Task<TemporalOperationResult<TResult>> StartWorkflowUpdateAsync<TResult>(
             OperationStartContext nexusStartContext,
             NexusOperationExecutionContext temporalContext,
             string workflowId,
             string update,
             IReadOnlyCollection<object?> args,
-            WorkflowUpdateStartOptions options)
+            WorkflowUpdateStartOptions options,
+            string? runId = null)
         {
             // Only WorkflowUpdateStage.Accepted is supported. A Nexus handler has a short deadline,
             // so waiting for full update completion is unsupported; reject any other wait stage as a
@@ -186,7 +188,11 @@ namespace Temporalio.Nexus
             // Generate the operation token before starting the update; it is needed for the callback
             // header.
             var handle = new NexusWorkflowUpdateHandle(
-                client.Options.Namespace, workflowId, runId: string.Empty, updateId: updateId, version: 0);
+                client.Options.Namespace,
+                workflowId,
+                runId: runId ?? string.Empty,
+                updateId: updateId,
+                version: 0);
             var token = handle.ToToken();
 
             // Convert inbound links to backward links carried on the update request.
@@ -245,7 +251,7 @@ namespace Temporalio.Nexus
             options.Rpc.CancellationToken =
                 linkedStartCts?.Token ?? nexusStartContext.CancellationToken;
 
-            var updateHandle = await client.GetWorkflowHandle(workflowId)
+            var updateHandle = await client.GetWorkflowHandle(workflowId, runId)
                 .StartUpdateAsync<TResult>(update, args, options).ConfigureAwait(false);
 
             // Capture the link from the response and add it as an outbound handler link when one is

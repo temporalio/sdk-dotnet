@@ -75,12 +75,12 @@ public class NexusOperationHandlerTests
     }
 
     [Fact]
-    public async Task StartUpdateWorkflowAsync_WrongWaitStage_FailsOperation()
+    public async Task StartWorkflowUpdateAsync_WrongWaitStage_FailsOperation()
     {
         // A wait stage other than Accepted surfaces as a failed operation (retryable at the
         // caller's discretion), not a handler bad request.
         var exc = await Assert.ThrowsAsync<OperationException>(() =>
-            NexusWorkflowStartHelper.StartUpdateWorkflowAsync<int>(
+            NexusWorkflowStartHelper.StartWorkflowUpdateAsync<int>(
                 new OperationStartContext("svc", "op", default, "req-1"),
                 MakeExecContext("my-ns"),
                 "wid",
@@ -91,12 +91,12 @@ public class NexusOperationHandlerTests
     }
 
     [Fact]
-    public async Task StartUpdateWorkflowAsync_MissingCallbackUrl_ThrowsBadRequest()
+    public async Task StartWorkflowUpdateAsync_MissingCallbackUrl_ThrowsBadRequest()
     {
         // Without a callback URL the async update completion cannot be delivered, so start fails
         // fast as a handler bad request (the OperationStartContext has no callback URL by default).
         var exc = await Assert.ThrowsAsync<HandlerException>(() =>
-            NexusWorkflowStartHelper.StartUpdateWorkflowAsync<int>(
+            NexusWorkflowStartHelper.StartWorkflowUpdateAsync<int>(
                 new OperationStartContext("svc", "op", default, "req-1"),
                 MakeExecContext("my-ns"),
                 "wid",

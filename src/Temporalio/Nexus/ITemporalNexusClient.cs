@@ -92,11 +92,13 @@ namespace Temporalio.Nexus
         /// <param name="options">Update start options. <c>WaitForStage</c> must be
         /// <see cref="WorkflowUpdateStage.Accepted"/>. If the update ID is unset, the Nexus request
         /// ID is used.</param>
+        /// <param name="runId">Target workflow run ID, or null for the latest run.</param>
         /// <returns>An operation result for the update.</returns>
-        Task<TemporalOperationResult<TResult>> StartUpdateWorkflowAsync<TWorkflow, TResult>(
+        Task<TemporalOperationResult<TResult>> StartWorkflowUpdateAsync<TWorkflow, TResult>(
             string workflowId,
             Expression<Func<TWorkflow, Task<TResult>>> updateCall,
-            WorkflowUpdateStartOptions options);
+            WorkflowUpdateStartOptions options,
+            string? runId = null);
 
         /// <summary>
         /// Start a workflow update with no result via a lambda invoking the update method, backing
@@ -112,11 +114,13 @@ namespace Temporalio.Nexus
         /// <param name="options">Update start options. <c>WaitForStage</c> must be
         /// <see cref="WorkflowUpdateStage.Accepted"/>. If the update ID is unset, the Nexus request
         /// ID is used.</param>
+        /// <param name="runId">Target workflow run ID, or null for the latest run.</param>
         /// <returns>An operation result for the update.</returns>
-        Task<TemporalOperationResult<NoValue>> StartUpdateWorkflowAsync<TWorkflow>(
+        Task<TemporalOperationResult<NoValue>> StartWorkflowUpdateAsync<TWorkflow>(
             string workflowId,
             Expression<Func<TWorkflow, Task>> updateCall,
-            WorkflowUpdateStartOptions options);
+            WorkflowUpdateStartOptions options,
+            string? runId = null);
 
         /// <summary>
         /// Start a workflow update by name, backing this Nexus operation with the update.
@@ -136,11 +140,13 @@ namespace Temporalio.Nexus
         /// <param name="options">Update start options. <c>WaitForStage</c> must be
         /// <see cref="WorkflowUpdateStage.Accepted"/>. If the update ID is unset, the Nexus request
         /// ID is used.</param>
+        /// <param name="runId">Target workflow run ID, or null for the latest run.</param>
         /// <returns>An operation result for the update.</returns>
-        Task<TemporalOperationResult<TResult>> StartUpdateWorkflowAsync<TResult>(
+        Task<TemporalOperationResult<TResult>> StartWorkflowUpdateAsync<TResult>(
             string workflowId,
             string update,
             IReadOnlyCollection<object?> args,
-            WorkflowUpdateStartOptions options);
+            WorkflowUpdateStartOptions options,
+            string? runId = null);
     }
 }

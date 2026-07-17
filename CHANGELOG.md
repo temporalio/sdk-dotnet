@@ -60,7 +60,7 @@ to docs, or any other relevant information.
 
 - Reduced CPU usage of type-safe calls (e.g. `ExecuteChildWorkflowAsync(wf => wf.RunAsync(arg))`)
   by evaluating non-constant arguments via expression interpretation instead of full IL compilation, when supported by the runtime.
-- Support workflow updates as Nexus operations. `ITemporalNexusClient.StartUpdateWorkflowAsync`
+- Support workflow updates as Nexus operations. `ITemporalNexusClient.StartWorkflowUpdateAsync`
   backs a Nexus operation with a workflow update (async only, `WorkflowUpdateStage.Accepted`).
   Cancellation of update-workflow operations can be customized by overriding
   `TemporalOperationHandler<TInput, TResult>.CancelWorkflowUpdateAsync`.
