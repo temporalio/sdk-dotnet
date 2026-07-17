@@ -25,7 +25,8 @@ public class PayloadSizeLimitsTests : TestBase
     private static readonly string[] PayloadLimitsExtraArgs =
     {
         "--dynamic-config-value", $"limit.blobSize.error={PayloadErrorLimit}",
-        // Warn limit must be specified to have the server enforce the error limit.
+        // The server only enforces the error limit for payloads that also exceed the warn limit, so
+        // the warn limit must be below the error limit.
         "--dynamic-config-value", "limit.blobSize.warn=2048",
     };
 
