@@ -361,7 +361,6 @@ namespace Temporalio.Worker
         /// <remarks>
         /// When <c>false</c> (the default), the worker fails such tasks before sending them. When
         /// <c>true</c>, oversized payloads are sent to the server, which enforces the limit.
-        /// <para>WARNING: This API is experimental and may change in the future.</para>
         /// </remarks>
         public bool DisablePayloadErrorLimit { get; set; }
 
