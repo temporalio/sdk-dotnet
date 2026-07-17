@@ -3155,7 +3155,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [InlineData("wait", "Cannot wait or schedule workflow work in this context")]
     [InlineData("run-task", "Cannot wait or schedule workflow work in this context")]
     [InlineData("random", "Cannot use workflow randomness in this context")]
-    [InlineData("patch", "Cannot patch in this context")]
+    [InlineData("patch", "Cannot create patch in this context")]
     [InlineData("current-details", "Cannot set current details in this context")]
     [InlineData("handler-add", "Cannot modify workflow handlers in this context")]
     [InlineData("handler-remove", "Cannot modify workflow handlers in this context")]
@@ -3232,11 +3232,11 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
                 var queryExc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
                     () => handle.QueryAsync(wf => wf.PatchFromQuery("query-patch")));
-                Assert.Contains("Cannot patch in this context", queryExc.Message);
+                Assert.Contains("Cannot create patch in this context", queryExc.Message);
 
                 var updateExc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
                     () => handle.ExecuteUpdateAsync(wf => wf.PatchFromUpdateAsync("validator-patch")));
-                Assert.Contains("Cannot patch in this context", updateExc.InnerException?.Message);
+                Assert.Contains("Cannot create patch in this context", updateExc.InnerException?.Message);
 
                 await handle.SignalAsync(wf => wf.ReleaseAsync());
                 Assert.Equal([false, false], await handle.GetResultAsync());

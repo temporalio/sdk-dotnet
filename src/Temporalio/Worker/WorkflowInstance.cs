@@ -494,7 +494,7 @@ namespace Temporalio.Worker
         /// <inheritdoc />
         public bool Patch(string patchId, bool deprecated)
         {
-            AssertNotReadOnly("patch");
+            AssertNotReadOnly(deprecated ? "deprecate patch" : "create patch");
             // Use memoized result if present. If this is being deprecated, we can still use
             // memoized result and skip the command.
             if (patchesMemoized.TryGetValue(patchId, out var patched))
