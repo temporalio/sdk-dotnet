@@ -170,6 +170,10 @@ namespace Temporalio.Nexus
                     : nexusStartContext.RequestId;
             }
 
+            // Capture the (now guaranteed non-empty) update ID as a non-nullable local so later
+            // refactors cannot silently reintroduce a null at the usage sites.
+            var updateId = options.Id!;
+
             if (nexusStartContext.CallbackUrl is not { } callbackUrl)
             {
                 throw new HandlerException(
@@ -178,12 +182,11 @@ namespace Temporalio.Nexus
             }
 
             var client = temporalContext.TemporalClient;
-            var @namespace_ = client.Options.Namespace;
 
             // Generate the operation token before starting the update; it is needed for the callback
             // header.
             var handle = new NexusWorkflowUpdateHandle(
-                namespace_, workflowId, runId: string.Empty, updateId: options.Id!, version: 0);
+                client.Options.Namespace, workflowId, runId: string.Empty, updateId: updateId, version: 0);
             var token = handle.ToToken();
 
             // Convert inbound links to backward links carried on the update request.
@@ -226,8 +229,6 @@ namespace Temporalio.Nexus
             }
             options.CompletionCallbacks = new[] { callback };
             options.RequestId = nexusStartContext.RequestId;
-            var responseInfo = new UpdateResponseInfo();
-            options.ResponseInfo = responseInfo;
 
             // Cancel the (potentially long-polling) update-start RPC if the Nexus operation is
             // cancelled — e.g. worker shutdown or operation timeout. StartUpdateAsync with
@@ -252,7 +253,7 @@ namespace Temporalio.Nexus
             // skip attaching the outbound link and continue, surfacing the outcome (sync result or
             // failed operation) normally. On validation failure there may be no history event, so a
             // present link can be a plain workflow link rather than a workflow-event link.
-            if (responseInfo.Link is { } responseLink &&
+            if (updateHandle.Link is { } responseLink &&
                 responseLink.ToNexusLink() is { } outboundLink)
             {
                 nexusStartContext.OutboundLinks.Add(outboundLink);

@@ -1,4 +1,4 @@
-#pragma warning disable SA1402 // We allow multiple types of the same name
+using System.Collections.Generic;
 
 namespace Temporalio.Client
 {
@@ -45,30 +45,12 @@ namespace Temporalio.Client
         /// Gets or sets the completion callbacks. Only settable by the SDK, e.g. when starting an
         /// update-workflow-backed Nexus operation.
         /// </summary>
-        internal System.Collections.Generic.IReadOnlyCollection<Api.Common.V1.Callback>? CompletionCallbacks { get; set; }
+        internal IReadOnlyCollection<Api.Common.V1.Callback>? CompletionCallbacks { get; set; }
 
         /// <summary>
         /// Gets or sets the links. Only settable by the SDK, e.g. when starting an
         /// update-workflow-backed Nexus operation.
         /// </summary>
-        internal System.Collections.Generic.IReadOnlyCollection<Api.Common.V1.Link>? Links { get; set; }
-
-        /// <summary>
-        /// Gets or sets a holder that captures the link returned on the start-update response. Only
-        /// set by the SDK, e.g. when starting an update-workflow-backed Nexus operation.
-        /// </summary>
-        internal UpdateResponseInfo? ResponseInfo { get; set; }
-    }
-
-    /// <summary>
-    /// Mutable holder used to capture the link returned on a start-update response, so callers such
-    /// as the Nexus update-workflow operation can build outbound links.
-    /// </summary>
-    internal sealed class UpdateResponseInfo
-    {
-        /// <summary>
-        /// Gets or sets the link returned on the start-update response, if any.
-        /// </summary>
-        internal Api.Common.V1.Link? Link { get; set; }
+        internal IReadOnlyCollection<Api.Common.V1.Link>? Links { get; set; }
     }
 }

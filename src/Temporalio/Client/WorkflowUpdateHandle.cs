@@ -27,6 +27,12 @@ namespace Temporalio.Client
         internal Outcome? KnownOutcome { get; set; }
 
         /// <summary>
+        /// Gets or sets the link returned on the start-update response, if any. Only set by the SDK,
+        /// e.g. when starting an update-workflow-backed Nexus operation.
+        /// </summary>
+        internal Api.Common.V1.Link? Link { get; set; }
+
+        /// <summary>
         /// Wait for an update result disregarding any return value.
         /// </summary>
         /// <param name="rpcOptions">Extra RPC options.</param>

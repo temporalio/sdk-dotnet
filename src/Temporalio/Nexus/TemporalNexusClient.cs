@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Threading;
 using System.Threading.Tasks;
 using NexusRpc.Handlers;
 using Temporalio.Client;
@@ -22,7 +21,7 @@ namespace Temporalio.Nexus
     {
         private readonly OperationStartContext nexusStartContext;
         private readonly NexusOperationExecutionContext temporalContext;
-        private int asyncStarted;
+        private bool asyncStarted;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalNexusClient"/> class.
@@ -114,13 +113,15 @@ namespace Temporalio.Nexus
             WorkflowUpdateStartOptions options)
         {
             // Reserve the single async-operation slot for this operation invocation. Only a genuine
-            // async result consumes it; a sync result or a failure releases it.
-            if (Interlocked.CompareExchange(ref asyncStarted, 1, 0) != 0)
+            // async result consumes it; a sync result or a failure releases it. A Nexus operation
+            // Start handler runs single-threaded per invocation, so no synchronization is needed.
+            if (asyncStarted)
             {
                 throw new HandlerException(
                     HandlerErrorType.BadRequest,
                     "only one async operation can be started per operation invocation");
             }
+            asyncStarted = true;
             var keepSlot = false;
             try
             {
@@ -138,7 +139,7 @@ namespace Temporalio.Nexus
             {
                 if (!keepSlot)
                 {
-                    Interlocked.Exchange(ref asyncStarted, 0);
+                    asyncStarted = false;
                 }
             }
         }

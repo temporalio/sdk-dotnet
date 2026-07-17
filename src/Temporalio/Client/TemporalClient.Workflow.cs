@@ -500,17 +500,12 @@ namespace Temporalio.Client
                 }
                 while (resp.Stage < UpdateWorkflowExecutionLifecycleStage.Accepted);
 
-                // Capture the response link for update-workflow-backed Nexus operations.
-                if (input.Options.ResponseInfo is { } responseInfo)
-                {
-                    responseInfo.Link = resp.Link;
-                }
-
                 // If the requested stage is completed, wait for result, but discard the update
-                // exception, that will come when _they_ call get result
+                // exception, that will come when _they_ call get result. The response link is
+                // captured on the handle for update-workflow-backed Nexus operations.
                 var handle = new WorkflowUpdateHandle<TResult>(
                     Client, req.Request.Meta.UpdateId, input.Id, resp.UpdateRef.WorkflowExecution.RunId)
-                { KnownOutcome = resp.Outcome };
+                { KnownOutcome = resp.Outcome, Link = resp.Link };
                 if (input.Options.WaitForStage == WorkflowUpdateStage.Completed)
                 {
                     await handle.PollUntilOutcomeAsync(input.Options.Rpc).ConfigureAwait(false);
