@@ -5,6 +5,7 @@ namespace Temporalio.Tests;
 using System;
 using Microsoft.Extensions.Logging;
 using Temporalio.Client;
+using Temporalio.Common.EnvConfig;
 using Temporalio.Worker;
 using Xunit;
 
@@ -12,11 +13,18 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
 {
     public const int ContinueAsNewSuggestedHistoryCount = 50;
 
+    private readonly ClientEnvConfig.ProfileLoadOptions? envConfigOptions;
     private readonly Lazy<KitchenSinkWorker> kitchenSinkWorker;
     private Temporalio.Testing.WorkflowEnvironment? env;
 
     public WorkflowEnvironment()
+        : this(null)
     {
+    }
+
+    internal WorkflowEnvironment(ClientEnvConfig.ProfileLoadOptions? envConfigOptions)
+    {
+        this.envConfigOptions = envConfigOptions;
         kitchenSinkWorker = new(StartKitchenSinkWorker);
     }
 
@@ -30,8 +38,16 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
 
     public async Task InitializeAsync()
     {
-        // If an existing target is given via environment variable, use that
-        if (Environment.GetEnvironmentVariable("TEMPORAL_TEST_CLIENT_TARGET_HOST") is string host)
+        if (string.Equals(
+            Environment.GetEnvironmentVariable("TEMPORAL_TEST_ENV_CONFIG_SERVER"),
+            "true",
+            StringComparison.OrdinalIgnoreCase))
+        {
+            var options = ClientEnvConfig.LoadClientConnectOptions(envConfigOptions);
+            env = new(await TemporalClient.ConnectAsync(options));
+        }
+        // If an existing target is given via legacy environment variable, use that
+        else if (Environment.GetEnvironmentVariable("TEMPORAL_TEST_CLIENT_TARGET_HOST") is string host)
         {
             var options = new TemporalClientConnectOptions(host)
             {
