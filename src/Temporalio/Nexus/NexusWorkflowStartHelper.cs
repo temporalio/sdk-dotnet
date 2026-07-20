@@ -161,20 +161,29 @@ namespace Temporalio.Nexus
             // state (ID, links, callbacks, request ID) back to a caller that reuses the instance.
             options = (WorkflowUpdateStartOptions)options.Clone();
 
-            // If an update ID is not provided, use the Nexus request ID. This protects against
-            // retried requests (e.g. due to a network failure) spawning duplicate updates. If the
-            // request ID is also empty, generate a fallback so the update ID (and the operation
-            // token derived from it) is never empty.
-            if (string.IsNullOrEmpty(options.Id))
+            // Resolve the update ID as a non-nullable local. When the caller doesn't supply one,
+            // fall back to the Nexus request ID: the server assigns it and keeps it stable across
+            // task redeliveries, so the update stays deduplicated if the start task is redelivered.
+            // (The "is { } id" pattern narrows Id to non-null on all targets; IsNullOrWhiteSpace
+            // isn't annotated as a null guard on the netstandard2.0/net462 targets so
+            // caused a compiler error without that.)
+            string updateId;
+            if (options.Id is { } id && !string.IsNullOrWhiteSpace(id))
             {
-                options.Id = string.IsNullOrWhiteSpace(nexusStartContext.RequestId)
-                    ? Guid.NewGuid().ToString()
-                    : nexusStartContext.RequestId;
+                updateId = id;
+            }
+            else if (!string.IsNullOrWhiteSpace(nexusStartContext.RequestId))
+            {
+                updateId = nexusStartContext.RequestId;
+            }
+            else
+            {
+                throw new HandlerException(
+                    HandlerErrorType.Internal,
+                    "no update ID supplied and the Nexus request ID is empty");
             }
 
-            // Capture the (now guaranteed non-empty) update ID as a non-nullable local so later
-            // refactors cannot silently reintroduce a null at the usage sites.
-            var updateId = options.Id!;
+            options.Id = updateId;
 
             if (nexusStartContext.CallbackUrl is not { } callbackUrl)
             {
