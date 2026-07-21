@@ -76,7 +76,6 @@ namespace Temporalio.Workflows
         /// static details set at start, this value can be updated throughout the life of the
         /// workflow. This can be in Temporal markdown format and can span multiple lines.
         /// </summary>
-        /// <remarks>WARNING: This setting is experimental.</remarks>
         public static string CurrentDetails
         {
             get => Context.CurrentDetails;

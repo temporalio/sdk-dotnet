@@ -45,7 +45,6 @@ namespace Temporalio.Client
         /// Gets or sets a single-line fixed summary for this workflow execution that may appear in
         /// UI/CLI. This can be in single-line Temporal markdown format.
         /// </summary>
-        /// <remarks>WARNING: This setting is experimental.</remarks>
         public string? StaticSummary { get; set; }
 
         /// <summary>
@@ -54,7 +53,6 @@ namespace Temporalio.Client
         /// fixed value on the workflow that cannot be updated. For details that can be updated, use
         /// <see cref="Workflows.Workflow.CurrentDetails" /> within the workflow.
         /// </summary>
-        /// <remarks>WARNING: This setting is experimental.</remarks>
         public string? StaticDetails { get; set; }
 
         /// <summary>
