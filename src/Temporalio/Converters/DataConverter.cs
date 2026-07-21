@@ -12,6 +12,18 @@ namespace Temporalio.Converters
         IPayloadCodec? PayloadCodec = null)
     : IWithSerializationContext<DataConverter>
     {
+        private readonly IPayloadConverter payloadConverter =
+            TemporalDataModelPayloadConverter.Wrap(PayloadConverter);
+
+        /// <summary>
+        /// Gets the payload converter.
+        /// </summary>
+        public IPayloadConverter PayloadConverter
+        {
+            get => payloadConverter;
+            init => payloadConverter = TemporalDataModelPayloadConverter.Wrap(value);
+        }
+
         /// <summary>
         /// Gets default data converter instance.
         /// </summary>

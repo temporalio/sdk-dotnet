@@ -107,6 +107,23 @@ public class PayloadConverterTests : TestBase
         Assert.Contains(ActivityType.Descriptor.FullName, e.Message);
     }
 
+    [Fact]
+    public void ToPayload_DataModelHooks_Succeed()
+    {
+        var dataConverter = new DataConverter(
+            new ContextStringPayloadConverter(),
+            new DefaultFailureConverter()).WithSerializationContext(
+                new ISerializationContext.Workflow("default", "workflow-id"));
+        var value = new DataModelHookValue("payload-value");
+
+        var payload = dataConverter.PayloadConverter.ToPayload(value);
+        var memo = (Memo)new DefaultPayloadConverter().ToValue(payload, typeof(Memo))!;
+        Assert.Equal("workflow-id:payload-value", memo.Fields["value"].Data.ToStringUtf8());
+        Assert.Equal(
+            value,
+            dataConverter.PayloadConverter.ToValue(payload, typeof(DataModelHookValue)));
+    }
+
     private static Payload AssertPayload(
         object? value,
         string expectedEncoding,
@@ -160,7 +177,7 @@ public class PayloadConverterTests : TestBase
     {
         public NoJsonProtoPayloadConverter()
             : base(
-                ((DefaultPayloadConverter)DataConverter.Default.PayloadConverter).
+                new DefaultPayloadConverter().
                     EncodingConverters.Where(c => c is not JsonProtoConverter).ToArray())
         {
         }
@@ -173,5 +190,69 @@ public class PayloadConverterTests : TestBase
                 new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase })
         {
         }
+    }
+
+    [TemporalDataModel(typeof(DataModelHookValueConverter))]
+    public sealed record DataModelHookValue(string Value);
+
+    public class DataModelHookValueConverter : ITemporalDataModelConverter
+    {
+        public Type DataModelType => typeof(Memo);
+
+        public object ToDataModel(object? value, IPayloadConverter payloadConverter) =>
+            new Memo
+            {
+                Fields =
+                {
+                    ["value"] = payloadConverter.ToPayload(((DataModelHookValue)value!).Value),
+                },
+            };
+
+        public object FromDataModel(object? dataModel, IPayloadConverter payloadConverter) =>
+            new DataModelHookValue(
+                (string)payloadConverter.ToValue(((Memo)dataModel!).Fields["value"], typeof(string))!);
+    }
+
+    public class ContextStringPayloadConverter :
+        IPayloadConverter,
+        IWithSerializationContext<IPayloadConverter>
+    {
+        private static readonly DefaultPayloadConverter FallbackPayloadConverter =
+            new DefaultPayloadConverter();
+
+        private readonly string? workflowId;
+
+        public ContextStringPayloadConverter(string? workflowId = null) =>
+            this.workflowId = workflowId;
+
+        public Payload ToPayload(object? value)
+        {
+            if (value is string str)
+            {
+                return new()
+                {
+                    Metadata =
+                    {
+                        ["encoding"] = ByteString.CopyFromUtf8("test/context-string"),
+                    },
+                    Data = ByteString.CopyFromUtf8($"{workflowId}:{str}"),
+                };
+            }
+            return FallbackPayloadConverter.ToPayload(value);
+        }
+
+        public object? ToValue(Payload payload, Type type)
+        {
+            if (type == typeof(string) &&
+                payload.Metadata["encoding"].ToStringUtf8() == "test/context-string")
+            {
+                var encoded = payload.Data.ToStringUtf8();
+                return encoded[(encoded.IndexOf(':') + 1)..];
+            }
+            return FallbackPayloadConverter.ToValue(payload, type);
+        }
+
+        public IPayloadConverter WithSerializationContext(ISerializationContext context) =>
+            new ContextStringPayloadConverter(((ISerializationContext.IHasWorkflow)context).WorkflowId);
     }
 }

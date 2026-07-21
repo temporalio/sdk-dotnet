@@ -32,6 +32,10 @@ to docs, or any other relevant information.
   you disable size enforcement by setting `DisablePayloadErrorLimit` to `true` on the worker.
 ### Added
 
+- Added SDK payload converter support for values and target types that expose
+  Temporal data-model conversion hooks. This lets hook-aware types delegate
+  their wire representation to the configured payload converter, preserving SDK
+  behavior such as serialization contexts for nested payload fields.
 - Added the experimental `TemporalWorkerOptions.PatchActivationCallback`, allowing workers to
   decide whether a first non-replay `Workflow.Patched` call should activate a patch during rolling
   deployments.

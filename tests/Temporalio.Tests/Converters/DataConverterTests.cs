@@ -1,6 +1,7 @@
 namespace Temporalio.Tests.Converters;
 
 using System;
+using Google.Protobuf;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
 using Xunit;
@@ -16,17 +17,29 @@ public class DataConverterTests : TestBase
     [Fact]
     public void NewDataConverter_WithPayloadConverter_ProperlyInitializes()
     {
+        var payloadConverter = new MyPayloadConverter();
         var newConverter = DataConverter.Default with
         {
-            PayloadConverter = new MyPayloadConverter(),
+            PayloadConverter = payloadConverter,
         };
-        Assert.IsType<MyPayloadConverter>(newConverter.PayloadConverter);
+        Assert.NotSame(payloadConverter, newConverter.PayloadConverter);
+        Assert.Equal(
+            "payload",
+            newConverter.PayloadConverter.ToValue(
+                newConverter.PayloadConverter.ToPayload("payload"), typeof(string)));
     }
 
     public class MyPayloadConverter : IPayloadConverter
     {
-        public Payload ToPayload(object? value) => throw new NotImplementedException();
+        public Payload ToPayload(object? value) => new()
+        {
+            Metadata =
+            {
+                ["encoding"] = ByteString.CopyFromUtf8("test/plain"),
+            },
+            Data = ByteString.CopyFromUtf8((string)value!),
+        };
 
-        public object? ToValue(Payload payload, Type type) => throw new NotImplementedException();
+        public object? ToValue(Payload payload, Type type) => payload.Data.ToStringUtf8();
     }
 }

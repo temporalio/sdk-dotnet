@@ -7876,7 +7876,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         // Context-aware data converter and client
         var dataConverter = new DataConverter(
             PayloadConverter: new DefaultPayloadConverter(
-                ((DefaultPayloadConverter)Client.Options.DataConverter.PayloadConverter).EncodingConverters.Select(e =>
+                new DefaultPayloadConverter().EncodingConverters.Select(e =>
                     e is JsonPlainConverter ? new ContextJsonPlainConverter() : e).ToArray()),
             FailureConverter: new ContextFailureConverter(),
             PayloadCodec: new ContextPayloadCodec());
