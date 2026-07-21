@@ -27,6 +27,8 @@ to docs, or any other relevant information.
 
 ### Changed
 
+- User metadata fields (StaticSummary, StaticDetails, CurrentDetails, Activity Summary, Timer
+  Summary) are no longer marked as experimental.
 - Hardened read-only workflow context enforcement so queries, update validators, and patch activation
   callbacks cannot mutate handlers or workflow details, invoke patches, or schedule workflow work.
   Patch activation callbacks also cannot use workflow randomness or issue workflow commands.
