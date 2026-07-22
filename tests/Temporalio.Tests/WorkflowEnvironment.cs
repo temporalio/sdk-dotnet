@@ -18,7 +18,7 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
     private Temporalio.Testing.WorkflowEnvironment? env;
 
     public WorkflowEnvironment()
-        : this(null)
+        : this(UseEnvConfigFromEnvironment() ? new ClientEnvConfig.ProfileLoadOptions() : null)
     {
     }
 
@@ -38,10 +38,7 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
 
     public async Task InitializeAsync()
     {
-        if (string.Equals(
-            Environment.GetEnvironmentVariable("TEMPORAL_TEST_ENV_CONFIG_SERVER"),
-            "true",
-            StringComparison.OrdinalIgnoreCase))
+        if (envConfigOptions != null)
         {
             var options = ClientEnvConfig.LoadClientConnectOptions(envConfigOptions);
             env = new(await TemporalClient.ConnectAsync(options));
@@ -178,6 +175,11 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
         });
         return new(taskQueue, worker, task, comp);
     }
+
+    private static bool UseEnvConfigFromEnvironment() => string.Equals(
+        Environment.GetEnvironmentVariable("TEMPORAL_TEST_ENV_CONFIG_SERVER"),
+        "true",
+        StringComparison.OrdinalIgnoreCase);
 
     private record KitchenSinkWorker(
         string TaskQueue,
