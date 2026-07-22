@@ -6,16 +6,16 @@ using Temporalio.Api.Common.V1;
 namespace Temporalio.Converters
 {
     /// <summary>
-    /// Payload converter wrapper that applies Temporal data-model hooks.
+    /// Payload converter wrapper that applies Temporal transfer type hooks.
     /// </summary>
-    internal sealed class TemporalDataModelPayloadConverter :
+    internal sealed class TemporalTransferTypePayloadConverter :
         IPayloadConverter,
         IWithSerializationContext<IPayloadConverter>
     {
-        private static readonly ConcurrentDictionary<Type, ITemporalDataModelConverter?> Converters = new();
+        private static readonly ConcurrentDictionary<Type, ITemporalTransferTypeConverter?> Converters = new();
         private readonly IPayloadConverter inner;
 
-        private TemporalDataModelPayloadConverter(IPayloadConverter inner) => this.inner = inner;
+        private TemporalTransferTypePayloadConverter(IPayloadConverter inner) => this.inner = inner;
 
         /// <summary>
         /// Wrap a payload converter unless it is already wrapped.
@@ -23,8 +23,8 @@ namespace Temporalio.Converters
         /// <param name="payloadConverter">Payload converter to wrap.</param>
         /// <returns>Wrapped payload converter.</returns>
         public static IPayloadConverter Wrap(IPayloadConverter payloadConverter) =>
-            payloadConverter is TemporalDataModelPayloadConverter ?
-                payloadConverter : new TemporalDataModelPayloadConverter(payloadConverter);
+            payloadConverter is TemporalTransferTypePayloadConverter ?
+                payloadConverter : new TemporalTransferTypePayloadConverter(payloadConverter);
 
         /// <inheritdoc />
         public Payload ToPayload(object? value)
@@ -32,7 +32,7 @@ namespace Temporalio.Converters
             var converter = value == null ? null : Converters.GetOrAdd(value.GetType(), CreateConverter);
             if (converter != null)
             {
-                value = converter.ToDataModel(value, inner);
+                value = converter.ToTransferType(value);
             }
             return inner.ToPayload(value);
         }
@@ -46,8 +46,8 @@ namespace Temporalio.Converters
                 return inner.ToValue(payload, type);
             }
 
-            var dataModelValue = inner.ToValue(payload, converter.DataModelType);
-            return converter.FromDataModel(dataModelValue, inner);
+            var transferTypeValue = inner.ToValue(payload, converter.TransferType);
+            return converter.FromTransferType(transferTypeValue);
         }
 
         /// <inheritdoc/>
@@ -59,41 +59,41 @@ namespace Temporalio.Converters
             }
 
             var contextInner = withContext.WithSerializationContext(context);
-            return ReferenceEquals(contextInner, inner) ? this : new TemporalDataModelPayloadConverter(contextInner);
+            return ReferenceEquals(contextInner, inner) ? this : new TemporalTransferTypePayloadConverter(contextInner);
         }
 
-        private static ITemporalDataModelConverter? CreateConverter(Type type)
+        private static ITemporalTransferTypeConverter? CreateConverter(Type type)
         {
-            var attr = type.GetCustomAttribute<TemporalDataModelAttribute>(inherit: true);
+            var attr = type.GetCustomAttribute<TemporalTransferTypeAttribute>(inherit: true);
             if (attr == null)
             {
                 return null;
             }
 
-            if (!typeof(ITemporalDataModelConverter).IsAssignableFrom(attr.ConverterType))
+            if (!typeof(ITemporalTransferTypeConverter).IsAssignableFrom(attr.ConverterType))
             {
                 throw new InvalidOperationException(
-                    $"Type {type} has a Temporal data-model converter type " +
-                    $"{attr.ConverterType} that does not implement {nameof(ITemporalDataModelConverter)}.");
+                    $"Type {type} has a Temporal transfer type converter type " +
+                    $"{attr.ConverterType} that does not implement {nameof(ITemporalTransferTypeConverter)}.");
             }
             if (attr.ConverterType.ContainsGenericParameters)
             {
                 throw new InvalidOperationException(
-                    $"Type {type} has an open generic Temporal data-model converter type " +
+                    $"Type {type} has an open generic Temporal transfer type converter type " +
                     $"{attr.ConverterType}.");
             }
 
-            if (Activator.CreateInstance(attr.ConverterType) is not ITemporalDataModelConverter converter)
+            if (Activator.CreateInstance(attr.ConverterType) is not ITemporalTransferTypeConverter converter)
             {
                 throw new InvalidOperationException(
-                    $"Type {type} has a Temporal data-model converter type " +
+                    $"Type {type} has a Temporal transfer type converter type " +
                     $"{attr.ConverterType} that could not be instantiated.");
             }
-            if (converter.DataModelType == null)
+            if (converter.TransferType == null)
             {
                 throw new InvalidOperationException(
-                    $"Type {type} has a Temporal data-model converter type " +
-                    $"{attr.ConverterType} with a null data-model type.");
+                    $"Type {type} has a Temporal transfer type converter type " +
+                    $"{attr.ConverterType} with a null transfer type.");
             }
 
             return converter;

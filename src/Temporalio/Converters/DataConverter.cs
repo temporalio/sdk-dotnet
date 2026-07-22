@@ -13,7 +13,7 @@ namespace Temporalio.Converters
     : IWithSerializationContext<DataConverter>
     {
         private readonly IPayloadConverter payloadConverter =
-            TemporalDataModelPayloadConverter.Wrap(PayloadConverter);
+            TemporalTransferTypePayloadConverter.Wrap(PayloadConverter);
 
         /// <summary>
         /// Gets the payload converter.
@@ -21,7 +21,7 @@ namespace Temporalio.Converters
         public IPayloadConverter PayloadConverter
         {
             get => payloadConverter;
-            init => payloadConverter = TemporalDataModelPayloadConverter.Wrap(value);
+            init => payloadConverter = TemporalTransferTypePayloadConverter.Wrap(value);
         }
 
         /// <summary>

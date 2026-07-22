@@ -108,20 +108,19 @@ public class PayloadConverterTests : TestBase
     }
 
     [Fact]
-    public void ToPayload_DataModelHooks_Succeed()
+    public void ToPayload_TransferTypeHooks_Succeed()
     {
         var dataConverter = new DataConverter(
             new ContextStringPayloadConverter(),
             new DefaultFailureConverter()).WithSerializationContext(
                 new ISerializationContext.Workflow("default", "workflow-id"));
-        var value = new DataModelHookValue("payload-value");
+        var value = new TransferTypeHookValue("payload-value");
 
         var payload = dataConverter.PayloadConverter.ToPayload(value);
-        var memo = (Memo)new DefaultPayloadConverter().ToValue(payload, typeof(Memo))!;
-        Assert.Equal("workflow-id:payload-value", memo.Fields["value"].Data.ToStringUtf8());
+        Assert.Equal("workflow-id:payload-value", payload.Data.ToStringUtf8());
         Assert.Equal(
             value,
-            dataConverter.PayloadConverter.ToValue(payload, typeof(DataModelHookValue)));
+            dataConverter.PayloadConverter.ToValue(payload, typeof(TransferTypeHookValue)));
     }
 
     private static Payload AssertPayload(
@@ -192,25 +191,17 @@ public class PayloadConverterTests : TestBase
         }
     }
 
-    [TemporalDataModel(typeof(DataModelHookValueConverter))]
-    public sealed record DataModelHookValue(string Value);
+    [TemporalTransferType(typeof(TransferTypeHookValueConverter))]
+    public sealed record TransferTypeHookValue(string Value);
 
-    public class DataModelHookValueConverter : ITemporalDataModelConverter
+    public class TransferTypeHookValueConverter : ITemporalTransferTypeConverter
     {
-        public Type DataModelType => typeof(Memo);
+        public Type TransferType => typeof(string);
 
-        public object ToDataModel(object? value, IPayloadConverter payloadConverter) =>
-            new Memo
-            {
-                Fields =
-                {
-                    ["value"] = payloadConverter.ToPayload(((DataModelHookValue)value!).Value),
-                },
-            };
+        public object ToTransferType(object? value) => ((TransferTypeHookValue)value!).Value;
 
-        public object FromDataModel(object? dataModel, IPayloadConverter payloadConverter) =>
-            new DataModelHookValue(
-                (string)payloadConverter.ToValue(((Memo)dataModel!).Fields["value"], typeof(string))!);
+        public object FromTransferType(object? transferType) =>
+            new TransferTypeHookValue((string)transferType!);
     }
 
     public class ContextStringPayloadConverter :
