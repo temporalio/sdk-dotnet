@@ -10,7 +10,7 @@ namespace Temporalio.Nexus
     /// carries the identifiers needed to encode/decode an update-workflow operation token.
     /// </summary>
     /// <remarks>WARNING: Nexus support is experimental.</remarks>
-    public class NexusWorkflowUpdateHandle
+    internal class NexusWorkflowUpdateHandle
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NexusWorkflowUpdateHandle"/> class.
@@ -20,7 +20,7 @@ namespace Temporalio.Nexus
         /// <param name="runId">Workflow run ID. May be empty.</param>
         /// <param name="updateId">Update ID.</param>
         /// <param name="version">Operation token version.</param>
-        internal NexusWorkflowUpdateHandle(
+        public NexusWorkflowUpdateHandle(
             string namespace_,
             string workflowId,
             string runId,
@@ -37,27 +37,27 @@ namespace Temporalio.Nexus
         /// <summary>
         /// Gets the namespace.
         /// </summary>
-        internal string Namespace { get; private init; }
+        public string Namespace { get; private init; }
 
         /// <summary>
         /// Gets the workflow ID.
         /// </summary>
-        internal string WorkflowId { get; private init; }
+        public string WorkflowId { get; private init; }
 
         /// <summary>
         /// Gets the workflow run ID. May be empty.
         /// </summary>
-        internal string RunId { get; private init; }
+        public string RunId { get; private init; }
 
         /// <summary>
         /// Gets the update ID.
         /// </summary>
-        internal string UpdateId { get; private init; }
+        public string UpdateId { get; private init; }
 
         /// <summary>
         /// Gets the token version.
         /// </summary>
-        internal int Version { get; private init; }
+        public int Version { get; private init; }
 
         /// <summary>
         /// Create a handle based on the string token.
@@ -65,7 +65,7 @@ namespace Temporalio.Nexus
         /// <param name="token">Operation token.</param>
         /// <returns>Created handle.</returns>
         /// <exception cref="ArgumentException">If the token is invalid.</exception>
-        internal static NexusWorkflowUpdateHandle FromToken(string token)
+        public static NexusWorkflowUpdateHandle FromToken(string token)
         {
             var data = NexusWorkflowRunHandle.ParseToken(token);
             if (string.IsNullOrEmpty(data.Namespace))
@@ -101,7 +101,7 @@ namespace Temporalio.Nexus
         /// <exception cref="ArgumentException">If the namespace, workflow ID, or update ID is
         /// empty. An empty update ID would produce a token that breaks server-side dedup, so it is
         /// rejected here (matching the Go and TypeScript token generators).</exception>
-        internal string ToToken()
+        public string ToToken()
         {
             if (string.IsNullOrEmpty(Namespace) ||
                 string.IsNullOrEmpty(WorkflowId) ||

@@ -51,30 +51,50 @@ namespace Temporalio.Nexus
         }
 
         /// <inheritdoc/>
-        public async Task<TemporalOperationResult<NoValue>> StartWorkflowAsync<TWorkflow>(
+        public Task<TemporalOperationResult<NoValue>> StartWorkflowAsync<TWorkflow>(
             Expression<Func<TWorkflow, Task>> workflowRunCall, WorkflowOptions options)
         {
             var (runMethod, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
-            var handle = await NexusWorkflowStartHelper.StartWorkflowAsync(
-                nexusStartContext,
-                temporalContext,
+            return StartWorkflowAsync<NoValue>(
                 Workflows.WorkflowDefinition.NameFromRunMethodForCall(runMethod),
                 args,
-                options).ConfigureAwait(false);
-            return TemporalOperationResult<NoValue>.AsyncResult(handle.ToToken());
+                options);
         }
 
         /// <inheritdoc/>
         public async Task<TemporalOperationResult<TResult>> StartWorkflowAsync<TResult>(
             string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options)
         {
-            var handle = await NexusWorkflowStartHelper.StartWorkflowAsync(
-                nexusStartContext,
-                temporalContext,
-                workflow,
-                args,
-                options).ConfigureAwait(false);
-            return TemporalOperationResult<TResult>.AsyncResult(handle.ToToken());
+            // Reserve the single async-operation slot for this operation invocation. Starting a
+            // workflow always produces an async result, so a successful start consumes the slot and
+            // a failure releases it. A Nexus operation Start handler runs single-threaded per
+            // invocation, so no synchronization is needed.
+            if (asyncStarted)
+            {
+                throw new HandlerException(
+                    HandlerErrorType.BadRequest,
+                    "only one async operation can be started per operation invocation");
+            }
+            asyncStarted = true;
+            var keepSlot = false;
+            try
+            {
+                var handle = await NexusWorkflowStartHelper.StartWorkflowAsync(
+                    nexusStartContext,
+                    temporalContext,
+                    workflow,
+                    args,
+                    options).ConfigureAwait(false);
+                keepSlot = true;
+                return TemporalOperationResult<TResult>.AsyncResult(handle.ToToken());
+            }
+            finally
+            {
+                if (!keepSlot)
+                {
+                    asyncStarted = false;
+                }
+            }
         }
 
         /// <inheritdoc/>

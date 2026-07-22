@@ -125,7 +125,20 @@ namespace Temporalio.Nexus
             {
                 throw new HandlerException(HandlerErrorType.BadRequest, "Invalid namespace");
             }
-            if (token.Type == NexusWorkflowRunHandle.UpdateWorkflowOperationTokenType)
+            return token.Type switch
+            {
+                NexusWorkflowRunHandle.WorkflowRunOperationTokenType =>
+                    CancelWorkflowRunAsync(
+                        new TemporalOperationCancelContext(context),
+                        new CancelWorkflowRunInput(token.WorkflowId)),
+                NexusWorkflowRunHandle.UpdateWorkflowOperationTokenType =>
+                    CancelWorkflowUpdateFromTokenAsync(),
+                _ => throw new HandlerException(
+                    HandlerErrorType.BadRequest,
+                    $"Unsupported token type: {token.Type}"),
+            };
+
+            Task CancelWorkflowUpdateFromTokenAsync()
             {
                 // Decode via the update-workflow handle so a malformed token (e.g. missing workflow
                 // ID or update ID) is rejected as a bad request rather than passing empty strings
@@ -144,16 +157,6 @@ namespace Temporalio.Nexus
                     new CancelWorkflowUpdateInput(
                         updateHandle.WorkflowId, updateHandle.RunId, updateHandle.UpdateId));
             }
-            return token.Type switch
-            {
-                NexusWorkflowRunHandle.WorkflowRunOperationTokenType =>
-                    CancelWorkflowRunAsync(
-                        new TemporalOperationCancelContext(context),
-                        new CancelWorkflowRunInput(token.WorkflowId)),
-                _ => throw new HandlerException(
-                    HandlerErrorType.BadRequest,
-                    $"Unsupported token type: {token.Type}"),
-            };
         }
 
         /// <summary>

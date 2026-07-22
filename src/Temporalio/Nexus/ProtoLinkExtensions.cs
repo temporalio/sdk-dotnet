@@ -147,14 +147,10 @@ namespace Temporalio.Nexus
         /// <returns>Nexus link.</returns>
         public static NexusLink ToNexusLink(this Api.Common.V1.Link.Types.Workflow workflow)
         {
-            var builder = new UriBuilder
-            {
-                Scheme = "temporal",
-                Path = "/namespaces/" + Uri.EscapeDataString(workflow.Namespace) + "/workflows/" +
-                    Uri.EscapeDataString(workflow.WorkflowId) + "/" + Uri.EscapeDataString(workflow.RunId) +
-                    "/history",
-            };
-            return new(builder.Uri, Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+            var uriStr = "temporal:///namespaces/" + Uri.EscapeDataString(workflow.Namespace) +
+                "/workflows/" + Uri.EscapeDataString(workflow.WorkflowId) + "/" +
+                Uri.EscapeDataString(workflow.RunId) + "/history";
+            return new(new Uri(uriStr), Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
         }
 
         /// <summary>
