@@ -21,6 +21,8 @@ to docs, or any other relevant information.
 
 ### Added
 
+- Added `WorkflowEnvironment.CreateFromEnvConfigAsync` for creating test workflow environments from
+  client environment configuration.
 - Added the experimental `TemporalWorkerOptions.PatchActivationCallback`, allowing workers to
   decide whether a first non-replay `Workflow.Patched` call should activate a patch during rolling
   deployments.
