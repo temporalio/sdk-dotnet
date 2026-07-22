@@ -66,7 +66,7 @@ public class WorkflowEnvironmentEnvConfigTests
 
         try
         {
-            File.WriteAllText(configPath, "[profile.default]\n");
+            await File.WriteAllTextAsync(configPath, "[profile.default]\n");
 
             foreach (var pair in envVars)
             {
