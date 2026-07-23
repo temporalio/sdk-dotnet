@@ -30,6 +30,19 @@ to docs, or any other relevant information.
   `TemporalConnectionOptions.PayloadLimits`. If you use a proxy between the worker and server that
   alters the size of payloads (e.g. compression, encryption, external storage), it is advised that
   you disable size enforcement by setting `DisablePayloadErrorLimit` to `true` on the worker.
+### Added
+
+- Added the experimental `TemporalWorkerOptions.PatchActivationCallback`, allowing workers to
+  decide whether a first non-replay `Workflow.Patched` call should activate a patch during rolling
+  deployments.
+
+### Changed
+
+- User metadata fields (StaticSummary, StaticDetails, CurrentDetails, Activity Summary, Timer
+  Summary) are no longer marked as experimental.
+- Hardened read-only workflow context enforcement so queries, update validators, and patch activation
+  callbacks cannot mutate handlers or workflow details, invoke patches, or schedule workflow work.
+  Patch activation callbacks also cannot use workflow randomness or issue workflow commands.
 
 ### [1.17.0] - 2026-07-13
 
@@ -72,3 +85,7 @@ to docs, or any other relevant information.
 
 - Reduced CPU usage of type-safe calls (e.g. `ExecuteChildWorkflowAsync(wf => wf.RunAsync(arg))`)
   by evaluating non-constant arguments via expression interpretation instead of full IL compilation, when supported by the runtime.
+- Support workflow updates as Nexus operations. `ITemporalNexusClient.StartWorkflowUpdateAsync`
+  backs a Nexus operation with a workflow update (async only, `WorkflowUpdateStage.Accepted`).
+  Cancellation of update-workflow operations can be customized by overriding
+  `TemporalOperationHandler<TInput, TResult>.CancelWorkflowUpdateAsync`.

@@ -88,15 +88,21 @@ namespace Temporalio.Nexus
         }
 
         /// <summary>
-        /// Convert a proto Link to a Nexus link, dispatching on the populated oneof variant.
+        /// Convert a proto Link to a Nexus link, dispatching on the populated oneof variant. Handles
+        /// the workflow-event, nexus-operation, and workflow variants. Returns <c>null</c> when no
+        /// variant is set (e.g. a rejected update that has no history event to link to), so callers
+        /// can skip it rather than dereferencing an unset variant. Throws for a set-but-unrecognized
+        /// variant.
         /// </summary>
         /// <param name="link">Proto link.</param>
-        /// <returns>Nexus link.</returns>
-        /// <exception cref="ArgumentException">If the link variant is not set or unknown.</exception>
-        public static NexusLink ToNexusLink(this Api.Common.V1.Link link) => link.VariantCase switch
+        /// <returns>Nexus link, or <c>null</c> if no variant is set.</returns>
+        /// <exception cref="ArgumentException">If the link variant is set but unrecognized.</exception>
+        public static NexusLink? ToNexusLink(this Api.Common.V1.Link link) => link.VariantCase switch
         {
             Api.Common.V1.Link.VariantOneofCase.WorkflowEvent => link.WorkflowEvent.ToNexusLink(),
             Api.Common.V1.Link.VariantOneofCase.NexusOperation => link.NexusOperation.ToNexusLink(),
+            Api.Common.V1.Link.VariantOneofCase.Workflow => link.Workflow.ToNexusLink(),
+            Api.Common.V1.Link.VariantOneofCase.None => null,
             _ => throw new ArgumentException($"Unknown link variant: {link.VariantCase}"),
         };
 
@@ -130,6 +136,21 @@ namespace Temporalio.Nexus
                 OperationId = Uri.UnescapeDataString(pathPieces[3]),
                 RunId = Uri.UnescapeDataString(pathPieces[4]),
             };
+        }
+
+        /// <summary>
+        /// Convert a workflow link to a Nexus link. Unlike a workflow-event link, this points at a
+        /// workflow execution without referencing a particular history event, which is used when
+        /// there is no event to link to (e.g. a rejected update).
+        /// </summary>
+        /// <param name="workflow">Workflow link to convert.</param>
+        /// <returns>Nexus link.</returns>
+        public static NexusLink ToNexusLink(this Api.Common.V1.Link.Types.Workflow workflow)
+        {
+            var uriStr = "temporal:///namespaces/" + Uri.EscapeDataString(workflow.Namespace) +
+                "/workflows/" + Uri.EscapeDataString(workflow.WorkflowId) + "/" +
+                Uri.EscapeDataString(workflow.RunId) + "/history";
+            return new(new Uri(uriStr), Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
         }
 
         /// <summary>

@@ -3,6 +3,48 @@
 <Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Suppression>
     <DiagnosticId>CP0006</DiagnosticId>
+    <Target>M:Temporalio.Nexus.ITemporalNexusClient.StartWorkflowUpdateAsync``1(System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Threading.Tasks.Task}},Temporalio.Client.WorkflowUpdateStartOptions,System.String)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0006</DiagnosticId>
+    <Target>M:Temporalio.Nexus.ITemporalNexusClient.StartWorkflowUpdateAsync``1(System.String,System.String,System.Collections.Generic.IReadOnlyCollection{System.Object},Temporalio.Client.WorkflowUpdateStartOptions,System.String)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0006</DiagnosticId>
+    <Target>M:Temporalio.Nexus.ITemporalNexusClient.StartWorkflowUpdateAsync``2(System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Threading.Tasks.Task{``1}}},Temporalio.Client.WorkflowUpdateStartOptions,System.String)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0006</DiagnosticId>
+    <Target>M:Temporalio.Nexus.ITemporalNexusClient.StartWorkflowUpdateAsync``1(System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Threading.Tasks.Task}},Temporalio.Client.WorkflowUpdateStartOptions,System.String)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0006</DiagnosticId>
+    <Target>M:Temporalio.Nexus.ITemporalNexusClient.StartWorkflowUpdateAsync``1(System.String,System.String,System.Collections.Generic.IReadOnlyCollection{System.Object},Temporalio.Client.WorkflowUpdateStartOptions,System.String)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0006</DiagnosticId>
+    <Target>M:Temporalio.Nexus.ITemporalNexusClient.StartWorkflowUpdateAsync``2(System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Threading.Tasks.Task{``1}}},Temporalio.Client.WorkflowUpdateStartOptions,System.String)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0006</DiagnosticId>
     <Target>M:Temporalio.Client.ITemporalClient.ListActivitiesAsync(System.String,Temporalio.Client.ActivityListOptions)</Target>
     <Left>lib/netstandard2.0/Temporalio.dll</Left>
     <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
@@ -30,5 +72,26 @@
     <Target>M:Temporalio.Worker.ITemporalWorkerPlugin.ReplayWorkflowsAsync(Temporalio.Worker.WorkflowReplayer,System.Func{Temporalio.Worker.WorkflowReplayer,System.Collections.Generic.IAsyncEnumerable{Temporalio.Worker.WorkflowReplayResult}},System.Threading.CancellationToken)</Target>
     <Left>lib/netstandard2.0/Temporalio.dll</Left>
     <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0006</DiagnosticId>
+    <Target>M:Temporalio.Nexus.ITemporalNexusClient.StartWorkflowUpdateAsync``1(System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Threading.Tasks.Task}},Temporalio.Client.WorkflowUpdateStartOptions,System.String)</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0006</DiagnosticId>
+    <Target>M:Temporalio.Nexus.ITemporalNexusClient.StartWorkflowUpdateAsync``1(System.String,System.String,System.Collections.Generic.IReadOnlyCollection{System.Object},Temporalio.Client.WorkflowUpdateStartOptions,System.String)</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0006</DiagnosticId>
+    <Target>M:Temporalio.Nexus.ITemporalNexusClient.StartWorkflowUpdateAsync``2(System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Threading.Tasks.Task{``1}}},Temporalio.Client.WorkflowUpdateStartOptions,System.String)</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
 </Suppressions>

@@ -115,6 +115,7 @@ public class ProtoLinkExtensionsTests
             NexusOperation = new() { Namespace = "ns", OperationId = "op", RunId = "run" },
         };
         var nexusLink = protoLink.ToNexusLink();
+        Assert.NotNull(nexusLink);
         Assert.Equal(
             Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName,
             nexusLink.Type);
@@ -135,6 +136,7 @@ public class ProtoLinkExtensionsTests
             },
         };
         var nexusLink = protoLink.ToNexusLink();
+        Assert.NotNull(nexusLink);
         Assert.Equal(
             Api.Common.V1.Link.Types.WorkflowEvent.Descriptor.FullName,
             nexusLink.Type);
@@ -142,9 +144,11 @@ public class ProtoLinkExtensionsTests
     }
 
     [Fact]
-    public void ProtoToNexusLink_RejectsUnsetVariant()
+    public void ProtoToNexusLink_UnsetVariant_ReturnsNull()
     {
-        Assert.Throws<ArgumentException>(() => new Api.Common.V1.Link().ToNexusLink());
+        // An unset link variant (e.g. a rejected update with no history event) converts to null so
+        // callers can skip it rather than failing the operation.
+        Assert.Null(new Api.Common.V1.Link().ToNexusLink());
     }
 
     [Fact]

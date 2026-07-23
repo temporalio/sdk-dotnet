@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Temporalio.Client
 {
     /// <summary>
@@ -32,5 +34,23 @@ namespace Temporalio.Client
         /// <c>None</c> or <c>Admitted</c> at this time.
         /// </summary>
         public WorkflowUpdateStage WaitForStage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the request ID for server de-duplication. Only settable by the SDK, e.g.
+        /// when starting an update-workflow-backed Nexus operation.
+        /// </summary>
+        internal string? RequestId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the completion callbacks. Only settable by the SDK, e.g. when starting an
+        /// update-workflow-backed Nexus operation.
+        /// </summary>
+        internal IReadOnlyCollection<Api.Common.V1.Callback>? CompletionCallbacks { get; set; }
+
+        /// <summary>
+        /// Gets or sets the links. Only settable by the SDK, e.g. when starting an
+        /// update-workflow-backed Nexus operation.
+        /// </summary>
+        internal IReadOnlyCollection<Api.Common.V1.Link>? Links { get; set; }
     }
 }

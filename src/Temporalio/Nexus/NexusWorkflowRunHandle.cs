@@ -19,7 +19,15 @@ namespace Temporalio.Nexus
         /// </summary>
         internal const int WorkflowRunOperationTokenType = 1;
 
-        private static readonly JsonSerializerOptions TokenSerializerOptions = new()
+        /// <summary>
+        /// Token-type value identifying an update-workflow operation token.
+        /// </summary>
+        internal const int UpdateWorkflowOperationTokenType = 3;
+
+        /// <summary>
+        /// Serializer options shared by all operation token types.
+        /// </summary>
+        internal static readonly JsonSerializerOptions TokenSerializerOptions = new()
         {
 #pragma warning disable SYSLIB0020 // Need to use obsolete form, alternative not in all our versions
             IgnoreNullValues = true,
@@ -143,7 +151,9 @@ namespace Temporalio.Nexus
             TokenSerializerOptions));
 
         /// <summary>
-        /// Represents the fields of a Nexus operation token.
+        /// Represents the fields of a Nexus operation token. The <c>RunId</c> and <c>UpdateId</c>
+        /// fields are only populated for update-workflow tokens; for workflow-run tokens they are
+        /// null and omitted from the serialized form.
         /// </summary>
         internal record OperationToken(
             [property: JsonPropertyName("ns")]
@@ -153,7 +163,11 @@ namespace Temporalio.Nexus
             [property: JsonPropertyName("v")]
             int? Version,
             [property: JsonPropertyName("t")]
-            int Type = WorkflowRunOperationTokenType);
+            int Type = WorkflowRunOperationTokenType,
+            [property: JsonPropertyName("rid")]
+            string? RunId = null,
+            [property: JsonPropertyName("uid")]
+            string? UpdateId = null);
     }
 
     /// <inheritdoc />

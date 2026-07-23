@@ -131,10 +131,32 @@ namespace Temporalio.Nexus
                     CancelWorkflowRunAsync(
                         new TemporalOperationCancelContext(context),
                         new CancelWorkflowRunInput(token.WorkflowId)),
+                NexusWorkflowRunHandle.UpdateWorkflowOperationTokenType =>
+                    CancelWorkflowUpdateFromTokenAsync(),
                 _ => throw new HandlerException(
                     HandlerErrorType.BadRequest,
                     $"Unsupported token type: {token.Type}"),
             };
+
+            Task CancelWorkflowUpdateFromTokenAsync()
+            {
+                // Decode via the update-workflow handle so a malformed token (e.g. missing workflow
+                // ID or update ID) is rejected as a bad request rather than passing empty strings
+                // through to a user-supplied cancel override.
+                NexusWorkflowUpdateHandle updateHandle;
+                try
+                {
+                    updateHandle = NexusWorkflowUpdateHandle.FromToken(context.OperationToken);
+                }
+                catch (ArgumentException e)
+                {
+                    throw new HandlerException(HandlerErrorType.BadRequest, e.Message);
+                }
+                return CancelWorkflowUpdateAsync(
+                    new TemporalOperationCancelContext(context),
+                    new CancelWorkflowUpdateInput(
+                        updateHandle.WorkflowId, updateHandle.RunId, updateHandle.UpdateId));
+            }
         }
 
         /// <summary>
@@ -149,6 +171,20 @@ namespace Temporalio.Nexus
             TemporalOperationCancelContext context, CancelWorkflowRunInput input) =>
             NexusOperationExecutionContext.Current.TemporalClient
                 .GetWorkflowHandle(input.WorkflowId).CancelAsync();
+
+        /// <summary>
+        /// Called when a cancel request is received for an update-workflow token. Override to
+        /// customize cancel behavior.
+        /// <para>Default behavior: throws a not-implemented handler error, as there is no default
+        /// way to cancel an update-workflow operation.</para>
+        /// </summary>
+        /// <param name="context">The cancel context.</param>
+        /// <param name="input">Update-workflow cancel input.</param>
+        /// <returns>Task for cancel completion.</returns>
+        protected virtual Task CancelWorkflowUpdateAsync(
+            TemporalOperationCancelContext context, CancelWorkflowUpdateInput input) =>
+            throw new HandlerException(
+                HandlerErrorType.NotImplemented, "cannot cancel an UpdateWorkflow operation");
     }
 
     /// <summary>
@@ -168,6 +204,42 @@ namespace Temporalio.Nexus
         /// Gets the workflow ID extracted from the operation token.
         /// </summary>
         public string WorkflowId { get; }
+    }
+
+    /// <summary>
+    /// Input passed to
+    /// <see cref="TemporalOperationHandler{TInput, TResult}.CancelWorkflowUpdateAsync"/>.
+    /// </summary>
+    /// <remarks>WARNING: Nexus support is experimental.</remarks>
+    public class CancelWorkflowUpdateInput
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CancelWorkflowUpdateInput"/> class.
+        /// </summary>
+        /// <param name="workflowId">Workflow ID extracted from the operation token.</param>
+        /// <param name="runId">Workflow run ID extracted from the operation token. May be empty.</param>
+        /// <param name="updateId">Update ID extracted from the operation token.</param>
+        public CancelWorkflowUpdateInput(string workflowId, string runId, string updateId)
+        {
+            WorkflowId = workflowId;
+            RunId = runId;
+            UpdateId = updateId;
+        }
+
+        /// <summary>
+        /// Gets the workflow ID extracted from the operation token.
+        /// </summary>
+        public string WorkflowId { get; }
+
+        /// <summary>
+        /// Gets the workflow run ID extracted from the operation token.
+        /// </summary>
+        public string RunId { get; }
+
+        /// <summary>
+        /// Gets the update ID extracted from the operation token.
+        /// </summary>
+        public string UpdateId { get; }
     }
 
     /// <summary>

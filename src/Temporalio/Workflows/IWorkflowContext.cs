@@ -154,6 +154,12 @@ namespace Temporalio.Workflows
         DateTime UtcNow { get; }
 
         /// <summary>
+        /// Throws if the workflow context is currently read-only.
+        /// </summary>
+        /// <param name="operation">Operation being attempted.</param>
+        void AssertNotReadOnly(string operation);
+
+        /// <summary>
         /// Backing call for
         /// <see cref="Workflow.CreateContinueAsNewException(string, IReadOnlyCollection{object?}, ContinueAsNewOptions?)" />.
         /// </summary>

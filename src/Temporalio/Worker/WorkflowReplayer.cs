@@ -230,6 +230,7 @@ namespace Temporalio.Worker
                             RuntimeMetricMeter: new(() => runtime.MetricMeter),
                             WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes,
                             DisableEagerActivityExecution: false,
+                            PatchActivationCallback: null,
                             AssertValidLocalActivity: _ => { },
                             DefaultVersioningBehavior: null,
                             DeploymentOptions: null),

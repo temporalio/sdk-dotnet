@@ -62,7 +62,6 @@ namespace Temporalio.Workflows
         /// Gets or sets a simple string identifying this timer that may be visible in UI/CLI. While
         /// it can be normal text, it is best to treat as a timer ID.
         /// </summary>
-        /// <remarks>WARNING: This setting is experimental.</remarks>
         public string? Summary { get; set; }
 
         /// <summary>

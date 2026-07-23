@@ -76,7 +76,6 @@ namespace Temporalio.Workflows
         /// Gets or sets a single-line fixed summary for this activity that may appear in UI/CLI.
         /// This can be in single-line Temporal markdown format.
         /// </summary>
-        /// <remarks>WARNING: This setting is experimental.</remarks>
         public string? Summary { get; set; }
 
         /// <summary>

@@ -795,6 +795,21 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
             ActivityAssertion.NameAndParent(
                 "CompleteWorkflow:TracingWorkflow",
                 "RunWorkflow:TracingWorkflow"));
+
+        // AssertActivities only checks there are no unexpected spans; it does not require any
+        // particular span to exist and, since two StartWorkflow spans are expected (one rooted,
+        // one under the Nexus handler), a disconnected handler-started workflow would still match.
+        // So explicitly assert the trace stays connected across the Nexus handler: the handler span
+        // must exist, and the workflow started inside the handler must be parented to it (same
+        // trace), not begin a new root trace.
+        var nexusHandler = Assert.Single(
+            activities,
+            a => a.OperationName == "RunStartNexusOperationHandler:NexusTracingService/DoSomething");
+        var nexusStartedWorkflow = Assert.Single(
+            activities,
+            a => a.OperationName == "StartWorkflow:TracingWorkflow" &&
+                a.ParentSpanId == nexusHandler.SpanId);
+        Assert.Equal(nexusHandler.TraceId, nexusStartedWorkflow.TraceId);
     }
 
     [Fact]
@@ -912,6 +927,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 TracingInterceptor.ClientSource.Name,
                 TracingInterceptor.WorkflowsSource.Name,
                 TracingInterceptor.ActivitiesSource.Name,
+                TracingInterceptor.NexusSource.Name,
                 TracingWorkflow.CustomSource.Name).
             AddInMemoryExporter(activities).
             Build();

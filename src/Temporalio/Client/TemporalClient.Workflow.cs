@@ -501,10 +501,11 @@ namespace Temporalio.Client
                 while (resp.Stage < UpdateWorkflowExecutionLifecycleStage.Accepted);
 
                 // If the requested stage is completed, wait for result, but discard the update
-                // exception, that will come when _they_ call get result
+                // exception, that will come when _they_ call get result. The response link is
+                // captured on the handle for update-workflow-backed Nexus operations.
                 var handle = new WorkflowUpdateHandle<TResult>(
                     Client, req.Request.Meta.UpdateId, input.Id, resp.UpdateRef.WorkflowExecution.RunId)
-                { KnownOutcome = resp.Outcome };
+                { KnownOutcome = resp.Outcome, Link = resp.Link };
                 if (input.Options.WaitForStage == WorkflowUpdateStage.Completed)
                 {
                     await handle.PollUntilOutcomeAsync(input.Options.Rpc).ConfigureAwait(false);
@@ -976,6 +977,23 @@ namespace Temporalio.Client
                             req.Request.Input.Header.Fields[kvp.Key] =
                                 await codec.EncodeSingleAsync(kvp.Value).ConfigureAwait(false);
                         }
+                    }
+                }
+                // SDK-internal Nexus plumbing: request ID for de-duplication, completion callbacks,
+                // and links used by update-workflow-backed Nexus operations.
+                if (options is WorkflowUpdateStartOptions startOptions)
+                {
+                    if (startOptions.RequestId is { } nexusRequestId)
+                    {
+                        req.Request.RequestId = nexusRequestId;
+                    }
+                    if (startOptions.CompletionCallbacks is { } nexusCallbacks)
+                    {
+                        req.Request.CompletionCallbacks.AddRange(nexusCallbacks);
+                    }
+                    if (startOptions.Links is { } nexusLinks)
+                    {
+                        req.Request.Links.AddRange(nexusLinks);
                     }
                 }
                 return req;

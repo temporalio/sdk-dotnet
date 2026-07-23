@@ -476,10 +476,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             // Now send a lot of events
             await handle.SignalAsync(wf =>
                 wf.BunchOfEventsAsync(WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount));
-            // Send one more event to trigger the WFT update. We have to do this because just a
-            // query will have a stale representation of history counts, but signal forces a new
-            // WFT.
-            await handle.SignalAsync(wf => wf.BunchOfEventsAsync(1));
+            // Wait for those timers to be recorded before signaling again. Otherwise both signals
+            // can batch into one WFT that starts before the TimerStarted events, permanently
+            // stranding CurrentHistoryLength below them.
             await AssertMore.EventuallyAsync(async () =>
             {
                 var eventCount = (await handle.FetchHistoryAsync()).Events.Count;
@@ -488,13 +487,20 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     $"We sent at least {WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount} events but " +
                     $"history length said it was only {eventCount}");
             });
-            var newInfo = await handle.QueryAsync(wf => wf.HistoryInfo);
-            Assert.True(
-                newInfo.HistoryLength > WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount,
-                $"We sent at least {WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount} events but " +
-                $"history length said it was only {newInfo.HistoryLength}");
-            Assert.True(newInfo.HistorySize > origInfo.HistorySize);
-            Assert.True(newInfo.ContinueAsNewSuggested);
+            // Force a fresh WFT so the query sees an up-to-date count; a query alone is stale. That
+            // WFT now starts after the timers, so its CurrentHistoryLength includes them.
+            await handle.SignalAsync(wf => wf.BunchOfEventsAsync(1));
+            // Query eventually to absorb the window before the worker processes that WFT.
+            await AssertMore.EventuallyAsync(async () =>
+            {
+                var newInfo = await handle.QueryAsync(wf => wf.HistoryInfo);
+                Assert.True(
+                    newInfo.HistoryLength > WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount,
+                    $"We sent at least {WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount} events but " +
+                    $"history length said it was only {newInfo.HistoryLength}");
+                Assert.True(newInfo.HistorySize > origInfo.HistorySize);
+                Assert.True(newInfo.ContinueAsNewSuggested);
+            });
         });
     }
 
@@ -2947,6 +2953,398 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     desc.TypedSearchAttributes.Get(SearchAttributeKey.CreateKeywordList("TemporalChangeVersion")));
             },
             new TemporalWorkerOptions().AddActivity(PatchSearchAttributeWorkflow.SomeActivity));
+    }
+
+    [Workflow]
+    public class PatchActivationWorkflow
+    {
+        private bool released;
+        private bool firstPatchResult;
+
+        [WorkflowRun]
+        public async Task<IReadOnlyCollection<bool>> RunAsync(string patchId, bool waitForRelease)
+        {
+            firstPatchResult = Workflow.Patched(patchId);
+            if (waitForRelease)
+            {
+                await Workflow.WaitConditionAsync(() => released);
+            }
+            return new[] { firstPatchResult, Workflow.Patched(patchId) };
+        }
+
+        [WorkflowQuery]
+        public bool FirstPatchResult() => firstPatchResult;
+
+        [WorkflowQuery]
+        public bool PatchFromQuery(string patchId) => Workflow.Patched(patchId);
+
+        [WorkflowSignal]
+        public Task ReleaseAsync()
+        {
+            released = true;
+            return Task.CompletedTask;
+        }
+
+        [WorkflowUpdate]
+        public Task PatchFromUpdateAsync(string patchId) => Task.CompletedTask;
+
+        [WorkflowUpdateValidator(nameof(PatchFromUpdateAsync))]
+        public void ValidatePatchFromUpdate(string patchId) => _ = Workflow.Patched(patchId);
+    }
+
+    [Workflow]
+    public class PatchActivationDeprecateWorkflow
+    {
+        [WorkflowRun]
+        public Task<bool> RunAsync(string patchId)
+        {
+            Workflow.DeprecatePatch(patchId);
+            return Task.FromResult(Workflow.Patched(patchId));
+        }
+    }
+
+    [Workflow("PatchActivationRolloutWorkflow")]
+    public class PatchActivationRolloutWorkflow
+    {
+        private bool released;
+
+        [WorkflowRun]
+        public async Task<string> RunAsync()
+        {
+            Workflow.Patched("rollout-patch");
+            await Workflow.WaitConditionAsync(() => released);
+            return Workflow.Patched("rollout-patch") ? "new" : "old";
+        }
+
+        [WorkflowQuery]
+        public string State() => "new";
+
+        [WorkflowSignal]
+        public Task ReleaseAsync()
+        {
+            released = true;
+            return Task.CompletedTask;
+        }
+    }
+
+    [Workflow("PatchActivationRolloutWorkflow")]
+    public class PatchActivationOldRolloutWorkflow
+    {
+        private bool released;
+
+        [WorkflowRun]
+        public async Task<string> RunAsync()
+        {
+            await Workflow.WaitConditionAsync(() => released);
+            return "old";
+        }
+
+        [WorkflowQuery]
+        public string State() => "old";
+
+        [WorkflowSignal]
+        public Task ReleaseAsync()
+        {
+            released = true;
+            return Task.CompletedTask;
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_PatchActivationCallback_ActivatesAndMemoizes()
+    {
+        var calls = new ConcurrentQueue<PatchActivationInput>();
+        var workflowId = $"workflow-{Guid.NewGuid()}";
+        await ExecuteWorkerAsync<PatchActivationWorkflow>(
+            async worker =>
+            {
+                var result = await Client.ExecuteWorkflowAsync(
+                    (PatchActivationWorkflow wf) => wf.RunAsync("my-patch", false),
+                    new(workflowId, worker.Options.TaskQueue!));
+                Assert.Equal([true, true], result);
+            },
+            new TemporalWorkerOptions
+            {
+                PatchActivationCallback = input =>
+                {
+                    calls.Enqueue(input);
+                    return true;
+                },
+            });
+        var call = Assert.Single(calls);
+        Assert.Equal(workflowId, call.WorkflowInfo.WorkflowId);
+        Assert.Equal("my-patch", call.PatchId);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_PatchActivationCallback_DeclinesWithoutMarker()
+    {
+        var calls = 0;
+        await ExecuteWorkerAsync<PatchActivationWorkflow>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (PatchActivationWorkflow wf) => wf.RunAsync("my-patch", false),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                Assert.Equal([false, false], await handle.GetResultAsync());
+                Assert.DoesNotContain(
+                    (await handle.FetchHistoryAsync()).Events,
+                    evt => evt.MarkerRecordedEventAttributes != null);
+            },
+            new TemporalWorkerOptions
+            {
+                PatchActivationCallback = _ =>
+                {
+                    Interlocked.Increment(ref calls);
+                    return false;
+                },
+            });
+        Assert.Equal(1, calls);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_WithoutPatchActivationCallback_ActivatesWithMarker()
+    {
+        await ExecuteWorkerAsync<PatchActivationWorkflow>(async worker =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (PatchActivationWorkflow wf) => wf.RunAsync("my-patch", false),
+                new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+            Assert.Equal([true, true], await handle.GetResultAsync());
+            Assert.Contains(
+                (await handle.FetchHistoryAsync()).Events,
+                evt => evt.MarkerRecordedEventAttributes != null);
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_PatchActivationCallback_NotCalledOnUncachedReplay()
+    {
+        var calls = 0;
+        await ExecuteWorkerAsync<PatchActivationWorkflow>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (PatchActivationWorkflow wf) => wf.RunAsync("my-patch", true),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                Assert.False(await handle.QueryAsync(wf => wf.FirstPatchResult()));
+                await handle.SignalAsync(wf => wf.ReleaseAsync());
+                Assert.Equal([false, false], await handle.GetResultAsync());
+            },
+            new TemporalWorkerOptions
+            {
+                MaxCachedWorkflows = 0,
+                PatchActivationCallback = _ =>
+                {
+                    Interlocked.Increment(ref calls);
+                    return false;
+                },
+            });
+        Assert.Equal(1, calls);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_PatchActivationCallback_NotCalledForDeprecatePatch()
+    {
+        await ExecuteWorkerAsync<PatchActivationDeprecateWorkflow>(
+            async worker => Assert.True(await Client.ExecuteWorkflowAsync(
+                (PatchActivationDeprecateWorkflow wf) => wf.RunAsync("my-patch"),
+                new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!))),
+            new TemporalWorkerOptions
+            {
+                PatchActivationCallback = _ => throw new InvalidOperationException("Unexpected callback"),
+            });
+    }
+
+    [Theory]
+    [InlineData("command", "Cannot issue workflow commands in this context")]
+    [InlineData("wait", "Cannot wait or schedule workflow work in this context")]
+    [InlineData("run-task", "Cannot wait or schedule workflow work in this context")]
+    [InlineData("random", "Cannot use workflow randomness in this context")]
+    [InlineData("patch", "Cannot create patch in this context")]
+    [InlineData("current-details", "Cannot set current details in this context")]
+    [InlineData("handler-add", "Cannot modify workflow handlers in this context")]
+    [InlineData("handler-remove", "Cannot modify workflow handlers in this context")]
+    [InlineData("dynamic-handler", "Cannot modify workflow handlers in this context")]
+    [InlineData("continue-as-new", "Cannot continue as new in this context")]
+    public async Task ExecuteWorkflowAsync_PatchActivationCallback_RunsReadOnly(
+        string operation,
+        string expectedError)
+    {
+        await ExecuteWorkerAsync<PatchActivationWorkflow>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (PatchActivationWorkflow wf) => wf.RunAsync(operation, false),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                await AssertTaskFailureContainsEventuallyAsync(handle, expectedError);
+            },
+            new TemporalWorkerOptions
+            {
+                PatchActivationCallback = input =>
+                {
+                    switch (input.PatchId)
+                    {
+                        case "command":
+                            Workflow.UpsertMemo(MemoUpdate.ValueSet("key", "value"));
+                            break;
+                        case "wait":
+                            _ = Workflow.WaitConditionAsync(() => true);
+                            break;
+                        case "run-task":
+                            _ = Workflow.RunTaskAsync(() => Task.CompletedTask);
+                            break;
+                        case "random":
+                            _ = Workflow.Random.Next();
+                            break;
+                        case "patch":
+                            _ = Workflow.Patched("nested-patch");
+                            break;
+                        case "current-details":
+                            Workflow.CurrentDetails = "changed in callback";
+                            break;
+                        case "handler-add":
+                            Workflow.Queries["callback-query"] =
+                                WorkflowQueryDefinition.CreateWithoutAttribute(
+                                    "callback-query", () => true);
+                            break;
+                        case "handler-remove":
+                            Workflow.Queries.Remove(nameof(PatchActivationWorkflow.FirstPatchResult));
+                            break;
+                        case "dynamic-handler":
+                            Workflow.DynamicQuery = WorkflowQueryDefinition.CreateWithoutAttribute(
+                                null, (string _queryName, IRawValue[] _args) => true);
+                            break;
+                        case "continue-as-new":
+                            throw Workflow.CreateContinueAsNewException(
+                                (PatchActivationWorkflow wf) => wf.RunAsync("continued", false));
+                    }
+                    return true;
+                },
+            });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_PatchActivationCallback_RejectsReadOnlyCallsFromQueryAndValidator()
+    {
+        var calls = 0;
+        await ExecuteWorkerAsync<PatchActivationWorkflow>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (PatchActivationWorkflow wf) => wf.RunAsync("main-patch", true),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                Assert.False(await handle.QueryAsync(wf => wf.FirstPatchResult()));
+
+                var queryExc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
+                    () => handle.QueryAsync(wf => wf.PatchFromQuery("query-patch")));
+                Assert.Contains("Cannot create patch in this context", queryExc.Message);
+
+                var updateExc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
+                    () => handle.ExecuteUpdateAsync(wf => wf.PatchFromUpdateAsync("validator-patch")));
+                Assert.Contains("Cannot create patch in this context", updateExc.InnerException?.Message);
+
+                await handle.SignalAsync(wf => wf.ReleaseAsync());
+                Assert.Equal([false, false], await handle.GetResultAsync());
+            },
+            new TemporalWorkerOptions
+            {
+                PatchActivationCallback = _ =>
+                {
+                    Interlocked.Increment(ref calls);
+                    return false;
+                },
+            });
+        Assert.Equal(1, calls);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_DeclinedPatch_RollsOutToOldWorker()
+    {
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var calls = 0;
+        WorkflowHandle<PatchActivationRolloutWorkflow, string>? handle = null;
+        using (var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue)
+            {
+                MaxCachedWorkflows = 0,
+                PatchActivationCallback = _ =>
+                {
+                    Interlocked.Increment(ref calls);
+                    return false;
+                },
+            }.AddWorkflow<PatchActivationRolloutWorkflow>()))
+        {
+            await worker.ExecuteAsync(async () =>
+            {
+                handle = await Client.StartWorkflowAsync(
+                    (PatchActivationRolloutWorkflow wf) => wf.RunAsync(),
+                    new($"workflow-{Guid.NewGuid()}", taskQueue));
+                Assert.Equal("new", await handle.QueryAsync(wf => wf.State()));
+            });
+        }
+        Assert.Equal(1, calls);
+        Assert.NotNull(handle);
+
+        using var oldWorker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue) { MaxCachedWorkflows = 0 }.
+                AddWorkflow<PatchActivationOldRolloutWorkflow>());
+        await oldWorker.ExecuteAsync(async () =>
+        {
+            await handle.SignalAsync(wf => wf.ReleaseAsync());
+            Assert.Equal("old", await handle.GetResultAsync());
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_ActivatedPatch_ReplaysWithoutCallback()
+    {
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var activatedCalls = 0;
+        WorkflowHandle<PatchActivationRolloutWorkflow, string>? handle = null;
+        using (var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue)
+            {
+                MaxCachedWorkflows = 0,
+                PatchActivationCallback = _ =>
+                {
+                    Interlocked.Increment(ref activatedCalls);
+                    return true;
+                },
+            }.AddWorkflow<PatchActivationRolloutWorkflow>()))
+        {
+            await worker.ExecuteAsync(async () =>
+            {
+                handle = await Client.StartWorkflowAsync(
+                    (PatchActivationRolloutWorkflow wf) => wf.RunAsync(),
+                    new($"workflow-{Guid.NewGuid()}", taskQueue));
+                Assert.Equal("new", await handle.QueryAsync(wf => wf.State()));
+            });
+        }
+        Assert.Equal(1, activatedCalls);
+        Assert.NotNull(handle);
+
+        var declinedCalls = 0;
+        using var declinedWorker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue)
+            {
+                MaxCachedWorkflows = 0,
+                PatchActivationCallback = _ =>
+                {
+                    Interlocked.Increment(ref declinedCalls);
+                    return false;
+                },
+            }.AddWorkflow<PatchActivationRolloutWorkflow>());
+        await declinedWorker.ExecuteAsync(async () =>
+        {
+            await handle.SignalAsync(wf => wf.ReleaseAsync());
+            Assert.Equal("new", await handle.GetResultAsync());
+        });
+        Assert.Equal(0, declinedCalls);
     }
 
     [Workflow]

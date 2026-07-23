@@ -76,8 +76,10 @@ namespace Temporalio.Worker
         private readonly Action<WorkflowInstance, Exception?> onTaskCompleted;
         private readonly IReadOnlyCollection<Type>? workerLevelFailureExceptionTypes;
         private readonly bool disableEagerActivityExecution;
+        private readonly Func<PatchActivationInput, bool>? patchActivationCallback;
         private readonly Handlers inProgressHandlers = new();
         private readonly WorkflowDefinitionOptions definitionOptions;
+        private DeterministicRandom random;
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
         private Lazy<object?[]>? startArgs;
@@ -96,6 +98,8 @@ namespace Temporalio.Worker
         private bool applyModernEventLoopLogic;
         private bool dynamicOptionsGetterInvoked;
         private bool inQueryOrValidator;
+        private bool contextFrozen;
+        private string currentDetails = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstance"/> class.
@@ -132,9 +136,24 @@ namespace Temporalio.Worker
                     return rootInbound.Outbound!;
                 },
                 false);
-            mutableQueries = new(() => new(Definition.Queries, OnQueryDefinitionAdded), false);
-            mutableSignals = new(() => new(Definition.Signals, OnSignalDefinitionAdded), false);
-            mutableUpdates = new(() => new(Definition.Updates, OnUpdateDefinitionAdded), false);
+            mutableQueries = new(
+                () => new(
+                    Definition.Queries,
+                    OnQueryDefinitionAdded,
+                    () => AssertNotReadOnly("modify workflow handlers")),
+                false);
+            mutableSignals = new(
+                () => new(
+                    Definition.Signals,
+                    OnSignalDefinitionAdded,
+                    () => AssertNotReadOnly("modify workflow handlers")),
+                false);
+            mutableUpdates = new(
+                () => new(
+                    Definition.Updates,
+                    OnUpdateDefinitionAdded,
+                    () => AssertNotReadOnly("modify workflow handlers")),
+                false);
             var initialMemo = details.Init.Memo;
             memo = new(
                 () => initialMemo == null ? new Dictionary<string, IRawValue>(0) :
@@ -217,10 +236,11 @@ namespace Temporalio.Worker
             replaySafeLogger = new(logger);
             onTaskStarting = details.OnTaskStarting;
             onTaskCompleted = details.OnTaskCompleted;
-            Random = new(details.Init.RandomnessSeed);
+            random = new(details.Init.RandomnessSeed);
             TracingEventsEnabled = !details.DisableTracingEvents;
             workerLevelFailureExceptionTypes = details.WorkerLevelFailureExceptionTypes;
             disableEagerActivityExecution = details.DisableEagerActivityExecution;
+            patchActivationCallback = details.PatchActivationCallback;
             AssertValidLocalActivity = details.AssertValidLocalActivity;
             definitionOptions = new()
             {
@@ -258,7 +278,15 @@ namespace Temporalio.Worker
         public WorkerDeploymentVersion? CurrentDeploymentVersion { get; private set; }
 
         /// <inheritdoc />
-        public string CurrentDetails { get; set; } = string.Empty;
+        public string CurrentDetails
+        {
+            get => currentDetails;
+            set
+            {
+                AssertNotReadOnly("set current details");
+                currentDetails = value;
+            }
+        }
 
         /// <inheritdoc />
         public int CurrentHistoryLength { get; private set; }
@@ -282,6 +310,7 @@ namespace Temporalio.Worker
             get => dynamicQuery;
             set
             {
+                AssertNotReadOnly("modify workflow handlers");
                 if (value != null && !value.Dynamic)
                 {
                     throw new ArgumentException("Query is not dynamic");
@@ -296,6 +325,7 @@ namespace Temporalio.Worker
             get => dynamicSignal;
             set
             {
+                AssertNotReadOnly("modify workflow handlers");
                 if (value != null && !value.Dynamic)
                 {
                     throw new ArgumentException("Signal is not dynamic");
@@ -318,6 +348,7 @@ namespace Temporalio.Worker
             get => dynamicUpdate;
             set
             {
+                AssertNotReadOnly("modify workflow handlers");
                 if (value != null && !value.Dynamic)
                 {
                     throw new ArgumentException("Update is not dynamic");
@@ -379,7 +410,14 @@ namespace Temporalio.Worker
         public IDictionary<string, WorkflowQueryDefinition> Queries => mutableQueries.Value;
 
         /// <inheritdoc />
-        public DeterministicRandom Random { get; private set; }
+        public DeterministicRandom Random
+        {
+            get
+            {
+                ThrowIfContextFrozen("use workflow randomness");
+                return random;
+            }
+        }
 
         /// <inheritdoc />
         public IDictionary<string, WorkflowSignalDefinition> Signals => mutableSignals.Value;
@@ -404,13 +442,25 @@ namespace Temporalio.Worker
         internal Action<string> AssertValidLocalActivity { get; private init; }
 
         /// <inheritdoc/>
+        public void AssertNotReadOnly(string operation)
+        {
+            if (contextFrozen || inQueryOrValidator)
+            {
+                throw new InvalidOperationException($"Cannot {operation} in this context");
+            }
+        }
+
+        /// <inheritdoc/>
         public ContinueAsNewException CreateContinueAsNewException(
-            string workflow, IReadOnlyCollection<object?> args, ContinueAsNewOptions? options) =>
-            outbound.Value.CreateContinueAsNewException(new(
+            string workflow, IReadOnlyCollection<object?> args, ContinueAsNewOptions? options)
+        {
+            ThrowIfContextFrozen("continue as new");
+            return outbound.Value.CreateContinueAsNewException(new(
                 Workflow: workflow,
                 Args: args,
                 Options: options,
                 Headers: null));
+        }
 
         /// <inheritdoc/>
         public NexusWorkflowClient CreateNexusWorkflowClient(string service, NexusWorkflowClientOptions options) =>
@@ -422,19 +472,19 @@ namespace Temporalio.Worker
 
         /// <inheritdoc/>
         public Task DelayWithOptionsAsync(DelayOptions options) =>
-            outbound.Value.DelayAsync(new(options));
+            ContextFrozenChecked(() => outbound.Value.DelayAsync(new(options)));
 
         /// <inheritdoc/>
         public Task<TResult> ExecuteActivityAsync<TResult>(
             string activity, IReadOnlyCollection<object?> args, ActivityOptions options) =>
-            outbound.Value.ScheduleActivityAsync<TResult>(
-                new(Activity: activity, Args: args, Options: options, Headers: null));
+            ContextFrozenChecked(() => outbound.Value.ScheduleActivityAsync<TResult>(
+                new(Activity: activity, Args: args, Options: options, Headers: null)));
 
         /// <inheritdoc/>
         public Task<TResult> ExecuteLocalActivityAsync<TResult>(
             string activity, IReadOnlyCollection<object?> args, LocalActivityOptions options) =>
-            outbound.Value.ScheduleLocalActivityAsync<TResult>(
-                new(Activity: activity, Args: args, Options: options, Headers: null));
+            ContextFrozenChecked(() => outbound.Value.ScheduleLocalActivityAsync<TResult>(
+                new(Activity: activity, Args: args, Options: options, Headers: null)));
 
         /// <inheritdoc/>
         public ExternalWorkflowHandle<TWorkflow> GetExternalWorkflowHandle<TWorkflow>(
@@ -444,13 +494,33 @@ namespace Temporalio.Worker
         /// <inheritdoc />
         public bool Patch(string patchId, bool deprecated)
         {
+            AssertNotReadOnly(deprecated ? "deprecate patch" : "create patch");
             // Use memoized result if present. If this is being deprecated, we can still use
             // memoized result and skip the command.
             if (patchesMemoized.TryGetValue(patchId, out var patched))
             {
                 return patched;
             }
-            patched = !IsReplaying || patchesNotified.Contains(patchId);
+            // Replay and history markers already determine the branch, and deprecation must keep
+            // existing patch semantics, so only a genuinely new patch consults the callback.
+            if (!deprecated && !IsReplaying && !patchesNotified.Contains(patchId) &&
+                patchActivationCallback != null)
+            {
+                var previousContextFrozen = contextFrozen;
+                try
+                {
+                    contextFrozen = true;
+                    patched = patchActivationCallback(new(Info, patchId));
+                }
+                finally
+                {
+                    contextFrozen = previousContextFrozen;
+                }
+            }
+            else
+            {
+                patched = !IsReplaying || patchesNotified.Contains(patchId);
+            }
             patchesMemoized[patchId] = patched;
             if (patched)
             {
@@ -465,12 +535,13 @@ namespace Temporalio.Worker
         /// <inheritdoc/>
         public Task<ChildWorkflowHandle<TWorkflow, TResult>> StartChildWorkflowAsync<TWorkflow, TResult>(
             string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions options) =>
-            outbound.Value.StartChildWorkflowAsync<TWorkflow, TResult>(
-                new(Workflow: workflow, Args: args, Options: options, Headers: null));
+            ContextFrozenChecked(() => outbound.Value.StartChildWorkflowAsync<TWorkflow, TResult>(
+                new(Workflow: workflow, Args: args, Options: options, Headers: null)));
 
         /// <inheritdoc />
         public void UpsertMemo(IReadOnlyCollection<MemoUpdate> updates)
         {
+            ThrowIfContextFrozen("issue workflow commands");
             if (updates.Count == 0)
             {
                 throw new ArgumentException("At least one update required", nameof(updates));
@@ -517,6 +588,7 @@ namespace Temporalio.Worker
         /// <inheritdoc/>
         public void UpsertTypedSearchAttributes(IReadOnlyCollection<SearchAttributeUpdate> updates)
         {
+            ThrowIfContextFrozen("issue workflow commands");
             if (updates.Count == 0)
             {
                 throw new ArgumentException("At least one update required", nameof(updates));
@@ -544,6 +616,7 @@ namespace Temporalio.Worker
         /// <inheritdoc/>
         public Task<bool> WaitConditionWithOptionsAsync(WaitConditionOptions options)
         {
+            AssertNotReadOnly("wait or schedule workflow work");
             var source = new TaskCompletionSource<object?>();
             var node = conditions.AddLast(Tuple.Create(options.ConditionCheck, source));
             var token = options.CancellationToken ?? CancellationToken;
@@ -848,6 +921,7 @@ namespace Temporalio.Worker
         /// <inheritdoc/>
         protected override void QueueTask(Task task)
         {
+            ThrowIfContextFrozen("wait or schedule workflow work");
             // Only queue if not already done
             if (!scheduledTaskNodes.ContainsKey(task))
             {
@@ -931,12 +1005,27 @@ namespace Temporalio.Worker
 
         private void AddCommand(WorkflowCommand cmd)
         {
+            ThrowIfContextFrozen("issue workflow commands");
             if (completion == null)
             {
                 throw new InvalidOperationException("No completion available");
             }
             // We only add the command if we're still successful
             completion.Successful?.Commands.Add(cmd);
+        }
+
+        private T ContextFrozenChecked<T>(Func<T> func)
+        {
+            ThrowIfContextFrozen("wait or schedule workflow work");
+            return func();
+        }
+
+        private void ThrowIfContextFrozen(string operation)
+        {
+            if (contextFrozen)
+            {
+                throw new InvalidOperationException($"Cannot {operation} in this context");
+            }
         }
 
 #pragma warning disable CA2008 // We don't have to pass a scheduler, factory already implies one
@@ -1634,7 +1723,7 @@ namespace Temporalio.Worker
         }
 
         private void ApplyUpdateRandomSeed(UpdateRandomSeed update) =>
-            Random = new(update.RandomnessSeed);
+            random = new(update.RandomnessSeed);
 
         private void InitializeWorkflow()
         {
