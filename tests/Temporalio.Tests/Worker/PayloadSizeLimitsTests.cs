@@ -114,7 +114,11 @@ public class PayloadSizeLimitsTests : TestBase
                 {
                     ExecutionTimeout = TimeSpan.FromSeconds(5),
                 });
-            await Assert.ThrowsAsync<WorkflowFailedException>(() => handle.GetResultAsync());
+            var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() => handle.GetResultAsync());
+            var terminated = Assert.IsType<TerminatedFailureException>(exc.InnerException);
+            Assert.Equal(
+                "BadScheduleActivityAttributes: ScheduleActivityTaskCommandAttributes.Input exceeds size limit.",
+                terminated.Message);
         });
     }
 
