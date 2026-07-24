@@ -35,6 +35,10 @@ to docs, or any other relevant information.
 - Added the experimental `TemporalWorkerOptions.PatchActivationCallback`, allowing workers to
   decide whether a first non-replay `Workflow.Patched` call should activate a patch during rolling
   deployments.
+- Support standalone activities as Nexus operations. `ITemporalNexusClient.StartActivityAsync`
+  backs a Nexus operation with a standalone activity (async only). Cancellation of
+  activity-execution operations can be customized by overriding
+  `TemporalOperationHandler<TInput, TResult>.CancelActivityExecutionAsync`.
 
 ### Changed
 

@@ -25,7 +25,7 @@ namespace Temporalio.Nexus
         internal const int UpdateWorkflowOperationTokenType = 3;
 
         /// <summary>
-        /// Serializer options shared by all operation token types.
+        /// Serializer options shared by all operation token types (omits null fields).
         /// </summary>
         internal static readonly JsonSerializerOptions TokenSerializerOptions = new()
         {
@@ -90,6 +90,44 @@ namespace Temporalio.Nexus
                 case 3: s += "="; break;
             }
             return Convert.FromBase64String(s);
+        }
+
+        /// <summary>
+        /// Decode just the type field from a base64url-encoded operation token. Used by cancel
+        /// dispatch to route by token type without committing to a particular per-type schema.
+        /// </summary>
+        /// <param name="token">Base64url-encoded token string.</param>
+        /// <returns>Token type code (the JSON <c>t</c> field).</returns>
+        /// <exception cref="ArgumentException">If the token is empty or malformed.</exception>
+        internal static int ParseTokenType(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new ArgumentException("Token invalid: token is empty");
+            }
+            byte[] bytes;
+            try
+            {
+                bytes = Base64UrlDecode(token);
+            }
+            catch (FormatException)
+            {
+                throw new ArgumentException("Token invalid");
+            }
+            TokenTypeOnly? partial;
+            try
+            {
+                partial = JsonSerializer.Deserialize<TokenTypeOnly>(bytes, TokenSerializerOptions);
+            }
+            catch (JsonException e)
+            {
+                throw new ArgumentException("Token invalid", e);
+            }
+            if (partial == null || partial.Type == 0)
+            {
+                throw new ArgumentException("Token invalid: missing or zero token type");
+            }
+            return partial.Type;
         }
 
         /// <summary>
@@ -168,6 +206,9 @@ namespace Temporalio.Nexus
             string? RunId = null,
             [property: JsonPropertyName("uid")]
             string? UpdateId = null);
+
+        private record TokenTypeOnly(
+            [property: JsonPropertyName("t")] int Type);
     }
 
     /// <inheritdoc />

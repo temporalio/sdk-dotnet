@@ -169,5 +169,64 @@ namespace Temporalio.Nexus
                 }
             }
         }
+
+        /// <inheritdoc/>
+        public Task<TemporalOperationResult<TResult>> StartActivityAsync<TResult>(
+            Expression<Func<Task<TResult>>> activityCall, StartActivityOptions options)
+        {
+            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            return StartActivityAsync<TResult>(
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
+                args,
+                options);
+        }
+
+        /// <inheritdoc/>
+        public Task<TemporalOperationResult<NoValue>> StartActivityAsync(
+            Expression<Func<Task>> activityCall, StartActivityOptions options)
+        {
+            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            return StartActivityAsync<NoValue>(
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
+                args,
+                options);
+        }
+
+        /// <inheritdoc/>
+        public async Task<TemporalOperationResult<TResult>> StartActivityAsync<TResult>(
+            string activity, IReadOnlyCollection<object?> args, StartActivityOptions options)
+        {
+            // Reserve the single async-operation slot for this operation invocation. Starting an
+            // activity always produces an async result, so a successful start consumes the slot and
+            // a failure releases it. A Nexus operation Start handler runs single-threaded per
+            // invocation, so no synchronization is needed.
+            if (asyncStarted)
+            {
+                throw new HandlerException(
+                    HandlerErrorType.BadRequest,
+                    "only one async operation can be started per operation invocation");
+            }
+            asyncStarted = true;
+            var keepSlot = false;
+            try
+            {
+                var token = await NexusActivityStartHelper.StartActivityAsync(
+                    TemporalClient,
+                    nexusStartContext,
+                    temporalContext,
+                    activity,
+                    args,
+                    options).ConfigureAwait(false);
+                keepSlot = true;
+                return TemporalOperationResult<TResult>.AsyncResult(token);
+            }
+            finally
+            {
+                if (!keepSlot)
+                {
+                    asyncStarted = false;
+                }
+            }
+        }
     }
 }

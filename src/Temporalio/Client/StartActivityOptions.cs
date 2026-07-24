@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Common;
 
@@ -113,6 +114,26 @@ namespace Temporalio.Client
         /// Gets or sets RPC options for starting the activity.
         /// </summary>
         public RpcOptions? Rpc { get; set; }
+
+        /// <summary>
+        /// Gets or sets the on-conflict options.
+        /// </summary>
+        internal Api.Common.V1.OnConflictOptions? OnConflictOptions { get; set; }
+
+        /// <summary>
+        /// Gets or sets the completion callbacks.
+        /// </summary>
+        internal IReadOnlyCollection<Api.Common.V1.Callback>? CompletionCallbacks { get; set; }
+
+        /// <summary>
+        /// Gets or sets the links to attach on activity start.
+        /// </summary>
+        internal IReadOnlyCollection<Api.Common.V1.Link>? Links { get; set; }
+
+        /// <summary>
+        /// Gets or sets the request ID for the activity start request. If null, a new GUID is used.
+        /// </summary>
+        internal string? RequestId { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.
