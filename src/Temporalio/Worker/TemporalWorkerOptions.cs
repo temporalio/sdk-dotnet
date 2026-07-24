@@ -369,6 +369,16 @@ namespace Temporalio.Worker
         public bool DisableEagerActivityExecution { get; set; }
 
         /// <summary>
+        /// Gets or sets the maximum number of activity slots that may be reserved for eager
+        /// execution when completing a workflow task. Default is 3.
+        /// </summary>
+        /// <remarks>
+        /// This value must be positive. Set <see cref="DisableEagerActivityExecution"/> to
+        /// <c>true</c> to disable eager activity execution.
+        /// </remarks>
+        public int MaxEagerActivityReservationsPerWorkflowTask { get; set; } = 3;
+
+        /// <summary>
         /// Gets or sets a value indicating whether the worker should skip proactively failing
         /// workflow/activity tasks whose payloads exceed the namespace error limits.
         /// </summary>

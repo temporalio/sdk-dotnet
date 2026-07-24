@@ -513,6 +513,14 @@ namespace Temporalio.Bridge
             {
                 throw new ArgumentException($"Task queue must be provided when {nameof(Temporalio.Worker.TemporalWorkerOptions)} is configured");
             }
+            if (options.MaxEagerActivityReservationsPerWorkflowTask <= 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(options.MaxEagerActivityReservationsPerWorkflowTask),
+                    options.MaxEagerActivityReservationsPerWorkflowTask,
+                    $"{nameof(options.MaxEagerActivityReservationsPerWorkflowTask)} must be positive; " +
+                    $"set {nameof(options.DisableEagerActivityExecution)} to true to disable eager activity execution");
+            }
 #pragma warning disable 0618
             var buildId = options.DeploymentOptions?.Version?.BuildId ?? options.BuildId;
 #pragma warning restore 0618
@@ -668,6 +676,8 @@ namespace Temporalio.Bridge
                 plugins = scope.ByteArrayArray(pluginNames),
                 storage_drivers = scope.ByteArrayArray(storageDrivers),
                 disable_payload_error_limit = (byte)(options.DisablePayloadErrorLimit ? 1 : 0),
+                max_eager_activity_reservations_per_workflow_task =
+                    (uint)options.MaxEagerActivityReservationsPerWorkflowTask,
             };
         }
 
