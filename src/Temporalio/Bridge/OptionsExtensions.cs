@@ -515,11 +515,13 @@ namespace Temporalio.Bridge
             }
             if (options.MaxEagerActivityReservationsPerWorkflowTask <= 0)
             {
-                throw new ArgumentOutOfRangeException(
-                    nameof(options.MaxEagerActivityReservationsPerWorkflowTask),
-                    options.MaxEagerActivityReservationsPerWorkflowTask,
+                var message =
                     $"{nameof(options.MaxEagerActivityReservationsPerWorkflowTask)} must be positive; " +
-                    $"set {nameof(options.DisableEagerActivityExecution)} to true to disable eager activity execution");
+                    $"set {nameof(options.DisableEagerActivityExecution)} to true to disable eager activity execution";
+                throw new ArgumentOutOfRangeException(
+                    nameof(options),
+                    options.MaxEagerActivityReservationsPerWorkflowTask,
+                    message);
             }
 #pragma warning disable 0618
             var buildId = options.DeploymentOptions?.Version?.BuildId ?? options.BuildId;

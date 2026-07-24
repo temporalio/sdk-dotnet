@@ -53,66 +53,69 @@ namespace Temporalio.Api.TaskQueue.V1 {
             "dWVUeXBlSW5mbzoCOAEihQEKEVRhc2tRdWV1ZVR5cGVJbmZvEjYKB3BvbGxl",
             "cnMYASADKAsyJS50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlBvbGxlcklu",
             "Zm8SOAoFc3RhdHMYAiABKAsyKS50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYx",
-            "LlRhc2tRdWV1ZVN0YXRzIqQBCg5UYXNrUXVldWVTdGF0cxIhChlhcHByb3hp",
+            "LlRhc2tRdWV1ZVN0YXRzIsIBCg5UYXNrUXVldWVTdGF0cxIhChlhcHByb3hp",
             "bWF0ZV9iYWNrbG9nX2NvdW50GAEgASgDEjoKF2FwcHJveGltYXRlX2JhY2ts",
             "b2dfYWdlGAIgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEhYKDnRh",
             "c2tzX2FkZF9yYXRlGAMgASgCEhsKE3Rhc2tzX2Rpc3BhdGNoX3JhdGUYBCAB",
-            "KAIirAEKD1Rhc2tRdWV1ZVN0YXR1cxIaChJiYWNrbG9nX2NvdW50X2hpbnQY",
-            "ASABKAMSEgoKcmVhZF9sZXZlbBgCIAEoAxIRCglhY2tfbGV2ZWwYAyABKAMS",
-            "FwoPcmF0ZV9wZXJfc2Vjb25kGAQgASgBEj0KDXRhc2tfaWRfYmxvY2sYBSAB",
-            "KAsyJi50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlRhc2tJZEJsb2NrIi8K",
-            "C1Rhc2tJZEJsb2NrEhAKCHN0YXJ0X2lkGAEgASgDEg4KBmVuZF9pZBgCIAEo",
-            "AyJCChpUYXNrUXVldWVQYXJ0aXRpb25NZXRhZGF0YRILCgNrZXkYASABKAkS",
-            "FwoPb3duZXJfaG9zdF9uYW1lGAIgASgJIpoCCgpQb2xsZXJJbmZvEjQKEGxh",
-            "c3RfYWNjZXNzX3RpbWUYASABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0",
-            "YW1wEhAKCGlkZW50aXR5GAIgASgJEhcKD3JhdGVfcGVyX3NlY29uZBgDIAEo",
-            "ARJaCht3b3JrZXJfdmVyc2lvbl9jYXBhYmlsaXRpZXMYBCABKAsyMS50ZW1w",
-            "b3JhbC5hcGkuY29tbW9uLnYxLldvcmtlclZlcnNpb25DYXBhYmlsaXRpZXNC",
-            "AhgBEk8KEmRlcGxveW1lbnRfb3B0aW9ucxgFIAEoCzIzLnRlbXBvcmFsLmFw",
-            "aS5kZXBsb3ltZW50LnYxLldvcmtlckRlcGxveW1lbnRPcHRpb25zIpoBChlT",
-            "dGlja3lFeGVjdXRpb25BdHRyaWJ1dGVzEj8KEXdvcmtlcl90YXNrX3F1ZXVl",
-            "GAEgASgLMiQudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5UYXNrUXVldWUS",
-            "PAoZc2NoZWR1bGVfdG9fc3RhcnRfdGltZW91dBgCIAEoCzIZLmdvb2dsZS5w",
-            "cm90b2J1Zi5EdXJhdGlvbiIpChRDb21wYXRpYmxlVmVyc2lvblNldBIRCgli",
-            "dWlsZF9pZHMYASADKAkiagoVVGFza1F1ZXVlUmVhY2hhYmlsaXR5EhIKCnRh",
-            "c2tfcXVldWUYASABKAkSPQoMcmVhY2hhYmlsaXR5GAIgAygOMicudGVtcG9y",
-            "YWwuYXBpLmVudW1zLnYxLlRhc2tSZWFjaGFiaWxpdHkiegoTQnVpbGRJZFJl",
-            "YWNoYWJpbGl0eRIQCghidWlsZF9pZBgBIAEoCRJRChd0YXNrX3F1ZXVlX3Jl",
-            "YWNoYWJpbGl0eRgCIAMoCzIwLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEu",
-            "VGFza1F1ZXVlUmVhY2hhYmlsaXR5IisKEFJhbXBCeVBlcmNlbnRhZ2USFwoP",
-            "cmFtcF9wZXJjZW50YWdlGAEgASgCIoABChVCdWlsZElkQXNzaWdubWVudFJ1",
-            "bGUSFwoPdGFyZ2V0X2J1aWxkX2lkGAEgASgJEkYKD3BlcmNlbnRhZ2VfcmFt",
-            "cBgDIAEoCzIrLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuUmFtcEJ5UGVy",
-            "Y2VudGFnZUgAQgYKBHJhbXAiUQodQ29tcGF0aWJsZUJ1aWxkSWRSZWRpcmVj",
-            "dFJ1bGUSFwoPc291cmNlX2J1aWxkX2lkGAEgASgJEhcKD3RhcmdldF9idWls",
-            "ZF9pZBgCIAEoCSKTAQogVGltZXN0YW1wZWRCdWlsZElkQXNzaWdubWVudFJ1",
-            "bGUSPgoEcnVsZRgBIAEoCzIwLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEu",
-            "QnVpbGRJZEFzc2lnbm1lbnRSdWxlEi8KC2NyZWF0ZV90aW1lGAIgASgLMhou",
-            "Z29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKjAQooVGltZXN0YW1wZWRDb21w",
-            "YXRpYmxlQnVpbGRJZFJlZGlyZWN0UnVsZRJGCgRydWxlGAEgASgLMjgudGVt",
-            "cG9yYWwuYXBpLnRhc2txdWV1ZS52MS5Db21wYXRpYmxlQnVpbGRJZFJlZGly",
-            "ZWN0UnVsZRIvCgtjcmVhdGVfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1",
-            "Zi5UaW1lc3RhbXAiLQoPUG9sbGVyR3JvdXBJbmZvEgoKAmlkGAEgASgJEg4K",
-            "BndlaWdodBgCIAEoAiI+ChVQb2xsZXJTY2FsaW5nRGVjaXNpb24SJQodcG9s",
-            "bF9yZXF1ZXN0X2RlbHRhX3N1Z2dlc3Rpb24YASABKAUiKAoJUmF0ZUxpbWl0",
-            "EhsKE3JlcXVlc3RzX3Blcl9zZWNvbmQYASABKAIiagoOQ29uZmlnTWV0YWRh",
-            "dGESDgoGcmVhc29uGAEgASgJEhcKD3VwZGF0ZV9pZGVudGl0eRgCIAEoCRIv",
-            "Cgt1cGRhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3Rh",
-            "bXAiiAEKD1JhdGVMaW1pdENvbmZpZxI4CgpyYXRlX2xpbWl0GAEgASgLMiQu",
-            "dGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5SYXRlTGltaXQSOwoIbWV0YWRh",
-            "dGEYAiABKAsyKS50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLkNvbmZpZ01l",
-            "dGFkYXRhItkCCg9UYXNrUXVldWVDb25maWcSRAoQcXVldWVfcmF0ZV9saW1p",
-            "dBgBIAEoCzIqLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuUmF0ZUxpbWl0",
-            "Q29uZmlnElQKIGZhaXJuZXNzX2tleXNfcmF0ZV9saW1pdF9kZWZhdWx0GAIg",
-            "ASgLMioudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5SYXRlTGltaXRDb25m",
-            "aWcSagoZZmFpcm5lc3Nfd2VpZ2h0X292ZXJyaWRlcxgDIAMoCzJHLnRlbXBv",
-            "cmFsLmFwaS50YXNrcXVldWUudjEuVGFza1F1ZXVlQ29uZmlnLkZhaXJuZXNz",
-            "V2VpZ2h0T3ZlcnJpZGVzRW50cnkaPgocRmFpcm5lc3NXZWlnaHRPdmVycmlk",
-            "ZXNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAI6AjgBQpgBChxp",
-            "by50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxQgxNZXNzYWdlUHJvdG9QAVop",
-            "Z28udGVtcG9yYWwuaW8vYXBpL3Rhc2txdWV1ZS92MTt0YXNrcXVldWWqAhtU",
-            "ZW1wb3JhbGlvLkFwaS5UYXNrUXVldWUuVjHqAh5UZW1wb3JhbGlvOjpBcGk6",
-            "OlRhc2tRdWV1ZTo6VjFiBnByb3RvMw=="));
+            "KAISHAoUcmF0ZV9saW1pdGluZ19hY3RpdmUYBSABKAgirAEKD1Rhc2tRdWV1",
+            "ZVN0YXR1cxIaChJiYWNrbG9nX2NvdW50X2hpbnQYASABKAMSEgoKcmVhZF9s",
+            "ZXZlbBgCIAEoAxIRCglhY2tfbGV2ZWwYAyABKAMSFwoPcmF0ZV9wZXJfc2Vj",
+            "b25kGAQgASgBEj0KDXRhc2tfaWRfYmxvY2sYBSABKAsyJi50ZW1wb3JhbC5h",
+            "cGkudGFza3F1ZXVlLnYxLlRhc2tJZEJsb2NrIi8KC1Rhc2tJZEJsb2NrEhAK",
+            "CHN0YXJ0X2lkGAEgASgDEg4KBmVuZF9pZBgCIAEoAyJCChpUYXNrUXVldWVQ",
+            "YXJ0aXRpb25NZXRhZGF0YRILCgNrZXkYASABKAkSFwoPb3duZXJfaG9zdF9u",
+            "YW1lGAIgASgJIpoCCgpQb2xsZXJJbmZvEjQKEGxhc3RfYWNjZXNzX3RpbWUY",
+            "ASABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhAKCGlkZW50aXR5",
+            "GAIgASgJEhcKD3JhdGVfcGVyX3NlY29uZBgDIAEoARJaCht3b3JrZXJfdmVy",
+            "c2lvbl9jYXBhYmlsaXRpZXMYBCABKAsyMS50ZW1wb3JhbC5hcGkuY29tbW9u",
+            "LnYxLldvcmtlclZlcnNpb25DYXBhYmlsaXRpZXNCAhgBEk8KEmRlcGxveW1l",
+            "bnRfb3B0aW9ucxgFIAEoCzIzLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYx",
+            "LldvcmtlckRlcGxveW1lbnRPcHRpb25zIpoBChlTdGlja3lFeGVjdXRpb25B",
+            "dHRyaWJ1dGVzEj8KEXdvcmtlcl90YXNrX3F1ZXVlGAEgASgLMiQudGVtcG9y",
+            "YWwuYXBpLnRhc2txdWV1ZS52MS5UYXNrUXVldWUSPAoZc2NoZWR1bGVfdG9f",
+            "c3RhcnRfdGltZW91dBgCIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlv",
+            "biIpChRDb21wYXRpYmxlVmVyc2lvblNldBIRCglidWlsZF9pZHMYASADKAki",
+            "agoVVGFza1F1ZXVlUmVhY2hhYmlsaXR5EhIKCnRhc2tfcXVldWUYASABKAkS",
+            "PQoMcmVhY2hhYmlsaXR5GAIgAygOMicudGVtcG9yYWwuYXBpLmVudW1zLnYx",
+            "LlRhc2tSZWFjaGFiaWxpdHkiegoTQnVpbGRJZFJlYWNoYWJpbGl0eRIQCghi",
+            "dWlsZF9pZBgBIAEoCRJRChd0YXNrX3F1ZXVlX3JlYWNoYWJpbGl0eRgCIAMo",
+            "CzIwLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuVGFza1F1ZXVlUmVhY2hh",
+            "YmlsaXR5IisKEFJhbXBCeVBlcmNlbnRhZ2USFwoPcmFtcF9wZXJjZW50YWdl",
+            "GAEgASgCIoABChVCdWlsZElkQXNzaWdubWVudFJ1bGUSFwoPdGFyZ2V0X2J1",
+            "aWxkX2lkGAEgASgJEkYKD3BlcmNlbnRhZ2VfcmFtcBgDIAEoCzIrLnRlbXBv",
+            "cmFsLmFwaS50YXNrcXVldWUudjEuUmFtcEJ5UGVyY2VudGFnZUgAQgYKBHJh",
+            "bXAiUQodQ29tcGF0aWJsZUJ1aWxkSWRSZWRpcmVjdFJ1bGUSFwoPc291cmNl",
+            "X2J1aWxkX2lkGAEgASgJEhcKD3RhcmdldF9idWlsZF9pZBgCIAEoCSKTAQog",
+            "VGltZXN0YW1wZWRCdWlsZElkQXNzaWdubWVudFJ1bGUSPgoEcnVsZRgBIAEo",
+            "CzIwLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuQnVpbGRJZEFzc2lnbm1l",
+            "bnRSdWxlEi8KC2NyZWF0ZV90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVm",
+            "LlRpbWVzdGFtcCKjAQooVGltZXN0YW1wZWRDb21wYXRpYmxlQnVpbGRJZFJl",
+            "ZGlyZWN0UnVsZRJGCgRydWxlGAEgASgLMjgudGVtcG9yYWwuYXBpLnRhc2tx",
+            "dWV1ZS52MS5Db21wYXRpYmxlQnVpbGRJZFJlZGlyZWN0UnVsZRIvCgtjcmVh",
+            "dGVfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiLQoP",
+            "UG9sbGVyR3JvdXBJbmZvEgoKAmlkGAEgASgJEg4KBndlaWdodBgCIAEoAiJm",
+            "ChBQb2xsZXJHcm91cHNJbmZvEg8KB3ZlcnNpb24YASABKAMSQQoNcG9sbGVy",
+            "X2dyb3VwcxgCIAMoCzIqLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuUG9s",
+            "bGVyR3JvdXBJbmZvIj4KFVBvbGxlclNjYWxpbmdEZWNpc2lvbhIlCh1wb2xs",
+            "X3JlcXVlc3RfZGVsdGFfc3VnZ2VzdGlvbhgBIAEoBSIoCglSYXRlTGltaXQS",
+            "GwoTcmVxdWVzdHNfcGVyX3NlY29uZBgBIAEoAiJqCg5Db25maWdNZXRhZGF0",
+            "YRIOCgZyZWFzb24YASABKAkSFwoPdXBkYXRlX2lkZW50aXR5GAIgASgJEi8K",
+            "C3VwZGF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFt",
+            "cCKIAQoPUmF0ZUxpbWl0Q29uZmlnEjgKCnJhdGVfbGltaXQYASABKAsyJC50",
+            "ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlJhdGVMaW1pdBI7CghtZXRhZGF0",
+            "YRgCIAEoCzIpLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuQ29uZmlnTWV0",
+            "YWRhdGEi2QIKD1Rhc2tRdWV1ZUNvbmZpZxJEChBxdWV1ZV9yYXRlX2xpbWl0",
+            "GAEgASgLMioudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5SYXRlTGltaXRD",
+            "b25maWcSVAogZmFpcm5lc3Nfa2V5c19yYXRlX2xpbWl0X2RlZmF1bHQYAiAB",
+            "KAsyKi50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlJhdGVMaW1pdENvbmZp",
+            "ZxJqChlmYWlybmVzc193ZWlnaHRfb3ZlcnJpZGVzGAMgAygLMkcudGVtcG9y",
+            "YWwuYXBpLnRhc2txdWV1ZS52MS5UYXNrUXVldWVDb25maWcuRmFpcm5lc3NX",
+            "ZWlnaHRPdmVycmlkZXNFbnRyeRo+ChxGYWlybmVzc1dlaWdodE92ZXJyaWRl",
+            "c0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoAjoCOAFCmAEKHGlv",
+            "LnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjFCDE1lc3NhZ2VQcm90b1ABWiln",
+            "by50ZW1wb3JhbC5pby9hcGkvdGFza3F1ZXVlL3YxO3Rhc2txdWV1ZaoCG1Rl",
+            "bXBvcmFsaW8uQXBpLlRhc2tRdWV1ZS5WMeoCHlRlbXBvcmFsaW86OkFwaTo6",
+            "VGFza1F1ZXVlOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, global::Temporalio.Api.Enums.V1.TaskQueueReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -122,7 +125,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionSelection), global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionSelection.Parser, new[]{ "BuildIds", "Unversioned", "AllActive" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionInfo), global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionInfo.Parser, new[]{ "TypesInfo", "TaskReachability" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo), global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo.Parser, new[]{ "Pollers", "Stats" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueStats), global::Temporalio.Api.TaskQueue.V1.TaskQueueStats.Parser, new[]{ "ApproximateBacklogCount", "ApproximateBacklogAge", "TasksAddRate", "TasksDispatchRate" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueStats), global::Temporalio.Api.TaskQueue.V1.TaskQueueStats.Parser, new[]{ "ApproximateBacklogCount", "ApproximateBacklogAge", "TasksAddRate", "TasksDispatchRate", "RateLimitingActive" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueStatus), global::Temporalio.Api.TaskQueue.V1.TaskQueueStatus.Parser, new[]{ "BacklogCountHint", "ReadLevel", "AckLevel", "RatePerSecond", "TaskIdBlock" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskIdBlock), global::Temporalio.Api.TaskQueue.V1.TaskIdBlock.Parser, new[]{ "StartId", "EndId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueuePartitionMetadata), global::Temporalio.Api.TaskQueue.V1.TaskQueuePartitionMetadata.Parser, new[]{ "Key", "OwnerHostName" }, null, null, null, null),
@@ -137,6 +140,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TimestampedBuildIdAssignmentRule), global::Temporalio.Api.TaskQueue.V1.TimestampedBuildIdAssignmentRule.Parser, new[]{ "Rule", "CreateTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TimestampedCompatibleBuildIdRedirectRule), global::Temporalio.Api.TaskQueue.V1.TimestampedCompatibleBuildIdRedirectRule.Parser, new[]{ "Rule", "CreateTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.PollerGroupInfo), global::Temporalio.Api.TaskQueue.V1.PollerGroupInfo.Parser, new[]{ "Id", "Weight" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.PollerGroupsInfo), global::Temporalio.Api.TaskQueue.V1.PollerGroupsInfo.Parser, new[]{ "Version", "PollerGroups" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.PollerScalingDecision), global::Temporalio.Api.TaskQueue.V1.PollerScalingDecision.Parser, new[]{ "PollRequestDeltaSuggestion" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.RateLimit), global::Temporalio.Api.TaskQueue.V1.RateLimit.Parser, new[]{ "RequestsPerSecond" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.ConfigMetadata), global::Temporalio.Api.TaskQueue.V1.ConfigMetadata.Parser, new[]{ "Reason", "UpdateIdentity", "UpdateTime" }, null, null, null, null),
@@ -1821,6 +1825,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
       approximateBacklogAge_ = other.approximateBacklogAge_ != null ? other.approximateBacklogAge_.Clone() : null;
       tasksAddRate_ = other.tasksAddRate_;
       tasksDispatchRate_ = other.tasksDispatchRate_;
+      rateLimitingActive_ = other.rateLimitingActive_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1926,6 +1931,24 @@ namespace Temporalio.Api.TaskQueue.V1 {
       }
     }
 
+    /// <summary>Field number for the "rate_limiting_active" field.</summary>
+    public const int RateLimitingActiveFieldNumber = 5;
+    private bool rateLimitingActive_;
+    /// <summary>
+    /// Whether rate limiting blocked any dispatches within the recent observation window (approximately
+    /// 30 seconds). When true, adding more workers will not increase throughput — the bottleneck is the
+    /// rate limit, not worker count. This field is useful for auto-scaling systems to avoid unnecessary
+    /// scale-up.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool RateLimitingActive {
+      get { return rateLimitingActive_; }
+      set {
+        rateLimitingActive_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1945,6 +1968,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
       if (!object.Equals(ApproximateBacklogAge, other.ApproximateBacklogAge)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(TasksAddRate, other.TasksAddRate)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(TasksDispatchRate, other.TasksDispatchRate)) return false;
+      if (RateLimitingActive != other.RateLimitingActive) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1956,6 +1980,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
       if (approximateBacklogAge_ != null) hash ^= ApproximateBacklogAge.GetHashCode();
       if (TasksAddRate != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(TasksAddRate);
       if (TasksDispatchRate != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(TasksDispatchRate);
+      if (RateLimitingActive != false) hash ^= RateLimitingActive.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1990,6 +2015,10 @@ namespace Temporalio.Api.TaskQueue.V1 {
         output.WriteRawTag(37);
         output.WriteFloat(TasksDispatchRate);
       }
+      if (RateLimitingActive != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(RateLimitingActive);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2016,6 +2045,10 @@ namespace Temporalio.Api.TaskQueue.V1 {
         output.WriteRawTag(37);
         output.WriteFloat(TasksDispatchRate);
       }
+      if (RateLimitingActive != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(RateLimitingActive);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2037,6 +2070,9 @@ namespace Temporalio.Api.TaskQueue.V1 {
       }
       if (TasksDispatchRate != 0F) {
         size += 1 + 4;
+      }
+      if (RateLimitingActive != false) {
+        size += 1 + 1;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2064,6 +2100,9 @@ namespace Temporalio.Api.TaskQueue.V1 {
       }
       if (other.TasksDispatchRate != 0F) {
         TasksDispatchRate = other.TasksDispatchRate;
+      }
+      if (other.RateLimitingActive != false) {
+        RateLimitingActive = other.RateLimitingActive;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -2099,6 +2138,10 @@ namespace Temporalio.Api.TaskQueue.V1 {
             TasksDispatchRate = input.ReadFloat();
             break;
           }
+          case 40: {
+            RateLimitingActive = input.ReadBool();
+            break;
+          }
         }
       }
     #endif
@@ -2131,6 +2174,10 @@ namespace Temporalio.Api.TaskQueue.V1 {
           }
           case 37: {
             TasksDispatchRate = input.ReadFloat();
+            break;
+          }
+          case 40: {
+            RateLimitingActive = input.ReadBool();
             break;
           }
         }
@@ -5670,6 +5717,233 @@ namespace Temporalio.Api.TaskQueue.V1 {
   }
 
   /// <summary>
+  /// A versioned snapshot of the poller groups the client should use for future polls to a task
+  /// queue. The version is monotonically increasing so that a client can ignore a snapshot that is
+  /// older than the one it has already applied.
+  /// </summary>
+  public sealed partial class PollerGroupsInfo : pb::IMessage<PollerGroupsInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<PollerGroupsInfo> _parser = new pb::MessageParser<PollerGroupsInfo>(() => new PollerGroupsInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<PollerGroupsInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[21]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PollerGroupsInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PollerGroupsInfo(PollerGroupsInfo other) : this() {
+      version_ = other.version_;
+      pollerGroups_ = other.pollerGroups_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PollerGroupsInfo Clone() {
+      return new PollerGroupsInfo(this);
+    }
+
+    /// <summary>Field number for the "version" field.</summary>
+    public const int VersionFieldNumber = 1;
+    private long version_;
+    /// <summary>
+    /// Monotonically increasing version of this snapshot. A client should ignore any snapshot whose
+    /// version is not greater than the one it last applied.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public long Version {
+      get { return version_; }
+      set {
+        version_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "poller_groups" field.</summary>
+    public const int PollerGroupsFieldNumber = 2;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.TaskQueue.V1.PollerGroupInfo> _repeated_pollerGroups_codec
+        = pb::FieldCodec.ForMessage(18, global::Temporalio.Api.TaskQueue.V1.PollerGroupInfo.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.TaskQueue.V1.PollerGroupInfo> pollerGroups_ = new pbc::RepeatedField<global::Temporalio.Api.TaskQueue.V1.PollerGroupInfo>();
+    /// <summary>
+    /// The weighted list of poller groups the client should use for future polls to this task queue.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.TaskQueue.V1.PollerGroupInfo> PollerGroups {
+      get { return pollerGroups_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as PollerGroupsInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(PollerGroupsInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Version != other.Version) return false;
+      if(!pollerGroups_.Equals(other.pollerGroups_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Version != 0L) hash ^= Version.GetHashCode();
+      hash ^= pollerGroups_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Version != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Version);
+      }
+      pollerGroups_.WriteTo(output, _repeated_pollerGroups_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Version != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Version);
+      }
+      pollerGroups_.WriteTo(ref output, _repeated_pollerGroups_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Version != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Version);
+      }
+      size += pollerGroups_.CalculateSize(_repeated_pollerGroups_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(PollerGroupsInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Version != 0L) {
+        Version = other.Version;
+      }
+      pollerGroups_.Add(other.pollerGroups_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Version = input.ReadInt64();
+            break;
+          }
+          case 18: {
+            pollerGroups_.AddEntriesFrom(input, _repeated_pollerGroups_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Version = input.ReadInt64();
+            break;
+          }
+          case 18: {
+            pollerGroups_.AddEntriesFrom(ref input, _repeated_pollerGroups_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
   /// Attached to task responses to give hints to the SDK about how it may adjust its number of
   /// pollers.
   /// </summary>
@@ -5687,7 +5961,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[21]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[22]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5884,7 +6158,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[22]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[23]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6076,7 +6350,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[23]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[24]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6358,7 +6632,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[24]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[25]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6602,7 +6876,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[25]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[26]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

@@ -63,14 +63,16 @@ namespace Temporalio.Api.Enums.V1 {
             "EiUKIUFQUExJQ0FUSU9OX0VSUk9SX0NBVEVHT1JZX0JFTklHThABKoUBCgxX",
             "b3JrZXJTdGF0dXMSHQoZV09SS0VSX1NUQVRVU19VTlNQRUNJRklFRBAAEhkK",
             "FVdPUktFUl9TVEFUVVNfUlVOTklORxABEh8KG1dPUktFUl9TVEFUVVNfU0hV",
-            "VFRJTkdfRE9XThACEhoKFldPUktFUl9TVEFUVVNfU0hVVERPV04QA0KDAQoY",
-            "aW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQgtDb21tb25Qcm90b1ABWiFnby50",
-            "ZW1wb3JhbC5pby9hcGkvZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFw",
-            "aS5FbnVtcy5WMeoCGlRlbXBvcmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90",
-            "bzM="));
+            "VFRJTkdfRE9XThACEhoKFldPUktFUl9TVEFUVVNfU0hVVERPV04QAyppCg1F",
+            "eGVjdXRpb25UeXBlEh4KGkVYRUNVVElPTl9UWVBFX1VOU1BFQ0lGSUVEEAAS",
+            "GwoXRVhFQ1VUSU9OX1RZUEVfV09SS0ZMT1cQARIbChdFWEVDVVRJT05fVFlQ",
+            "RV9BQ1RJVklUWRACQoMBChhpby50ZW1wb3JhbC5hcGkuZW51bXMudjFCC0Nv",
+            "bW1vblByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtlbnVt",
+            "c6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBp",
+            "OjpFbnVtczo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.EncodingType), typeof(global::Temporalio.Api.Enums.V1.IndexedValueType), typeof(global::Temporalio.Api.Enums.V1.Severity), typeof(global::Temporalio.Api.Enums.V1.CallbackState), typeof(global::Temporalio.Api.Enums.V1.PendingNexusOperationState), typeof(global::Temporalio.Api.Enums.V1.NexusOperationCancellationState), typeof(global::Temporalio.Api.Enums.V1.WorkflowRuleActionScope), typeof(global::Temporalio.Api.Enums.V1.ApplicationErrorCategory), typeof(global::Temporalio.Api.Enums.V1.WorkerStatus), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.EncodingType), typeof(global::Temporalio.Api.Enums.V1.IndexedValueType), typeof(global::Temporalio.Api.Enums.V1.Severity), typeof(global::Temporalio.Api.Enums.V1.CallbackState), typeof(global::Temporalio.Api.Enums.V1.PendingNexusOperationState), typeof(global::Temporalio.Api.Enums.V1.NexusOperationCancellationState), typeof(global::Temporalio.Api.Enums.V1.WorkflowRuleActionScope), typeof(global::Temporalio.Api.Enums.V1.ApplicationErrorCategory), typeof(global::Temporalio.Api.Enums.V1.WorkerStatus), typeof(global::Temporalio.Api.Enums.V1.ExecutionType), }, null, null));
     }
     #endregion
 
@@ -226,6 +228,18 @@ namespace Temporalio.Api.Enums.V1 {
     [pbr::OriginalName("WORKER_STATUS_RUNNING")] Running = 1,
     [pbr::OriginalName("WORKER_STATUS_SHUTTING_DOWN")] ShuttingDown = 2,
     [pbr::OriginalName("WORKER_STATUS_SHUTDOWN")] Shutdown = 3,
+  }
+
+  public enum ExecutionType {
+    [pbr::OriginalName("EXECUTION_TYPE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// A workflow execution archetype. 
+    /// </summary>
+    [pbr::OriginalName("EXECUTION_TYPE_WORKFLOW")] Workflow = 1,
+    /// <summary>
+    /// An activity execution archetype. This is reserved for standalone activities.
+    /// </summary>
+    [pbr::OriginalName("EXECUTION_TYPE_ACTIVITY")] Activity = 2,
   }
 
   #endregion
