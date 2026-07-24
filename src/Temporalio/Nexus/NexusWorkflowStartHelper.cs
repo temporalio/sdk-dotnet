@@ -72,20 +72,9 @@ namespace Temporalio.Nexus
             }
             options.RequestId = nexusStartContext.RequestId;
 
-            // Do the start call
-            var wfHandle = await client.StartWorkflowAsync(
+            // Do the start call.
+            await client.StartWorkflowAsync(
                 workflow, args, options).ConfigureAwait(false);
-
-            // Add the outbound link pointing at the started workflow's WorkflowExecutionStarted
-            // event so the caller's NexusOperationStarted event links back to the target run.
-            nexusStartContext.OutboundLinks.Add(new Link.Types.WorkflowEvent
-            {
-                Namespace = namespace_,
-                WorkflowId = workflowId,
-                RunId = wfHandle.FirstExecutionRunId ??
-                    throw new InvalidOperationException("Handle unexpectedly missing run ID"),
-                EventRef = new() { EventId = 1, EventType = EventType.WorkflowExecutionStarted },
-            }.ToNexusLink());
 
             return handle;
         }
