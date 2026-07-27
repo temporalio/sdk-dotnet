@@ -22,11 +22,22 @@ public class DataConverterTests : TestBase
         {
             PayloadConverter = payloadConverter,
         };
-        Assert.NotSame(payloadConverter, newConverter.PayloadConverter);
+        Assert.Same(payloadConverter, newConverter.PayloadConverter);
         Assert.Equal(
             "payload",
             newConverter.PayloadConverter.ToValue(
                 newConverter.PayloadConverter.ToPayload("payload"), typeof(string)));
+    }
+
+    [Fact]
+    public void NewDataConverter_EquivalentConverters_AreEqual()
+    {
+        var payloadConverter = new MyPayloadConverter();
+        var failureConverter = new DefaultFailureConverter();
+
+        Assert.Equal(
+            new DataConverter(payloadConverter, failureConverter),
+            new DataConverter(payloadConverter, failureConverter));
     }
 
     public class MyPayloadConverter : IPayloadConverter

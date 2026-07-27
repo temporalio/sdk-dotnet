@@ -2,6 +2,7 @@ using Temporalio.Api.Common.V1;
 using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Converters;
+using Temporalio.Tests.Converters;
 using Temporalio.Worker;
 using Temporalio.Workflows;
 using Xunit.Abstractions;
@@ -203,6 +204,28 @@ public class PluginTests : WorkflowEnvironmentTestBase
             TaskQueue = "TestSimplePlugin_Function" + Guid.NewGuid(),
         });
         Assert.NotNull(client.Options.DataConverter.PayloadCodec);
+    }
+
+    [Fact]
+    public void TestClientPlugin_DataConverter_WrapsTransferTypePayloadConverter()
+    {
+        var plugin = new SimplePlugin("SimplePlugin", new SimplePluginOptions()
+        {
+            DataConverterOption = new SimplePluginOptions.SimplePluginOption<DataConverter>(
+                (_) => new DataConverter(
+                    new PayloadConverterTests.ContextStringPayloadConverter(),
+                    new DefaultFailureConverter())),
+        });
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.Plugins = new[] { plugin };
+
+        var client = new TemporalClient(Env.Client.Connection, newOptions);
+        var dataConverter = client.Options.DataConverter.WithSerializationContext(
+            new ISerializationContext.Workflow("default", "workflow-id"));
+        var payload = dataConverter.PayloadConverter.ToPayload(
+            new PayloadConverterTests.TransferTypeHookValue("payload-value"));
+
+        Assert.Equal("workflow-id:payload-value", payload.Data.ToStringUtf8());
     }
 
     [Fact]

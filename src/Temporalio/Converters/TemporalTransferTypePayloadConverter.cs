@@ -26,6 +26,18 @@ namespace Temporalio.Converters
             payloadConverter is TemporalTransferTypePayloadConverter ?
                 payloadConverter : new TemporalTransferTypePayloadConverter(payloadConverter);
 
+        /// <summary>
+        /// Wrap the data converter's payload converter unless it is already wrapped.
+        /// </summary>
+        /// <param name="dataConverter">Data converter to wrap.</param>
+        /// <returns>Data converter with a wrapped payload converter.</returns>
+        public static DataConverter Wrap(DataConverter dataConverter)
+        {
+            var payloadConverter = Wrap(dataConverter.PayloadConverter);
+            return ReferenceEquals(payloadConverter, dataConverter.PayloadConverter) ?
+                dataConverter : dataConverter with { PayloadConverter = payloadConverter };
+        }
+
         /// <inheritdoc />
         public Payload ToPayload(object? value)
         {
@@ -64,7 +76,8 @@ namespace Temporalio.Converters
 
         private static ITemporalTransferTypeConverter? CreateConverter(Type type)
         {
-            var attr = type.GetCustomAttribute<TemporalTransferTypeAttribute>(inherit: true);
+            var attr = type.GetCustomAttribute<TemporalTransferTypeConverterAttribute>(
+                inherit: false);
             if (attr == null)
             {
                 return null;
@@ -76,11 +89,24 @@ namespace Temporalio.Converters
                     $"Type {type} has a Temporal transfer type converter type " +
                     $"{attr.ConverterType} that does not implement {nameof(ITemporalTransferTypeConverter)}.");
             }
+            if (attr.ConverterType.IsAbstract)
+            {
+                throw new InvalidOperationException(
+                    $"Type {type} has an abstract Temporal transfer type converter type " +
+                    $"{attr.ConverterType}.");
+            }
             if (attr.ConverterType.ContainsGenericParameters)
             {
                 throw new InvalidOperationException(
                     $"Type {type} has an open generic Temporal transfer type converter type " +
                     $"{attr.ConverterType}.");
+            }
+            if (!attr.ConverterType.IsValueType &&
+                attr.ConverterType.GetConstructor(Type.EmptyTypes) == null)
+            {
+                throw new InvalidOperationException(
+                    $"Type {type} has a Temporal transfer type converter type " +
+                    $"{attr.ConverterType} without a public parameterless constructor.");
             }
 
             if (Activator.CreateInstance(attr.ConverterType) is not ITemporalTransferTypeConverter converter)

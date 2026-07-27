@@ -11,15 +11,17 @@ namespace Temporalio.Converters
     /// <see cref="ITemporalTransferTypeConverter"/>.
     /// This API is experimental and may change in a future release.
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = true)]
-    public sealed class TemporalTransferTypeAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false)]
+    public sealed class TemporalTransferTypeConverterAttribute : Attribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TemporalTransferTypeAttribute"/> class.
+        /// Initializes a new instance of the
+        /// <see cref="TemporalTransferTypeConverterAttribute"/> class.
         /// </summary>
         /// <param name="converterType">Converter type implementing
         /// <see cref="ITemporalTransferTypeConverter"/>.</param>
-        public TemporalTransferTypeAttribute(Type converterType) => ConverterType = converterType;
+        public TemporalTransferTypeConverterAttribute(Type converterType) =>
+            ConverterType = converterType;
 
         /// <summary>
         /// Gets the converter type.

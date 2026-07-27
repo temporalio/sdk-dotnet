@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Temporalio.Converters;
 
 namespace Temporalio.Client
 {
@@ -29,6 +30,7 @@ namespace Temporalio.Client
                 }
             }
 
+            options.DataConverter = TemporalTransferTypePayloadConverter.Wrap(options.DataConverter);
             Connection = connection;
             Options = options;
             OutboundInterceptor = new Impl(this);

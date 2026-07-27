@@ -3,7 +3,7 @@ using System;
 namespace Temporalio.Converters
 {
     /// <summary>
-    /// Converter for a type marked with <see cref="TemporalTransferTypeAttribute"/>.
+    /// Converter for a type marked with <see cref="TemporalTransferTypeConverterAttribute"/>.
     /// </summary>
     /// <remarks>
     /// This API is experimental and may change in a future release.
