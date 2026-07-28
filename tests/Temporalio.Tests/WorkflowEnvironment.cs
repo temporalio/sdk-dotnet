@@ -30,8 +30,12 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
 
     public async Task InitializeAsync()
     {
-        // If an existing target is given via environment variable, use that
-        if (Environment.GetEnvironmentVariable("TEMPORAL_TEST_CLIENT_TARGET_HOST") is string host)
+        if (UseEnvConfigFromEnvironment())
+        {
+            env = await Temporalio.Testing.WorkflowEnvironment.CreateFromEnvConfigAsync();
+        }
+        // If an existing target is given via legacy environment variable, use that
+        else if (Environment.GetEnvironmentVariable("TEMPORAL_TEST_CLIENT_TARGET_HOST") is string host)
         {
             var options = new TemporalClientConnectOptions(host)
             {
@@ -163,6 +167,11 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
         });
         return new(taskQueue, worker, task, comp);
     }
+
+    private static bool UseEnvConfigFromEnvironment() => string.Equals(
+        Environment.GetEnvironmentVariable("TEMPORAL_TEST_ENV_CONFIG_SERVER"),
+        "true",
+        StringComparison.OrdinalIgnoreCase);
 
     private record KitchenSinkWorker(
         string TaskQueue,

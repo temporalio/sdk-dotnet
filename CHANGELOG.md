@@ -35,6 +35,8 @@ to docs, or any other relevant information.
 - Added `TemporalWorkerOptions.MaxEagerActivityReservationsPerWorkflowTask` to configure the
   maximum number of activity slots reserved for eager execution per workflow task. Configured
   values must be positive; use `DisableEagerActivityExecution` to disable eager execution.
+- Added `WorkflowEnvironment.CreateFromEnvConfigAsync` for creating test workflow environments from
+  client environment configuration.
 - Added the experimental `TemporalWorkerOptions.PatchActivationCallback`, allowing workers to
   decide whether a first non-replay `Workflow.Patched` call should activate a patch during rolling
   deployments.
