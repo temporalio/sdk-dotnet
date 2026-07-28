@@ -1,6 +1,7 @@
 using System;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
+using Temporalio.Worker;
 
 namespace Temporalio.Nexus
 {
@@ -38,9 +39,9 @@ namespace Temporalio.Nexus
         /// <inheritdoc />
         public Payload ToPayload(object? value)
         {
-            // TODO: Scope userPayloadConverter and userFailureConverter in the generated System
-            // Nexus support converter context once that support file is ingested into the SDK.
-            return OuterPayloadConverter.ToPayload(value);
+            var payload = OuterPayloadConverter.ToPayload(value);
+            SystemNexusPayloadVisitor.MarkSystemPayload(payload);
+            return payload;
         }
 
         /// <inheritdoc />
