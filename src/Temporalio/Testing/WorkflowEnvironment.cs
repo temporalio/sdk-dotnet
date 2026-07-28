@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Temporalio.Api.Nexus.V1;
 using Temporalio.Client;
+using Temporalio.Common.EnvConfig;
 using Temporalio.Runtime;
 
 namespace Temporalio.Testing
@@ -54,6 +55,21 @@ namespace Temporalio.Testing
         /// Gets a logger for this environment.
         /// </summary>
         protected ILogger<WorkflowEnvironment> Logger { get; private init; }
+
+        /// <summary>
+        /// Create a workflow environment from client environment configuration.
+        /// </summary>
+        /// <param name="profileLoadOptions">Options for loading the client configuration profile.</param>
+        /// <returns>The created environment.</returns>
+        /// <remarks>
+        /// This connects to an existing Temporal environment and does not manage server lifecycle.
+        /// </remarks>
+        public static async Task<WorkflowEnvironment> CreateFromEnvConfigAsync(
+            ClientEnvConfig.ProfileLoadOptions? profileLoadOptions = null)
+        {
+            var options = ClientEnvConfig.LoadClientConnectOptions(profileLoadOptions);
+            return new(await TemporalClient.ConnectAsync(options).ConfigureAwait(false));
+        }
 
         /// <summary>
         /// Start a local test server with full Temporal capabilities but no time skipping.
