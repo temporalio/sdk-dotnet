@@ -3,7 +3,9 @@ namespace Temporalio.Tests.Worker;
 using Google.Protobuf;
 using Google.Protobuf.Collections;
 using Temporalio.Api.Common.V1;
+using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Bridge.Api.WorkflowActivation;
+using Temporalio.Bridge.Api.WorkflowCommands;
 using Temporalio.Bridge.Api.WorkflowCompletion;
 using Temporalio.Converters;
 using Temporalio.Worker;
@@ -102,6 +104,98 @@ public class WorkflowCodecHelperTests : TestBase
                 await WorkflowCodecHelper.EncodeAsync(CreateSimpleCodecContext(codec), comp);
             }
         });
+    }
+
+    [Fact]
+    public async Task EncodeAsync_SystemNexusEnvelopeInGenericPayloadField_EncodesNestedPayload()
+    {
+        var request = new SignalWithStartWorkflowExecutionRequest
+        {
+            Input = new() { Payloads_ = { new Payload { Data = ByteString.CopyFromUtf8("input") } } },
+        };
+        Assert.True(SystemNexusPayloadVisitor.TryToInputPayload(
+            "__temporal_system", request, out var envelope));
+        var completion = new WorkflowActivationCompletion
+        {
+            Successful = new()
+            {
+                Commands =
+                {
+                    new WorkflowCommand { UpdateResponse = new() { Completed = envelope } },
+                },
+            },
+        };
+
+        await WorkflowCodecHelper.EncodeAsync(CreateSimpleCodecContext(new MarkerPayloadCodec()), completion);
+
+        Assert.Equal(
+            ByteString.CopyFromUtf8("true"),
+            completion.Successful.Commands[0].UpdateResponse.Completed.Metadata[
+                "__temporal_system_payload"]);
+        Assert.DoesNotContain(
+            "encoded",
+            completion.Successful.Commands[0].UpdateResponse.Completed.Metadata.Keys);
+        var encodedRequest = SignalWithStartWorkflowExecutionRequest.Parser.ParseFrom(
+            completion.Successful.Commands[0].UpdateResponse.Completed.Data);
+        Assert.Contains("encoded", encodedRequest.Input.Payloads_[0].Metadata.Keys);
+    }
+
+    [Fact]
+    public async Task EncodeAsync_UnmarkedSystemNexusEnvelopeInGenericPayloadField_EncodesEnvelope()
+    {
+        var request = new SignalWithStartWorkflowExecutionRequest
+        {
+            Input = new() { Payloads_ = { new Payload { Data = ByteString.CopyFromUtf8("input") } } },
+        };
+        Assert.True(SystemNexusPayloadVisitor.TryToInputPayload(
+            "__temporal_system", request, out var envelope));
+        envelope.Metadata.Remove("__temporal_system_payload");
+        var completion = new WorkflowActivationCompletion
+        {
+            Successful = new()
+            {
+                Commands =
+                {
+                    new WorkflowCommand { UpdateResponse = new() { Completed = envelope } },
+                },
+            },
+        };
+
+        await WorkflowCodecHelper.EncodeAsync(CreateSimpleCodecContext(new MarkerPayloadCodec()), completion);
+
+        Assert.Contains(
+            "encoded",
+            completion.Successful.Commands[0].UpdateResponse.Completed.Metadata.Keys);
+        var encodedRequest = SignalWithStartWorkflowExecutionRequest.Parser.ParseFrom(
+            completion.Successful.Commands[0].UpdateResponse.Completed.Data);
+        Assert.DoesNotContain("encoded", encodedRequest.Input.Payloads_[0].Metadata.Keys);
+    }
+
+    [Fact]
+    public async Task DecodeAsync_SystemNexusEnvelopeInGenericPayloadField_DecodesNestedPayload()
+    {
+        var nestedPayload = new Payload { Data = ByteString.CopyFromUtf8("input") };
+        nestedPayload.Metadata["encoded"] = ByteString.Empty;
+        var request = new SignalWithStartWorkflowExecutionRequest
+        {
+            Input = new() { Payloads_ = { nestedPayload } },
+        };
+        Assert.True(SystemNexusPayloadVisitor.TryToInputPayload(
+            "__temporal_system", request, out var envelope));
+        var activation = new WorkflowActivation
+        {
+            Jobs =
+            {
+                new WorkflowActivationJob { DoUpdate = new() { Input = { envelope } } },
+            },
+        };
+
+        await WorkflowCodecHelper.DecodeAsync(CreateSimpleCodecContext(new MarkerPayloadCodec()), activation);
+
+        Assert.DoesNotContain("decoded", activation.Jobs[0].DoUpdate.Input[0].Metadata.Keys);
+        var decodedRequest = SignalWithStartWorkflowExecutionRequest.Parser.ParseFrom(
+            activation.Jobs[0].DoUpdate.Input[0].Data);
+        Assert.Contains("decoded", decodedRequest.Input.Payloads_[0].Metadata.Keys);
     }
 
     private static WorkflowCodecHelper.WorkflowCodecContext CreateSimpleCodecContext(IPayloadCodec codec) => new(

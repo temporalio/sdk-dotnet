@@ -164,8 +164,6 @@ static void GeneratePayloadVisitor(
     builder.AppendLine("    [GeneratedCode(\"Temporalio.SystemNexus.Generator\", null)]");
     builder.AppendLine("    internal static partial class SystemNexusPayloadVisitor");
     builder.AppendLine("    {");
-    builder.AppendLine("        private const string TemporalSystemEndpoint = \"__temporal_system\";");
-    builder.AppendLine();
     builder.AppendLine("        private static readonly IReadOnlyDictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>> EnvelopeVisitors =");
     builder.AppendLine("            new Dictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>>");
     builder.AppendLine("            {");
@@ -178,14 +176,13 @@ static void GeneratePayloadVisitor(
 
     builder.AppendLine("            };");
     builder.AppendLine();
-    builder.AppendLine("        private static async Task<bool> TryVisitAsync(");
-    builder.AppendLine("            string? endpoint,");
+    builder.AppendLine("        internal static async Task<bool> TryVisitAsync(");
     builder.AppendLine("            Payload payload,");
     builder.AppendLine("            PayloadVisitor visitPayload,");
     builder.AppendLine("            PayloadsVisitor visitPayloads,");
-    builder.AppendLine("            EnvelopeVisitor? visitEnvelope)");
+    builder.AppendLine("            EnvelopeVisitor? visitEnvelope = null)");
     builder.AppendLine("        {");
-    builder.AppendLine("            if (!IsSystemNexusEndpoint(endpoint))");
+    builder.AppendLine("            if (!IsSystemNexusPayload(payload))");
     builder.AppendLine("            {");
     builder.AppendLine("                return false;");
     builder.AppendLine("            }");
@@ -200,9 +197,6 @@ static void GeneratePayloadVisitor(
     builder.AppendLine("            return true;");
     builder.AppendLine("        }");
     builder.AppendLine();
-    builder.AppendLine("        internal static bool IsSystemNexusEndpoint(string? endpoint) => endpoint == TemporalSystemEndpoint;");
-    builder.AppendLine();
-
     foreach (var operation in operationMessages)
     {
         EmitVisitMethod(builder, operation.Input, messages, containsPayloadMemo, emittedMethods);
