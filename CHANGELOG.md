@@ -32,6 +32,9 @@ to docs, or any other relevant information.
   you disable size enforcement by setting `DisablePayloadErrorLimit` to `true` on the worker.
 ### Added
 
+- Added `TemporalWorkerOptions.MaxEagerActivityReservationsPerWorkflowTask` to configure the
+  maximum number of activity slots reserved for eager execution per workflow task. Configured
+  values must be positive; use `DisableEagerActivityExecution` to disable eager execution.
 - Added `WorkflowEnvironment.CreateFromEnvConfigAsync` for creating test workflow environments from
   client environment configuration.
 - Added the experimental `TemporalWorkerOptions.PatchActivationCallback`, allowing workers to

@@ -25,25 +25,26 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiR0ZW1wb3JhbC9hcGkvZW51bXMvdjEvYWN0aXZpdHkucHJvdG8SFXRlbXBv",
-            "cmFsLmFwaS5lbnVtcy52MSq1AgoXQWN0aXZpdHlFeGVjdXRpb25TdGF0dXMS",
+            "cmFsLmFwaS5lbnVtcy52MSrbAgoXQWN0aXZpdHlFeGVjdXRpb25TdGF0dXMS",
             "KQolQUNUSVZJVFlfRVhFQ1VUSU9OX1NUQVRVU19VTlNQRUNJRklFRBAAEiUK",
             "IUFDVElWSVRZX0VYRUNVVElPTl9TVEFUVVNfUlVOTklORxABEicKI0FDVElW",
             "SVRZX0VYRUNVVElPTl9TVEFUVVNfQ09NUExFVEVEEAISJAogQUNUSVZJVFlf",
             "RVhFQ1VUSU9OX1NUQVRVU19GQUlMRUQQAxImCiJBQ1RJVklUWV9FWEVDVVRJ",
             "T05fU1RBVFVTX0NBTkNFTEVEEAQSKAokQUNUSVZJVFlfRVhFQ1VUSU9OX1NU",
             "QVRVU19URVJNSU5BVEVEEAUSJwojQUNUSVZJVFlfRVhFQ1VUSU9OX1NUQVRV",
-            "U19USU1FRF9PVVQQBirYAQoVQWN0aXZpdHlJZFJldXNlUG9saWN5EigKJEFD",
-            "VElWSVRZX0lEX1JFVVNFX1BPTElDWV9VTlNQRUNJRklFRBAAEiwKKEFDVElW",
-            "SVRZX0lEX1JFVVNFX1BPTElDWV9BTExPV19EVVBMSUNBVEUQARI4CjRBQ1RJ",
-            "VklUWV9JRF9SRVVTRV9QT0xJQ1lfQUxMT1dfRFVQTElDQVRFX0ZBSUxFRF9P",
-            "TkxZEAISLQopQUNUSVZJVFlfSURfUkVVU0VfUE9MSUNZX1JFSkVDVF9EVVBM",
-            "SUNBVEUQAyqbAQoYQWN0aXZpdHlJZENvbmZsaWN0UG9saWN5EisKJ0FDVElW",
-            "SVRZX0lEX0NPTkZMSUNUX1BPTElDWV9VTlNQRUNJRklFRBAAEiQKIEFDVElW",
-            "SVRZX0lEX0NPTkZMSUNUX1BPTElDWV9GQUlMEAESLAooQUNUSVZJVFlfSURf",
-            "Q09ORkxJQ1RfUE9MSUNZX1VTRV9FWElTVElORxACQoUBChhpby50ZW1wb3Jh",
-            "bC5hcGkuZW51bXMudjFCDUFjdGl2aXR5UHJvdG9QAVohZ28udGVtcG9yYWwu",
-            "aW8vYXBpL2VudW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5BcGkuRW51bXMu",
-            "VjHqAhpUZW1wb3JhbGlvOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
+            "U19USU1FRF9PVVQQBhIkCiBBQ1RJVklUWV9FWEVDVVRJT05fU1RBVFVTX1BB",
+            "VVNFRBAHKtgBChVBY3Rpdml0eUlkUmV1c2VQb2xpY3kSKAokQUNUSVZJVFlf",
+            "SURfUkVVU0VfUE9MSUNZX1VOU1BFQ0lGSUVEEAASLAooQUNUSVZJVFlfSURf",
+            "UkVVU0VfUE9MSUNZX0FMTE9XX0RVUExJQ0FURRABEjgKNEFDVElWSVRZX0lE",
+            "X1JFVVNFX1BPTElDWV9BTExPV19EVVBMSUNBVEVfRkFJTEVEX09OTFkQAhIt",
+            "CilBQ1RJVklUWV9JRF9SRVVTRV9QT0xJQ1lfUkVKRUNUX0RVUExJQ0FURRAD",
+            "KpsBChhBY3Rpdml0eUlkQ29uZmxpY3RQb2xpY3kSKwonQUNUSVZJVFlfSURf",
+            "Q09ORkxJQ1RfUE9MSUNZX1VOU1BFQ0lGSUVEEAASJAogQUNUSVZJVFlfSURf",
+            "Q09ORkxJQ1RfUE9MSUNZX0ZBSUwQARIsCihBQ1RJVklUWV9JRF9DT05GTElD",
+            "VF9QT0xJQ1lfVVNFX0VYSVNUSU5HEAJChQEKGGlvLnRlbXBvcmFsLmFwaS5l",
+            "bnVtcy52MUINQWN0aXZpdHlQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkv",
+            "ZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGlRl",
+            "bXBvcmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.ActivityExecutionStatus), typeof(global::Temporalio.Api.Enums.V1.ActivityIdReusePolicy), typeof(global::Temporalio.Api.Enums.V1.ActivityIdConflictPolicy), }, null, null));
@@ -54,8 +55,8 @@ namespace Temporalio.Api.Enums.V1 {
   #region Enums
   /// <summary>
   /// Status of a standalone activity.
-  /// The status is updated once, when the activity is originally scheduled, and again when the activity reaches a terminal
-  /// status.
+  /// The status is updated when the activity is originally scheduled, paused, unpaused, and when the
+  /// activity reaches a terminal state.
   /// (-- api-linter: core::0216::synonyms=disabled
   ///     aip.dev/not-precedent: Named consistently with WorkflowExecutionStatus. --)
   /// </summary>
@@ -101,6 +102,11 @@ namespace Temporalio.Api.Enums.V1 {
     ///   SCHEDULE_TO_CLOSE would be exceeded, or cancellation has been requested).
     /// </summary>
     [pbr::OriginalName("ACTIVITY_EXECUTION_STATUS_TIMED_OUT")] TimedOut = 6,
+    /// <summary>
+    /// The activity is paused. Paused state is only reachable after calling
+    /// PauseActivityExecution on a standalone activity.
+    /// </summary>
+    [pbr::OriginalName("ACTIVITY_EXECUTION_STATUS_PAUSED")] Paused = 7,
   }
 
   /// <summary>
