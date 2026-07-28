@@ -19,7 +19,15 @@ namespace Temporalio.Nexus
         /// </summary>
         internal const int WorkflowRunOperationTokenType = 1;
 
-        private static readonly JsonSerializerOptions TokenSerializerOptions = new()
+        /// <summary>
+        /// Token-type value identifying an update-workflow operation token.
+        /// </summary>
+        internal const int UpdateWorkflowOperationTokenType = 3;
+
+        /// <summary>
+        /// Serializer options shared by all operation token types (omits null fields).
+        /// </summary>
+        internal static readonly JsonSerializerOptions TokenSerializerOptions = new()
         {
 #pragma warning disable SYSLIB0020 // Need to use obsolete form, alternative not in all our versions
             IgnoreNullValues = true,
@@ -85,6 +93,44 @@ namespace Temporalio.Nexus
         }
 
         /// <summary>
+        /// Decode just the type field from a base64url-encoded operation token. Used by cancel
+        /// dispatch to route by token type without committing to a particular per-type schema.
+        /// </summary>
+        /// <param name="token">Base64url-encoded token string.</param>
+        /// <returns>Token type code (the JSON <c>t</c> field).</returns>
+        /// <exception cref="ArgumentException">If the token is empty or malformed.</exception>
+        internal static int ParseTokenType(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new ArgumentException("Token invalid: token is empty");
+            }
+            byte[] bytes;
+            try
+            {
+                bytes = Base64UrlDecode(token);
+            }
+            catch (FormatException)
+            {
+                throw new ArgumentException("Token invalid");
+            }
+            TokenTypeOnly? partial;
+            try
+            {
+                partial = JsonSerializer.Deserialize<TokenTypeOnly>(bytes, TokenSerializerOptions);
+            }
+            catch (JsonException e)
+            {
+                throw new ArgumentException("Token invalid", e);
+            }
+            if (partial == null || partial.Type == 0)
+            {
+                throw new ArgumentException("Token invalid: missing or zero token type");
+            }
+            return partial.Type;
+        }
+
+        /// <summary>
         /// Create a handle based on the string token.
         /// </summary>
         /// <param name="token">Operation token.</param>
@@ -143,7 +189,9 @@ namespace Temporalio.Nexus
             TokenSerializerOptions));
 
         /// <summary>
-        /// Represents the fields of a Nexus operation token.
+        /// Represents the fields of a Nexus operation token. The <c>RunId</c> and <c>UpdateId</c>
+        /// fields are only populated for update-workflow tokens; for workflow-run tokens they are
+        /// null and omitted from the serialized form.
         /// </summary>
         internal record OperationToken(
             [property: JsonPropertyName("ns")]
@@ -153,7 +201,14 @@ namespace Temporalio.Nexus
             [property: JsonPropertyName("v")]
             int? Version,
             [property: JsonPropertyName("t")]
-            int Type = WorkflowRunOperationTokenType);
+            int Type = WorkflowRunOperationTokenType,
+            [property: JsonPropertyName("rid")]
+            string? RunId = null,
+            [property: JsonPropertyName("uid")]
+            string? UpdateId = null);
+
+        private record TokenTypeOnly(
+            [property: JsonPropertyName("t")] int Type);
     }
 
     /// <inheritdoc />

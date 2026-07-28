@@ -476,10 +476,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             // Now send a lot of events
             await handle.SignalAsync(wf =>
                 wf.BunchOfEventsAsync(WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount));
-            // Send one more event to trigger the WFT update. We have to do this because just a
-            // query will have a stale representation of history counts, but signal forces a new
-            // WFT.
-            await handle.SignalAsync(wf => wf.BunchOfEventsAsync(1));
+            // Wait for those timers to be recorded before signaling again. Otherwise both signals
+            // can batch into one WFT that starts before the TimerStarted events, permanently
+            // stranding CurrentHistoryLength below them.
             await AssertMore.EventuallyAsync(async () =>
             {
                 var eventCount = (await handle.FetchHistoryAsync()).Events.Count;
@@ -488,13 +487,20 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     $"We sent at least {WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount} events but " +
                     $"history length said it was only {eventCount}");
             });
-            var newInfo = await handle.QueryAsync(wf => wf.HistoryInfo);
-            Assert.True(
-                newInfo.HistoryLength > WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount,
-                $"We sent at least {WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount} events but " +
-                $"history length said it was only {newInfo.HistoryLength}");
-            Assert.True(newInfo.HistorySize > origInfo.HistorySize);
-            Assert.True(newInfo.ContinueAsNewSuggested);
+            // Force a fresh WFT so the query sees an up-to-date count; a query alone is stale. That
+            // WFT now starts after the timers, so its CurrentHistoryLength includes them.
+            await handle.SignalAsync(wf => wf.BunchOfEventsAsync(1));
+            // Query eventually to absorb the window before the worker processes that WFT.
+            await AssertMore.EventuallyAsync(async () =>
+            {
+                var newInfo = await handle.QueryAsync(wf => wf.HistoryInfo);
+                Assert.True(
+                    newInfo.HistoryLength > WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount,
+                    $"We sent at least {WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount} events but " +
+                    $"history length said it was only {newInfo.HistoryLength}");
+                Assert.True(newInfo.HistorySize > origInfo.HistorySize);
+                Assert.True(newInfo.ContinueAsNewSuggested);
+            });
         });
     }
 

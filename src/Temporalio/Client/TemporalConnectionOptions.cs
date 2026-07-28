@@ -87,6 +87,15 @@ namespace Temporalio.Client
         public GrpcCompression GrpcCompression { get; set; } = new GrpcCompression.Gzip();
 
         /// <summary>
+        /// Gets or sets the payload size-limit options for this connection. Defaults to a new
+        /// <see cref="PayloadLimitsOptions"/>. See that type for the default thresholds.
+        /// </summary>
+        /// <remarks>
+        /// WARNING: This API is experimental and may change in the future.
+        /// </remarks>
+        public PayloadLimitsOptions PayloadLimits { get; set; } = new();
+
+        /// <summary>
         /// Gets or sets the gRPC metadata for all calls (i.e. the headers).
         /// </summary>
         /// <remarks>
@@ -158,6 +167,10 @@ namespace Temporalio.Client
             if (DnsLoadBalancing != null)
             {
                 copy.DnsLoadBalancing = (DnsLoadBalancingOptions)DnsLoadBalancing.Clone();
+            }
+            if (PayloadLimits != null)
+            {
+                copy.PayloadLimits = (PayloadLimitsOptions)PayloadLimits.Clone();
             }
             return copy;
         }

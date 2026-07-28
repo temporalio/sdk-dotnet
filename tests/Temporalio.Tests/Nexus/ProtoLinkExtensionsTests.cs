@@ -115,6 +115,7 @@ public class ProtoLinkExtensionsTests
             NexusOperation = new() { Namespace = "ns", OperationId = "op", RunId = "run" },
         };
         var nexusLink = protoLink.ToNexusLink();
+        Assert.NotNull(nexusLink);
         Assert.Equal(
             Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName,
             nexusLink.Type);
@@ -135,6 +136,7 @@ public class ProtoLinkExtensionsTests
             },
         };
         var nexusLink = protoLink.ToNexusLink();
+        Assert.NotNull(nexusLink);
         Assert.Equal(
             Api.Common.V1.Link.Types.WorkflowEvent.Descriptor.FullName,
             nexusLink.Type);
@@ -142,9 +144,11 @@ public class ProtoLinkExtensionsTests
     }
 
     [Fact]
-    public void ProtoToNexusLink_RejectsUnsetVariant()
+    public void ProtoToNexusLink_UnsetVariant_ReturnsNull()
     {
-        Assert.Throws<ArgumentException>(() => new Api.Common.V1.Link().ToNexusLink());
+        // An unset link variant (e.g. a rejected update with no history event) converts to null so
+        // callers can skip it rather than failing the operation.
+        Assert.Null(new Api.Common.V1.Link().ToNexusLink());
     }
 
     [Fact]
@@ -169,5 +173,55 @@ public class ProtoLinkExtensionsTests
         Assert.Equal(wfEvent.RunId, roundTripped.RunId);
         Assert.Equal(wfEvent.EventRef.EventId, roundTripped.EventRef.EventId);
         Assert.Equal(wfEvent.EventRef.EventType, roundTripped.EventRef.EventType);
+    }
+
+    [Fact]
+    public void ActivityLink_ToNexusLink_BuildsExpectedUri()
+    {
+        var act = new Api.Common.V1.Link.Types.Activity
+        {
+            Namespace = "my-ns",
+            ActivityId = "my-aid",
+            RunId = "my-run",
+        };
+        var nexusLink = act.ToNexusLink();
+
+        Assert.Equal("temporal", nexusLink.Uri.Scheme);
+        Assert.Equal(Api.Common.V1.Link.Types.Activity.Descriptor.FullName, nexusLink.Type);
+        Assert.Equal(
+            "/namespaces/my-ns/activities/my-aid/my-run/details",
+            nexusLink.Uri.AbsolutePath);
+    }
+
+    [Fact]
+    public void ToActivity_ParsesServerStyleUri()
+    {
+        // Servers produce URIs in the host-less form `temporal:/namespaces/.../details`.
+        var link = new NexusLink(
+            new Uri("temporal:/namespaces/my-ns/activities/my-aid/my-run/details"),
+            Api.Common.V1.Link.Types.Activity.Descriptor.FullName);
+
+        var act = link.ToActivity();
+        Assert.Equal("my-ns", act.Namespace);
+        Assert.Equal("my-aid", act.ActivityId);
+        Assert.Equal("my-run", act.RunId);
+    }
+
+    [Fact]
+    public void ToActivity_RejectsNonTemporalScheme()
+    {
+        var link = new NexusLink(
+            new Uri("https://example/namespaces/ns/activities/aid/run/details"),
+            Api.Common.V1.Link.Types.Activity.Descriptor.FullName);
+        Assert.Throws<ArgumentException>(() => link.ToActivity());
+    }
+
+    [Fact]
+    public void ToActivity_RejectsBadPath()
+    {
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wid/run/history"),
+            Api.Common.V1.Link.Types.Activity.Descriptor.FullName);
+        Assert.Throws<ArgumentException>(() => link.ToActivity());
     }
 }

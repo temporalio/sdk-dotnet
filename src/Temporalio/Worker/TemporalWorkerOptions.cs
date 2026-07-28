@@ -369,6 +369,16 @@ namespace Temporalio.Worker
         public bool DisableEagerActivityExecution { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the worker should skip proactively failing
+        /// workflow/activity tasks whose payloads exceed the namespace error limits.
+        /// </summary>
+        /// <remarks>
+        /// When <c>false</c> (the default), the worker fails such tasks before sending them. When
+        /// <c>true</c>, oversized payloads are sent to the server, which enforces the limit.
+        /// </remarks>
+        public bool DisablePayloadErrorLimit { get; set; }
+
+        /// <summary>
         /// Gets or sets the plugins.
         /// </summary>
         /// <remarks>

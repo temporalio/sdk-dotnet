@@ -38,7 +38,6 @@ namespace Temporalio.Client
         /// Gets the single-line fixed summary for this workflow execution that may appear in
         /// UI/CLI. This can be in single-line Temporal markdown format.
         /// </summary>
-        /// <remarks>WARNING: This setting is experimental.</remarks>
         /// <returns>Static summary.</returns>
 #pragma warning disable VSTHRD003 // Awaiting our own lazily-created task
         public async Task<string?> GetStaticSummaryAsync() =>
@@ -49,7 +48,6 @@ namespace Temporalio.Client
         /// Gets the general fixed details for this workflow execution that may appear in UI/CLI.
         /// This can be in Temporal markdown format and can span multiple lines.
         /// </summary>
-        /// <remarks>WARNING: This setting is experimental.</remarks>
         /// <returns>Static details.</returns>
 #pragma warning disable VSTHRD003 // Awaiting our own lazily-created task
         public async Task<string?> GetStaticDetailsAsync() =>

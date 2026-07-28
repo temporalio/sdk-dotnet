@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
+using Temporalio.Client;
 using Temporalio.Exceptions;
 using Temporalio.Worker.Tuning;
 
@@ -256,6 +257,24 @@ namespace Temporalio.Bridge
             }
 
             var scheme = tls == null ? "http" : "https";
+            // Property is non-nullable but NRT is advisory, so defensively check for null here
+            PayloadLimitsOptions payloadLimits = options.PayloadLimits ?? new();
+            if (payloadLimits.PayloadsWarnSize < 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(options),
+                    payloadLimits.PayloadsWarnSize,
+                    "PayloadLimits.PayloadsWarnSize must not be negative.");
+            }
+
+            if (payloadLimits.MemoWarnSize < 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(options),
+                    payloadLimits.MemoWarnSize,
+                    "PayloadLimits.MemoWarnSize must not be negative.");
+            }
+
             return new Interop.TemporalCoreConnectionOptions()
             {
                 target_url = scope.ByteArray($"{scheme}://{options.TargetHost}"),
@@ -292,6 +311,8 @@ namespace Temporalio.Bridge
                     _ => throw new ArgumentException(
                         $"Unsupported gRPC compression: {options.GrpcCompression.GetType()}"),
                 },
+                payloads_warn_size = (ulong)payloadLimits.PayloadsWarnSize,
+                memo_warn_size = (ulong)payloadLimits.MemoWarnSize,
             };
         }
 
@@ -646,6 +667,7 @@ namespace Temporalio.Bridge
                     AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
                 plugins = scope.ByteArrayArray(pluginNames),
                 storage_drivers = scope.ByteArrayArray(storageDrivers),
+                disable_payload_error_limit = (byte)(options.DisablePayloadErrorLimit ? 1 : 0),
             };
         }
 

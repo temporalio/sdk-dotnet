@@ -45,7 +45,8 @@ namespace Temporalio.Nexus
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <typeparam name="TResult">Workflow result type.</typeparam>
         /// <param name="workflowRunCall">Invocation of workflow run method with a result.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <param name="options">Start workflow options. ID is required; TaskQueue defaults to
+        /// the operation's task queue when omitted.</param>
         /// <returns>An async operation result containing the workflow-run token.</returns>
         Task<TemporalOperationResult<TResult>> StartWorkflowAsync<TWorkflow, TResult>(
             Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall, WorkflowOptions options);
@@ -56,7 +57,8 @@ namespace Temporalio.Nexus
         /// </summary>
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <param name="workflowRunCall">Invocation of workflow run method with no result.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <param name="options">Start workflow options. ID is required; TaskQueue defaults to
+        /// the operation's task queue when omitted.</param>
         /// <returns>An async operation result containing the workflow-run token.</returns>
         Task<TemporalOperationResult<NoValue>> StartWorkflowAsync<TWorkflow>(
             Expression<Func<TWorkflow, Task>> workflowRunCall, WorkflowOptions options);
@@ -68,9 +70,128 @@ namespace Temporalio.Nexus
         /// <typeparam name="TResult">Workflow result type.</typeparam>
         /// <param name="workflow">Workflow type name.</param>
         /// <param name="args">Arguments for the workflow.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <param name="options">Start workflow options. ID is required; TaskQueue defaults to
+        /// the operation's task queue when omitted.</param>
         /// <returns>An async operation result containing the workflow-run token.</returns>
         Task<TemporalOperationResult<TResult>> StartWorkflowAsync<TResult>(
             string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options);
+
+        /// <summary>
+        /// Start a workflow update via a lambda invoking the update method, backing this Nexus
+        /// operation with the update.
+        /// </summary>
+        /// <remarks>
+        /// <para>Only <see cref="WorkflowUpdateStage.Accepted"/> is supported for
+        /// <c>WaitForStage</c>. </para>
+        /// <para>Returns an async result carrying an update-workflow token, unless the update has
+        /// already completed (e.g. a retried request with the same update ID), in which case a sync
+        /// result is returned; an update that completed with an error surfaces as a failed
+        /// operation.</para>
+        /// </remarks>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <typeparam name="TResult">Update result type.</typeparam>
+        /// <param name="workflowId">Target workflow ID.</param>
+        /// <param name="updateCall">Invocation of the workflow update method with a result.</param>
+        /// <param name="options">Update start options. <c>WaitForStage</c> must be
+        /// <see cref="WorkflowUpdateStage.Accepted"/>. If the update ID is unset, the Nexus request
+        /// ID is used.</param>
+        /// <param name="runId">Target workflow run ID, or null for the latest run.</param>
+        /// <returns>An operation result for the update.</returns>
+        Task<TemporalOperationResult<TResult>> StartWorkflowUpdateAsync<TWorkflow, TResult>(
+            string workflowId,
+            Expression<Func<TWorkflow, Task<TResult>>> updateCall,
+            WorkflowUpdateStartOptions options,
+            string? runId = null);
+
+        /// <summary>
+        /// Start a workflow update with no result via a lambda invoking the update method, backing
+        /// this Nexus operation with the update.
+        /// </summary>
+        /// <remarks>
+        /// <para>Only <see cref="WorkflowUpdateStage.Accepted"/> is supported for
+        /// <c>WaitForStage</c>. The operation requires a callback URL to be present.</para>
+        /// </remarks>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <param name="workflowId">Target workflow ID.</param>
+        /// <param name="updateCall">Invocation of the workflow update method with no result.</param>
+        /// <param name="options">Update start options. <c>WaitForStage</c> must be
+        /// <see cref="WorkflowUpdateStage.Accepted"/>. If the update ID is unset, the Nexus request
+        /// ID is used.</param>
+        /// <param name="runId">Target workflow run ID, or null for the latest run.</param>
+        /// <returns>An operation result for the update.</returns>
+        Task<TemporalOperationResult<NoValue>> StartWorkflowUpdateAsync<TWorkflow>(
+            string workflowId,
+            Expression<Func<TWorkflow, Task>> updateCall,
+            WorkflowUpdateStartOptions options,
+            string? runId = null);
+
+        /// <summary>
+        /// Start a workflow update by name, backing this Nexus operation with the update.
+        /// </summary>
+        /// <remarks>
+        /// <para>Only <see cref="WorkflowUpdateStage.Accepted"/> is supported for
+        /// <c>WaitForStage</c>. The operation requires a callback URL to be present.</para>
+        /// <para>Returns an async result carrying an update-workflow token, unless the update has
+        /// already completed (e.g. a retried request with the same update ID), in which case a sync
+        /// result is returned; an update that completed with an error surfaces as a failed
+        /// operation.</para>
+        /// </remarks>
+        /// <typeparam name="TResult">Update result type.</typeparam>
+        /// <param name="workflowId">Target workflow ID.</param>
+        /// <param name="update">Update name.</param>
+        /// <param name="args">Update arguments.</param>
+        /// <param name="options">Update start options. <c>WaitForStage</c> must be
+        /// <see cref="WorkflowUpdateStage.Accepted"/>. If the update ID is unset, the Nexus request
+        /// ID is used.</param>
+        /// <param name="runId">Target workflow run ID, or null for the latest run.</param>
+        /// <returns>An operation result for the update.</returns>
+        Task<TemporalOperationResult<TResult>> StartWorkflowUpdateAsync<TResult>(
+            string workflowId,
+            string update,
+            IReadOnlyCollection<object?> args,
+            WorkflowUpdateStartOptions options,
+            string? runId = null);
+
+        /// <summary>
+        /// Schedule a standalone activity via a lambda invoking the activity method. Always returns
+        /// an async result with an activity-execution operation token.
+        /// </summary>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="activityCall">Invocation of activity method with a result.</param>
+        /// <param name="options">Activity start options. Id is required and should be derived
+        /// deterministically from the operation input so retries of the Nexus start request are
+        /// idempotent. At least one of ScheduleToCloseTimeout or StartToCloseTimeout is also
+        /// required. TaskQueue defaults to the operation's task queue when omitted.</param>
+        /// <returns>An async operation result containing the activity-execution token.</returns>
+        Task<TemporalOperationResult<TResult>> StartActivityAsync<TResult>(
+            Expression<Func<Task<TResult>>> activityCall, StartActivityOptions options);
+
+        /// <summary>
+        /// Schedule a standalone activity via a lambda invoking the activity method with no return
+        /// value. Always returns an async result with an activity-execution operation token.
+        /// </summary>
+        /// <param name="activityCall">Invocation of activity method with no result.</param>
+        /// <param name="options">Activity start options. Id is required and should be derived
+        /// deterministically from the operation input so retries of the Nexus start request are
+        /// idempotent. At least one of ScheduleToCloseTimeout or StartToCloseTimeout is also
+        /// required. TaskQueue defaults to the operation's task queue when omitted.</param>
+        /// <returns>An async operation result containing the activity-execution token.</returns>
+        Task<TemporalOperationResult<NoValue>> StartActivityAsync(
+            Expression<Func<Task>> activityCall, StartActivityOptions options);
+
+        /// <summary>
+        /// Schedule a standalone activity by name. Always returns an async result with an
+        /// activity-execution operation token.
+        /// </summary>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="activity">Activity type name.</param>
+        /// <param name="args">Arguments for the activity.</param>
+        /// <param name="options">Activity start options. Id is required and should be derived
+        /// deterministically from the operation input so retries of the Nexus start request are
+        /// idempotent. At least one of ScheduleToCloseTimeout or StartToCloseTimeout is also
+        /// required. TaskQueue defaults to the operation's task queue when omitted.</param>
+        /// <returns>An async operation result containing the activity-execution token.</returns>
+        Task<TemporalOperationResult<TResult>> StartActivityAsync<TResult>(
+            string activity, IReadOnlyCollection<object?> args, StartActivityOptions options);
     }
 }
