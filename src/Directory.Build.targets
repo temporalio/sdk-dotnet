@@ -1,0 +1,15 @@
+<Project>
+
+  <!--
+    Shared source compiled into every packable project here. Currently this is just the
+    ExperimentalAttribute polyfill, which the compiler matches by full name so that
+    [Experimental] works on target frameworks older than net8.0. Each assembly needs its
+    own internal copy, so the file is linked rather than shared via a project reference.
+    The generator projects set IsPackable=false and are skipped.
+  -->
+  <ItemGroup Condition="'$(IsPackable)' != 'false'">
+    <Compile Include="$(MSBuildThisFileDirectory)Common\**\*.cs"
+             Link="Common\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>
