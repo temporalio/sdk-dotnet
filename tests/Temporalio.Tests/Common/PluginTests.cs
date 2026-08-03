@@ -88,9 +88,11 @@ public class PluginTests : WorkflowEnvironmentTestBase
     {
         var newOptions = (TemporalClientOptions)Client.Options.Clone();
         newOptions.Plugins = new[] { new ClientPlugin() };
+        var originalNamespace = newOptions.Namespace;
 
         var client = new TemporalClient(Env.Client.Connection, newOptions);
         Assert.Equal("NewNamespace", client.Options.Namespace);
+        Assert.Equal(originalNamespace, newOptions.Namespace);
     }
 
     private class FailToConnectPlugin : ITemporalClientPlugin
@@ -218,6 +220,7 @@ public class PluginTests : WorkflowEnvironmentTestBase
         });
         var newOptions = (TemporalClientOptions)Client.Options.Clone();
         newOptions.Plugins = new[] { plugin };
+        var originalDataConverter = newOptions.DataConverter;
 
         var client = new TemporalClient(Env.Client.Connection, newOptions);
         var dataConverter = client.Options.DataConverter.WithSerializationContext(
@@ -225,6 +228,7 @@ public class PluginTests : WorkflowEnvironmentTestBase
         var payload = dataConverter.PayloadConverter.ToPayload(
             new PayloadConverterTests.TransferTypeHookValue("payload-value"));
 
+        Assert.Same(originalDataConverter, newOptions.DataConverter);
         Assert.Equal("workflow-id:payload-value", payload.Data.ToStringUtf8());
     }
 
