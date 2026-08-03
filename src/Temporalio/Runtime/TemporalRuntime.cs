@@ -18,6 +18,12 @@ namespace Temporalio.Runtime
         /// </summary>
         internal const string ReservedNamePrefix = "__temporal";
 
+        /// <summary>
+        /// Prefix within the reserved namespace explicitly permitted for the cross-language
+        /// workflow streams protocol handlers.
+        /// </summary>
+        internal const string ReservedWorkflowStreamNamePrefix = "__temporal_workflow_stream_";
+
         private static readonly Lazy<TemporalRuntime> LazyDefault =
             new(() => new TemporalRuntime(new TemporalRuntimeOptions()));
 

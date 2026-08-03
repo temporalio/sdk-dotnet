@@ -23,7 +23,9 @@ namespace Temporalio.Workflows
             Delegate? validatorDel,
             HandlerUnfinishedPolicy unfinishedPolicy)
         {
-            if (name != null && name.StartsWith(TemporalRuntime.ReservedNamePrefix))
+            if (name != null &&
+                name.StartsWith(TemporalRuntime.ReservedNamePrefix) &&
+                !name.StartsWith(TemporalRuntime.ReservedWorkflowStreamNamePrefix))
             {
                 throw new ArgumentException($"Update handler name {name} cannot start with {TemporalRuntime.ReservedNamePrefix}");
             }

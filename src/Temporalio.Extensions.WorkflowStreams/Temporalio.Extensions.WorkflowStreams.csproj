@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Temporal SDK .NET Workflow Streams Extension (Experimental)</Description>
+    <!-- New package: no published baseline exists to validate against (the root
+         Directory.Build.props enables package validation globally) -->
+    <EnablePackageValidation>false</EnablePackageValidation>
+    <IncludeSymbols>true</IncludeSymbols>
+    <LangVersion>9.0</LangVersion>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <TargetFrameworks>netcoreapp3.1;netstandard2.0;net462</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Temporalio\Temporalio.csproj" />
+  </ItemGroup>
+
+  <!-- Allow tests to use internals -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Temporalio.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- Pack the README -->
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>

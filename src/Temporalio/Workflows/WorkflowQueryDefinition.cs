@@ -24,7 +24,7 @@ namespace Temporalio.Workflows
 
         private WorkflowQueryDefinition(string? name, string? description, MethodInfo? method, Delegate? del)
         {
-            if (name != null)
+            if (name != null && !name.StartsWith(TemporalRuntime.ReservedWorkflowStreamNamePrefix))
             {
                 var reservedQ = ReservedQueryHandlerPrefixes.FirstOrDefault(p => name.StartsWith(p));
                 if (!string.IsNullOrEmpty(reservedQ))

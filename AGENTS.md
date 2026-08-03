@@ -123,6 +123,8 @@ Reviewers will look for:
   - `src/Temporalio.Extensions.DiagnosticSource/` – `System.Diagnostics.Metrics` support
   - `src/Temporalio.Extensions.Hosting/` – dependency injection and generic-host Worker support
   - `src/Temporalio.Extensions.OpenTelemetry/` – OpenTelemetry tracing support
+  - `src/Temporalio.Extensions.WorkflowStreams/` – experimental durable pub/sub log hosted in a
+    workflow
 - `tests/` – test projects.
   - `tests/Temporalio.Tests/` – the main test suite (unit + integration)
   - `tests/Temporalio.SimpleBench/`, `tests/Temporalio.SmokeTest*/` – benchmarks and smoke tests

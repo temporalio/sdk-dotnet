@@ -504,6 +504,12 @@
           "Temporalio": "[1.17.0, )"
         }
       },
+      "temporalio.extensions.workflowstreams": {
+        "type": "Project",
+        "dependencies": {
+          "Temporalio": "[1.17.0, )"
+        }
+      },
       "Amazon.Lambda.Core": {
         "type": "CentralTransitive",
         "requested": "[3.1.0, )",
