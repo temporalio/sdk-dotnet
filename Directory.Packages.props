@@ -22,7 +22,7 @@
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.3" />
     <PackageVersion Include="OpenTelemetry.Extensions.AWS" Version="1.15.1" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.435" />
-    <PackageVersion Include="System.CommandLine" Version="2.0.8" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.10" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="7.0.0" />
     <PackageVersion Include="System.Text.Json" Version="9.0.4" />
     <PackageVersion Include="xunit" Version="2.9.3" />
