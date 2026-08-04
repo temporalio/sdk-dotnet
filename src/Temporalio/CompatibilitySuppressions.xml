@@ -10,7 +10,28 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>F:Temporalio.Api.Common.V1.TimeSkippingConfig.FastForwardFieldNumber</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>F:Temporalio.Api.WorkflowService.V1.ResetActivityExecutionRequest.ResetHeartbeatFieldNumber</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>F:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.ResetAttemptsFieldNumber</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>F:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.ResetHeartbeatFieldNumber</Target>
     <Left>lib/net462/Temporalio.dll</Left>
     <Right>lib/net462/Temporalio.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
@@ -24,7 +45,21 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.Common.V1.TimeSkippingConfig.get_FastForward</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Temporalio.Api.Common.V1.TimeSkippingConfig.set_DisableChildPropagation(System.Boolean)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.Common.V1.TimeSkippingConfig.set_FastForward(Google.Protobuf.WellKnownTypes.Duration)</Target>
     <Left>lib/net462/Temporalio.dll</Left>
     <Right>lib/net462/Temporalio.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
@@ -39,6 +74,34 @@
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Temporalio.Api.WorkflowService.V1.ResetActivityExecutionRequest.set_ResetHeartbeat(System.Boolean)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.get_ResetAttempts</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.get_ResetHeartbeat</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.set_ResetAttempts(System.Boolean)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.set_ResetHeartbeat(System.Boolean)</Target>
     <Left>lib/net462/Temporalio.dll</Left>
     <Right>lib/net462/Temporalio.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
@@ -52,7 +115,28 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>F:Temporalio.Api.Common.V1.TimeSkippingConfig.FastForwardFieldNumber</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>F:Temporalio.Api.WorkflowService.V1.ResetActivityExecutionRequest.ResetHeartbeatFieldNumber</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>F:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.ResetAttemptsFieldNumber</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>F:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.ResetHeartbeatFieldNumber</Target>
     <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
     <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
@@ -66,7 +150,21 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.Common.V1.TimeSkippingConfig.get_FastForward</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Temporalio.Api.Common.V1.TimeSkippingConfig.set_DisableChildPropagation(System.Boolean)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.Common.V1.TimeSkippingConfig.set_FastForward(Google.Protobuf.WellKnownTypes.Duration)</Target>
     <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
     <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
@@ -81,6 +179,34 @@
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Temporalio.Api.WorkflowService.V1.ResetActivityExecutionRequest.set_ResetHeartbeat(System.Boolean)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.get_ResetAttempts</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.get_ResetHeartbeat</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.set_ResetAttempts(System.Boolean)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.set_ResetHeartbeat(System.Boolean)</Target>
     <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
     <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
@@ -94,7 +220,28 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>F:Temporalio.Api.Common.V1.TimeSkippingConfig.FastForwardFieldNumber</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>F:Temporalio.Api.WorkflowService.V1.ResetActivityExecutionRequest.ResetHeartbeatFieldNumber</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>F:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.ResetAttemptsFieldNumber</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>F:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.ResetHeartbeatFieldNumber</Target>
     <Left>lib/netstandard2.0/Temporalio.dll</Left>
     <Right>lib/netstandard2.0/Temporalio.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
@@ -108,7 +255,21 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.Common.V1.TimeSkippingConfig.get_FastForward</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Temporalio.Api.Common.V1.TimeSkippingConfig.set_DisableChildPropagation(System.Boolean)</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.Common.V1.TimeSkippingConfig.set_FastForward(Google.Protobuf.WellKnownTypes.Duration)</Target>
     <Left>lib/netstandard2.0/Temporalio.dll</Left>
     <Right>lib/netstandard2.0/Temporalio.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
@@ -123,6 +284,34 @@
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Temporalio.Api.WorkflowService.V1.ResetActivityExecutionRequest.set_ResetHeartbeat(System.Boolean)</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.get_ResetAttempts</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.get_ResetHeartbeat</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.set_ResetAttempts(System.Boolean)</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest.set_ResetHeartbeat(System.Boolean)</Target>
     <Left>lib/netstandard2.0/Temporalio.dll</Left>
     <Right>lib/netstandard2.0/Temporalio.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
