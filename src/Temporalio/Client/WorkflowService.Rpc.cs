@@ -714,6 +714,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke PollWorkflowExecutionTimeSkipping.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<PollWorkflowExecutionTimeSkippingResponse> PollWorkflowExecutionTimeSkippingAsync(PollWorkflowExecutionTimeSkippingRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("PollWorkflowExecutionTimeSkipping", req, PollWorkflowExecutionTimeSkippingResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke PollWorkflowExecutionUpdate.
         /// </summary>
         /// <param name="req">Request for the call.</param>
