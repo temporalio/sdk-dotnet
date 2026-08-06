@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "clangsharppinvokegenerator": {
+      "version": "20.1.2.1",
+      "commands": [
+        "ClangSharpPInvokeGenerator"
+      ],
+      "rollForward": true
+    },
+    "docfx": {
+      "version": "2.78.5",
+      "commands": [
+        "docfx"
+      ]
+    }
+  }
+}
