@@ -67,7 +67,6 @@ namespace Temporalio.Common
         /// Gets the Nexus service instances. Most users will use AddNexusService to add to this
         /// list.
         /// </summary>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public IList<ServiceHandlerInstance> NexusServices { get; } = new List<ServiceHandlerInstance>();
 
         /// <summary>
@@ -196,7 +195,6 @@ namespace Temporalio.Common
         /// <param name="serviceHandler">Service handler to add. It is expected to be an instance of
         /// a class with a <see cref="NexusServiceHandlerAttribute"/> attribute.</param>
         /// <returns>This options instance for chaining.</returns>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public SimplePluginOptions AddNexusService(object serviceHandler)
         {
             NexusServices.Add(ServiceHandlerInstance.FromInstance(serviceHandler));

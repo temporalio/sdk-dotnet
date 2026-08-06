@@ -11,7 +11,6 @@ namespace Temporalio.Nexus
     /// on <see cref="WorkflowRunOperationHandler"/>. It is returned from <c>StartWorkflowAsync</c>
     /// calls on <see cref="WorkflowRunOperationContext"/>.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public class NexusWorkflowRunHandle
     {
         /// <summary>

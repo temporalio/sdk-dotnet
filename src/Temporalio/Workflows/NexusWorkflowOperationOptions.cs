@@ -6,7 +6,6 @@ namespace Temporalio.Workflows
     /// <summary>
     /// Options for starting a Nexus operation.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public class NexusWorkflowOperationOptions : ICloneable
     {
         /// <summary>

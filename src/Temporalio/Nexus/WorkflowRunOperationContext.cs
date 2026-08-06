@@ -11,7 +11,6 @@ namespace Temporalio.Nexus
     /// Context used to create workflow run handles. This is passed to functions passed to
     /// <c>FromHandleFactory</c> on <see cref="WorkflowRunOperationHandler"/>.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public class WorkflowRunOperationContext
     {
         /// <summary>

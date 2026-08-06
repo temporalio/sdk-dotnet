@@ -5,7 +5,6 @@ namespace Temporalio.Workflows
     /// <summary>
     /// Options for creating a Nexus client.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public class NexusWorkflowClientOptions : ICloneable
     {
         /// <summary>

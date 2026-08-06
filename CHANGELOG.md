@@ -47,6 +47,8 @@ to docs, or any other relevant information.
 
 ### Changed
 
+- Nexus is now generally available (GA) for calling Nexus operations from workflows and handling
+  workflow-backed operations with `WorkflowRunOperationHandler`.
 - User metadata fields (StaticSummary, StaticDetails, CurrentDetails, Activity Summary, Timer
   Summary) are no longer marked as experimental.
 - Hardened read-only workflow context enforcement so queries, update validators, and patch activation

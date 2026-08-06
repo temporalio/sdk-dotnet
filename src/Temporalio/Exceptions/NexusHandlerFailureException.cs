@@ -8,7 +8,6 @@ namespace Temporalio.Exceptions
     /// <summary>
     /// Failure from a Nexus handler.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public class NexusHandlerFailureException : FailureException
     {
         /// <summary>
