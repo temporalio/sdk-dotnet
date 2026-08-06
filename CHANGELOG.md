@@ -47,7 +47,6 @@ to docs, or any other relevant information.
 
 ### Changed
 
-- Updated Core to `65b25ada` (`temporal-core` 0.6.0)
 - User metadata fields (StaticSummary, StaticDetails, CurrentDetails, Activity Summary, Timer
   Summary) are no longer marked as experimental.
 - Hardened read-only workflow context enforcement so queries, update validators, and patch activation
