@@ -71,42 +71,15 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Read mise version
-        id: mise-version
-        shell: bash
-        run: |
-          version=$(sed -n 's/^min_version = "\([^"]*\)".*/\1/p' mise.toml)
-          if [ -z "$version" ]; then
-            echo "::error::Could not read min_version from mise.toml"
-            exit 1
-          fi
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-
-      - name: Install Rust
-        if: ${{ !matrix.container }}
-        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+      - name: Setup
+        id: setup
+        uses: ./.github/actions/setup
         with:
-          toolchain: stable
-
-      - name: Setup Rust cache
-        if: ${{ !matrix.container }}
-        # Fixed version due to https://github.com/Swatinem/rust-cache/issues/183#issuecomment-1893979126
-        uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
-        with:
-          workspaces: src/Temporalio/Bridge/sdk-core
-          key: ${{ matrix.os }}
-          cache-bin: false # https://github.com/Swatinem/rust-cache/issues/341
-
-      - name: Run mise install
-        if: ${{ !matrix.container }}
-        uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
-        with:
-          version: ${{ steps.mise-version.outputs.version }}
-
-      - name: Set PROTOC
-        if: ${{ !matrix.container }}
-        shell: bash
-        run: printf 'PROTOC=%s\n' "$(mise which protoc)" >> "$GITHUB_ENV"
+          # Container legs install their own tooling below, and only need the
+          # pinned mise version resolved here.
+          install: ${{ !matrix.container }}
+          dotnet: "false"
+          rust-cache-key: ${{ matrix.os }}
 
       - name: Build (non-Docker)
         if: ${{ !matrix.container }}
@@ -121,7 +94,7 @@ jobs:
             sh -c ' \
                 curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y \
              && . $HOME/.cargo/env \
-             && curl https://mise.run | MISE_VERSION=v${{ steps.mise-version.outputs.version }} MISE_INSTALL_MUSL=1 sh \
+             && curl https://mise.run | MISE_VERSION=v${{ steps.setup.outputs.version }} MISE_INSTALL_MUSL=1 sh \
              && export PATH="$HOME/.local/bin:$PATH" \
              && mise trust /workspace/mise.toml \
              && mise install \
@@ -138,7 +111,7 @@ jobs:
                 curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y \
              && . $HOME/.cargo/env \
              && apk add --no-cache build-base \
-             && curl https://mise.run | MISE_VERSION=v${{ steps.mise-version.outputs.version }} MISE_INSTALL_MUSL=1 sh \
+             && curl https://mise.run | MISE_VERSION=v${{ steps.setup.outputs.version }} MISE_INSTALL_MUSL=1 sh \
              && export PATH="$HOME/.local/bin:$PATH" \
              && mise trust /workspace/mise.toml \
              && mise install \
