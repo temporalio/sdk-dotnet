@@ -2,3 +2,45 @@ min_version = "2026.6.14"
 
 [tools]
 protoc = "23.4"
+
+# .NET tools are pinned in .config/dotnet-tools.json so Dependabot can see them.
+
+# Tasks are kept in alphabetical order, ignoring the quoting.
+
+[tasks."apicompat:baseline"]
+description = "Regenerate src/Temporalio/CompatibilitySuppressions.xml, then review the diff"
+run = "dotnet pack -c Debug /p:GenerateCompatibilitySuppressionFile=true"
+
+[tasks.docs]
+description = "Build the API documentation"
+depends = ["tools:restore"]
+run = "dotnet docfx src/Temporalio.ApiDoc/docfx.json --warningsAsErrors"
+
+[tasks.gen]
+description = "Regenerate all generated code"
+# The three outputs are independent. Interop goes last because it is the only one that
+# cannot run outside Windows, so the others still complete on a non-Windows machine.
+run = [
+  "mise run gen:api",
+  "mise run gen:nexus",
+  "mise run gen:interop",
+]
+
+[tasks."gen:api"]
+description = "Regenerate the Temporalio.Api.* protobuf types"
+run = "dotnet run --project src/Temporalio.Api.Generator"
+
+[tasks."gen:interop"]
+description = "Regenerate the bridge interop layer from the sdk-core C header (Windows only)"
+# ClangSharpPInvokeGenerator ships only Windows native libclang binaries.
+depends = ["tools:restore"]
+run = "dotnet clangsharppinvokegenerator @src/Temporalio/Bridge/GenerateInterop.rsp"
+
+[tasks."gen:nexus"]
+description = "Regenerate the system Nexus service bindings"
+tools = { "cargo:nex-gen" = "0.1.5" }
+run = "dotnet run --project src/Temporalio.SystemNexus.Generator"
+
+[tasks."tools:restore"]
+description = "Restore the .NET tools pinned in .config/dotnet-tools.json"
+run = "dotnet tool restore"
