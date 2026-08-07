@@ -21,6 +21,10 @@ to docs, or any other relevant information.
 
 ### Breaking Changes
 
+- Removed the unused `NexusHandlerFailureException`; Nexus handler failures are represented by
+  `NexusRpc.Handlers.HandlerException`. The SDK-created `TemporalNexusClient` implementation is now
+  internal; Nexus operation handlers continue to receive its public `ITemporalNexusClient`
+  interface.
 - By default, workers now proactively validate outbound payload/memo sizes before sending: a field
   over the warn threshold is logged (`[TMPRL1103]` at
   `WARN`) but still sent, while a task completion over the error limit is failed retryably
@@ -47,6 +51,9 @@ to docs, or any other relevant information.
 
 ### Changed
 
+- Nexus support for calling operations from workflows and handling workflow-backed operations with
+  `WorkflowRunOperationHandler` is now generally available (GA). Standalone Nexus Operation and `TemporalOperationHandler`,
+  including workflow updates and standalone activities as Nexus operations, remains experimental.
 - User metadata fields (StaticSummary, StaticDetails, CurrentDetails, Activity Summary, Timer
   Summary) are no longer marked as experimental.
 - Hardened read-only workflow context enforcement so queries, update validators, and patch activation

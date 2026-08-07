@@ -342,7 +342,6 @@ namespace Temporalio.Workflows
         /// <param name="service">Service name.</param>
         /// <param name="endpoint">Endpoint.</param>
         /// <returns>Nexus client.</returns>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public static NexusWorkflowClient CreateNexusWorkflowClient(string service, string endpoint) =>
             CreateNexusWorkflowClient(service, new NexusWorkflowClientOptions(endpoint));
 
@@ -352,7 +351,6 @@ namespace Temporalio.Workflows
         /// <param name="service">Service name.</param>
         /// <param name="options">Client options.</param>
         /// <returns>Nexus client.</returns>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public static NexusWorkflowClient CreateNexusWorkflowClient(string service, NexusWorkflowClientOptions options) =>
             Context.CreateNexusWorkflowClient(service, options);
 
@@ -364,7 +362,6 @@ namespace Temporalio.Workflows
         /// <see cref="NexusRpc.NexusServiceAttribute"/> attribute.</typeparam>
         /// <param name="endpoint">Endpoint.</param>
         /// <returns>Nexus client.</returns>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public static NexusWorkflowClient<TService> CreateNexusWorkflowClient<TService>(string endpoint) =>
             CreateNexusWorkflowClient<TService>(new NexusWorkflowClientOptions(endpoint));
 
@@ -375,7 +372,6 @@ namespace Temporalio.Workflows
         /// <see cref="NexusRpc.NexusServiceAttribute"/> attribute.</typeparam>
         /// <param name="options">Client options.</param>
         /// <returns>Nexus client.</returns>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public static NexusWorkflowClient<TService> CreateNexusWorkflowClient<TService>(NexusWorkflowClientOptions options) =>
             Context.CreateNexusWorkflowClient<TService>(options);
 

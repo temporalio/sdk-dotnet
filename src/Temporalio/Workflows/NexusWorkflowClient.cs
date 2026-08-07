@@ -12,7 +12,6 @@ namespace Temporalio.Workflows
     /// <summary>
     /// Client for making Nexus service calls from a workflow.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public abstract class NexusWorkflowClient
     {
         /// <summary>

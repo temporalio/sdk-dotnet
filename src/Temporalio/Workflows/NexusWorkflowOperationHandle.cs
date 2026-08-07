@@ -8,7 +8,6 @@ namespace Temporalio.Workflows
     /// <summary>
     /// Handle representing a started Nexus operation.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public abstract class NexusWorkflowOperationHandle
     {
         /// <summary>

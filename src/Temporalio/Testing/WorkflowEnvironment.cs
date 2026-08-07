@@ -232,7 +232,6 @@ namespace Temporalio.Testing
         /// <param name="name">Endpoint name.</param>
         /// <param name="taskQueue">Task queue.</param>
         /// <returns>Created endpoint.</returns>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public async Task<Endpoint> CreateNexusEndpointAsync(string name, string taskQueue)
         {
             var resp = await Client.OperatorService.CreateNexusEndpointAsync(new()
@@ -254,7 +253,6 @@ namespace Temporalio.Testing
         /// </summary>
         /// <param name="endpoint">Endpoint.</param>
         /// <returns>Task for completion.</returns>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public Task DeleteNexusEndpointAsync(Endpoint endpoint) =>
             Client.OperatorService.DeleteNexusEndpointAsync(
                 new() { Id = endpoint.Id, Version = endpoint.Version });
