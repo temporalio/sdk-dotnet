@@ -243,12 +243,6 @@
           "System.Runtime.CompilerServices.Unsafe": "6.1.2"
         }
       },
-      "nexusrpc": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Bcl.HashCode": "[6.0.0, )"
-        }
-      },
       "temporalio": {
         "type": "Project",
         "dependencies": {
@@ -319,6 +313,15 @@
           "System.Buffers": "4.6.1",
           "System.Diagnostics.DiagnosticSource": "10.0.0",
           "System.Memory": "4.6.3"
+        }
+      },
+      "NexusRpc": {
+        "type": "CentralTransitive",
+        "requested": "[0.4.0, )",
+        "resolved": "0.4.0",
+        "contentHash": "2cdRtmwT/vskWqJvojODvR7CpRhLWAnCeVT5Z8sPdRDX8P/Ywpw48T2lqgqhxM8JROfoflHzhSiXo4h1ln3/MQ==",
+        "dependencies": {
+          "Microsoft.Bcl.HashCode": "6.0.0"
         }
       },
       "OpenTelemetry.Api": {

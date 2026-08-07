@@ -444,9 +444,6 @@
           "xunit.abstractions": "2.0.3"
         }
       },
-      "nexusrpc": {
-        "type": "Project"
-      },
       "temporalio": {
         "type": "Project",
         "dependencies": {
@@ -524,6 +521,12 @@
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.9"
         }
+      },
+      "NexusRpc": {
+        "type": "CentralTransitive",
+        "requested": "[0.4.0, )",
+        "resolved": "0.4.0",
+        "contentHash": "2cdRtmwT/vskWqJvojODvR7CpRhLWAnCeVT5Z8sPdRDX8P/Ywpw48T2lqgqhxM8JROfoflHzhSiXo4h1ln3/MQ=="
       },
       "OpenTelemetry": {
         "type": "CentralTransitive",
