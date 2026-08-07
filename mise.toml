@@ -43,4 +43,9 @@ run = "dotnet run --project src/Temporalio.SystemNexus.Generator"
 
 [tasks."tools:restore"]
 description = "Restore the .NET tools pinned in .config/dotnet-tools.json"
+# docfx must stay ahead of clangsharppinvokegenerator in the manifest. ClangSharp ships
+# RID-specific tool packages from 20.1.2.2 on, and `dotnet tool restore` then validates the
+# next manifest entry against ClangSharp's DotnetToolSettings.xml, failing the whole restore
+# with "the command docfx ... is not contained in the package with Package Id docfx".
+# See https://github.com/dotnet/sdk/issues/53783 (the manifest itself cannot hold comments).
 run = "dotnet tool restore"
