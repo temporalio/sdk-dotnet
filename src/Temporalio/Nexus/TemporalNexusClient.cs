@@ -17,7 +17,7 @@ namespace Temporalio.Nexus
     /// This client is created by <see cref="TemporalOperationHandler"/> and passed to the
     /// user's start function. It should not be instantiated directly.
     /// </remarks>
-    public class TemporalNexusClient : ITemporalNexusClient
+    internal class TemporalNexusClient : ITemporalNexusClient
     {
         private readonly OperationStartContext nexusStartContext;
         private readonly NexusOperationExecutionContext temporalContext;
