@@ -40,7 +40,7 @@ namespace Temporalio.Api.Worker.V1 {
             "Cg5Xb3JrZXJIb3N0SW5mbxIRCglob3N0X25hbWUYASABKAkSGwoTd29ya2Vy",
             "X2dyb3VwaW5nX2tleRgFIAEoCRISCgpwcm9jZXNzX2lkGAIgASgJEh4KFmN1",
             "cnJlbnRfaG9zdF9jcHVfdXNhZ2UYAyABKAISHgoWY3VycmVudF9ob3N0X21l",
-            "bV91c2FnZRgEIAEoAiKLCgoPV29ya2VySGVhcnRiZWF0EhsKE3dvcmtlcl9p",
+            "bV91c2FnZRgEIAEoAiLJCgoPV29ya2VySGVhcnRiZWF0EhsKE3dvcmtlcl9p",
             "bnN0YW5jZV9rZXkYASABKAkSFwoPd29ya2VyX2lkZW50aXR5GAIgASgJEjkK",
             "CWhvc3RfaW5mbxgDIAEoCzImLnRlbXBvcmFsLmFwaS53b3JrZXIudjEuV29y",
             "a2VySG9zdEluZm8SEgoKdGFza19xdWV1ZRgEIAEoCRJPChJkZXBsb3ltZW50",
@@ -69,41 +69,98 @@ namespace Temporalio.Api.Worker.V1 {
             "X3N0aWNreV9jYWNoZV9zaXplGBYgASgFEjMKB3BsdWdpbnMYFyADKAsyIi50",
             "ZW1wb3JhbC5hcGkud29ya2VyLnYxLlBsdWdpbkluZm8SOgoHZHJpdmVycxgY",
             "IAMoCzIpLnRlbXBvcmFsLmFwaS53b3JrZXIudjEuU3RvcmFnZURyaXZlcklu",
-            "Zm8iTwoKV29ya2VySW5mbxJBChB3b3JrZXJfaGVhcnRiZWF0GAEgASgLMicu",
-            "dGVtcG9yYWwuYXBpLndvcmtlci52MS5Xb3JrZXJIZWFydGJlYXQi7AMKDldv",
-            "cmtlckxpc3RJbmZvEhsKE3dvcmtlcl9pbnN0YW5jZV9rZXkYASABKAkSFwoP",
-            "d29ya2VyX2lkZW50aXR5GAIgASgJEhIKCnRhc2tfcXVldWUYAyABKAkSTwoS",
-            "ZGVwbG95bWVudF92ZXJzaW9uGAQgASgLMjMudGVtcG9yYWwuYXBpLmRlcGxv",
-            "eW1lbnQudjEuV29ya2VyRGVwbG95bWVudFZlcnNpb24SEAoIc2RrX25hbWUY",
-            "BSABKAkSEwoLc2RrX3ZlcnNpb24YBiABKAkSMwoGc3RhdHVzGAcgASgOMiMu",
-            "dGVtcG9yYWwuYXBpLmVudW1zLnYxLldvcmtlclN0YXR1cxIuCgpzdGFydF90",
-            "aW1lGAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIRCglob3N0",
-            "X25hbWUYCSABKAkSGwoTd29ya2VyX2dyb3VwaW5nX2tleRgKIAEoCRISCgpw",
-            "cm9jZXNzX2lkGAsgASgJEjMKB3BsdWdpbnMYDCADKAsyIi50ZW1wb3JhbC5h",
-            "cGkud29ya2VyLnYxLlBsdWdpbkluZm8SOgoHZHJpdmVycxgNIAMoCzIpLnRl",
-            "bXBvcmFsLmFwaS53b3JrZXIudjEuU3RvcmFnZURyaXZlckluZm8iKwoKUGx1",
-            "Z2luSW5mbxIMCgRuYW1lGAEgASgJEg8KB3ZlcnNpb24YAiABKAkiIQoRU3Rv",
-            "cmFnZURyaXZlckluZm8SDAoEdHlwZRgBIAEoCSJhCg1Xb3JrZXJDb21tYW5k",
-            "EkgKD2NhbmNlbF9hY3Rpdml0eRgBIAEoCzItLnRlbXBvcmFsLmFwaS53b3Jr",
-            "ZXIudjEuQ2FuY2VsQWN0aXZpdHlDb21tYW5kSABCBgoEdHlwZSIrChVDYW5j",
-            "ZWxBY3Rpdml0eUNvbW1hbmQSEgoKdGFza190b2tlbhgBIAEoDCJmChNXb3Jr",
-            "ZXJDb21tYW5kUmVzdWx0EkcKD2NhbmNlbF9hY3Rpdml0eRgBIAEoCzIsLnRl",
-            "bXBvcmFsLmFwaS53b3JrZXIudjEuQ2FuY2VsQWN0aXZpdHlSZXN1bHRIAEIG",
-            "CgR0eXBlIhYKFENhbmNlbEFjdGl2aXR5UmVzdWx0QokBChlpby50ZW1wb3Jh",
-            "bC5hcGkud29ya2VyLnYxQgxNZXNzYWdlUHJvdG9QAVojZ28udGVtcG9yYWwu",
-            "aW8vYXBpL3dvcmtlci92MTt3b3JrZXKqAhhUZW1wb3JhbGlvLkFwaS5Xb3Jr",
-            "ZXIuVjHqAhtUZW1wb3JhbGlvOjpBcGk6Oldvcmtlcjo6VjFiBnByb3RvMw=="));
+            "Zm8SPAoLZW52aXJvbm1lbnQYGSABKAsyJy50ZW1wb3JhbC5hcGkud29ya2Vy",
+            "LnYxLkVudmlyb25tZW50SW5mbyJPCgpXb3JrZXJJbmZvEkEKEHdvcmtlcl9o",
+            "ZWFydGJlYXQYASABKAsyJy50ZW1wb3JhbC5hcGkud29ya2VyLnYxLldvcmtl",
+            "ckhlYXJ0YmVhdCLsAwoOV29ya2VyTGlzdEluZm8SGwoTd29ya2VyX2luc3Rh",
+            "bmNlX2tleRgBIAEoCRIXCg93b3JrZXJfaWRlbnRpdHkYAiABKAkSEgoKdGFz",
+            "a19xdWV1ZRgDIAEoCRJPChJkZXBsb3ltZW50X3ZlcnNpb24YBCABKAsyMy50",
+            "ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5Xb3JrZXJEZXBsb3ltZW50VmVy",
+            "c2lvbhIQCghzZGtfbmFtZRgFIAEoCRITCgtzZGtfdmVyc2lvbhgGIAEoCRIz",
+            "CgZzdGF0dXMYByABKA4yIy50ZW1wb3JhbC5hcGkuZW51bXMudjEuV29ya2Vy",
+            "U3RhdHVzEi4KCnN0YXJ0X3RpbWUYCCABKAsyGi5nb29nbGUucHJvdG9idWYu",
+            "VGltZXN0YW1wEhEKCWhvc3RfbmFtZRgJIAEoCRIbChN3b3JrZXJfZ3JvdXBp",
+            "bmdfa2V5GAogASgJEhIKCnByb2Nlc3NfaWQYCyABKAkSMwoHcGx1Z2lucxgM",
+            "IAMoCzIiLnRlbXBvcmFsLmFwaS53b3JrZXIudjEuUGx1Z2luSW5mbxI6Cgdk",
+            "cml2ZXJzGA0gAygLMikudGVtcG9yYWwuYXBpLndvcmtlci52MS5TdG9yYWdl",
+            "RHJpdmVySW5mbyIrCgpQbHVnaW5JbmZvEgwKBG5hbWUYASABKAkSDwoHdmVy",
+            "c2lvbhgCIAEoCSIhChFTdG9yYWdlRHJpdmVySW5mbxIMCgR0eXBlGAEgASgJ",
+            "IqcRCg9FbnZpcm9ubWVudEluZm8SQQoIcnVudGltZXMYASADKAsyLy50ZW1w",
+            "b3JhbC5hcGkud29ya2VyLnYxLkVudmlyb25tZW50SW5mby5SdW50aW1lElgK",
+            "FGhvc3RpbmdfZW52aXJvbm1lbnRzGAIgAygLMjoudGVtcG9yYWwuYXBpLndv",
+            "cmtlci52MS5FbnZpcm9ubWVudEluZm8uSG9zdGluZ0Vudmlyb25tZW50EkIK",
+            "CHBsYXRmb3JtGAMgASgLMjAudGVtcG9yYWwuYXBpLndvcmtlci52MS5FbnZp",
+            "cm9ubWVudEluZm8uUGxhdGZvcm0alAMKB1J1bnRpbWUSSQoEdHlwZRgBIAEo",
+            "DjI7LnRlbXBvcmFsLmFwaS53b3JrZXIudjEuRW52aXJvbm1lbnRJbmZvLlJ1",
+            "bnRpbWUuUnVudGltZVR5cGUSDwoHdmVyc2lvbhgCIAEoCSKsAgoLUnVudGlt",
+            "ZVR5cGUSHAoYUlVOVElNRV9UWVBFX1VOU1BFQ0lGSUVEEAASFAoQUlVOVElN",
+            "RV9UWVBFX0pWTRABEhgKFFJVTlRJTUVfVFlQRV9DUFlUSE9OEAISFQoRUlVO",
+            "VElNRV9UWVBFX05PREUQAxIUChBSVU5USU1FX1RZUEVfQlVOEAQSFgoSUlVO",
+            "VElNRV9UWVBFX0NSVUJZEAUSEwoPUlVOVElNRV9UWVBFX0dPEAYSIQodUlVO",
+            "VElNRV9UWVBFX0RPVE5FVF9GUkFNRVdPUksQBxIcChhSVU5USU1FX1RZUEVf",
+            "RE9UTkVUX0NPUkUQCBIXChNSVU5USU1FX1RZUEVfTkFUSVZFEAkSGwoXUlVO",
+            "VElNRV9UWVBFX1JPQURSVU5ORVIQChrRBAoSSG9zdGluZ0Vudmlyb25tZW50",
+            "El8KBHR5cGUYASABKA4yUS50ZW1wb3JhbC5hcGkud29ya2VyLnYxLkVudmly",
+            "b25tZW50SW5mby5Ib3N0aW5nRW52aXJvbm1lbnQuSG9zdGluZ0Vudmlyb25t",
+            "ZW50VHlwZRIPCgd2ZXJzaW9uGAIgASgJIsgDChZIb3N0aW5nRW52aXJvbm1l",
+            "bnRUeXBlEigKJEhPU1RJTkdfRU5WSVJPTk1FTlRfVFlQRV9VTlNQRUNJRklF",
+            "RBAAEiMKH0hPU1RJTkdfRU5WSVJPTk1FTlRfVFlQRV9ET0NLRVIQARIgChxI",
+            "T1NUSU5HX0VOVklST05NRU5UX1RZUEVfSzhTEAISJwojSE9TVElOR19FTlZJ",
+            "Uk9OTUVOVF9UWVBFX0FXU19MQU1CREEQAxIkCiBIT1NUSU5HX0VOVklST05N",
+            "RU5UX1RZUEVfQVdTX0VDUxAEEi0KKUhPU1RJTkdfRU5WSVJPTk1FTlRfVFlQ",
+            "RV9HT09HTEVfQ0xPVURfUlVOEAYSLgoqSE9TVElOR19FTlZJUk9OTUVOVF9U",
+            "WVBFX0dPT0dMRV9BUFBfRU5HSU5FEAcSLgoqSE9TVElOR19FTlZJUk9OTUVO",
+            "VF9UWVBFX0FaVVJFX0FQUF9TRVJWSUNFEAgSLAooSE9TVElOR19FTlZJUk9O",
+            "TUVOVF9UWVBFX0FaVVJFX0ZVTkNUSU9OUxAJEjEKLUhPU1RJTkdfRU5WSVJP",
+            "Tk1FTlRfVFlQRV9BWlVSRV9DT05UQUlORVJfQVBQUxAKGvEBCghQbGF0Zm9y",
+            "bRJGCgVsaW51eBgBIAEoCzI1LnRlbXBvcmFsLmFwaS53b3JrZXIudjEuRW52",
+            "aXJvbm1lbnRJbmZvLkxpbnV4UGxhdGZvcm1IABJGCgVtYWNvcxgCIAEoCzI1",
+            "LnRlbXBvcmFsLmFwaS53b3JrZXIudjEuRW52aXJvbm1lbnRJbmZvLk1hY09T",
+            "UGxhdGZvcm1IABJKCgd3aW5kb3dzGAMgASgLMjcudGVtcG9yYWwuYXBpLndv",
+            "cmtlci52MS5FbnZpcm9ubWVudEluZm8uV2luZG93c1BsYXRmb3JtSABCCQoH",
+            "dmFyaWFudBrzAQoNTGludXhQbGF0Zm9ybRIPCgd2ZXJzaW9uGAEgASgJEkoK",
+            "DGFyY2hpdGVjdHVyZRgCIAEoDjI0LnRlbXBvcmFsLmFwaS53b3JrZXIudjEu",
+            "RW52aXJvbm1lbnRJbmZvLkFyY2hpdGVjdHVyZRJICgRsaWJjGAMgASgOMjou",
+            "dGVtcG9yYWwuYXBpLndvcmtlci52MS5FbnZpcm9ubWVudEluZm8uTGludXhQ",
+            "bGF0Zm9ybS5MaWJjIjsKBExpYmMSFAoQTElCQ19VTlNQRUNJRklFRBAAEg4K",
+            "CkxJQkNfR0xJQkMQARINCglMSUJDX01VU0wQAhpsCg1NYWNPU1BsYXRmb3Jt",
+            "Eg8KB3ZlcnNpb24YASABKAkSSgoMYXJjaGl0ZWN0dXJlGAIgASgOMjQudGVt",
+            "cG9yYWwuYXBpLndvcmtlci52MS5FbnZpcm9ubWVudEluZm8uQXJjaGl0ZWN0",
+            "dXJlGpECCg9XaW5kb3dzUGxhdGZvcm0SDwoHdmVyc2lvbhgBIAEoCRJKCgxh",
+            "cmNoaXRlY3R1cmUYAiABKA4yNC50ZW1wb3JhbC5hcGkud29ya2VyLnYxLkVu",
+            "dmlyb25tZW50SW5mby5BcmNoaXRlY3R1cmUSSAoDY3J0GAMgASgOMjsudGVt",
+            "cG9yYWwuYXBpLndvcmtlci52MS5FbnZpcm9ubWVudEluZm8uV2luZG93c1Bs",
+            "YXRmb3JtLkNydCJXCgNDcnQSEwoPQ1JUX1VOU1BFQ0lGSUVEEAASDAoIQ1JU",
+            "X1VDUlQQARIOCgpDUlRfTVNWQ1JUEAISDQoJQ1JUX01JTkdXEAMSDgoKQ1JU",
+            "X0NZR1dJThAEIlwKDEFyY2hpdGVjdHVyZRIcChhBUkNISVRFQ1RVUkVfVU5T",
+            "UEVDSUZJRUQQABIWChJBUkNISVRFQ1RVUkVfQU1ENjQQARIWChJBUkNISVRF",
+            "Q1RVUkVfQVJNNjQQAiJhCg1Xb3JrZXJDb21tYW5kEkgKD2NhbmNlbF9hY3Rp",
+            "dml0eRgBIAEoCzItLnRlbXBvcmFsLmFwaS53b3JrZXIudjEuQ2FuY2VsQWN0",
+            "aXZpdHlDb21tYW5kSABCBgoEdHlwZSIrChVDYW5jZWxBY3Rpdml0eUNvbW1h",
+            "bmQSEgoKdGFza190b2tlbhgBIAEoDCJmChNXb3JrZXJDb21tYW5kUmVzdWx0",
+            "EkcKD2NhbmNlbF9hY3Rpdml0eRgBIAEoCzIsLnRlbXBvcmFsLmFwaS53b3Jr",
+            "ZXIudjEuQ2FuY2VsQWN0aXZpdHlSZXN1bHRIAEIGCgR0eXBlIhYKFENhbmNl",
+            "bEFjdGl2aXR5UmVzdWx0QokBChlpby50ZW1wb3JhbC5hcGkud29ya2VyLnYx",
+            "QgxNZXNzYWdlUHJvdG9QAVojZ28udGVtcG9yYWwuaW8vYXBpL3dvcmtlci92",
+            "MTt3b3JrZXKqAhhUZW1wb3JhbGlvLkFwaS5Xb3JrZXIuVjHqAhtUZW1wb3Jh",
+            "bGlvOjpBcGk6Oldvcmtlcjo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerPollerInfo), global::Temporalio.Api.Worker.V1.WorkerPollerInfo.Parser, new[]{ "CurrentPollers", "LastSuccessfulPollTime", "IsAutoscaling" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerSlotsInfo), global::Temporalio.Api.Worker.V1.WorkerSlotsInfo.Parser, new[]{ "CurrentAvailableSlots", "CurrentUsedSlots", "SlotSupplierKind", "TotalProcessedTasks", "TotalFailedTasks", "LastIntervalProcessedTasks", "LastIntervalFailureTasks" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerHostInfo), global::Temporalio.Api.Worker.V1.WorkerHostInfo.Parser, new[]{ "HostName", "WorkerGroupingKey", "ProcessId", "CurrentHostCpuUsage", "CurrentHostMemUsage" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerHeartbeat), global::Temporalio.Api.Worker.V1.WorkerHeartbeat.Parser, new[]{ "WorkerInstanceKey", "WorkerIdentity", "HostInfo", "TaskQueue", "DeploymentVersion", "SdkName", "SdkVersion", "Status", "StartTime", "HeartbeatTime", "ElapsedSinceLastHeartbeat", "WorkflowTaskSlotsInfo", "ActivityTaskSlotsInfo", "NexusTaskSlotsInfo", "LocalActivitySlotsInfo", "WorkflowPollerInfo", "WorkflowStickyPollerInfo", "ActivityPollerInfo", "NexusPollerInfo", "TotalStickyCacheHit", "TotalStickyCacheMiss", "CurrentStickyCacheSize", "Plugins", "Drivers" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerHeartbeat), global::Temporalio.Api.Worker.V1.WorkerHeartbeat.Parser, new[]{ "WorkerInstanceKey", "WorkerIdentity", "HostInfo", "TaskQueue", "DeploymentVersion", "SdkName", "SdkVersion", "Status", "StartTime", "HeartbeatTime", "ElapsedSinceLastHeartbeat", "WorkflowTaskSlotsInfo", "ActivityTaskSlotsInfo", "NexusTaskSlotsInfo", "LocalActivitySlotsInfo", "WorkflowPollerInfo", "WorkflowStickyPollerInfo", "ActivityPollerInfo", "NexusPollerInfo", "TotalStickyCacheHit", "TotalStickyCacheMiss", "CurrentStickyCacheSize", "Plugins", "Drivers", "Environment" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerInfo), global::Temporalio.Api.Worker.V1.WorkerInfo.Parser, new[]{ "WorkerHeartbeat" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerListInfo), global::Temporalio.Api.Worker.V1.WorkerListInfo.Parser, new[]{ "WorkerInstanceKey", "WorkerIdentity", "TaskQueue", "DeploymentVersion", "SdkName", "SdkVersion", "Status", "StartTime", "HostName", "WorkerGroupingKey", "ProcessId", "Plugins", "Drivers" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.PluginInfo), global::Temporalio.Api.Worker.V1.PluginInfo.Parser, new[]{ "Name", "Version" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.StorageDriverInfo), global::Temporalio.Api.Worker.V1.StorageDriverInfo.Parser, new[]{ "Type" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.EnvironmentInfo), global::Temporalio.Api.Worker.V1.EnvironmentInfo.Parser, new[]{ "Runtimes", "HostingEnvironments", "Platform" }, null, new[]{ typeof(global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture) }, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime), global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime.Parser, new[]{ "Type", "Version" }, null, new[]{ typeof(global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime.Types.RuntimeType) }, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment), global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment.Parser, new[]{ "Type", "Version" }, null, new[]{ typeof(global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment.Types.HostingEnvironmentType) }, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Platform), global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Platform.Parser, new[]{ "Linux", "Macos", "Windows" }, new[]{ "Variant" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform), global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform.Parser, new[]{ "Version", "Architecture", "Libc" }, null, new[]{ typeof(global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform.Types.Libc) }, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.MacOSPlatform), global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.MacOSPlatform.Parser, new[]{ "Version", "Architecture" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform), global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform.Parser, new[]{ "Version", "Architecture", "Crt" }, null, new[]{ typeof(global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform.Types.Crt) }, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerCommand), global::Temporalio.Api.Worker.V1.WorkerCommand.Parser, new[]{ "CancelActivity" }, new[]{ "Type" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.CancelActivityCommand), global::Temporalio.Api.Worker.V1.CancelActivityCommand.Parser, new[]{ "TaskToken" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerCommandResult), global::Temporalio.Api.Worker.V1.WorkerCommandResult.Parser, new[]{ "CancelActivity" }, new[]{ "Type" }, null, null, null),
@@ -1253,6 +1310,7 @@ namespace Temporalio.Api.Worker.V1 {
       currentStickyCacheSize_ = other.currentStickyCacheSize_;
       plugins_ = other.plugins_.Clone();
       drivers_ = other.drivers_.Clone();
+      environment_ = other.environment_ != null ? other.environment_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1591,6 +1649,21 @@ namespace Temporalio.Api.Worker.V1 {
       get { return drivers_; }
     }
 
+    /// <summary>Field number for the "environment" field.</summary>
+    public const int EnvironmentFieldNumber = 25;
+    private global::Temporalio.Api.Worker.V1.EnvironmentInfo environment_;
+    /// <summary>
+    /// Information about the environment this SDK is running in.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Worker.V1.EnvironmentInfo Environment {
+      get { return environment_; }
+      set {
+        environment_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1630,6 +1703,7 @@ namespace Temporalio.Api.Worker.V1 {
       if (CurrentStickyCacheSize != other.CurrentStickyCacheSize) return false;
       if(!plugins_.Equals(other.plugins_)) return false;
       if(!drivers_.Equals(other.drivers_)) return false;
+      if (!object.Equals(Environment, other.Environment)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1661,6 +1735,7 @@ namespace Temporalio.Api.Worker.V1 {
       if (CurrentStickyCacheSize != 0) hash ^= CurrentStickyCacheSize.GetHashCode();
       hash ^= plugins_.GetHashCode();
       hash ^= drivers_.GetHashCode();
+      if (environment_ != null) hash ^= Environment.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1769,6 +1844,10 @@ namespace Temporalio.Api.Worker.V1 {
       }
       plugins_.WriteTo(output, _repeated_plugins_codec);
       drivers_.WriteTo(output, _repeated_drivers_codec);
+      if (environment_ != null) {
+        output.WriteRawTag(202, 1);
+        output.WriteMessage(Environment);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1869,6 +1948,10 @@ namespace Temporalio.Api.Worker.V1 {
       }
       plugins_.WriteTo(ref output, _repeated_plugins_codec);
       drivers_.WriteTo(ref output, _repeated_drivers_codec);
+      if (environment_ != null) {
+        output.WriteRawTag(202, 1);
+        output.WriteMessage(Environment);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1947,6 +2030,9 @@ namespace Temporalio.Api.Worker.V1 {
       }
       size += plugins_.CalculateSize(_repeated_plugins_codec);
       size += drivers_.CalculateSize(_repeated_drivers_codec);
+      if (environment_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(Environment);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -2066,6 +2152,12 @@ namespace Temporalio.Api.Worker.V1 {
       }
       plugins_.Add(other.plugins_);
       drivers_.Add(other.drivers_);
+      if (other.environment_ != null) {
+        if (environment_ == null) {
+          Environment = new global::Temporalio.Api.Worker.V1.EnvironmentInfo();
+        }
+        Environment.MergeFrom(other.Environment);
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -2216,6 +2308,13 @@ namespace Temporalio.Api.Worker.V1 {
             drivers_.AddEntriesFrom(input, _repeated_drivers_codec);
             break;
           }
+          case 202: {
+            if (environment_ == null) {
+              Environment = new global::Temporalio.Api.Worker.V1.EnvironmentInfo();
+            }
+            input.ReadMessage(Environment);
+            break;
+          }
         }
       }
     #endif
@@ -2364,6 +2463,13 @@ namespace Temporalio.Api.Worker.V1 {
           }
           case 194: {
             drivers_.AddEntriesFrom(ref input, _repeated_drivers_codec);
+            break;
+          }
+          case 202: {
+            if (environment_ == null) {
+              Environment = new global::Temporalio.Api.Worker.V1.EnvironmentInfo();
+            }
+            input.ReadMessage(Environment);
             break;
           }
         }
@@ -3667,6 +3773,1969 @@ namespace Temporalio.Api.Worker.V1 {
 
   }
 
+  public sealed partial class EnvironmentInfo : pb::IMessage<EnvironmentInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<EnvironmentInfo> _parser = new pb::MessageParser<EnvironmentInfo>(() => new EnvironmentInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<EnvironmentInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Worker.V1.MessageReflection.Descriptor.MessageTypes[8]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public EnvironmentInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public EnvironmentInfo(EnvironmentInfo other) : this() {
+      runtimes_ = other.runtimes_.Clone();
+      hostingEnvironments_ = other.hostingEnvironments_.Clone();
+      platform_ = other.platform_ != null ? other.platform_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public EnvironmentInfo Clone() {
+      return new EnvironmentInfo(this);
+    }
+
+    /// <summary>Field number for the "runtimes" field.</summary>
+    public const int RuntimesFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime> _repeated_runtimes_codec
+        = pb::FieldCodec.ForMessage(10, global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime> runtimes_ = new pbc::RepeatedField<global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime>();
+    /// <summary>
+    /// The runtime(s) the SDK is operating in.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime> Runtimes {
+      get { return runtimes_; }
+    }
+
+    /// <summary>Field number for the "hosting_environments" field.</summary>
+    public const int HostingEnvironmentsFieldNumber = 2;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment> _repeated_hostingEnvironments_codec
+        = pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment> hostingEnvironments_ = new pbc::RepeatedField<global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment>();
+    /// <summary>
+    /// The hosting environment(s) the SDK is operating in. Repeated to allow for layering (ex: Docker inside k8s).
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment> HostingEnvironments {
+      get { return hostingEnvironments_; }
+    }
+
+    /// <summary>Field number for the "platform" field.</summary>
+    public const int PlatformFieldNumber = 3;
+    private global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Platform platform_;
+    /// <summary>
+    /// The platform the SDK is operating on.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Platform Platform {
+      get { return platform_; }
+      set {
+        platform_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as EnvironmentInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(EnvironmentInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!runtimes_.Equals(other.runtimes_)) return false;
+      if(!hostingEnvironments_.Equals(other.hostingEnvironments_)) return false;
+      if (!object.Equals(Platform, other.Platform)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= runtimes_.GetHashCode();
+      hash ^= hostingEnvironments_.GetHashCode();
+      if (platform_ != null) hash ^= Platform.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      runtimes_.WriteTo(output, _repeated_runtimes_codec);
+      hostingEnvironments_.WriteTo(output, _repeated_hostingEnvironments_codec);
+      if (platform_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Platform);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      runtimes_.WriteTo(ref output, _repeated_runtimes_codec);
+      hostingEnvironments_.WriteTo(ref output, _repeated_hostingEnvironments_codec);
+      if (platform_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Platform);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += runtimes_.CalculateSize(_repeated_runtimes_codec);
+      size += hostingEnvironments_.CalculateSize(_repeated_hostingEnvironments_codec);
+      if (platform_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Platform);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(EnvironmentInfo other) {
+      if (other == null) {
+        return;
+      }
+      runtimes_.Add(other.runtimes_);
+      hostingEnvironments_.Add(other.hostingEnvironments_);
+      if (other.platform_ != null) {
+        if (platform_ == null) {
+          Platform = new global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Platform();
+        }
+        Platform.MergeFrom(other.Platform);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            runtimes_.AddEntriesFrom(input, _repeated_runtimes_codec);
+            break;
+          }
+          case 18: {
+            hostingEnvironments_.AddEntriesFrom(input, _repeated_hostingEnvironments_codec);
+            break;
+          }
+          case 26: {
+            if (platform_ == null) {
+              Platform = new global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Platform();
+            }
+            input.ReadMessage(Platform);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            runtimes_.AddEntriesFrom(ref input, _repeated_runtimes_codec);
+            break;
+          }
+          case 18: {
+            hostingEnvironments_.AddEntriesFrom(ref input, _repeated_hostingEnvironments_codec);
+            break;
+          }
+          case 26: {
+            if (platform_ == null) {
+              Platform = new global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Platform();
+            }
+            input.ReadMessage(Platform);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the EnvironmentInfo message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Types {
+      public enum Architecture {
+        [pbr::OriginalName("ARCHITECTURE_UNSPECIFIED")] Unspecified = 0,
+        [pbr::OriginalName("ARCHITECTURE_AMD64")] Amd64 = 1,
+        [pbr::OriginalName("ARCHITECTURE_ARM64")] Arm64 = 2,
+      }
+
+      public sealed partial class Runtime : pb::IMessage<Runtime>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<Runtime> _parser = new pb::MessageParser<Runtime>(() => new Runtime());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<Runtime> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Temporalio.Api.Worker.V1.EnvironmentInfo.Descriptor.NestedTypes[0]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public Runtime() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public Runtime(Runtime other) : this() {
+          type_ = other.type_;
+          version_ = other.version_;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public Runtime Clone() {
+          return new Runtime(this);
+        }
+
+        /// <summary>Field number for the "type" field.</summary>
+        public const int TypeFieldNumber = 1;
+        private global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime.Types.RuntimeType type_ = global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime.Types.RuntimeType.Unspecified;
+        /// <summary>
+        /// The type of the runtime.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime.Types.RuntimeType Type {
+          get { return type_; }
+          set {
+            type_ = value;
+          }
+        }
+
+        /// <summary>Field number for the "version" field.</summary>
+        public const int VersionFieldNumber = 2;
+        private string version_ = "";
+        /// <summary>
+        /// The version of the runtime, if obtainable.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public string Version {
+          get { return version_; }
+          set {
+            version_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+          }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as Runtime);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(Runtime other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (Type != other.Type) return false;
+          if (Version != other.Version) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (Type != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime.Types.RuntimeType.Unspecified) hash ^= Type.GetHashCode();
+          if (Version.Length != 0) hash ^= Version.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          if (Type != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime.Types.RuntimeType.Unspecified) {
+            output.WriteRawTag(8);
+            output.WriteEnum((int) Type);
+          }
+          if (Version.Length != 0) {
+            output.WriteRawTag(18);
+            output.WriteString(Version);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          if (Type != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime.Types.RuntimeType.Unspecified) {
+            output.WriteRawTag(8);
+            output.WriteEnum((int) Type);
+          }
+          if (Version.Length != 0) {
+            output.WriteRawTag(18);
+            output.WriteString(Version);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          if (Type != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime.Types.RuntimeType.Unspecified) {
+            size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Type);
+          }
+          if (Version.Length != 0) {
+            size += 1 + pb::CodedOutputStream.ComputeStringSize(Version);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(Runtime other) {
+          if (other == null) {
+            return;
+          }
+          if (other.Type != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime.Types.RuntimeType.Unspecified) {
+            Type = other.Type;
+          }
+          if (other.Version.Length != 0) {
+            Version = other.Version;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 8: {
+                Type = (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime.Types.RuntimeType) input.ReadEnum();
+                break;
+              }
+              case 18: {
+                Version = input.ReadString();
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 8: {
+                Type = (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Runtime.Types.RuntimeType) input.ReadEnum();
+                break;
+              }
+              case 18: {
+                Version = input.ReadString();
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+        #region Nested types
+        /// <summary>Container for nested types declared in the Runtime message type.</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static partial class Types {
+          public enum RuntimeType {
+            /// <summary>
+            /// Should never actually be set, exists to follow convention of having a default.
+            /// SDKs should just leave `runtimes` empty if none can be determined.
+            /// </summary>
+            [pbr::OriginalName("RUNTIME_TYPE_UNSPECIFIED")] Unspecified = 0,
+            [pbr::OriginalName("RUNTIME_TYPE_JVM")] Jvm = 1,
+            [pbr::OriginalName("RUNTIME_TYPE_CPYTHON")] Cpython = 2,
+            [pbr::OriginalName("RUNTIME_TYPE_NODE")] Node = 3,
+            [pbr::OriginalName("RUNTIME_TYPE_BUN")] Bun = 4,
+            [pbr::OriginalName("RUNTIME_TYPE_CRUBY")] Cruby = 5,
+            [pbr::OriginalName("RUNTIME_TYPE_GO")] Go = 6,
+            [pbr::OriginalName("RUNTIME_TYPE_DOTNET_FRAMEWORK")] DotnetFramework = 7,
+            [pbr::OriginalName("RUNTIME_TYPE_DOTNET_CORE")] DotnetCore = 8,
+            [pbr::OriginalName("RUNTIME_TYPE_NATIVE")] Native = 9,
+            [pbr::OriginalName("RUNTIME_TYPE_ROADRUNNER")] Roadrunner = 10,
+          }
+
+        }
+        #endregion
+
+      }
+
+      public sealed partial class HostingEnvironment : pb::IMessage<HostingEnvironment>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<HostingEnvironment> _parser = new pb::MessageParser<HostingEnvironment>(() => new HostingEnvironment());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<HostingEnvironment> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Temporalio.Api.Worker.V1.EnvironmentInfo.Descriptor.NestedTypes[1]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public HostingEnvironment() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public HostingEnvironment(HostingEnvironment other) : this() {
+          type_ = other.type_;
+          version_ = other.version_;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public HostingEnvironment Clone() {
+          return new HostingEnvironment(this);
+        }
+
+        /// <summary>Field number for the "type" field.</summary>
+        public const int TypeFieldNumber = 1;
+        private global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment.Types.HostingEnvironmentType type_ = global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment.Types.HostingEnvironmentType.Unspecified;
+        /// <summary>
+        /// The type of hosting environment.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment.Types.HostingEnvironmentType Type {
+          get { return type_; }
+          set {
+            type_ = value;
+          }
+        }
+
+        /// <summary>Field number for the "version" field.</summary>
+        public const int VersionFieldNumber = 2;
+        private string version_ = "";
+        /// <summary>
+        /// The version of the hosting environment, if obtainable.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public string Version {
+          get { return version_; }
+          set {
+            version_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+          }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as HostingEnvironment);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(HostingEnvironment other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (Type != other.Type) return false;
+          if (Version != other.Version) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (Type != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment.Types.HostingEnvironmentType.Unspecified) hash ^= Type.GetHashCode();
+          if (Version.Length != 0) hash ^= Version.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          if (Type != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment.Types.HostingEnvironmentType.Unspecified) {
+            output.WriteRawTag(8);
+            output.WriteEnum((int) Type);
+          }
+          if (Version.Length != 0) {
+            output.WriteRawTag(18);
+            output.WriteString(Version);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          if (Type != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment.Types.HostingEnvironmentType.Unspecified) {
+            output.WriteRawTag(8);
+            output.WriteEnum((int) Type);
+          }
+          if (Version.Length != 0) {
+            output.WriteRawTag(18);
+            output.WriteString(Version);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          if (Type != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment.Types.HostingEnvironmentType.Unspecified) {
+            size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Type);
+          }
+          if (Version.Length != 0) {
+            size += 1 + pb::CodedOutputStream.ComputeStringSize(Version);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(HostingEnvironment other) {
+          if (other == null) {
+            return;
+          }
+          if (other.Type != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment.Types.HostingEnvironmentType.Unspecified) {
+            Type = other.Type;
+          }
+          if (other.Version.Length != 0) {
+            Version = other.Version;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 8: {
+                Type = (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment.Types.HostingEnvironmentType) input.ReadEnum();
+                break;
+              }
+              case 18: {
+                Version = input.ReadString();
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 8: {
+                Type = (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.HostingEnvironment.Types.HostingEnvironmentType) input.ReadEnum();
+                break;
+              }
+              case 18: {
+                Version = input.ReadString();
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+        #region Nested types
+        /// <summary>Container for nested types declared in the HostingEnvironment message type.</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static partial class Types {
+          /// <summary>
+          /// What kind of hosting environment we're running in. This list is about what can actually be
+          /// detected reliably and is unrelated to what SDKs can actually run in.
+          /// </summary>
+          public enum HostingEnvironmentType {
+            /// <summary>
+            /// Should never actually be set, exists to follow convention of having a default.
+            /// SDKs should just leave `hosting_environments` empty if none can be determined.
+            /// </summary>
+            [pbr::OriginalName("HOSTING_ENVIRONMENT_TYPE_UNSPECIFIED")] Unspecified = 0,
+            /// <summary>
+            /// Should always be in the list if we're running inside a docker container
+            /// </summary>
+            [pbr::OriginalName("HOSTING_ENVIRONMENT_TYPE_DOCKER")] Docker = 1,
+            /// <summary>
+            /// Should always be in the list if we're running inside any k8s environment
+            /// </summary>
+            [pbr::OriginalName("HOSTING_ENVIRONMENT_TYPE_K8S")] K8S = 2,
+            /// <summary>
+            /// Detect via `AWS_LAMBDA_FUNCTION_NAME`
+            /// </summary>
+            [pbr::OriginalName("HOSTING_ENVIRONMENT_TYPE_AWS_LAMBDA")] AwsLambda = 3,
+            /// <summary>
+            /// Detect via `ECS_CONTAINER_METADATA_URI_V4` or `ECS_CONTAINER_METADATA_URI`
+            /// </summary>
+            [pbr::OriginalName("HOSTING_ENVIRONMENT_TYPE_AWS_ECS")] AwsEcs = 4,
+            /// <summary>
+            /// Detect via `K_SERVICE`
+            /// </summary>
+            [pbr::OriginalName("HOSTING_ENVIRONMENT_TYPE_GOOGLE_CLOUD_RUN")] GoogleCloudRun = 6,
+            /// <summary>
+            /// Detect via `GAE_SERVICE`
+            /// </summary>
+            [pbr::OriginalName("HOSTING_ENVIRONMENT_TYPE_GOOGLE_APP_ENGINE")] GoogleAppEngine = 7,
+            /// <summary>
+            /// Detect via `WEBSITE_SITE_NAME`
+            /// </summary>
+            [pbr::OriginalName("HOSTING_ENVIRONMENT_TYPE_AZURE_APP_SERVICE")] AzureAppService = 8,
+            /// <summary>
+            /// Detect via `FUNCTIONS_EXTENSION_VERSION`
+            /// </summary>
+            [pbr::OriginalName("HOSTING_ENVIRONMENT_TYPE_AZURE_FUNCTIONS")] AzureFunctions = 9,
+            /// <summary>
+            /// Detect via `CONTAINER_APP_NAME`
+            /// </summary>
+            [pbr::OriginalName("HOSTING_ENVIRONMENT_TYPE_AZURE_CONTAINER_APPS")] AzureContainerApps = 10,
+          }
+
+        }
+        #endregion
+
+      }
+
+      public sealed partial class Platform : pb::IMessage<Platform>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<Platform> _parser = new pb::MessageParser<Platform>(() => new Platform());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<Platform> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Temporalio.Api.Worker.V1.EnvironmentInfo.Descriptor.NestedTypes[2]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public Platform() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public Platform(Platform other) : this() {
+          switch (other.VariantCase) {
+            case VariantOneofCase.Linux:
+              Linux = other.Linux.Clone();
+              break;
+            case VariantOneofCase.Macos:
+              Macos = other.Macos.Clone();
+              break;
+            case VariantOneofCase.Windows:
+              Windows = other.Windows.Clone();
+              break;
+          }
+
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public Platform Clone() {
+          return new Platform(this);
+        }
+
+        /// <summary>Field number for the "linux" field.</summary>
+        public const int LinuxFieldNumber = 1;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform Linux {
+          get { return variantCase_ == VariantOneofCase.Linux ? (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform) variant_ : null; }
+          set {
+            variant_ = value;
+            variantCase_ = value == null ? VariantOneofCase.None : VariantOneofCase.Linux;
+          }
+        }
+
+        /// <summary>Field number for the "macos" field.</summary>
+        public const int MacosFieldNumber = 2;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.MacOSPlatform Macos {
+          get { return variantCase_ == VariantOneofCase.Macos ? (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.MacOSPlatform) variant_ : null; }
+          set {
+            variant_ = value;
+            variantCase_ = value == null ? VariantOneofCase.None : VariantOneofCase.Macos;
+          }
+        }
+
+        /// <summary>Field number for the "windows" field.</summary>
+        public const int WindowsFieldNumber = 3;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform Windows {
+          get { return variantCase_ == VariantOneofCase.Windows ? (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform) variant_ : null; }
+          set {
+            variant_ = value;
+            variantCase_ = value == null ? VariantOneofCase.None : VariantOneofCase.Windows;
+          }
+        }
+
+        private object variant_;
+        /// <summary>Enum of possible cases for the "variant" oneof.</summary>
+        public enum VariantOneofCase {
+          None = 0,
+          Linux = 1,
+          Macos = 2,
+          Windows = 3,
+        }
+        private VariantOneofCase variantCase_ = VariantOneofCase.None;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public VariantOneofCase VariantCase {
+          get { return variantCase_; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearVariant() {
+          variantCase_ = VariantOneofCase.None;
+          variant_ = null;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as Platform);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(Platform other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (!object.Equals(Linux, other.Linux)) return false;
+          if (!object.Equals(Macos, other.Macos)) return false;
+          if (!object.Equals(Windows, other.Windows)) return false;
+          if (VariantCase != other.VariantCase) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (variantCase_ == VariantOneofCase.Linux) hash ^= Linux.GetHashCode();
+          if (variantCase_ == VariantOneofCase.Macos) hash ^= Macos.GetHashCode();
+          if (variantCase_ == VariantOneofCase.Windows) hash ^= Windows.GetHashCode();
+          hash ^= (int) variantCase_;
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          if (variantCase_ == VariantOneofCase.Linux) {
+            output.WriteRawTag(10);
+            output.WriteMessage(Linux);
+          }
+          if (variantCase_ == VariantOneofCase.Macos) {
+            output.WriteRawTag(18);
+            output.WriteMessage(Macos);
+          }
+          if (variantCase_ == VariantOneofCase.Windows) {
+            output.WriteRawTag(26);
+            output.WriteMessage(Windows);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          if (variantCase_ == VariantOneofCase.Linux) {
+            output.WriteRawTag(10);
+            output.WriteMessage(Linux);
+          }
+          if (variantCase_ == VariantOneofCase.Macos) {
+            output.WriteRawTag(18);
+            output.WriteMessage(Macos);
+          }
+          if (variantCase_ == VariantOneofCase.Windows) {
+            output.WriteRawTag(26);
+            output.WriteMessage(Windows);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          if (variantCase_ == VariantOneofCase.Linux) {
+            size += 1 + pb::CodedOutputStream.ComputeMessageSize(Linux);
+          }
+          if (variantCase_ == VariantOneofCase.Macos) {
+            size += 1 + pb::CodedOutputStream.ComputeMessageSize(Macos);
+          }
+          if (variantCase_ == VariantOneofCase.Windows) {
+            size += 1 + pb::CodedOutputStream.ComputeMessageSize(Windows);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(Platform other) {
+          if (other == null) {
+            return;
+          }
+          switch (other.VariantCase) {
+            case VariantOneofCase.Linux:
+              if (Linux == null) {
+                Linux = new global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform();
+              }
+              Linux.MergeFrom(other.Linux);
+              break;
+            case VariantOneofCase.Macos:
+              if (Macos == null) {
+                Macos = new global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.MacOSPlatform();
+              }
+              Macos.MergeFrom(other.Macos);
+              break;
+            case VariantOneofCase.Windows:
+              if (Windows == null) {
+                Windows = new global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform();
+              }
+              Windows.MergeFrom(other.Windows);
+              break;
+          }
+
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 10: {
+                global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform subBuilder = new global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform();
+                if (variantCase_ == VariantOneofCase.Linux) {
+                  subBuilder.MergeFrom(Linux);
+                }
+                input.ReadMessage(subBuilder);
+                Linux = subBuilder;
+                break;
+              }
+              case 18: {
+                global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.MacOSPlatform subBuilder = new global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.MacOSPlatform();
+                if (variantCase_ == VariantOneofCase.Macos) {
+                  subBuilder.MergeFrom(Macos);
+                }
+                input.ReadMessage(subBuilder);
+                Macos = subBuilder;
+                break;
+              }
+              case 26: {
+                global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform subBuilder = new global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform();
+                if (variantCase_ == VariantOneofCase.Windows) {
+                  subBuilder.MergeFrom(Windows);
+                }
+                input.ReadMessage(subBuilder);
+                Windows = subBuilder;
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 10: {
+                global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform subBuilder = new global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform();
+                if (variantCase_ == VariantOneofCase.Linux) {
+                  subBuilder.MergeFrom(Linux);
+                }
+                input.ReadMessage(subBuilder);
+                Linux = subBuilder;
+                break;
+              }
+              case 18: {
+                global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.MacOSPlatform subBuilder = new global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.MacOSPlatform();
+                if (variantCase_ == VariantOneofCase.Macos) {
+                  subBuilder.MergeFrom(Macos);
+                }
+                input.ReadMessage(subBuilder);
+                Macos = subBuilder;
+                break;
+              }
+              case 26: {
+                global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform subBuilder = new global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform();
+                if (variantCase_ == VariantOneofCase.Windows) {
+                  subBuilder.MergeFrom(Windows);
+                }
+                input.ReadMessage(subBuilder);
+                Windows = subBuilder;
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+      }
+
+      public sealed partial class LinuxPlatform : pb::IMessage<LinuxPlatform>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<LinuxPlatform> _parser = new pb::MessageParser<LinuxPlatform>(() => new LinuxPlatform());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<LinuxPlatform> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Temporalio.Api.Worker.V1.EnvironmentInfo.Descriptor.NestedTypes[3]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public LinuxPlatform() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public LinuxPlatform(LinuxPlatform other) : this() {
+          version_ = other.version_;
+          architecture_ = other.architecture_;
+          libc_ = other.libc_;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public LinuxPlatform Clone() {
+          return new LinuxPlatform(this);
+        }
+
+        /// <summary>Field number for the "version" field.</summary>
+        public const int VersionFieldNumber = 1;
+        private string version_ = "";
+        /// <summary>
+        /// The Linux kernel or distribution version, if obtainable.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public string Version {
+          get { return version_; }
+          set {
+            version_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+          }
+        }
+
+        /// <summary>Field number for the "architecture" field.</summary>
+        public const int ArchitectureFieldNumber = 2;
+        private global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture architecture_ = global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified;
+        /// <summary>
+        /// The architecture of the worker process.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture Architecture {
+          get { return architecture_; }
+          set {
+            architecture_ = value;
+          }
+        }
+
+        /// <summary>Field number for the "libc" field.</summary>
+        public const int LibcFieldNumber = 3;
+        private global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform.Types.Libc libc_ = global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform.Types.Libc.Unspecified;
+        /// <summary>
+        /// The libc used by the worker process.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform.Types.Libc Libc {
+          get { return libc_; }
+          set {
+            libc_ = value;
+          }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as LinuxPlatform);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(LinuxPlatform other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (Version != other.Version) return false;
+          if (Architecture != other.Architecture) return false;
+          if (Libc != other.Libc) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (Version.Length != 0) hash ^= Version.GetHashCode();
+          if (Architecture != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified) hash ^= Architecture.GetHashCode();
+          if (Libc != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform.Types.Libc.Unspecified) hash ^= Libc.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          if (Version.Length != 0) {
+            output.WriteRawTag(10);
+            output.WriteString(Version);
+          }
+          if (Architecture != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified) {
+            output.WriteRawTag(16);
+            output.WriteEnum((int) Architecture);
+          }
+          if (Libc != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform.Types.Libc.Unspecified) {
+            output.WriteRawTag(24);
+            output.WriteEnum((int) Libc);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          if (Version.Length != 0) {
+            output.WriteRawTag(10);
+            output.WriteString(Version);
+          }
+          if (Architecture != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified) {
+            output.WriteRawTag(16);
+            output.WriteEnum((int) Architecture);
+          }
+          if (Libc != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform.Types.Libc.Unspecified) {
+            output.WriteRawTag(24);
+            output.WriteEnum((int) Libc);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          if (Version.Length != 0) {
+            size += 1 + pb::CodedOutputStream.ComputeStringSize(Version);
+          }
+          if (Architecture != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified) {
+            size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Architecture);
+          }
+          if (Libc != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform.Types.Libc.Unspecified) {
+            size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Libc);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(LinuxPlatform other) {
+          if (other == null) {
+            return;
+          }
+          if (other.Version.Length != 0) {
+            Version = other.Version;
+          }
+          if (other.Architecture != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified) {
+            Architecture = other.Architecture;
+          }
+          if (other.Libc != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform.Types.Libc.Unspecified) {
+            Libc = other.Libc;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 10: {
+                Version = input.ReadString();
+                break;
+              }
+              case 16: {
+                Architecture = (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture) input.ReadEnum();
+                break;
+              }
+              case 24: {
+                Libc = (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform.Types.Libc) input.ReadEnum();
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 10: {
+                Version = input.ReadString();
+                break;
+              }
+              case 16: {
+                Architecture = (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture) input.ReadEnum();
+                break;
+              }
+              case 24: {
+                Libc = (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.LinuxPlatform.Types.Libc) input.ReadEnum();
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+        #region Nested types
+        /// <summary>Container for nested types declared in the LinuxPlatform message type.</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static partial class Types {
+          public enum Libc {
+            [pbr::OriginalName("LIBC_UNSPECIFIED")] Unspecified = 0,
+            [pbr::OriginalName("LIBC_GLIBC")] Glibc = 1,
+            [pbr::OriginalName("LIBC_MUSL")] Musl = 2,
+          }
+
+        }
+        #endregion
+
+      }
+
+      public sealed partial class MacOSPlatform : pb::IMessage<MacOSPlatform>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<MacOSPlatform> _parser = new pb::MessageParser<MacOSPlatform>(() => new MacOSPlatform());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<MacOSPlatform> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Temporalio.Api.Worker.V1.EnvironmentInfo.Descriptor.NestedTypes[4]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public MacOSPlatform() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public MacOSPlatform(MacOSPlatform other) : this() {
+          version_ = other.version_;
+          architecture_ = other.architecture_;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public MacOSPlatform Clone() {
+          return new MacOSPlatform(this);
+        }
+
+        /// <summary>Field number for the "version" field.</summary>
+        public const int VersionFieldNumber = 1;
+        private string version_ = "";
+        /// <summary>
+        /// The macOS version, if obtainable.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public string Version {
+          get { return version_; }
+          set {
+            version_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+          }
+        }
+
+        /// <summary>Field number for the "architecture" field.</summary>
+        public const int ArchitectureFieldNumber = 2;
+        private global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture architecture_ = global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified;
+        /// <summary>
+        /// The architecture of the worker process.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture Architecture {
+          get { return architecture_; }
+          set {
+            architecture_ = value;
+          }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as MacOSPlatform);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(MacOSPlatform other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (Version != other.Version) return false;
+          if (Architecture != other.Architecture) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (Version.Length != 0) hash ^= Version.GetHashCode();
+          if (Architecture != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified) hash ^= Architecture.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          if (Version.Length != 0) {
+            output.WriteRawTag(10);
+            output.WriteString(Version);
+          }
+          if (Architecture != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified) {
+            output.WriteRawTag(16);
+            output.WriteEnum((int) Architecture);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          if (Version.Length != 0) {
+            output.WriteRawTag(10);
+            output.WriteString(Version);
+          }
+          if (Architecture != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified) {
+            output.WriteRawTag(16);
+            output.WriteEnum((int) Architecture);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          if (Version.Length != 0) {
+            size += 1 + pb::CodedOutputStream.ComputeStringSize(Version);
+          }
+          if (Architecture != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified) {
+            size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Architecture);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(MacOSPlatform other) {
+          if (other == null) {
+            return;
+          }
+          if (other.Version.Length != 0) {
+            Version = other.Version;
+          }
+          if (other.Architecture != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified) {
+            Architecture = other.Architecture;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 10: {
+                Version = input.ReadString();
+                break;
+              }
+              case 16: {
+                Architecture = (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture) input.ReadEnum();
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 10: {
+                Version = input.ReadString();
+                break;
+              }
+              case 16: {
+                Architecture = (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture) input.ReadEnum();
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+      }
+
+      public sealed partial class WindowsPlatform : pb::IMessage<WindowsPlatform>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<WindowsPlatform> _parser = new pb::MessageParser<WindowsPlatform>(() => new WindowsPlatform());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<WindowsPlatform> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Temporalio.Api.Worker.V1.EnvironmentInfo.Descriptor.NestedTypes[5]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public WindowsPlatform() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public WindowsPlatform(WindowsPlatform other) : this() {
+          version_ = other.version_;
+          architecture_ = other.architecture_;
+          crt_ = other.crt_;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public WindowsPlatform Clone() {
+          return new WindowsPlatform(this);
+        }
+
+        /// <summary>Field number for the "version" field.</summary>
+        public const int VersionFieldNumber = 1;
+        private string version_ = "";
+        /// <summary>
+        /// The Windows version, if obtainable.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public string Version {
+          get { return version_; }
+          set {
+            version_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+          }
+        }
+
+        /// <summary>Field number for the "architecture" field.</summary>
+        public const int ArchitectureFieldNumber = 2;
+        private global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture architecture_ = global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified;
+        /// <summary>
+        /// The architecture of the worker process.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture Architecture {
+          get { return architecture_; }
+          set {
+            architecture_ = value;
+          }
+        }
+
+        /// <summary>Field number for the "crt" field.</summary>
+        public const int CrtFieldNumber = 3;
+        private global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform.Types.Crt crt_ = global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform.Types.Crt.Unspecified;
+        /// <summary>
+        /// The C runtime used by the worker process, if obtainable.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform.Types.Crt Crt {
+          get { return crt_; }
+          set {
+            crt_ = value;
+          }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as WindowsPlatform);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(WindowsPlatform other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (Version != other.Version) return false;
+          if (Architecture != other.Architecture) return false;
+          if (Crt != other.Crt) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (Version.Length != 0) hash ^= Version.GetHashCode();
+          if (Architecture != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified) hash ^= Architecture.GetHashCode();
+          if (Crt != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform.Types.Crt.Unspecified) hash ^= Crt.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          if (Version.Length != 0) {
+            output.WriteRawTag(10);
+            output.WriteString(Version);
+          }
+          if (Architecture != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified) {
+            output.WriteRawTag(16);
+            output.WriteEnum((int) Architecture);
+          }
+          if (Crt != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform.Types.Crt.Unspecified) {
+            output.WriteRawTag(24);
+            output.WriteEnum((int) Crt);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          if (Version.Length != 0) {
+            output.WriteRawTag(10);
+            output.WriteString(Version);
+          }
+          if (Architecture != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified) {
+            output.WriteRawTag(16);
+            output.WriteEnum((int) Architecture);
+          }
+          if (Crt != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform.Types.Crt.Unspecified) {
+            output.WriteRawTag(24);
+            output.WriteEnum((int) Crt);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          if (Version.Length != 0) {
+            size += 1 + pb::CodedOutputStream.ComputeStringSize(Version);
+          }
+          if (Architecture != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified) {
+            size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Architecture);
+          }
+          if (Crt != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform.Types.Crt.Unspecified) {
+            size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Crt);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(WindowsPlatform other) {
+          if (other == null) {
+            return;
+          }
+          if (other.Version.Length != 0) {
+            Version = other.Version;
+          }
+          if (other.Architecture != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture.Unspecified) {
+            Architecture = other.Architecture;
+          }
+          if (other.Crt != global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform.Types.Crt.Unspecified) {
+            Crt = other.Crt;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 10: {
+                Version = input.ReadString();
+                break;
+              }
+              case 16: {
+                Architecture = (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture) input.ReadEnum();
+                break;
+              }
+              case 24: {
+                Crt = (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform.Types.Crt) input.ReadEnum();
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 10: {
+                Version = input.ReadString();
+                break;
+              }
+              case 16: {
+                Architecture = (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.Architecture) input.ReadEnum();
+                break;
+              }
+              case 24: {
+                Crt = (global::Temporalio.Api.Worker.V1.EnvironmentInfo.Types.WindowsPlatform.Types.Crt) input.ReadEnum();
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+        #region Nested types
+        /// <summary>Container for nested types declared in the WindowsPlatform message type.</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static partial class Types {
+          public enum Crt {
+            [pbr::OriginalName("CRT_UNSPECIFIED")] Unspecified = 0,
+            [pbr::OriginalName("CRT_UCRT")] Ucrt = 1,
+            [pbr::OriginalName("CRT_MSVCRT")] Msvcrt = 2,
+            [pbr::OriginalName("CRT_MINGW")] Mingw = 3,
+            [pbr::OriginalName("CRT_CYGWIN")] Cygwin = 4,
+          }
+
+        }
+        #endregion
+
+      }
+
+    }
+    #endregion
+
+  }
+
   /// <summary>
   /// A command sent from the server to a worker.
   /// </summary>
@@ -3684,7 +5753,7 @@ namespace Temporalio.Api.Worker.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Worker.V1.MessageReflection.Descriptor.MessageTypes[8]; }
+      get { return global::Temporalio.Api.Worker.V1.MessageReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3919,7 +5988,7 @@ namespace Temporalio.Api.Worker.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Worker.V1.MessageReflection.Descriptor.MessageTypes[9]; }
+      get { return global::Temporalio.Api.Worker.V1.MessageReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4111,7 +6180,7 @@ namespace Temporalio.Api.Worker.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Worker.V1.MessageReflection.Descriptor.MessageTypes[10]; }
+      get { return global::Temporalio.Api.Worker.V1.MessageReflection.Descriptor.MessageTypes[11]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4347,7 +6416,7 @@ namespace Temporalio.Api.Worker.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Worker.V1.MessageReflection.Descriptor.MessageTypes[11]; }
+      get { return global::Temporalio.Api.Worker.V1.MessageReflection.Descriptor.MessageTypes[12]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
