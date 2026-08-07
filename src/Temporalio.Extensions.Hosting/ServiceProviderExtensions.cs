@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NexusRpc.Handlers;
 using Temporalio.Activities;
+using Temporalio.Nexus;
 
 namespace Temporalio.Extensions.Hosting
 {
@@ -148,7 +149,10 @@ namespace Temporalio.Extensions.Hosting
         /// <summary>
         /// Create <see cref="ServiceHandlerInstance"/> for the given nexus-attributed service handler type.
         /// If a service handler method is non-static, this will use the service provider to get the service
-        /// instance to call the method on.
+        /// instance to call the method on. Both <see cref="NexusOperationHandlerAttribute"/> factory
+        /// methods and <see cref="TemporalOperationAttribute"/> methods are supported; each operation
+        /// resolves a fresh service instance from a dependency-injection scope on every start and
+        /// cancel call.
         /// </summary>
         /// <param name="provider">Service provider for creating the service instance if the
         /// method is non-static.</param>
@@ -159,27 +163,86 @@ namespace Temporalio.Extensions.Hosting
             Type serviceHandlerType) =>
             ServiceHandlerInstanceHelper.FromType(
                 serviceHandlerType,
-                serviceOperationMethod => new ScopedNexusOperationHandler(
-                    serviceHandlerType,
-                    serviceOperationMethod,
-                    provider));
+                (method, opDef) =>
+                {
+                    // [NexusOperationHandler]: the method is a factory that returns the handler.
+                    if (method.GetCustomAttribute<NexusOperationHandlerAttribute>() != null)
+                    {
+                        ServiceHandlerInstanceHelper.ValidateNexusOperationHandler(opDef, method);
+                        return new ScopedOperationHandler(
+                            serviceHandlerType,
+                            resolveInstance: !method.IsStatic,
+                            provider,
+                            instance => InvokeNexusOperationHandlerFactory(method, instance));
+                    }
+
+                    // [TemporalOperation]: the method itself is the start handler. Core validates it
+                    // and returns a factory that binds a resolved instance into the handler.
+                    if (method.GetCustomAttribute<TemporalOperationAttribute>() != null)
+                    {
+                        var handlerFactory =
+                            TemporalOperationMethodExtension.CreateInstanceHandlerFactory(method, opDef);
+                        return new ScopedOperationHandler(
+                            serviceHandlerType,
+                            resolveInstance: true,
+                            provider,
+                            instance => handlerFactory(instance!));
+                    }
+
+                    return null;
+                });
 
         /// <summary>
-        /// An operation handler that defers the resolution of the Nexus service handler and the invocation
-        /// of a Nexus operation to be within a service scope.
+        /// Invoke a <see cref="NexusOperationHandlerAttribute"/> factory method to obtain its
+        /// operation handler, unwrapping the target-invocation exception on failure.
         /// </summary>
-        private sealed class ScopedNexusOperationHandler :
+        private static IOperationHandler<object?, object?> InvokeNexusOperationHandlerFactory(
+            MethodInfo method, object? instance)
+        {
+            object handler;
+            try
+            {
+                handler = method.Invoke(instance, null) ??
+                    throw new ArgumentException("Operation handler was null");
+            }
+            catch (TargetInvocationException e)
+            {
+#if NET6_0_OR_GREATER
+                ExceptionDispatchInfo.Capture(e.InnerException!).Throw();
+#else
+                ExceptionDispatchInfo.Capture(e.InnerException).Throw();
+#endif
+                // Unreachable
+                throw new InvalidOperationException("Unreachable");
+            }
+            return OperationHandler.WrapAsGenericHandler(handler, method.ReturnType);
+        }
+
+        /// <summary>
+        /// An operation handler that defers the resolution of the Nexus service handler and the
+        /// construction of the underlying operation handler to be within a service scope. A fresh
+        /// scope (and, unless the operation is static, a fresh service instance) is created for
+        /// every start and cancel call, giving the operation the same dependency-injection behavior
+        /// as activities.
+        /// </summary>
+        private sealed class ScopedOperationHandler :
             IOperationHandler<object?, object?>
         {
             private readonly Type serviceHandlerType;
-            private readonly MethodInfo serviceOperationMethod;
+            private readonly bool resolveInstance;
             private readonly IServiceProvider serviceProvider;
+            private readonly Func<object?, IOperationHandler<object?, object?>> handlerBuilder;
 
-            public ScopedNexusOperationHandler(Type serviceHandlerType, MethodInfo serviceOperationMethod, IServiceProvider serviceProvider)
+            public ScopedOperationHandler(
+                Type serviceHandlerType,
+                bool resolveInstance,
+                IServiceProvider serviceProvider,
+                Func<object?, IOperationHandler<object?, object?>> handlerBuilder)
             {
                 this.serviceHandlerType = serviceHandlerType;
-                this.serviceOperationMethod = serviceOperationMethod;
+                this.resolveInstance = resolveInstance;
                 this.serviceProvider = serviceProvider;
+                this.handlerBuilder = handlerBuilder;
             }
 
             public async Task<OperationStartResult<object?>> StartAsync(OperationStartContext context, object? input) =>
@@ -202,30 +265,13 @@ namespace Temporalio.Extensions.Hosting
 
                 try
                 {
-                    object handler;
-                    try
-                    {
-                        // Create the instance if not static and not already created
-                        var serviceHandlerInstance = this.serviceOperationMethod.IsStatic
-                            ? null
-                            : scope.ServiceProvider.GetRequiredService(this.serviceHandlerType);
-
-                        handler = this.serviceOperationMethod.Invoke(serviceHandlerInstance, null) ??
-                            throw new ArgumentException("Operation handler was null");
-                    }
-                    catch (TargetInvocationException e)
-                    {
-#if NET6_0_OR_GREATER
-                        ExceptionDispatchInfo.Capture(e.InnerException!).Throw();
-#else
-                        ExceptionDispatchInfo.Capture(e.InnerException).Throw();
-#endif
-                        // Unreachable
-                        throw new InvalidOperationException("Unreachable");
-                    }
-
-                    var genericHandler = OperationHandler.WrapAsGenericHandler(handler, this.serviceOperationMethod.ReturnType);
-                    return await handlerInvoker(genericHandler).ConfigureAwait(false);
+                    // Resolve the service instance for non-static operations, then build the handler
+                    // bound to it. The handler (and any user code it runs) executes within this scope.
+                    var instance = this.resolveInstance
+                        ? scope.ServiceProvider.GetRequiredService(this.serviceHandlerType)
+                        : null;
+                    var handler = this.handlerBuilder(instance);
+                    return await handlerInvoker(handler).ConfigureAwait(false);
                 }
                 finally
                 {

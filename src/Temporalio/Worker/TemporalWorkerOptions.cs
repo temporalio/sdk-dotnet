@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NexusRpc.Handlers;
 using Temporalio.Activities;
+using Temporalio.Nexus;
 using Temporalio.Worker.Tuning;
 using Temporalio.Workflows;
 
@@ -483,11 +484,15 @@ namespace Temporalio.Worker
         /// Add the given Nexus service handler.
         /// </summary>
         /// <param name="serviceHandler">Service handler to add. It is expected to be an instance of
-        /// a class with a <see cref="NexusServiceHandlerAttribute"/> attribute.</param>
+        /// a class with a <see cref="NexusServiceHandlerAttribute"/> attribute. Methods may use
+        /// either <see cref="TemporalOperationAttribute"/> (for direct Temporal-backed operations)
+        /// or <see cref="NexusOperationHandlerAttribute"/> (for operation handler factories).
+        /// </param>
         /// <returns>This options instance for chaining.</returns>
         public TemporalWorkerOptions AddNexusService(object serviceHandler)
         {
-            NexusServices.Add(ServiceHandlerInstance.FromInstance(serviceHandler));
+            NexusServices.Add(ServiceHandlerInstance.FromInstance(
+                serviceHandler, TemporalOperationMethodExtension.Extensions));
             return this;
         }
 
