@@ -25,7 +25,7 @@ namespace Temporalio.Client
             /// <inheritdoc />
             public override async Task HeartbeatAsyncActivityAsync(HeartbeatAsyncActivityInput input)
             {
-                var converter = input.DataConverterOverride ?? Client.Options.DataConverter;
+                var converter = DataConverterForAsyncActivity(input.DataConverterOverride);
                 Payloads? details = null;
                 if (input.Options?.Details != null && input.Options.Details.Count > 0)
                 {
@@ -80,7 +80,7 @@ namespace Temporalio.Client
             /// <inheritdoc />
             public override async Task CompleteAsyncActivityAsync(CompleteAsyncActivityInput input)
             {
-                var converter = input.DataConverterOverride ?? Client.Options.DataConverter;
+                var converter = DataConverterForAsyncActivity(input.DataConverterOverride);
                 var result = await converter.ToPayloadAsync(input.Result).ConfigureAwait(false);
                 if (input.Activity is AsyncActivityHandle.IdReference idRef)
                 {
@@ -117,7 +117,7 @@ namespace Temporalio.Client
             /// <inheritdoc />
             public override async Task FailAsyncActivityAsync(FailAsyncActivityInput input)
             {
-                var converter = input.DataConverterOverride ?? Client.Options.DataConverter;
+                var converter = DataConverterForAsyncActivity(input.DataConverterOverride);
                 var failure = await converter.ToFailureAsync(input.Exception).ConfigureAwait(false);
                 Payloads? lastHeartbeatDetails = null;
                 if (input.Options?.LastHeartbeatDetails != null &&
@@ -170,7 +170,7 @@ namespace Temporalio.Client
             public override async Task ReportCancellationAsyncActivityAsync(
                 ReportCancellationAsyncActivityInput input)
             {
-                var converter = input.DataConverterOverride ?? Client.Options.DataConverter;
+                var converter = DataConverterForAsyncActivity(input.DataConverterOverride);
                 Payloads? details = null;
                 if (input.Options?.Details != null && input.Options.Details.Count > 0)
                 {
@@ -213,6 +213,11 @@ namespace Temporalio.Client
                     throw new ArgumentException("Unrecognized activity reference type");
                 }
             }
+
+            private DataConverter DataConverterForAsyncActivity(DataConverter? dataConverterOverride) =>
+                dataConverterOverride == null ?
+                    Client.Options.DataConverter :
+                    TemporalTransferTypePayloadConverter.Wrap(dataConverterOverride);
         }
     }
 }

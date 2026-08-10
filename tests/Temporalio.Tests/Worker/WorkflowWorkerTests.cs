@@ -7874,9 +7874,11 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         // failure converter, and codec are used in clients, workflows, and activities.
 
         // Context-aware data converter and client
+        var encodingConverters =
+            ((DefaultPayloadConverter)DataConverter.Default.PayloadConverter).EncodingConverters;
         var dataConverter = new DataConverter(
             PayloadConverter: new DefaultPayloadConverter(
-                ((DefaultPayloadConverter)Client.Options.DataConverter.PayloadConverter).EncodingConverters.Select(e =>
+                encodingConverters.Select(e =>
                     e is JsonPlainConverter ? new ContextJsonPlainConverter() : e).ToArray()),
             FailureConverter: new ContextFailureConverter(),
             PayloadCodec: new ContextPayloadCodec());

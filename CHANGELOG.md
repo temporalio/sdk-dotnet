@@ -36,6 +36,10 @@ to docs, or any other relevant information.
   you disable size enforcement by setting `DisablePayloadErrorLimit` to `true` on the worker.
 ### Added
 
+- Added experimental SDK payload converter support for values and target types that expose
+  Temporal transfer type conversion hooks. This lets hook-aware types delegate
+  their wire representation to the configured payload converter, preserving SDK
+  behavior such as serialization contexts.
 - Added `TemporalWorkerOptions.MaxEagerActivityReservationsPerWorkflowTask` to configure the
   maximum number of activity slots reserved for eager execution per workflow task. Configured
   values must be positive; use `DisableEagerActivityExecution` to disable eager execution.
