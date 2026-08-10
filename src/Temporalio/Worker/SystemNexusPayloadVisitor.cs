@@ -16,6 +16,7 @@ namespace Temporalio.Worker
         private const string SystemPayloadMetadataKey = "__temporal_system_payload";
 
         private static readonly ByteString SystemPayloadMetadataValue = ByteString.CopyFromUtf8("true");
+
         internal delegate Task PayloadVisitor(Payload payload);
 
         internal delegate Task PayloadsVisitor(RepeatedField<Payload> payloads);
@@ -50,10 +51,8 @@ namespace Temporalio.Worker
             }
         }
 
-        private static bool IsSystemNexusPayload(Payload payload) =>
+        private static bool IsSystemPayload(Payload payload) =>
             payload.Metadata.TryGetValue(SystemPayloadMetadataKey, out var value) &&
-            value == SystemPayloadMetadataValue;
-
-        private static bool IsSystemNexusEndpoint(string? endpoint) => endpoint == TemporalSystemEndpoint;
+            value.Equals(SystemPayloadMetadataValue);
     }
 }

@@ -182,7 +182,7 @@ static void GeneratePayloadVisitor(
     builder.AppendLine("            PayloadsVisitor visitPayloads,");
     builder.AppendLine("            EnvelopeVisitor? visitEnvelope = null)");
     builder.AppendLine("        {");
-    builder.AppendLine("            if (!IsSystemNexusPayload(payload))");
+    builder.AppendLine("            if (!IsSystemPayload(payload))");
     builder.AppendLine("            {");
     builder.AppendLine("                return false;");
     builder.AppendLine("            }");
