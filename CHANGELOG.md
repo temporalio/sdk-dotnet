@@ -21,6 +21,10 @@ to docs, or any other relevant information.
 
 ### Breaking Changes
 
+- Removed the unused `NexusHandlerFailureException`; Nexus handler failures are represented by
+  `NexusRpc.Handlers.HandlerException`. The SDK-created `TemporalNexusClient` implementation is now
+  internal; Nexus operation handlers continue to receive its public `ITemporalNexusClient`
+  interface.
 - By default, workers now proactively validate outbound payload/memo sizes before sending: a field
   over the warn threshold is logged (`[TMPRL1103]` at
   `WARN`) but still sent, while a task completion over the error limit is failed retryably
@@ -36,6 +40,11 @@ to docs, or any other relevant information.
   Temporal transfer type conversion hooks. This lets hook-aware types delegate
   their wire representation to the configured payload converter, preserving SDK
   behavior such as serialization contexts.
+- Added `TemporalWorkerOptions.MaxEagerActivityReservationsPerWorkflowTask` to configure the
+  maximum number of activity slots reserved for eager execution per workflow task. Configured
+  values must be positive; use `DisableEagerActivityExecution` to disable eager execution.
+- Added `WorkflowEnvironment.CreateFromEnvConfigAsync` for creating test workflow environments from
+  client environment configuration.
 - Added the experimental `TemporalWorkerOptions.PatchActivationCallback`, allowing workers to
   decide whether a first non-replay `Workflow.Patched` call should activate a patch during rolling
   deployments.
@@ -46,6 +55,9 @@ to docs, or any other relevant information.
 
 ### Changed
 
+- Nexus support for calling operations from workflows and handling workflow-backed operations with
+  `WorkflowRunOperationHandler` is now generally available (GA). Standalone Nexus Operation and `TemporalOperationHandler`,
+  including workflow updates and standalone activities as Nexus operations, remains experimental.
 - User metadata fields (StaticSummary, StaticDetails, CurrentDetails, Activity Summary, Timer
   Summary) are no longer marked as experimental.
 - Hardened read-only workflow context enforcement so queries, update validators, and patch activation
@@ -73,6 +85,11 @@ to docs, or any other relevant information.
 - Fixed `ClientEnvConfig` TLS-disabled profiles to preserve disabled TLS in connection options.
 - OTLP metric export failures are now logged through Core telemetry when OpenTelemetry's periodic metric reader reports an export error.
 - Worker heartbeat now samples host CPU/memory at the heartbeat interval (only when enabled) rather than every 100ms.
+### Added
+
+- Added the `[TemporalOperation]` attribute for declaring a Temporal-backed Nexus operation start
+  handler directly on a method within a `[NexusServiceHandler]` class. It is mutually
+  exclusive with `[NexusOperationHandler]` on the same method.
 
 ### [1.16.0] - 2026-07-01
 

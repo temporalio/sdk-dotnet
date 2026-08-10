@@ -67,46 +67,19 @@ jobs:
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
 
-      - name: Read mise version
-        id: mise-version
-        shell: bash
-        run: |
-          version=$(sed -n 's/^min_version = "\([^"]*\)".*/\1/p' mise.toml)
-          if [ -z "$version" ]; then
-            echo "::error::Could not read min_version from mise.toml"
-            exit 1
-          fi
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-
-      - name: Install Rust
-        if: ${{ !matrix.container }}
-        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+      - name: Setup
+        id: setup
+        uses: ./.github/actions/setup
         with:
-          toolchain: stable
-
-      - name: Setup Rust cache
-        if: ${{ !matrix.container }}
-        # Fixed version due to https://github.com/Swatinem/rust-cache/issues/183#issuecomment-1893979126
-        uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
-        with:
-          workspaces: src/Temporalio/Bridge/sdk-core
-          key: ${{ matrix.os }}
-          cache-bin: false # https://github.com/Swatinem/rust-cache/issues/341
-
-      - name: Run mise install
-        if: ${{ !matrix.container }}
-        uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
-        with:
-          version: ${{ steps.mise-version.outputs.version }}
-
-      - name: Set PROTOC
-        if: ${{ !matrix.container }}
-        shell: bash
-        run: printf 'PROTOC=%s\n' "$(mise which protoc)" >> "$GITHUB_ENV"
+          # Container legs install their own tooling below, and only need the
+          # pinned mise version resolved here.
+          install: ${{ !matrix.container }}
+          dotnet: "false"
+          rust-cache-key: ${{ matrix.os }}
 
       - name: Build (non-Docker)
         if: ${{ !matrix.container }}
@@ -121,7 +94,7 @@ jobs:
             sh -c ' \
                 curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y \
              && . $HOME/.cargo/env \
-             && curl https://mise.run | MISE_VERSION=v${{ steps.mise-version.outputs.version }} MISE_INSTALL_MUSL=1 sh \
+             && curl https://mise.run | MISE_VERSION=v${{ steps.setup.outputs.version }} MISE_INSTALL_MUSL=1 sh \
              && export PATH="$HOME/.local/bin:$PATH" \
              && mise trust /workspace/mise.toml \
              && mise install \
@@ -138,7 +111,7 @@ jobs:
                 curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y \
              && . $HOME/.cargo/env \
              && apk add --no-cache build-base \
-             && curl https://mise.run | MISE_VERSION=v${{ steps.mise-version.outputs.version }} MISE_INSTALL_MUSL=1 sh \
+             && curl https://mise.run | MISE_VERSION=v${{ steps.setup.outputs.version }} MISE_INSTALL_MUSL=1 sh \
              && export PATH="$HOME/.local/bin:$PATH" \
              && mise trust /workspace/mise.toml \
              && mise install \
@@ -161,7 +134,7 @@ jobs:
       RestoreLockedMode: true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
 
@@ -171,7 +144,7 @@ jobs:
           path: bridge-libraries
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           global-json-file: global.json
 
@@ -230,7 +203,7 @@ jobs:
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
 

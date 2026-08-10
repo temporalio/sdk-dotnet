@@ -31,51 +31,53 @@ namespace Temporalio.Api.ErrorDetails.V1 {
             "bxoldGVtcG9yYWwvYXBpL2VudW1zL3YxL25hbWVzcGFjZS5wcm90bxoldGVt",
             "cG9yYWwvYXBpL2ZhaWx1cmUvdjEvbWVzc2FnZS5wcm90byJCCg9Ob3RGb3Vu",
             "ZEZhaWx1cmUSFwoPY3VycmVudF9jbHVzdGVyGAEgASgJEhYKDmFjdGl2ZV9j",
-            "bHVzdGVyGAIgASgJIlIKJldvcmtmbG93RXhlY3V0aW9uQWxyZWFkeVN0YXJ0",
+            "bHVzdGVyGAIgASgJInIKJldvcmtmbG93RXhlY3V0aW9uQWxyZWFkeVN0YXJ0",
             "ZWRGYWlsdXJlEhgKEHN0YXJ0X3JlcXVlc3RfaWQYASABKAkSDgoGcnVuX2lk",
-            "GAIgASgJIl8KGU5hbWVzcGFjZU5vdEFjdGl2ZUZhaWx1cmUSEQoJbmFtZXNw",
-            "YWNlGAEgASgJEhcKD2N1cnJlbnRfY2x1c3RlchgCIAEoCRIWCg5hY3RpdmVf",
-            "Y2x1c3RlchgDIAEoCSIwChtOYW1lc3BhY2VVbmF2YWlsYWJsZUZhaWx1cmUS",
-            "EQoJbmFtZXNwYWNlGAEgASgJIqYBChxOYW1lc3BhY2VJbnZhbGlkU3RhdGVG",
-            "YWlsdXJlEhEKCW5hbWVzcGFjZRgBIAEoCRI0CgVzdGF0ZRgCIAEoDjIlLnRl",
-            "bXBvcmFsLmFwaS5lbnVtcy52MS5OYW1lc3BhY2VTdGF0ZRI9Cg5hbGxvd2Vk",
-            "X3N0YXRlcxgDIAMoDjIlLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5OYW1lc3Bh",
-            "Y2VTdGF0ZSItChhOYW1lc3BhY2VOb3RGb3VuZEZhaWx1cmUSEQoJbmFtZXNw",
-            "YWNlGAEgASgJIh8KHU5hbWVzcGFjZUFscmVhZHlFeGlzdHNGYWlsdXJlImsK",
-            "IENsaWVudFZlcnNpb25Ob3RTdXBwb3J0ZWRGYWlsdXJlEhYKDmNsaWVudF92",
-            "ZXJzaW9uGAEgASgJEhMKC2NsaWVudF9uYW1lGAIgASgJEhoKEnN1cHBvcnRl",
-            "ZF92ZXJzaW9ucxgDIAEoCSJkCiBTZXJ2ZXJWZXJzaW9uTm90U3VwcG9ydGVk",
-            "RmFpbHVyZRIWCg5zZXJ2ZXJfdmVyc2lvbhgBIAEoCRIoCiBjbGllbnRfc3Vw",
-            "cG9ydGVkX3NlcnZlcl92ZXJzaW9ucxgCIAEoCSIlCiNDYW5jZWxsYXRpb25B",
-            "bHJlYWR5UmVxdWVzdGVkRmFpbHVyZSJHChJRdWVyeUZhaWxlZEZhaWx1cmUS",
-            "MQoHZmFpbHVyZRgBIAEoCzIgLnRlbXBvcmFsLmFwaS5mYWlsdXJlLnYxLkZh",
-            "aWx1cmUiKQoXUGVybWlzc2lvbkRlbmllZEZhaWx1cmUSDgoGcmVhc29uGAEg",
-            "ASgJIpYBChhSZXNvdXJjZUV4aGF1c3RlZEZhaWx1cmUSPAoFY2F1c2UYASAB",
-            "KA4yLS50ZW1wb3JhbC5hcGkuZW51bXMudjEuUmVzb3VyY2VFeGhhdXN0ZWRD",
-            "YXVzZRI8CgVzY29wZRgCIAEoDjItLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5S",
-            "ZXNvdXJjZUV4aGF1c3RlZFNjb3BlInYKFVN5c3RlbVdvcmtmbG93RmFpbHVy",
-            "ZRJFChJ3b3JrZmxvd19leGVjdXRpb24YASABKAsyKS50ZW1wb3JhbC5hcGku",
-            "Y29tbW9uLnYxLldvcmtmbG93RXhlY3V0aW9uEhYKDndvcmtmbG93X2Vycm9y",
-            "GAIgASgJIhkKF1dvcmtmbG93Tm90UmVhZHlGYWlsdXJlIjMKF05ld2VyQnVp",
-            "bGRFeGlzdHNGYWlsdXJlEhgKEGRlZmF1bHRfYnVpbGRfaWQYASABKAki2QEK",
-            "Hk11bHRpT3BlcmF0aW9uRXhlY3V0aW9uRmFpbHVyZRJeCghzdGF0dXNlcxgB",
-            "IAMoCzJMLnRlbXBvcmFsLmFwaS5lcnJvcmRldGFpbHMudjEuTXVsdGlPcGVy",
-            "YXRpb25FeGVjdXRpb25GYWlsdXJlLk9wZXJhdGlvblN0YXR1cxpXCg9PcGVy",
-            "YXRpb25TdGF0dXMSDAoEY29kZRgBIAEoBRIPCgdtZXNzYWdlGAIgASgJEiUK",
-            "B2RldGFpbHMYAyADKAsyFC5nb29nbGUucHJvdG9idWYuQW55IlIKJkFjdGl2",
-            "aXR5RXhlY3V0aW9uQWxyZWFkeVN0YXJ0ZWRGYWlsdXJlEhgKEHN0YXJ0X3Jl",
-            "cXVlc3RfaWQYASABKAkSDgoGcnVuX2lkGAIgASgJIlgKLE5leHVzT3BlcmF0",
-            "aW9uRXhlY3V0aW9uQWxyZWFkeVN0YXJ0ZWRGYWlsdXJlEhgKEHN0YXJ0X3Jl",
-            "cXVlc3RfaWQYASABKAkSDgoGcnVuX2lkGAIgASgJQqcBCh9pby50ZW1wb3Jh",
-            "bC5hcGkuZXJyb3JkZXRhaWxzLnYxQgxNZXNzYWdlUHJvdG9QAVovZ28udGVt",
-            "cG9yYWwuaW8vYXBpL2Vycm9yZGV0YWlscy92MTtlcnJvcmRldGFpbHOqAh5U",
-            "ZW1wb3JhbGlvLkFwaS5FcnJvckRldGFpbHMuVjHqAiFUZW1wb3JhbGlvOjpB",
-            "cGk6OkVycm9yRGV0YWlsczo6VjFiBnByb3RvMw=="));
+            "GAIgASgJEh4KFmZpcnN0X2V4ZWN1dGlvbl9ydW5faWQYAyABKAkiXwoZTmFt",
+            "ZXNwYWNlTm90QWN0aXZlRmFpbHVyZRIRCgluYW1lc3BhY2UYASABKAkSFwoP",
+            "Y3VycmVudF9jbHVzdGVyGAIgASgJEhYKDmFjdGl2ZV9jbHVzdGVyGAMgASgJ",
+            "IjAKG05hbWVzcGFjZVVuYXZhaWxhYmxlRmFpbHVyZRIRCgluYW1lc3BhY2UY",
+            "ASABKAkipgEKHE5hbWVzcGFjZUludmFsaWRTdGF0ZUZhaWx1cmUSEQoJbmFt",
+            "ZXNwYWNlGAEgASgJEjQKBXN0YXRlGAIgASgOMiUudGVtcG9yYWwuYXBpLmVu",
+            "dW1zLnYxLk5hbWVzcGFjZVN0YXRlEj0KDmFsbG93ZWRfc3RhdGVzGAMgAygO",
+            "MiUudGVtcG9yYWwuYXBpLmVudW1zLnYxLk5hbWVzcGFjZVN0YXRlIi0KGE5h",
+            "bWVzcGFjZU5vdEZvdW5kRmFpbHVyZRIRCgluYW1lc3BhY2UYASABKAkiHwod",
+            "TmFtZXNwYWNlQWxyZWFkeUV4aXN0c0ZhaWx1cmUiawogQ2xpZW50VmVyc2lv",
+            "bk5vdFN1cHBvcnRlZEZhaWx1cmUSFgoOY2xpZW50X3ZlcnNpb24YASABKAkS",
+            "EwoLY2xpZW50X25hbWUYAiABKAkSGgoSc3VwcG9ydGVkX3ZlcnNpb25zGAMg",
+            "ASgJImQKIFNlcnZlclZlcnNpb25Ob3RTdXBwb3J0ZWRGYWlsdXJlEhYKDnNl",
+            "cnZlcl92ZXJzaW9uGAEgASgJEigKIGNsaWVudF9zdXBwb3J0ZWRfc2VydmVy",
+            "X3ZlcnNpb25zGAIgASgJIiUKI0NhbmNlbGxhdGlvbkFscmVhZHlSZXF1ZXN0",
+            "ZWRGYWlsdXJlIkcKElF1ZXJ5RmFpbGVkRmFpbHVyZRIxCgdmYWlsdXJlGAEg",
+            "ASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVyZSIpChdQZXJt",
+            "aXNzaW9uRGVuaWVkRmFpbHVyZRIOCgZyZWFzb24YASABKAkilgEKGFJlc291",
+            "cmNlRXhoYXVzdGVkRmFpbHVyZRI8CgVjYXVzZRgBIAEoDjItLnRlbXBvcmFs",
+            "LmFwaS5lbnVtcy52MS5SZXNvdXJjZUV4aGF1c3RlZENhdXNlEjwKBXNjb3Bl",
+            "GAIgASgOMi0udGVtcG9yYWwuYXBpLmVudW1zLnYxLlJlc291cmNlRXhoYXVz",
+            "dGVkU2NvcGUidgoVU3lzdGVtV29ya2Zsb3dGYWlsdXJlEkUKEndvcmtmbG93",
+            "X2V4ZWN1dGlvbhgBIAEoCzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29y",
+            "a2Zsb3dFeGVjdXRpb24SFgoOd29ya2Zsb3dfZXJyb3IYAiABKAkiGQoXV29y",
+            "a2Zsb3dOb3RSZWFkeUZhaWx1cmUiMwoXTmV3ZXJCdWlsZEV4aXN0c0ZhaWx1",
+            "cmUSGAoQZGVmYXVsdF9idWlsZF9pZBgBIAEoCSLZAQoeTXVsdGlPcGVyYXRp",
+            "b25FeGVjdXRpb25GYWlsdXJlEl4KCHN0YXR1c2VzGAEgAygLMkwudGVtcG9y",
+            "YWwuYXBpLmVycm9yZGV0YWlscy52MS5NdWx0aU9wZXJhdGlvbkV4ZWN1dGlv",
+            "bkZhaWx1cmUuT3BlcmF0aW9uU3RhdHVzGlcKD09wZXJhdGlvblN0YXR1cxIM",
+            "CgRjb2RlGAEgASgFEg8KB21lc3NhZ2UYAiABKAkSJQoHZGV0YWlscxgDIAMo",
+            "CzIULmdvb2dsZS5wcm90b2J1Zi5BbnkiUgomQWN0aXZpdHlFeGVjdXRpb25B",
+            "bHJlYWR5U3RhcnRlZEZhaWx1cmUSGAoQc3RhcnRfcmVxdWVzdF9pZBgBIAEo",
+            "CRIOCgZydW5faWQYAiABKAkiWAosTmV4dXNPcGVyYXRpb25FeGVjdXRpb25B",
+            "bHJlYWR5U3RhcnRlZEZhaWx1cmUSGAoQc3RhcnRfcmVxdWVzdF9pZBgBIAEo",
+            "CRIOCgZydW5faWQYAiABKAkiKQonV29ya2Zsb3dUYXNrQ29tcGxldGlvbkJ1",
+            "ZmZlckxvc3RGYWlsdXJlQqcBCh9pby50ZW1wb3JhbC5hcGkuZXJyb3JkZXRh",
+            "aWxzLnYxQgxNZXNzYWdlUHJvdG9QAVovZ28udGVtcG9yYWwuaW8vYXBpL2Vy",
+            "cm9yZGV0YWlscy92MTtlcnJvcmRldGFpbHOqAh5UZW1wb3JhbGlvLkFwaS5F",
+            "cnJvckRldGFpbHMuVjHqAiFUZW1wb3JhbGlvOjpBcGk6OkVycm9yRGV0YWls",
+            "czo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.AnyReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.FailedCauseReflection.Descriptor, global::Temporalio.Api.Enums.V1.NamespaceReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.NotFoundFailure), global::Temporalio.Api.ErrorDetails.V1.NotFoundFailure.Parser, new[]{ "CurrentCluster", "ActiveCluster" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.WorkflowExecutionAlreadyStartedFailure), global::Temporalio.Api.ErrorDetails.V1.WorkflowExecutionAlreadyStartedFailure.Parser, new[]{ "StartRequestId", "RunId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.WorkflowExecutionAlreadyStartedFailure), global::Temporalio.Api.ErrorDetails.V1.WorkflowExecutionAlreadyStartedFailure.Parser, new[]{ "StartRequestId", "RunId", "FirstExecutionRunId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.NamespaceNotActiveFailure), global::Temporalio.Api.ErrorDetails.V1.NamespaceNotActiveFailure.Parser, new[]{ "Namespace", "CurrentCluster", "ActiveCluster" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.NamespaceUnavailableFailure), global::Temporalio.Api.ErrorDetails.V1.NamespaceUnavailableFailure.Parser, new[]{ "Namespace" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.NamespaceInvalidStateFailure), global::Temporalio.Api.ErrorDetails.V1.NamespaceInvalidStateFailure.Parser, new[]{ "Namespace", "State", "AllowedStates" }, null, null, null, null),
@@ -92,7 +94,8 @@ namespace Temporalio.Api.ErrorDetails.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.NewerBuildExistsFailure), global::Temporalio.Api.ErrorDetails.V1.NewerBuildExistsFailure.Parser, new[]{ "DefaultBuildId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.MultiOperationExecutionFailure), global::Temporalio.Api.ErrorDetails.V1.MultiOperationExecutionFailure.Parser, new[]{ "Statuses" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.MultiOperationExecutionFailure.Types.OperationStatus), global::Temporalio.Api.ErrorDetails.V1.MultiOperationExecutionFailure.Types.OperationStatus.Parser, new[]{ "Code", "Message", "Details" }, null, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.ActivityExecutionAlreadyStartedFailure), global::Temporalio.Api.ErrorDetails.V1.ActivityExecutionAlreadyStartedFailure.Parser, new[]{ "StartRequestId", "RunId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.NexusOperationExecutionAlreadyStartedFailure), global::Temporalio.Api.ErrorDetails.V1.NexusOperationExecutionAlreadyStartedFailure.Parser, new[]{ "StartRequestId", "RunId" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.NexusOperationExecutionAlreadyStartedFailure), global::Temporalio.Api.ErrorDetails.V1.NexusOperationExecutionAlreadyStartedFailure.Parser, new[]{ "StartRequestId", "RunId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.WorkflowTaskCompletionBufferLostFailure), global::Temporalio.Api.ErrorDetails.V1.WorkflowTaskCompletionBufferLostFailure.Parser, null, null, null, null, null)
           }));
     }
     #endregion
@@ -361,6 +364,7 @@ namespace Temporalio.Api.ErrorDetails.V1 {
     public WorkflowExecutionAlreadyStartedFailure(WorkflowExecutionAlreadyStartedFailure other) : this() {
       startRequestId_ = other.startRequestId_;
       runId_ = other.runId_;
+      firstExecutionRunId_ = other.firstExecutionRunId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -394,6 +398,18 @@ namespace Temporalio.Api.ErrorDetails.V1 {
       }
     }
 
+    /// <summary>Field number for the "first_execution_run_id" field.</summary>
+    public const int FirstExecutionRunIdFieldNumber = 3;
+    private string firstExecutionRunId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string FirstExecutionRunId {
+      get { return firstExecutionRunId_; }
+      set {
+        firstExecutionRunId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -411,6 +427,7 @@ namespace Temporalio.Api.ErrorDetails.V1 {
       }
       if (StartRequestId != other.StartRequestId) return false;
       if (RunId != other.RunId) return false;
+      if (FirstExecutionRunId != other.FirstExecutionRunId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -420,6 +437,7 @@ namespace Temporalio.Api.ErrorDetails.V1 {
       int hash = 1;
       if (StartRequestId.Length != 0) hash ^= StartRequestId.GetHashCode();
       if (RunId.Length != 0) hash ^= RunId.GetHashCode();
+      if (FirstExecutionRunId.Length != 0) hash ^= FirstExecutionRunId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -446,6 +464,10 @@ namespace Temporalio.Api.ErrorDetails.V1 {
         output.WriteRawTag(18);
         output.WriteString(RunId);
       }
+      if (FirstExecutionRunId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(FirstExecutionRunId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -464,6 +486,10 @@ namespace Temporalio.Api.ErrorDetails.V1 {
         output.WriteRawTag(18);
         output.WriteString(RunId);
       }
+      if (FirstExecutionRunId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(FirstExecutionRunId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -479,6 +505,9 @@ namespace Temporalio.Api.ErrorDetails.V1 {
       }
       if (RunId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(RunId);
+      }
+      if (FirstExecutionRunId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(FirstExecutionRunId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -497,6 +526,9 @@ namespace Temporalio.Api.ErrorDetails.V1 {
       }
       if (other.RunId.Length != 0) {
         RunId = other.RunId;
+      }
+      if (other.FirstExecutionRunId.Length != 0) {
+        FirstExecutionRunId = other.FirstExecutionRunId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -521,6 +553,10 @@ namespace Temporalio.Api.ErrorDetails.V1 {
             RunId = input.ReadString();
             break;
           }
+          case 26: {
+            FirstExecutionRunId = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -542,6 +578,10 @@ namespace Temporalio.Api.ErrorDetails.V1 {
           }
           case 18: {
             RunId = input.ReadString();
+            break;
+          }
+          case 26: {
+            FirstExecutionRunId = input.ReadString();
             break;
           }
         }
@@ -4360,6 +4400,163 @@ namespace Temporalio.Api.ErrorDetails.V1 {
             RunId = input.ReadString();
             break;
           }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// An error indicating that the server lost the buffered pages of a paginated workflow task
+  /// completion. This is a transient error: the workflow task is still valid, and the client 
+  /// should resend all pages from page 0 using the same task token.
+  /// </summary>
+  public sealed partial class WorkflowTaskCompletionBufferLostFailure : pb::IMessage<WorkflowTaskCompletionBufferLostFailure>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WorkflowTaskCompletionBufferLostFailure> _parser = new pb::MessageParser<WorkflowTaskCompletionBufferLostFailure>(() => new WorkflowTaskCompletionBufferLostFailure());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<WorkflowTaskCompletionBufferLostFailure> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.ErrorDetails.V1.MessageReflection.Descriptor.MessageTypes[19]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowTaskCompletionBufferLostFailure() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowTaskCompletionBufferLostFailure(WorkflowTaskCompletionBufferLostFailure other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowTaskCompletionBufferLostFailure Clone() {
+      return new WorkflowTaskCompletionBufferLostFailure(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as WorkflowTaskCompletionBufferLostFailure);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(WorkflowTaskCompletionBufferLostFailure other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(WorkflowTaskCompletionBufferLostFailure other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
         }
       }
     }

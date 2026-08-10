@@ -32,56 +32,18 @@ jobs:
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
 
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
-
-      - name: Setup Rust cache
-        uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
-        with:
-          workspaces: src/Temporalio/Bridge/sdk-core
-          cache-bin: false # https://github.com/Swatinem/rust-cache/issues/341
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
-        with:
-          global-json-file: global.json
-
-      - name: Read mise version
-        id: mise-version
-        shell: bash
-        run: |
-          version=$(sed -n 's/^min_version = "\([^"]*\)".*/\1/p' mise.toml)
-          if [ -z "$version" ]; then
-            echo "::error::Could not read min_version from mise.toml"
-            exit 1
-          fi
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-
-      - name: Run mise install
-        uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
-        with:
-          version: ${{ steps.mise-version.outputs.version }}
-
-      - name: Set PROTOC
-        shell: bash
-        run: printf 'PROTOC=%s\n' "$(mise which protoc)" >> "$GITHUB_ENV"
-
-      - name: Install nex-gen
-        if: ${{ matrix.checkTarget }}
-        run: cargo install --locked --version 0.1.5 --force nex-gen
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Regen confirm unchanged
         if: ${{ matrix.checkTarget }}
+        shell: bash
         run: |
-          $ErrorActionPreference = 'Stop'
-          dotnet tool install --global --version '[20.1.2.1]' ClangSharpPInvokeGenerator
-          ClangSharpPInvokeGenerator @src/Temporalio/Bridge/GenerateInterop.rsp
-          dotnet run --project src/Temporalio.Api.Generator
-          dotnet run --project src/Temporalio.SystemNexus.Generator
+          mise run gen
           git add .
           git config --global core.safecrlf false
           git diff --cached > generator.diff
@@ -180,9 +142,7 @@ jobs:
 
       - name: Build docs
         if: ${{ matrix.docsTarget }}
-        run: |
-          dotnet tool update -g docfx
-          docfx src/Temporalio.ApiDoc/docfx.json --warningsAsErrors
+        run: mise run docs
 
       - name: Deploy docs
         # Only deploy on main merge, not in PRs

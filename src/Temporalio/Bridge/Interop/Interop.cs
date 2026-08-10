@@ -1232,6 +1232,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("bool")]
         public byte disable_payload_error_limit;
+
+        [NativeTypeName("uint32_t")]
+        public uint max_eager_activity_reservations_per_workflow_task;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]

@@ -4,6 +4,7 @@ using NexusRpc;
 using NexusRpc.Handlers;
 using Temporalio.Client;
 using Temporalio.Extensions.Hosting;
+using Temporalio.Nexus;
 using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
@@ -223,6 +224,108 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
 
         // Expect 1 since the nexus service and dependency are both transient and new instances are created for each call
         Assert.Equal(1, result);
+    }
+
+    // Service that uses the [TemporalOperation] attribute (the method itself is the start handler)
+    // rather than a [NexusOperationHandler] factory, with a constructor-injected dependency. This
+    // exercises dependency injection for [TemporalOperation] operations in a hosted worker.
+    [NexusServiceHandler(typeof(ITestNexusService))]
+    public class TestTemporalOperationNexusService
+    {
+        private readonly ITestCounterService counter;
+
+        public TestTemporalOperationNexusService(ITestCounterService counter) =>
+            this.counter = counter;
+
+        [TemporalOperation]
+        public Task<TemporalOperationResult<int>> Increment(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string unused) =>
+            Task.FromResult(TemporalOperationResult<int>.SyncResult(counter.Increment()));
+    }
+
+    // The [TemporalOperation] path must have the same dependency-injection lifetime behavior as the
+    // [NexusOperationHandler] factory path: a fresh scope (and, for scoped/transient services, a
+    // fresh service instance) per operation call. Expected counts mirror the [NexusOperationHandler]
+    // tests above.
+    [Theory]
+    [InlineData(ServiceLifetime.Singleton, ServiceLifetime.Singleton, 2)]
+    [InlineData(ServiceLifetime.Singleton, ServiceLifetime.Scoped, 2)]
+    [InlineData(ServiceLifetime.Singleton, ServiceLifetime.Transient, 2)]
+    [InlineData(ServiceLifetime.Scoped, ServiceLifetime.Singleton, 2)]
+    [InlineData(ServiceLifetime.Scoped, ServiceLifetime.Scoped, 1)]
+    [InlineData(ServiceLifetime.Scoped, ServiceLifetime.Transient, 1)]
+    [InlineData(ServiceLifetime.Transient, ServiceLifetime.Singleton, 2)]
+    [InlineData(ServiceLifetime.Transient, ServiceLifetime.Scoped, 1)]
+    [InlineData(ServiceLifetime.Transient, ServiceLifetime.Transient, 1)]
+    public async Task NexusWorkerService_TemporalOperation_DependencyInjection(
+        ServiceLifetime serviceLifetime, ServiceLifetime dependencyLifetime, int expected)
+    {
+        int result = await ExecuteHostedNexusWithWorkflow(
+            configureServices: services => services.Add(new ServiceDescriptor(
+                typeof(ITestCounterService), typeof(TestCounterService), dependencyLifetime)),
+            configureBuilder: builder => AddNexusService<TestTemporalOperationNexusService>(
+                builder, serviceLifetime),
+            workflowFunc: async client =>
+            {
+                await client.ExecuteNexusOperationAsync(svc => svc.Increment("unused"));
+                return await client.ExecuteNexusOperationAsync(svc => svc.Increment("unused"));
+            });
+
+        Assert.Equal(expected, result);
+    }
+
+    // A [NexusOperationHandler] method whose name maps to no operation on the service interface.
+    // Increment is a valid handler for the sole operation, so registration failure is isolated to
+    // the unmatched NotAnOperation method rather than surfacing as a missing-handler error.
+    [NexusServiceHandler(typeof(ITestNexusService))]
+    public class UnmatchedOperationHandlerNexusService
+    {
+        [NexusOperationHandler]
+        public IOperationHandler<string, int> Increment() =>
+            throw new NotImplementedException();
+
+        [NexusOperationHandler]
+        public IOperationHandler<string, int> NotAnOperation() =>
+            throw new NotImplementedException();
+    }
+
+    // The hosting/DI registration path must reject a [NexusOperationHandler] method that maps to no
+    // operation, matching NexusRpc's ServiceHandlerInstance.FromInstance and the non-DI
+    // TemporalWorkerOptions.AddNexusService path (rather than silently skipping it). The worker
+    // service resolves (and validates) its Nexus operations from options while starting, so the
+    // failure surfaces from host startup.
+    [Fact]
+    public async Task NexusWorkerService_UnmatchedOperationHandler_FailsRegistration()
+    {
+        var builder = Host.CreateApplicationBuilder();
+        builder.Services.
+            AddSingleton(Client).
+            AddHostedTemporalWorker($"tq-{Guid.NewGuid()}").
+            AddScopedNexusService<UnmatchedOperationHandlerNexusService>();
+        using var host = builder.Build();
+
+        var exc = await Assert.ThrowsAsync<ArgumentException>(() => host.StartAsync());
+        Assert.Equal("Failed obtaining operation handler from NotAnOperation", exc.Message);
+        Assert.Equal(
+            "No matching NexusOperation on the service interface",
+            Assert.IsType<ArgumentException>(exc.InnerException).Message);
+    }
+
+    private static void AddNexusService<T>(
+        ITemporalWorkerServiceOptionsBuilder builder, ServiceLifetime lifetime)
+    {
+        switch (lifetime)
+        {
+            case ServiceLifetime.Singleton:
+                builder.AddSingletonNexusService<T>();
+                break;
+            case ServiceLifetime.Scoped:
+                builder.AddScopedNexusService<T>();
+                break;
+            default:
+                builder.AddTransientNexusService<T>();
+                break;
+        }
     }
 
     private async Task<int> ExecuteHostedNexusWithWorkflow(

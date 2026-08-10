@@ -9,7 +9,6 @@ namespace Temporalio.Nexus
     /// <summary>
     /// Helpers for creating operation handlers backed by Temporal workflows.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public static class WorkflowRunOperationHandler
     {
         /// <summary>

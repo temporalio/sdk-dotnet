@@ -13,10 +13,10 @@ namespace Temporalio.Nexus
     /// Factory for creating generic Nexus operation handlers backed by Temporal.
     /// </summary>
     /// <remarks>
-    /// <para>WARNING: Nexus support is experimental.</para>
+    /// <para>WARNING: Temporal operation handlers are experimental.</para>
     /// <para>Usage example — starting a workflow from a Nexus operation:</para>
     /// <code>
-    /// [OperationImpl]
+    /// [NexusOperationHandler]
     /// public IOperationHandler&lt;TransferInput, TransferResult&gt; StartTransfer() =>
     ///     TemporalOperationHandler.FromHandleFactory&lt;TransferInput, TransferResult&gt;(
     ///         async (context, client, input) =>
@@ -26,7 +26,7 @@ namespace Temporalio.Nexus
     /// </code>
     /// <para>To perform a synchronous operation (e.g., sending a signal and returning immediately):</para>
     /// <code>
-    /// [OperationImpl]
+    /// [NexusOperationHandler]
     /// public IOperationHandler&lt;CancelOrderInput, NoValue&gt; CancelOrder() =>
     ///     TemporalOperationHandler.FromHandleFactory&lt;CancelOrderInput, NoValue&gt;(
     ///         async (context, client, input) =>
@@ -37,6 +37,8 @@ namespace Temporalio.Nexus
     ///             return TemporalOperationResult&lt;NoValue&gt;.SyncResult(default);
     ///         });
     /// </code>
+    /// <para>Alternatively, use <see cref="TemporalOperationAttribute"/> on a method to skip the
+    /// factory-function boilerplate and have the method body itself act as the start handler.</para>
     /// </remarks>
     public static class TemporalOperationHandler
     {
@@ -76,7 +78,7 @@ namespace Temporalio.Nexus
     /// <typeparam name="TInput">Operation input type.</typeparam>
     /// <typeparam name="TResult">Operation result type.</typeparam>
     /// <remarks>
-    /// <para>WARNING: Nexus support is experimental.</para>
+    /// <para>WARNING: Temporal operation handlers are experimental.</para>
     /// <para>This class supports inheritance to customize cancel behavior. Override
     /// <see cref="CancelWorkflowRunAsync"/> to change how workflow-run cancellations are handled.</para>
     /// </remarks>
@@ -226,7 +228,7 @@ namespace Temporalio.Nexus
     /// Input passed to
     /// <see cref="TemporalOperationHandler{TInput, TResult}.CancelWorkflowRunAsync"/>.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
+    /// <remarks>WARNING: Temporal operation handlers are experimental.</remarks>
     public class CancelWorkflowRunInput
     {
         /// <summary>
@@ -245,7 +247,7 @@ namespace Temporalio.Nexus
     /// Input passed to
     /// <see cref="TemporalOperationHandler{TInput, TResult}.CancelWorkflowUpdateAsync"/>.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
+    /// <remarks>WARNING: Workflow updates as Nexus operations are experimental.</remarks>
     public class CancelWorkflowUpdateInput
     {
         /// <summary>
@@ -281,7 +283,7 @@ namespace Temporalio.Nexus
     /// Input passed to
     /// <see cref="TemporalOperationHandler{TInput, TResult}.CancelActivityExecutionAsync"/>.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
+    /// <remarks>WARNING: Standalone activities as Nexus operations are experimental.</remarks>
     public class CancelActivityExecutionInput
     {
         /// <summary>
@@ -310,7 +312,7 @@ namespace Temporalio.Nexus
     /// Context passed to the start function of a
     /// <see cref="TemporalOperationHandler{TInput, TResult}"/>.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
+    /// <remarks>WARNING: Temporal operation handlers are experimental.</remarks>
     public class TemporalOperationStartContext
     {
         /// <summary>
@@ -370,7 +372,7 @@ namespace Temporalio.Nexus
     /// Context passed to
     /// <see cref="TemporalOperationHandler{TInput, TResult}.CancelWorkflowRunAsync"/>.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
+    /// <remarks>WARNING: Temporal operation handlers are experimental.</remarks>
     public class TemporalOperationCancelContext
     {
         private readonly OperationCancelContext underlying;

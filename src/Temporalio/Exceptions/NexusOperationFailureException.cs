@@ -6,7 +6,6 @@ namespace Temporalio.Exceptions
     /// <summary>
     /// Exception that is thrown by the server to workflows when an operation fails.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public class NexusOperationFailureException : FailureException
     {
         /// <summary>

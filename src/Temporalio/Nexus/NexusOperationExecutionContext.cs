@@ -14,7 +14,6 @@ namespace Temporalio.Nexus
     /// Nexus operation context available in Temporal-powered Nexus operations via async local
     /// <see cref="Current"/>.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public class NexusOperationExecutionContext
     {
         private readonly Lazy<MetricMeter> metricMeter;

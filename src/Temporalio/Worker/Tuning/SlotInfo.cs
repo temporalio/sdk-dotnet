@@ -24,7 +24,6 @@ namespace Temporalio.Worker.Tuning
         /// <summary>
         /// Info about a Nexus operation task slot usage.
         /// </summary>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public record NexusOperationSlotInfo(string ServiceHandlerType, string OperationName) : SlotInfo();
     }
 }

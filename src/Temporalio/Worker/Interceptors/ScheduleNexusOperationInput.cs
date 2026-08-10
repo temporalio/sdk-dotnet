@@ -17,7 +17,6 @@ namespace Temporalio.Worker.Interceptors
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
     /// constructor, only use "with" clauses.
     /// </remarks>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public record ScheduleNexusOperationInput(
         string Service,
         NexusWorkflowClientOptions ClientOptions,

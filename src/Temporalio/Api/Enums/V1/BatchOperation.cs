@@ -25,23 +25,33 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cit0ZW1wb3JhbC9hcGkvZW51bXMvdjEvYmF0Y2hfb3BlcmF0aW9uLnByb3Rv",
-            "EhV0ZW1wb3JhbC5hcGkuZW51bXMudjEqmgMKEkJhdGNoT3BlcmF0aW9uVHlw",
-            "ZRIkCiBCQVRDSF9PUEVSQVRJT05fVFlQRV9VTlNQRUNJRklFRBAAEiIKHkJB",
-            "VENIX09QRVJBVElPTl9UWVBFX1RFUk1JTkFURRABEh8KG0JBVENIX09QRVJB",
-            "VElPTl9UWVBFX0NBTkNFTBACEh8KG0JBVENIX09QRVJBVElPTl9UWVBFX1NJ",
-            "R05BTBADEh8KG0JBVENIX09QRVJBVElPTl9UWVBFX0RFTEVURRAEEh4KGkJB",
-            "VENIX09QRVJBVElPTl9UWVBFX1JFU0VUEAUSMQotQkFUQ0hfT1BFUkFUSU9O",
-            "X1RZUEVfVVBEQVRFX0VYRUNVVElPTl9PUFRJT05TEAYSKQolQkFUQ0hfT1BF",
-            "UkFUSU9OX1RZUEVfVU5QQVVTRV9BQ1RJVklUWRAHEjAKLEJBVENIX09QRVJB",
-            "VElPTl9UWVBFX1VQREFURV9BQ1RJVklUWV9PUFRJT05TEAgSJwojQkFUQ0hf",
-            "T1BFUkFUSU9OX1RZUEVfUkVTRVRfQUNUSVZJVFkQCSqmAQoTQmF0Y2hPcGVy",
-            "YXRpb25TdGF0ZRIlCiFCQVRDSF9PUEVSQVRJT05fU1RBVEVfVU5TUEVDSUZJ",
-            "RUQQABIhCh1CQVRDSF9PUEVSQVRJT05fU1RBVEVfUlVOTklORxABEiMKH0JB",
-            "VENIX09QRVJBVElPTl9TVEFURV9DT01QTEVURUQQAhIgChxCQVRDSF9PUEVS",
-            "QVRJT05fU1RBVEVfRkFJTEVEEANCiwEKGGlvLnRlbXBvcmFsLmFwaS5lbnVt",
-            "cy52MUITQmF0Y2hPcGVyYXRpb25Qcm90b1ABWiFnby50ZW1wb3JhbC5pby9h",
-            "cGkvZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoC",
-            "GlRlbXBvcmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
+            "EhV0ZW1wb3JhbC5hcGkuZW51bXMudjEqwwYKEkJhdGNoT3BlcmF0aW9uVHlw",
+            "ZRIkCiBCQVRDSF9PUEVSQVRJT05fVFlQRV9VTlNQRUNJRklFRBAAEiYKHkJB",
+            "VENIX09QRVJBVElPTl9UWVBFX1RFUk1JTkFURRABGgIIARIrCidCQVRDSF9P",
+            "UEVSQVRJT05fVFlQRV9URVJNSU5BVEVfV09SS0ZMT1cQDRIjChtCQVRDSF9P",
+            "UEVSQVRJT05fVFlQRV9DQU5DRUwQAhoCCAESKAokQkFUQ0hfT1BFUkFUSU9O",
+            "X1RZUEVfQ0FOQ0VMX1dPUktGTE9XEA4SIwobQkFUQ0hfT1BFUkFUSU9OX1RZ",
+            "UEVfU0lHTkFMEAMaAggBEigKJEJBVENIX09QRVJBVElPTl9UWVBFX1NJR05B",
+            "TF9XT1JLRkxPVxAPEiMKG0JBVENIX09QRVJBVElPTl9UWVBFX0RFTEVURRAE",
+            "GgIIARIoCiRCQVRDSF9PUEVSQVRJT05fVFlQRV9ERUxFVEVfV09SS0ZMT1cQ",
+            "EBIiChpCQVRDSF9PUEVSQVRJT05fVFlQRV9SRVNFVBAFGgIIARInCiNCQVRD",
+            "SF9PUEVSQVRJT05fVFlQRV9SRVNFVF9XT1JLRkxPVxAREjUKLUJBVENIX09Q",
+            "RVJBVElPTl9UWVBFX1VQREFURV9FWEVDVVRJT05fT1BUSU9OUxAGGgIIARI6",
+            "CjZCQVRDSF9PUEVSQVRJT05fVFlQRV9VUERBVEVfV09SS0ZMT1dfRVhFQ1VU",
+            "SU9OX09QVElPTlMQEhIpCiVCQVRDSF9PUEVSQVRJT05fVFlQRV9VTlBBVVNF",
+            "X0FDVElWSVRZEAcSMAosQkFUQ0hfT1BFUkFUSU9OX1RZUEVfVVBEQVRFX0FD",
+            "VElWSVRZX09QVElPTlMQCBInCiNCQVRDSF9PUEVSQVRJT05fVFlQRV9SRVNF",
+            "VF9BQ1RJVklUWRAJEisKJ0JBVENIX09QRVJBVElPTl9UWVBFX1RFUk1JTkFU",
+            "RV9BQ1RJVklUWRAKEigKJEJBVENIX09QRVJBVElPTl9UWVBFX0NBTkNFTF9B",
+            "Q1RJVklUWRALEigKJEJBVENIX09QRVJBVElPTl9UWVBFX0RFTEVURV9BQ1RJ",
+            "VklUWRAMKqYBChNCYXRjaE9wZXJhdGlvblN0YXRlEiUKIUJBVENIX09QRVJB",
+            "VElPTl9TVEFURV9VTlNQRUNJRklFRBAAEiEKHUJBVENIX09QRVJBVElPTl9T",
+            "VEFURV9SVU5OSU5HEAESIwofQkFUQ0hfT1BFUkFUSU9OX1NUQVRFX0NPTVBM",
+            "RVRFRBACEiAKHEJBVENIX09QRVJBVElPTl9TVEFURV9GQUlMRUQQA0KLAQoY",
+            "aW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQhNCYXRjaE9wZXJhdGlvblByb3Rv",
+            "UAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtlbnVtc6oCF1RlbXBv",
+            "cmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBpOjpFbnVtczo6",
+            "VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.BatchOperationType), typeof(global::Temporalio.Api.Enums.V1.BatchOperationState), }, null, null));
@@ -52,15 +62,48 @@ namespace Temporalio.Api.Enums.V1 {
   #region Enums
   public enum BatchOperationType {
     [pbr::OriginalName("BATCH_OPERATION_TYPE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// DEPRECATED: Use BATCH_OPERATION_TYPE_TERMINATE_WORKFLOW instead.
+    /// </summary>
+    [global::System.ObsoleteAttribute]
     [pbr::OriginalName("BATCH_OPERATION_TYPE_TERMINATE")] Terminate = 1,
+    [pbr::OriginalName("BATCH_OPERATION_TYPE_TERMINATE_WORKFLOW")] TerminateWorkflow = 13,
+    /// <summary>
+    /// DEPRECATED: Use BATCH_OPERATION_TYPE_CANCEL_WORKFLOW instead.
+    /// </summary>
+    [global::System.ObsoleteAttribute]
     [pbr::OriginalName("BATCH_OPERATION_TYPE_CANCEL")] Cancel = 2,
+    [pbr::OriginalName("BATCH_OPERATION_TYPE_CANCEL_WORKFLOW")] CancelWorkflow = 14,
+    /// <summary>
+    /// DEPRECATED: Use BATCH_OPERATION_TYPE_SIGNAL_WORKFLOW instead.
+    /// </summary>
+    [global::System.ObsoleteAttribute]
     [pbr::OriginalName("BATCH_OPERATION_TYPE_SIGNAL")] Signal = 3,
+    [pbr::OriginalName("BATCH_OPERATION_TYPE_SIGNAL_WORKFLOW")] SignalWorkflow = 15,
+    /// <summary>
+    /// DEPRECATED: Use BATCH_OPERATION_TYPE_DELETE_WORKFLOW instead.
+    /// </summary>
+    [global::System.ObsoleteAttribute]
     [pbr::OriginalName("BATCH_OPERATION_TYPE_DELETE")] Delete = 4,
+    [pbr::OriginalName("BATCH_OPERATION_TYPE_DELETE_WORKFLOW")] DeleteWorkflow = 16,
+    /// <summary>
+    /// DEPRECATED: Use BATCH_OPERATION_TYPE_RESET_WORKFLOW instead.
+    /// </summary>
+    [global::System.ObsoleteAttribute]
     [pbr::OriginalName("BATCH_OPERATION_TYPE_RESET")] Reset = 5,
+    [pbr::OriginalName("BATCH_OPERATION_TYPE_RESET_WORKFLOW")] ResetWorkflow = 17,
+    /// <summary>
+    /// DEPRECATED: Use BATCH_OPERATION_TYPE_UPDATE_WORKFLOW_EXECUTION_OPTIONS instead.
+    /// </summary>
+    [global::System.ObsoleteAttribute]
     [pbr::OriginalName("BATCH_OPERATION_TYPE_UPDATE_EXECUTION_OPTIONS")] UpdateExecutionOptions = 6,
+    [pbr::OriginalName("BATCH_OPERATION_TYPE_UPDATE_WORKFLOW_EXECUTION_OPTIONS")] UpdateWorkflowExecutionOptions = 18,
     [pbr::OriginalName("BATCH_OPERATION_TYPE_UNPAUSE_ACTIVITY")] UnpauseActivity = 7,
     [pbr::OriginalName("BATCH_OPERATION_TYPE_UPDATE_ACTIVITY_OPTIONS")] UpdateActivityOptions = 8,
     [pbr::OriginalName("BATCH_OPERATION_TYPE_RESET_ACTIVITY")] ResetActivity = 9,
+    [pbr::OriginalName("BATCH_OPERATION_TYPE_TERMINATE_ACTIVITY")] TerminateActivity = 10,
+    [pbr::OriginalName("BATCH_OPERATION_TYPE_CANCEL_ACTIVITY")] CancelActivity = 11,
+    [pbr::OriginalName("BATCH_OPERATION_TYPE_DELETE_ACTIVITY")] DeleteActivity = 12,
   }
 
   public enum BatchOperationState {
