@@ -115,11 +115,6 @@ to docs, or any other relevant information.
 - Try-cancel child workflows no longer cause nondeterminism when they complete or fail after their
   cancellation was requested.
 
-### Fixed
-
-- Marked system Nexus envelope payloads so nested payloads continue to be encoded and decoded after
-  the envelope is stored in a generic payload field.
-
 ### [1.17.0] - 2026-07-13
 
 ### Added

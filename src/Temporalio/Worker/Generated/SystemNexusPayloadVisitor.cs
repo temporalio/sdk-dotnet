@@ -38,7 +38,7 @@ namespace Temporalio.Worker
             PayloadsVisitor visitPayloads,
             EnvelopeVisitor? visitEnvelope = null)
         {
-            if (!IsSystemNexusPayload(payload))
+            if (!IsSystemPayload(payload))
             {
                 return false;
             }

@@ -113,8 +113,7 @@ public class WorkflowCodecHelperTests : TestBase
         {
             Input = new() { Payloads_ = { new Payload { Data = ByteString.CopyFromUtf8("input") } } },
         };
-        Assert.True(SystemNexusPayloadVisitor.TryToInputPayload(
-            "__temporal_system", request, out var envelope));
+        var envelope = CreateSystemEnvelope(request);
         var completion = new WorkflowActivationCompletion
         {
             Successful = new()
@@ -147,8 +146,7 @@ public class WorkflowCodecHelperTests : TestBase
         {
             Input = new() { Payloads_ = { new Payload { Data = ByteString.CopyFromUtf8("input") } } },
         };
-        Assert.True(SystemNexusPayloadVisitor.TryToInputPayload(
-            "__temporal_system", request, out var envelope));
+        var envelope = CreateSystemEnvelope(request);
         envelope.Metadata.Remove("__temporal_system_payload");
         var completion = new WorkflowActivationCompletion
         {
@@ -180,8 +178,7 @@ public class WorkflowCodecHelperTests : TestBase
         {
             Input = new() { Payloads_ = { nestedPayload } },
         };
-        Assert.True(SystemNexusPayloadVisitor.TryToInputPayload(
-            "__temporal_system", request, out var envelope));
+        var envelope = CreateSystemEnvelope(request);
         var activation = new WorkflowActivation
         {
             Jobs =
@@ -196,6 +193,113 @@ public class WorkflowCodecHelperTests : TestBase
         var decodedRequest = SignalWithStartWorkflowExecutionRequest.Parser.ParseFrom(
             activation.Jobs[0].DoUpdate.Input[0].Data);
         Assert.Contains("decoded", decodedRequest.Input.Payloads_[0].Metadata.Keys);
+    }
+
+    [Fact]
+    public async Task EncodeAsync_AllSystemPayloads_EncodesNestedPayloads()
+    {
+        var firstEnvelope = CreateSystemEnvelope("first");
+        var secondEnvelope = CreateSystemEnvelope("second");
+        var completion = new WorkflowActivationCompletion
+        {
+            Successful = new()
+            {
+                Commands =
+                {
+                    new WorkflowCommand
+                    {
+                        ScheduleActivity = new()
+                        {
+                            Arguments = { firstEnvelope, secondEnvelope },
+                        },
+                    },
+                },
+            },
+        };
+
+        await WorkflowCodecHelper.EncodeAsync(CreateSimpleCodecContext(new PackingPayloadCodec()), completion);
+
+        var arguments = completion.Successful.Commands[0].ScheduleActivity.Arguments;
+        Assert.Equal(2, arguments.Count);
+        Assert.All(arguments, payload =>
+        {
+            Assert.Equal(ByteString.CopyFromUtf8("true"), payload.Metadata["__temporal_system_payload"]);
+            var request = SignalWithStartWorkflowExecutionRequest.Parser.ParseFrom(payload.Data);
+            Assert.Contains("packed", request.Input.Payloads_[0].Metadata.Keys);
+        });
+    }
+
+    [Fact]
+    public async Task EncodeAndDecodeAsync_MixedPayloads_PreservesSystemPayloadBoundaries()
+    {
+        var envelope = CreateSystemEnvelope("system");
+        var completion = new WorkflowActivationCompletion
+        {
+            Successful = new()
+            {
+                Commands =
+                {
+                    new WorkflowCommand
+                    {
+                        ScheduleActivity = new()
+                        {
+                            Arguments =
+                            {
+                                new Payload { Data = ByteString.CopyFromUtf8("first") },
+                                new Payload { Data = ByteString.CopyFromUtf8("second") },
+                                envelope,
+                                new Payload { Data = ByteString.CopyFromUtf8("third") },
+                                new Payload { Data = ByteString.CopyFromUtf8("fourth") },
+                            },
+                        },
+                    },
+                },
+            },
+        };
+
+        var codec = new PackingPayloadCodec();
+        await WorkflowCodecHelper.EncodeAsync(CreateSimpleCodecContext(codec), completion);
+
+        var encodedArguments = completion.Successful.Commands[0].ScheduleActivity.Arguments;
+        Assert.Equal(3, encodedArguments.Count);
+        Assert.Equal("first|second", encodedArguments[0].Data.ToStringUtf8());
+        Assert.Equal(ByteString.CopyFromUtf8("true"), encodedArguments[1].Metadata["__temporal_system_payload"]);
+        Assert.Equal("third|fourth", encodedArguments[2].Data.ToStringUtf8());
+
+        var activation = new WorkflowActivation
+        {
+            Jobs =
+            {
+                new WorkflowActivationJob
+                {
+                    DoUpdate = new() { Input = { encodedArguments } },
+                },
+            },
+        };
+        await WorkflowCodecHelper.DecodeAsync(CreateSimpleCodecContext(codec), activation);
+
+        var decodedPayloads = activation.Jobs[0].DoUpdate.Input;
+        Assert.Equal(5, decodedPayloads.Count);
+        Assert.Equal("first", decodedPayloads[0].Data.ToStringUtf8());
+        Assert.Equal("second", decodedPayloads[1].Data.ToStringUtf8());
+        Assert.Equal(ByteString.CopyFromUtf8("true"), decodedPayloads[2].Metadata["__temporal_system_payload"]);
+        Assert.Equal("third", decodedPayloads[3].Data.ToStringUtf8());
+        Assert.Equal("fourth", decodedPayloads[4].Data.ToStringUtf8());
+        var decodedRequest = SignalWithStartWorkflowExecutionRequest.Parser.ParseFrom(decodedPayloads[2].Data);
+        Assert.Equal("system", decodedRequest.Input.Payloads_[0].Data.ToStringUtf8());
+    }
+
+    private static Payload CreateSystemEnvelope(string value) => CreateSystemEnvelope(
+        new SignalWithStartWorkflowExecutionRequest
+        {
+            Input = new() { Payloads_ = { new Payload { Data = ByteString.CopyFromUtf8(value) } } },
+        });
+
+    private static Payload CreateSystemEnvelope(IMessage message)
+    {
+        Assert.True(new BinaryProtoConverter().TryToPayload(message, out var payload));
+        SystemNexusPayloadVisitor.MarkSystemPayload(payload!);
+        return payload!;
     }
 
     private static WorkflowCodecHelper.WorkflowCodecContext CreateSimpleCodecContext(IPayloadCodec codec) => new(
@@ -316,5 +420,23 @@ public class WorkflowCodecHelperTests : TestBase
                 newP.Metadata["decoded"] = ByteString.Empty;
                 return newP;
             }).ToList());
+    }
+
+    private class PackingPayloadCodec : IPayloadCodec
+    {
+        public Task<IReadOnlyCollection<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads) =>
+            Task.FromResult<IReadOnlyCollection<Payload>>(new[]
+            {
+                new Payload
+                {
+                    Data = ByteString.CopyFromUtf8(string.Join("|", payloads.Select(p => p.Data.ToStringUtf8()))),
+                    Metadata = { ["packed"] = ByteString.CopyFromUtf8(payloads.Count.ToString()) },
+                },
+            });
+
+        public Task<IReadOnlyCollection<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads) =>
+            Task.FromResult<IReadOnlyCollection<Payload>>(payloads.SelectMany(payload =>
+                payload.Data.ToStringUtf8().Split('|').Select(value =>
+                    new Payload { Data = ByteString.CopyFromUtf8(value) })).ToList());
     }
 }

@@ -410,32 +410,32 @@ namespace Temporalio.Worker
             {
                 return;
             }
-            var allPayloads = payloads.ToList();
-            var codecPayloadIndexes = new List<int>();
-            for (var i = 0; i < allPayloads.Count; i++)
+            var newPayloads = new List<Payload>();
+            var codecPayloads = new List<Payload>();
+            foreach (var payload in payloads)
             {
                 if (!await SystemNexusPayloadVisitor.TryVisitAsync(
-                        allPayloads[i],
+                        payload,
                         payload => EncodeAsync(codec, payload),
                         nestedPayloads => EncodeAsync(codec, nestedPayloads)).ConfigureAwait(false))
                 {
-                    codecPayloadIndexes.Add(i);
+                    codecPayloads.Add(payload);
+                    continue;
                 }
+
+                if (codecPayloads.Count > 0)
+                {
+                    newPayloads.AddRange(await codec.EncodeAsync(codecPayloads).ConfigureAwait(false));
+                    codecPayloads.Clear();
+                }
+                newPayloads.Add(payload);
             }
-            if (codecPayloadIndexes.Count == 0)
+            if (codecPayloads.Count > 0)
             {
-                return;
-            }
-            // We have to convert to a list here just in case codec results are based on the
-            // underlying list and we clear it out below.
-            var codecPayloads = codecPayloadIndexes.Select(index => allPayloads[index]).ToList();
-            var newPayloads = (await codec.EncodeAsync(codecPayloads).ConfigureAwait(false)).ToList();
-            for (var i = 0; i < codecPayloadIndexes.Count; i++)
-            {
-                allPayloads[codecPayloadIndexes[i]] = newPayloads[i];
+                newPayloads.AddRange(await codec.EncodeAsync(codecPayloads).ConfigureAwait(false));
             }
             payloads.Clear();
-            payloads.AddRange(allPayloads);
+            payloads.AddRange(newPayloads);
         }
 
         private static async Task EncodeAsync(IPayloadCodec codec, Payload payload)
@@ -547,32 +547,32 @@ namespace Temporalio.Worker
             {
                 return;
             }
-            var allPayloads = payloads.ToList();
-            var codecPayloadIndexes = new List<int>();
-            for (var i = 0; i < allPayloads.Count; i++)
+            var newPayloads = new List<Payload>();
+            var codecPayloads = new List<Payload>();
+            foreach (var payload in payloads)
             {
                 if (!await SystemNexusPayloadVisitor.TryVisitAsync(
-                        allPayloads[i],
+                        payload,
                         payload => DecodeAsync(codec, payload),
                         nestedPayloads => DecodeAsync(codec, nestedPayloads)).ConfigureAwait(false))
                 {
-                    codecPayloadIndexes.Add(i);
+                    codecPayloads.Add(payload);
+                    continue;
                 }
+
+                if (codecPayloads.Count > 0)
+                {
+                    newPayloads.AddRange(await codec.DecodeAsync(codecPayloads).ConfigureAwait(false));
+                    codecPayloads.Clear();
+                }
+                newPayloads.Add(payload);
             }
-            if (codecPayloadIndexes.Count == 0)
+            if (codecPayloads.Count > 0)
             {
-                return;
-            }
-            // We have to convert to a list here just in case codec results are based on the
-            // underlying list and we clear it out below.
-            var codecPayloads = codecPayloadIndexes.Select(index => allPayloads[index]).ToList();
-            var newPayloads = (await codec.DecodeAsync(codecPayloads).ConfigureAwait(false)).ToList();
-            for (var i = 0; i < codecPayloadIndexes.Count; i++)
-            {
-                allPayloads[codecPayloadIndexes[i]] = newPayloads[i];
+                newPayloads.AddRange(await codec.DecodeAsync(codecPayloads).ConfigureAwait(false));
             }
             payloads.Clear();
-            payloads.AddRange(allPayloads);
+            payloads.AddRange(newPayloads);
         }
 
         private static async Task DecodeAsync(IPayloadCodec codec, Payload payload)
