@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using Google.Protobuf;
-using Temporalio.Api.Cloud.CloudService.V1;
 using Temporalio.Api.Cloud.Namespace.V1;
 using Temporalio.Api.Cloud.Operation.V1;
 using Temporalio.Client;
