@@ -29,6 +29,7 @@
     <ProjectReference Include="..\..\src\Temporalio.Extensions.Aws.Lambda.OpenTelemetry\Temporalio.Extensions.Aws.Lambda.OpenTelemetry.csproj" />
     <ProjectReference Include="..\..\src\Temporalio.Extensions.Hosting\Temporalio.Extensions.Hosting.csproj" />
     <ProjectReference Include="..\..\src\Temporalio.Extensions.OpenTelemetry\Temporalio.Extensions.OpenTelemetry.csproj" />
+    <ProjectReference Include="..\..\src\Temporalio.Extensions.WorkflowStreams\Temporalio.Extensions.WorkflowStreams.csproj" />
   </ItemGroup>
 
   <ItemGroup>

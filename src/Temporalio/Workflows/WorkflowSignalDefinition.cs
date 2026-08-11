@@ -20,7 +20,9 @@ namespace Temporalio.Workflows
             Delegate? del,
             HandlerUnfinishedPolicy unfinishedPolicy)
         {
-            if (name != null && name.StartsWith(TemporalRuntime.ReservedNamePrefix))
+            if (name != null &&
+                name.StartsWith(TemporalRuntime.ReservedNamePrefix) &&
+                !name.StartsWith(TemporalRuntime.ReservedWorkflowStreamNamePrefix))
             {
                 throw new ArgumentException($"Signal handler name {name} cannot start with {TemporalRuntime.ReservedNamePrefix}");
             }

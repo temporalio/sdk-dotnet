@@ -52,6 +52,14 @@ to docs, or any other relevant information.
   backs a Nexus operation with a standalone activity (async only). Cancellation of
   activity-execution operations can be customized by overriding
   `TemporalOperationHandler<TInput, TResult>.CancelActivityExecutionAsync`.
+- Added the experimental `Temporalio.Extensions.WorkflowStreams` package: a durable
+  publish/subscribe log hosted inside a Temporal workflow. External code publishes to named
+  topics via batched signals (with publisher dedup for exactly-once delivery); subscribers
+  long-poll via updates (`await foreach` or a listener API with backpressure); a query exposes
+  the current offset. Streams survive continue-as-new via `WorkflowStreamState`, support
+  truncation, and are wire-compatible with the other SDKs' workflow streams packages. To permit
+  this, the main SDK now allows handler names beginning with the reserved
+  `__temporal_workflow_stream_` prefix.
 
 ### Changed
 
