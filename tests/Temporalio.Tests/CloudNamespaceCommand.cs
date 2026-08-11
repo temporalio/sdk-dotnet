@@ -14,13 +14,13 @@ internal static class CloudNamespaceCommand
 
     public static async Task<int> RunAsync(string[] args)
     {
-        if (args is ["create"])
+        if (args.Length == 1 && args[0] == "create")
         {
             await CreateAsync();
         }
-        else if (args is ["delete", var namespaceName])
+        else if (args.Length == 2 && args[0] == "delete")
         {
-            await DeleteAsync(namespaceName);
+            await DeleteAsync(args[1]);
         }
         else
         {
@@ -96,7 +96,7 @@ internal static class CloudNamespaceCommand
             throw new InvalidOperationException($"Missing required environment variable {name}");
 
     private static async Task WaitForOperationAsync(
-        ITemporalCloudOperationsClient client,
+        TemporalCloudOperationsClient client,
         AsyncOperation? initialOperation)
     {
         var operationId = initialOperation?.Id;
