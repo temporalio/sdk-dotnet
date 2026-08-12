@@ -476,6 +476,15 @@
           "Temporalio": "[1.17.0, )"
         }
       },
+      "temporalio.extensions.gcp.cloudrun.opentelemetry": {
+        "type": "Project",
+        "dependencies": {
+          "OpenTelemetry": "[1.15.3, )",
+          "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.15.3, )",
+          "Temporalio": "[1.17.0, )",
+          "Temporalio.Extensions.OpenTelemetry": "[1.17.0, )"
+        }
+      },
       "temporalio.extensions.hosting": {
         "type": "Project",
         "dependencies": {

@@ -162,6 +162,8 @@ jobs:
             src/Temporalio.Extensions.Aws.Lambda/bin/Release/*.snupkg
             src/Temporalio.Extensions.Aws.Lambda.OpenTelemetry/bin/Release/*.nupkg
             src/Temporalio.Extensions.Aws.Lambda.OpenTelemetry/bin/Release/*.snupkg
+            src/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/bin/Release/*.nupkg
+            src/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/bin/Release/*.snupkg
             src/Temporalio.Extensions.DiagnosticSource/bin/Release/*.nupkg
             src/Temporalio.Extensions.DiagnosticSource/bin/Release/*.snupkg
             src/Temporalio.Extensions.Hosting/bin/Release/*.nupkg
