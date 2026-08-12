@@ -219,8 +219,10 @@ public class NexusWorkflowUpdateHandleTests
     }
 
     [Fact]
-    public void WorkflowLink_ToNexusLink_BuildsHistoryUri()
+    public void WorkflowLink_ToNexusLink_BuildsWorkflowUri()
     {
+        // A workflow link addresses the execution itself, so there is no "/history" suffix. The
+        // suffix belongs to the workflow-event form, and its absence is what distinguishes the two.
         var workflow = new Link.Types.Workflow
         {
             Namespace = "ns",
@@ -230,7 +232,7 @@ public class NexusWorkflowUpdateHandleTests
         var link = workflow.ToNexusLink();
 
         Assert.Equal("temporal", link.Uri.Scheme);
-        Assert.Equal("/namespaces/ns/workflows/wid/rid/history", link.Uri.AbsolutePath);
+        Assert.Equal("/namespaces/ns/workflows/wid/rid", link.Uri.AbsolutePath);
         Assert.Equal(Link.Types.Workflow.Descriptor.FullName, link.Type);
     }
 
@@ -270,6 +272,6 @@ public class NexusWorkflowUpdateHandleTests
 
         Assert.NotNull(link);
         Assert.Equal(Link.Types.Workflow.Descriptor.FullName, link.Type);
-        Assert.Equal("/namespaces/ns/workflows/wid/rid/history", link.Uri.AbsolutePath);
+        Assert.Equal("/namespaces/ns/workflows/wid/rid", link.Uri.AbsolutePath);
     }
 }
