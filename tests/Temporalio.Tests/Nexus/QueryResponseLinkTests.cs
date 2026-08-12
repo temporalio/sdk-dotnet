@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NexusRpc.Handlers;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
-using Temporalio.Api.Query.V1;
 using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Client;
 using Temporalio.Common;
