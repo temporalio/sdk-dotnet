@@ -63,6 +63,11 @@ to docs, or any other relevant information.
 - Hardened read-only workflow context enforcement so queries, update validators, and patch activation
   callbacks cannot mutate handlers or workflow details, invoke patches, or schedule workflow work.
   Patch activation callbacks also cannot use workflow randomness or issue workflow commands.
+- A `NexusRpc.Handlers.HandlerException` thrown by a payload codec or payload converter while
+  decoding Nexus operation input is now propagated as-is instead of being wrapped in an `Internal`
+  (codec) or `BadRequest` (converter) handler exception. This matches the existing pass-through
+  behavior for `ApplicationFailureException` and lets codecs and converters control the resulting
+  Nexus error type and retry behavior.
 
 ### [1.17.0] - 2026-07-13
 
