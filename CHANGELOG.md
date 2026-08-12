@@ -52,6 +52,9 @@ to docs, or any other relevant information.
   backs a Nexus operation with a standalone activity (async only). Cancellation of
   activity-execution operations can be customized by overriding
   `TemporalOperationHandler<TInput, TResult>.CancelActivityExecutionAsync`.
+- Worker heartbeats now report the hosting .NET runtime and its version. Set the new
+  `TemporalRuntimeOptions.DisableEnvironmentInfo` to omit all runtime, hosting, and platform
+  information from heartbeats.
 
 ### Changed
 
