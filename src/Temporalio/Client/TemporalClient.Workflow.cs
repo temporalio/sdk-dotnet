@@ -437,12 +437,6 @@ namespace Temporalio.Client
                     throw new WorkflowQueryFailedException(e.Message);
                 }
 
-                // A query writes nothing to history, so the server returns a link to the workflow
-                // execution that processed it rather than to an event. When the query is issued from
-                // inside a Nexus operation handler, propagate that link so the caller's Nexus
-                // operation event points at the queried workflow. Captured before the rejection
-                // check below so a rejected query still records its link. Older servers leave it
-                // unset, which is a no-op.
                 CaptureNexusResponseLink(resp.Link);
 
                 // Throw rejection if rejected
