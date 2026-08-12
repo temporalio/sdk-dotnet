@@ -30,24 +30,27 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
             "dGVtcG9yYWwvYXBpL2VudW1zL3YxL2ZhaWxlZF9jYXVzZS5wcm90bxokdGVt",
             "cG9yYWwvYXBpL2VudW1zL3YxL3dvcmtmbG93LnByb3RvGiV0ZW1wb3JhbC9z",
             "ZGsvY29yZS9jb21tb24vY29tbW9uLnByb3RvGjt0ZW1wb3JhbC9zZGsvY29y",
-            "ZS93b3JrZmxvd19jb21tYW5kcy93b3JrZmxvd19jb21tYW5kcy5wcm90byKs",
-            "AQocV29ya2Zsb3dBY3RpdmF0aW9uQ29tcGxldGlvbhIOCgZydW5faWQYASAB",
+            "ZS93b3JrZmxvd19jb21tYW5kcy93b3JrZmxvd19jb21tYW5kcy5wcm90byK+",
+            "AgocV29ya2Zsb3dBY3RpdmF0aW9uQ29tcGxldGlvbhIOCgZydW5faWQYASAB",
             "KAkSOgoKc3VjY2Vzc2Z1bBgCIAEoCzIkLmNvcmVzZGsud29ya2Zsb3dfY29t",
             "cGxldGlvbi5TdWNjZXNzSAASNgoGZmFpbGVkGAMgASgLMiQuY29yZXNkay53",
-            "b3JrZmxvd19jb21wbGV0aW9uLkZhaWx1cmVIAEIICgZzdGF0dXMirAEKB1N1",
-            "Y2Nlc3MSPAoIY29tbWFuZHMYASADKAsyKi5jb3Jlc2RrLndvcmtmbG93X2Nv",
-            "bW1hbmRzLldvcmtmbG93Q29tbWFuZBIbChN1c2VkX2ludGVybmFsX2ZsYWdz",
-            "GAYgAygNEkYKE3ZlcnNpb25pbmdfYmVoYXZpb3IYByABKA4yKS50ZW1wb3Jh",
-            "bC5hcGkuZW51bXMudjEuVmVyc2lvbmluZ0JlaGF2aW9yIoEBCgdGYWlsdXJl",
-            "EjEKB2ZhaWx1cmUYASABKAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5G",
-            "YWlsdXJlEkMKC2ZvcmNlX2NhdXNlGAIgASgOMi4udGVtcG9yYWwuYXBpLmVu",
-            "dW1zLnYxLldvcmtmbG93VGFza0ZhaWxlZENhdXNlQjjqAjVUZW1wb3JhbGlv",
-            "OjpJbnRlcm5hbDo6QnJpZGdlOjpBcGk6OldvcmtmbG93Q29tcGxldGlvbmIG",
-            "cHJvdG8z"));
+            "b3JrZmxvd19jb21wbGV0aW9uLkZhaWx1cmVIABJIChhwYXlsb2FkX2Rvd25s",
+            "b2FkX21ldHJpY3MYBCABKAsyJi5jb3Jlc2RrLmNvbW1vbi5FeHRlcm5hbFN0",
+            "b3JhZ2VNZXRyaWNzEkYKFnBheWxvYWRfdXBsb2FkX21ldHJpY3MYBSABKAsy",
+            "Ji5jb3Jlc2RrLmNvbW1vbi5FeHRlcm5hbFN0b3JhZ2VNZXRyaWNzQggKBnN0",
+            "YXR1cyKsAQoHU3VjY2VzcxI8Cghjb21tYW5kcxgBIAMoCzIqLmNvcmVzZGsu",
+            "d29ya2Zsb3dfY29tbWFuZHMuV29ya2Zsb3dDb21tYW5kEhsKE3VzZWRfaW50",
+            "ZXJuYWxfZmxhZ3MYBiADKA0SRgoTdmVyc2lvbmluZ19iZWhhdmlvchgHIAEo",
+            "DjIpLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5WZXJzaW9uaW5nQmVoYXZpb3Ii",
+            "gQEKB0ZhaWx1cmUSMQoHZmFpbHVyZRgBIAEoCzIgLnRlbXBvcmFsLmFwaS5m",
+            "YWlsdXJlLnYxLkZhaWx1cmUSQwoLZm9yY2VfY2F1c2UYAiABKA4yLi50ZW1w",
+            "b3JhbC5hcGkuZW51bXMudjEuV29ya2Zsb3dUYXNrRmFpbGVkQ2F1c2VCOOoC",
+            "NVRlbXBvcmFsaW86OkludGVybmFsOjpCcmlkZ2U6OkFwaTo6V29ya2Zsb3dD",
+            "b21wbGV0aW9uYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.FailedCauseReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, global::Temporalio.Bridge.Api.WorkflowCommands.WorkflowCommandsReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowCompletion.WorkflowActivationCompletion), global::Temporalio.Bridge.Api.WorkflowCompletion.WorkflowActivationCompletion.Parser, new[]{ "RunId", "Successful", "Failed" }, new[]{ "Status" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowCompletion.WorkflowActivationCompletion), global::Temporalio.Bridge.Api.WorkflowCompletion.WorkflowActivationCompletion.Parser, new[]{ "RunId", "Successful", "Failed", "PayloadDownloadMetrics", "PayloadUploadMetrics" }, new[]{ "Status" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowCompletion.Success), global::Temporalio.Bridge.Api.WorkflowCompletion.Success.Parser, new[]{ "Commands", "UsedInternalFlags", "VersioningBehavior" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowCompletion.Failure), global::Temporalio.Bridge.Api.WorkflowCompletion.Failure.Parser, new[]{ "Failure_", "ForceCause" }, null, null, null, null)
           }));
@@ -94,6 +97,8 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public WorkflowActivationCompletion(WorkflowActivationCompletion other) : this() {
       runId_ = other.runId_;
+      payloadDownloadMetrics_ = other.payloadDownloadMetrics_ != null ? other.payloadDownloadMetrics_.Clone() : null;
+      payloadUploadMetrics_ = other.payloadUploadMetrics_ != null ? other.payloadUploadMetrics_.Clone() : null;
       switch (other.StatusCase) {
         case StatusOneofCase.Successful:
           Successful = other.Successful.Clone();
@@ -151,6 +156,38 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
       }
     }
 
+    /// <summary>Field number for the "payload_download_metrics" field.</summary>
+    public const int PayloadDownloadMetricsFieldNumber = 4;
+    private global::Temporalio.Bridge.Api.Common.ExternalStorageMetrics payloadDownloadMetrics_;
+    /// <summary>
+    /// Metrics for external payload storage downloads (retrievals) performed while processing
+    /// this activation. Only set when external storage retrieved payloads.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Bridge.Api.Common.ExternalStorageMetrics PayloadDownloadMetrics {
+      get { return payloadDownloadMetrics_; }
+      set {
+        payloadDownloadMetrics_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "payload_upload_metrics" field.</summary>
+    public const int PayloadUploadMetricsFieldNumber = 5;
+    private global::Temporalio.Bridge.Api.Common.ExternalStorageMetrics payloadUploadMetrics_;
+    /// <summary>
+    /// Metrics for external payload storage uploads (stores) performed while processing this
+    /// activation. Only set when external storage stored payloads.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Bridge.Api.Common.ExternalStorageMetrics PayloadUploadMetrics {
+      get { return payloadUploadMetrics_; }
+      set {
+        payloadUploadMetrics_ = value;
+      }
+    }
+
     private object status_;
     /// <summary>Enum of possible cases for the "status" oneof.</summary>
     public enum StatusOneofCase {
@@ -190,6 +227,8 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
       if (RunId != other.RunId) return false;
       if (!object.Equals(Successful, other.Successful)) return false;
       if (!object.Equals(Failed, other.Failed)) return false;
+      if (!object.Equals(PayloadDownloadMetrics, other.PayloadDownloadMetrics)) return false;
+      if (!object.Equals(PayloadUploadMetrics, other.PayloadUploadMetrics)) return false;
       if (StatusCase != other.StatusCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -201,6 +240,8 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
       if (RunId.Length != 0) hash ^= RunId.GetHashCode();
       if (statusCase_ == StatusOneofCase.Successful) hash ^= Successful.GetHashCode();
       if (statusCase_ == StatusOneofCase.Failed) hash ^= Failed.GetHashCode();
+      if (payloadDownloadMetrics_ != null) hash ^= PayloadDownloadMetrics.GetHashCode();
+      if (payloadUploadMetrics_ != null) hash ^= PayloadUploadMetrics.GetHashCode();
       hash ^= (int) statusCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -232,6 +273,14 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
         output.WriteRawTag(26);
         output.WriteMessage(Failed);
       }
+      if (payloadDownloadMetrics_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(PayloadDownloadMetrics);
+      }
+      if (payloadUploadMetrics_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(PayloadUploadMetrics);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -254,6 +303,14 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
         output.WriteRawTag(26);
         output.WriteMessage(Failed);
       }
+      if (payloadDownloadMetrics_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(PayloadDownloadMetrics);
+      }
+      if (payloadUploadMetrics_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(PayloadUploadMetrics);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -273,6 +330,12 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
       if (statusCase_ == StatusOneofCase.Failed) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Failed);
       }
+      if (payloadDownloadMetrics_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(PayloadDownloadMetrics);
+      }
+      if (payloadUploadMetrics_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(PayloadUploadMetrics);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -287,6 +350,18 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
       }
       if (other.RunId.Length != 0) {
         RunId = other.RunId;
+      }
+      if (other.payloadDownloadMetrics_ != null) {
+        if (payloadDownloadMetrics_ == null) {
+          PayloadDownloadMetrics = new global::Temporalio.Bridge.Api.Common.ExternalStorageMetrics();
+        }
+        PayloadDownloadMetrics.MergeFrom(other.PayloadDownloadMetrics);
+      }
+      if (other.payloadUploadMetrics_ != null) {
+        if (payloadUploadMetrics_ == null) {
+          PayloadUploadMetrics = new global::Temporalio.Bridge.Api.Common.ExternalStorageMetrics();
+        }
+        PayloadUploadMetrics.MergeFrom(other.PayloadUploadMetrics);
       }
       switch (other.StatusCase) {
         case StatusOneofCase.Successful:
@@ -340,6 +415,20 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
             Failed = subBuilder;
             break;
           }
+          case 34: {
+            if (payloadDownloadMetrics_ == null) {
+              PayloadDownloadMetrics = new global::Temporalio.Bridge.Api.Common.ExternalStorageMetrics();
+            }
+            input.ReadMessage(PayloadDownloadMetrics);
+            break;
+          }
+          case 42: {
+            if (payloadUploadMetrics_ == null) {
+              PayloadUploadMetrics = new global::Temporalio.Bridge.Api.Common.ExternalStorageMetrics();
+            }
+            input.ReadMessage(PayloadUploadMetrics);
+            break;
+          }
         }
       }
     #endif
@@ -375,6 +464,20 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
             }
             input.ReadMessage(subBuilder);
             Failed = subBuilder;
+            break;
+          }
+          case 34: {
+            if (payloadDownloadMetrics_ == null) {
+              PayloadDownloadMetrics = new global::Temporalio.Bridge.Api.Common.ExternalStorageMetrics();
+            }
+            input.ReadMessage(PayloadDownloadMetrics);
+            break;
+          }
+          case 42: {
+            if (payloadUploadMetrics_ == null) {
+              PayloadUploadMetrics = new global::Temporalio.Bridge.Api.Common.ExternalStorageMetrics();
+            }
+            input.ReadMessage(PayloadUploadMetrics);
             break;
           }
         }
