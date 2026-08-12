@@ -501,10 +501,10 @@ public class ProtoLinkExtensionsTests
     public void ToWorkflow_AcceptsEmptyRunId()
     {
         // Characterization, not a statement of intent. A trailing slash still yields the expected
-        // segment count, so the run ID comes back empty rather than being rejected. Go's parser
-        // matches "[^/]+" per segment and rejects this. The same leniency exists in the
-        // workflow-event, activity, and nexus-operation converters, so tightening it belongs with a
-        // consolidation of all four rather than with this change.
+        // segment count, so the run ID comes back empty rather than being rejected. The same
+        // leniency exists in the workflow-event, activity, and nexus-operation converters, since
+        // they share this path parsing, so tightening it is a decision about all four rather than
+        // about this converter.
         var link = new NexusLink(
             new Uri("temporal:///namespaces/ns/workflows/wf-id/"),
             Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
