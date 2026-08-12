@@ -299,10 +299,7 @@ namespace Temporalio.Nexus
             return evt;
         }
 
-        // Simple query param parser because .NET stdlib doesn't have one in all versions. Values are
-        // form decoded, i.e. "+" becomes a space before percent decoding, because other SDKs write
-        // these params with form encoding. Doing it in the other order would corrupt a literal "+",
-        // which form encoding writes as "%2B".
+        // Simple query param parser because .NET stdlib doesn't have one in all versions.
         private static Dictionary<string, string> ParseQueryParams(Uri uri) =>
             uri.Query.
                 TrimStart('?').

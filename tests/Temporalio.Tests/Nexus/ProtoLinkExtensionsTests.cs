@@ -486,9 +486,8 @@ public class ProtoLinkExtensionsTests
     [Fact]
     public void ToWorkflowEvent_FormDecodesQueryValues()
     {
-        // Query values are form decoded, so a "+" is a space. This matches Go's URL.Query(), which
-        // form decodes every param. Request IDs are UUIDs in practice, so this is about cross-SDK
-        // consistency rather than a case that arises today.
+        // Query values are form decoded. Request IDs are UUIDs in practice,
+        // so this is about cross-SDK consistency rather than a case that arises today.
         var link = new NexusLink(
             new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id/history" +
                 "?referenceType=RequestIdReference&requestID=a+b" +
