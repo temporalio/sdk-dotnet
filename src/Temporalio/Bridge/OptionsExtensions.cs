@@ -31,11 +31,27 @@ namespace Temporalio.Bridge
             this Temporalio.Runtime.TemporalRuntimeOptions options,
             Scope scope)
         {
+            // Core does not assume a runtime for the C bridge, so the array must be supplied here
+            // or heartbeats report no runtime at all.
+            var runtimeInfo = new[]
+            {
+                new Interop.TemporalCoreRuntimeInfo
+                {
+                    runtime_type = DotnetRuntimeInfo.RuntimeType,
+                    version = scope.ByteArray(DotnetRuntimeInfo.Version),
+                },
+            };
             return new Interop.TemporalCoreRuntimeOptions()
             {
                 telemetry = scope.Pointer(options.Telemetry.ToInteropOptions(scope)),
                 worker_heartbeat_interval_millis =
                     (ulong)(options.WorkerHeartbeatInterval?.TotalMilliseconds ?? 0),
+                runtime_info = new Interop.TemporalCoreRuntimeInfoArray
+                {
+                    data = scope.ArrayPointer(runtimeInfo),
+                    size = (UIntPtr)runtimeInfo.Length,
+                },
+                disable_environment_info = (byte)(options.DisableEnvironmentInfo ? 1 : 0),
             };
         }
 

@@ -31,6 +31,12 @@ namespace Temporalio.Runtime
         public TimeSpan? WorkerHeartbeatInterval { get; set; } = TimeSpan.FromSeconds(60);
 
         /// <summary>
+        /// Gets or sets a value indicating whether worker heartbeats omit all runtime, hosting, and
+        /// platform information.
+        /// </summary>
+        public bool DisableEnvironmentInfo { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
