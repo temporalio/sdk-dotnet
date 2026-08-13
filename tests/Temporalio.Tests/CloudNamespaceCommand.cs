@@ -130,7 +130,7 @@ internal static class CloudNamespaceCommand
             }
 
             // Honor server guidance when present and avoid aggressive polling when it is absent.
-            var delay = operation.CheckDuration?.ToTimeSpan() ?? TimeSpan.FromSeconds(5);
+            var delay = operation.CheckDuration?.ToTimeSpan() ?? TimeSpan.FromSeconds(10);
             if (delay < TimeSpan.FromSeconds(1))
             {
                 delay = TimeSpan.FromSeconds(1);
