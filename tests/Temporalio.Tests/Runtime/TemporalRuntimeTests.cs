@@ -20,6 +20,17 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public unsafe void Runtime_ConsoleLogFormat_ConvertsToInterop()
+    {
+        using var scope = new Scope();
+        var options = new LoggingOptions { Format = ConsoleLogFormat.Json };
+
+        var interopOptions = options.ToInteropOptions(scope);
+
+        Assert.Equal(3, Convert.ToInt32(interopOptions.format));
+    }
+
+    [Fact]
     public async Task Runtime_Separate_BothUsed()
     {
         // Create two clients in separate runtimes with Prometheus endpoints and make calls on them

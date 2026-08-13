@@ -26,6 +26,13 @@ namespace Temporalio.Runtime
         public TelemetryFilterOptions Filter { get; set; } = new();
 
         /// <summary>
+        /// Gets or sets the format for Core logs written to the console. If unset, Core preserves
+        /// its existing output selection, including <c>TEMPORAL_CORE_PRETTY_LOGS</c> support.
+        /// This is ignored when <see cref="Forwarding" /> is set.
+        /// </summary>
+        public ConsoleLogFormat? Format { get; set; }
+
+        /// <summary>
         /// Gets or sets log forwarding options. If not set, logs are not forwarded.
         /// </summary>
         public LogForwardingOptions? Forwarding { get; set; }

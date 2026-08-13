@@ -174,6 +174,17 @@ namespace Temporalio.Bridge
             return new Interop.TemporalCoreLoggingOptions()
             {
                 filter = scope.ByteArray(options.Filter.FilterString),
+                format = options.Format switch
+                {
+                    null => Interop.TemporalCoreConsoleLogFormat.Unspecified,
+                    Temporalio.Runtime.ConsoleLogFormat.Compact =>
+                        Interop.TemporalCoreConsoleLogFormat.Compact,
+                    Temporalio.Runtime.ConsoleLogFormat.Pretty =>
+                        Interop.TemporalCoreConsoleLogFormat.Pretty,
+                    Temporalio.Runtime.ConsoleLogFormat.Json =>
+                        Interop.TemporalCoreConsoleLogFormat.Json,
+                    _ => throw new ArgumentException("Unrecognized console log format"),
+                },
                 // Forward callback is set in the Runtime constructor
                 // forward_to = <set-elsewhere>
             };

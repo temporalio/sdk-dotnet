@@ -36,6 +36,8 @@ to docs, or any other relevant information.
   you disable size enforcement by setting `DisablePayloadErrorLimit` to `true` on the worker.
 ### Added
 
+- Added `LoggingOptions.Format` to select compact, pretty, or newline-delimited JSON output for
+  Core logs written to the console.
 - Added experimental SDK payload converter support for values and target types that expose
   Temporal transfer type conversion hooks. This lets hook-aware types delegate
   their wire representation to the configured payload converter, preserving SDK
