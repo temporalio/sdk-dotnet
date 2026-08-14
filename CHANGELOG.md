@@ -42,6 +42,9 @@ to docs, or any other relevant information.
 
 ### Added
 
+- Added the experimental `Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry` package, with
+  OpenTelemetry helpers (metrics + tracing over OTLP to a collector sidecar) for Temporal workers
+  running on Google Cloud Run.
 - Added experimental SDK payload converter support for values and target types that expose
   Temporal transfer type conversion hooks. This lets hook-aware types delegate
   their wire representation to the configured payload converter, preserving SDK
