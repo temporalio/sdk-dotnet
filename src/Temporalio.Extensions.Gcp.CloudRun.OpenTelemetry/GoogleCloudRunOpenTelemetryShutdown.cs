@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenTelemetry.Trace;
+using OpenTelemetryConfiguration = Temporalio.Extensions.OpenTelemetry.OpenTelemetryConfiguration;
 
 namespace Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry
 {
@@ -39,7 +40,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry
         /// the worker.
         /// </remarks>
         public Task FlushAsync(TimeSpan flushTimeout, CancellationToken cancellationToken = default) =>
-            TemporalClientConnectOptionsExtensions.ForceFlushAsync(
+            OpenTelemetryConfiguration.ForceFlushAsync(
                 this.tracerProvider, flushTimeout, cancellationToken);
 
         /// <summary>

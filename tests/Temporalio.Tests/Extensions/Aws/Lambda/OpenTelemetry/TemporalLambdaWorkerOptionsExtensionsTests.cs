@@ -1,14 +1,14 @@
 namespace Temporalio.Tests.Extensions.Aws.Lambda.OpenTelemetry;
 
-using global::OpenTelemetry;
-using global::OpenTelemetry.Trace;
 using Temporalio.Client;
 using Temporalio.Client.Interceptors;
 using Temporalio.Extensions.Aws.Lambda;
 using Temporalio.Extensions.Aws.Lambda.OpenTelemetry;
+using Temporalio.Tests.Extensions.OpenTelemetry;
 using Xunit;
 using TemporalOpenTelemetry = Temporalio.Extensions.OpenTelemetry;
 
+[Collection(OpenTelemetryEnvironmentDefinition.Name)]
 public class TemporalLambdaWorkerOptionsExtensionsTests
 {
     private const string OTelExporterOtlpEndpointEnvironmentVariable =
@@ -160,135 +160,5 @@ public class TemporalLambdaWorkerOptionsExtensionsTests
         Assert.NotNull(config.ClientOptions.Runtime);
         Assert.Equal(2, config.ShutdownHooks.Count);
         await config.ShutdownHooks[1](CancellationToken.None);
-    }
-
-    [Fact]
-    public async Task ForceFlushAsync_RunsForceFlushOffCallerThread()
-    {
-        using var flushStarted = new ManualResetEventSlim();
-        using var releaseFlush = new ManualResetEventSlim();
-#pragma warning disable CA2000 // Tracer provider owns the processor/exporter.
-        using var provider = Sdk.CreateTracerProviderBuilder().
-            AddProcessor(new SimpleActivityExportProcessor(
-                new BlockingForceFlushExporter(flushStarted, releaseFlush))).
-            Build();
-#pragma warning restore CA2000
-
-#pragma warning disable CA2025 // The task is completed before the provider exits scope.
-        var flushTask = TemporalLambdaWorkerOptionsExtensions.ForceFlushAsync(
-            provider,
-            TimeSpan.FromSeconds(10),
-            CancellationToken.None);
-#pragma warning restore CA2025
-
-        try
-        {
-            Assert.True(flushStarted.Wait(TimeSpan.FromSeconds(5)));
-            Assert.False(flushTask.IsCompleted);
-        }
-        finally
-        {
-            releaseFlush.Set();
-            await flushTask.WaitAsync(TimeSpan.FromSeconds(5));
-        }
-    }
-
-    [Fact]
-    public async Task ForceFlushAsync_ReturnsWhenCancellationRequested()
-    {
-        using var flushStarted = new ManualResetEventSlim();
-        using var releaseFlush = new ManualResetEventSlim();
-        using var flushCompleted = new ManualResetEventSlim();
-#pragma warning disable CA2000 // Tracer provider owns the processor/exporter.
-        using var provider = Sdk.CreateTracerProviderBuilder().
-            AddProcessor(new SimpleActivityExportProcessor(
-                new BlockingForceFlushExporter(flushStarted, releaseFlush, flushCompleted))).
-            Build();
-#pragma warning restore CA2000
-        using var cts = new CancellationTokenSource();
-
-#pragma warning disable CA2025 // The provider exits scope after the blocking flush is released.
-        var flushTask = TemporalLambdaWorkerOptionsExtensions.ForceFlushAsync(
-            provider,
-            TimeSpan.FromSeconds(10),
-            cts.Token);
-#pragma warning restore CA2025
-
-        try
-        {
-            Assert.True(flushStarted.Wait(TimeSpan.FromSeconds(5)));
-            await cts.CancelAsync();
-            await flushTask.WaitAsync(TimeSpan.FromSeconds(5));
-            Assert.False(flushCompleted.IsSet);
-        }
-        finally
-        {
-            releaseFlush.Set();
-            Assert.True(flushCompleted.Wait(TimeSpan.FromSeconds(5)));
-        }
-    }
-
-    private sealed class BlockingForceFlushExporter :
-        BaseExporter<System.Diagnostics.Activity>
-    {
-        private readonly ManualResetEventSlim flushStarted;
-        private readonly ManualResetEventSlim releaseFlush;
-        private readonly ManualResetEventSlim? flushCompleted;
-
-        public BlockingForceFlushExporter(
-            ManualResetEventSlim flushStarted,
-            ManualResetEventSlim releaseFlush,
-            ManualResetEventSlim? flushCompleted = null)
-        {
-            this.flushStarted = flushStarted;
-            this.releaseFlush = releaseFlush;
-            this.flushCompleted = flushCompleted;
-        }
-
-        public override ExportResult Export(in Batch<System.Diagnostics.Activity> batch) =>
-            ExportResult.Success;
-
-        protected override bool OnForceFlush(int timeoutMilliseconds)
-        {
-            flushStarted.Set();
-            try
-            {
-                return releaseFlush.Wait(timeoutMilliseconds);
-            }
-            finally
-            {
-                flushCompleted?.Set();
-            }
-        }
-    }
-
-    private sealed class NoopClientInterceptor : IClientInterceptor
-    {
-        public ClientOutboundInterceptor InterceptClient(
-            ClientOutboundInterceptor nextInterceptor) => nextInterceptor;
-    }
-
-    private sealed class EnvironmentScope : IDisposable
-    {
-        private readonly IReadOnlyDictionary<string, string?> previousValues;
-
-        public EnvironmentScope(params KeyValuePair<string, string?>[] values)
-        {
-            previousValues = values.ToDictionary(
-                pair => pair.Key,
-                pair => Environment.GetEnvironmentVariable(pair.Key));
-            foreach (var pair in values)
-            {
-                Environment.SetEnvironmentVariable(pair.Key, pair.Value);
-            }
-        }
-
-        public void Dispose()
-        {
-            foreach (var pair in previousValues)
-            {
-                Environment.SetEnvironmentVariable(pair.Key, pair.Value);
-            }
-        }
     }
 }

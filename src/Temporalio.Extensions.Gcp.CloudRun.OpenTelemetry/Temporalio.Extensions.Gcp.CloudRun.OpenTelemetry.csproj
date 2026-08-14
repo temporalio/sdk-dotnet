@@ -17,11 +17,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenTelemetry" />
-    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Temporalio\Temporalio.csproj" />
     <ProjectReference Include="..\Temporalio.Extensions.OpenTelemetry\Temporalio.Extensions.OpenTelemetry.csproj" />
   </ItemGroup>
