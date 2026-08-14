@@ -1964,7 +1964,139 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var exc3 = Assert.IsType<HandlerException>(exc2.InnerException);
         Assert.Equal(HandlerErrorType.Internal, exc3.ErrorType);
         Assert.DoesNotContain("Payload converter failed to decode", exc3.Message);
-        Assert.DoesNotContain("Payload converter rejected", exc3.Message);
+        Assert.DoesNotContain("Invalid operation input", exc3.Message);
+        var exc4 = Assert.IsType<ApplicationFailureException>(exc3.InnerException);
+        Assert.Equal("Intentional application failure", exc4.Message);
+        Assert.Equal("SomeOtherError", exc4.ErrorType);
+    }
+
+    private class ApplicationFailureCodec : IPayloadCodec
+    {
+        public Task<IReadOnlyCollection<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads) =>
+            Task.FromResult(payloads);
+
+        public Task<IReadOnlyCollection<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads)
+        {
+            // Only fail for the Nexus input so unrelated decodes (e.g. workflow failure
+            // details on the caller side) are unaffected
+            if (payloads.Any(p => p.Data.ToStringUtf8().Contains("codec-payload-validation-error")))
+            {
+                throw new ApplicationFailureException(
+                    "Intentional payload validation failure",
+                    errorType: "PayloadValidationError",
+                    nonRetryable: true);
+            }
+            if (payloads.Any(p => p.Data.ToStringUtf8().Contains("codec-other-application-error")))
+            {
+                throw new ApplicationFailureException(
+                    "Intentional application failure",
+                    errorType: "SomeOtherError",
+                    nonRetryable: true);
+            }
+            return Task.FromResult(payloads);
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_CodecPayloadValidationFailure_IsBadRequest()
+    {
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadCodec = new ApplicationFailureCodec(),
+        };
+        var codecClient = new TemporalClient(Client.Connection, newOptions);
+
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>((ctx, name) => $"Hello, {name}")));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        workerOptions = (TemporalWorkerOptions)workerOptions.Clone();
+        workerOptions.Interceptors = new IWorkerInterceptor[] { new XunitExceptionInterceptor() };
+        workerOptions.AddWorkflow(WorkflowDefinition.Create(
+            typeof(CustomFuncWorkflow),
+            null,
+            _args => new CustomFuncWorkflow(async () =>
+            {
+                await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(
+                        svc => svc.DoSomething("codec-payload-validation-error"),
+                        // Bound the operation so a regression (i.e. keeping the retryable
+                        // INTERNAL handler exception) fails the test instead of hanging
+                        new() { ScheduleToCloseTimeout = TimeSpan.FromSeconds(20) });
+                return null;
+            })));
+
+        using var worker = new TemporalWorker(codecClient, workerOptions);
+        var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(
+            () => worker.ExecuteAsync(async () =>
+            {
+                var handle = await codecClient.StartWorkflowAsync(
+                    (CustomFuncWorkflow wf) => wf.RunAsync(),
+                    new($"wf-{Guid.NewGuid()}", workerOptions.TaskQueue!));
+                await handle.GetResultAsync();
+            }));
+        var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
+        // A non-retryable payload validation failure means the input itself is invalid, so it
+        // becomes a non-retryable BAD_REQUEST instead of the retryable INTERNAL a codec failure
+        // would otherwise get
+        var exc3 = Assert.IsType<HandlerException>(exc2.InnerException);
+        Assert.Equal(HandlerErrorType.BadRequest, exc3.ErrorType);
+        Assert.Equal(HandlerErrorRetryBehavior.NonRetryable, exc3.ErrorRetryBehavior);
+        // A validation failure gets its own message, distinct from the generic decode failure
+        Assert.Contains("Invalid operation input", exc3.Message);
+        Assert.DoesNotContain("Payload codec failed to decode", exc3.Message);
+        var exc4 = Assert.IsType<ApplicationFailureException>(exc3.InnerException);
+        Assert.Equal("Intentional payload validation failure", exc4.Message);
+        Assert.Equal("PayloadValidationError", exc4.ErrorType);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_CodecApplicationFailure_IsInternal()
+    {
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadCodec = new ApplicationFailureCodec(),
+        };
+        var codecClient = new TemporalClient(Client.Connection, newOptions);
+
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>((ctx, name) => $"Hello, {name}")));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        workerOptions = (TemporalWorkerOptions)workerOptions.Clone();
+        workerOptions.Interceptors = new IWorkerInterceptor[] { new XunitExceptionInterceptor() };
+        workerOptions.AddWorkflow(WorkflowDefinition.Create(
+            typeof(CustomFuncWorkflow),
+            null,
+            _args => new CustomFuncWorkflow(async () =>
+            {
+                await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(
+                        svc => svc.DoSomething("codec-other-application-error"),
+                        new() { ScheduleToCloseTimeout = TimeSpan.FromSeconds(20) });
+                return null;
+            })));
+
+        using var worker = new TemporalWorker(codecClient, workerOptions);
+        var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(
+            () => worker.ExecuteAsync(async () =>
+            {
+                var handle = await codecClient.StartWorkflowAsync(
+                    (CustomFuncWorkflow wf) => wf.RunAsync(),
+                    new($"wf-{Guid.NewGuid()}", workerOptions.TaskQueue!));
+                await handle.GetResultAsync();
+            }));
+        var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
+        // The BAD_REQUEST translation only applies to the reserved payload validation error type,
+        // any other application failure keeps its INTERNAL treatment
+        var exc3 = Assert.IsType<HandlerException>(exc2.InnerException);
+        Assert.Equal(HandlerErrorType.Internal, exc3.ErrorType);
+        Assert.DoesNotContain("Payload codec failed to decode", exc3.Message);
+        Assert.DoesNotContain("Invalid operation input", exc3.Message);
         var exc4 = Assert.IsType<ApplicationFailureException>(exc3.InnerException);
         Assert.Equal("Intentional application failure", exc4.Message);
         Assert.Equal("SomeOtherError", exc4.ErrorType);
