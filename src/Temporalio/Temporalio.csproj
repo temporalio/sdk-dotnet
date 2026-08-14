@@ -50,7 +50,11 @@
     <BridgeLibraryFile>libtemporalio_sdk_core_c_bridge.dylib</BridgeLibraryFile>
   </PropertyGroup>
 
-  <Target Name="CargoBuildDebug" BeforeTargets="DispatchToInnerBuilds" Condition="'$(Configuration)' == 'Debug'">
+  <!-- Cargo must run before both the outer build (DispatchToInnerBuilds) and each inner build
+       (PreBuildEvent). Referencing projects build the inner builds directly without ever running
+       the outer build, so hooking only DispatchToInnerBuilds leaves the copy below with no
+       library. Concurrent inner builds serialize on cargo's own target directory lock. -->
+  <Target Name="CargoBuildDebug" BeforeTargets="DispatchToInnerBuilds;PreBuildEvent" Condition="'$(Configuration)' == 'Debug'">
     <Exec Command="cargo build" WorkingDirectory="Bridge/sdk-core/crates/sdk-core-c-bridge" />
   </Target>
   <Target Name="CopyBridgeDLLDebug" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Debug'">
@@ -63,11 +67,10 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="CargoBuildRelease" BeforeTargets="DispatchToInnerBuilds" Condition="'$(Configuration)' == 'Release' AND '$(BridgeLibraryRoot)' == ''">
+  <Target Name="CargoBuildRelease" BeforeTargets="DispatchToInnerBuilds;PreBuildEvent" Condition="'$(Configuration)' == 'Release' AND '$(BridgeLibraryRoot)' == ''">
     <Exec Command="cargo build --profile release-lto" WorkingDirectory="Bridge/sdk-core/crates/sdk-core-c-bridge" />
   </Target>
   <Target Name="CopyBridgeDLLRelease" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Release' AND '$(BridgeLibraryRoot)' == ''">
-    <Exec Command="cargo build --profile release-lto" WorkingDirectory="Bridge/sdk-core/crates/sdk-core-c-bridge" />
     <ItemGroup Condition="'$(Configuration)' == 'Release'">
       <Content Include="Bridge/sdk-core/target/release-lto/$(BridgeLibraryFile)">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
