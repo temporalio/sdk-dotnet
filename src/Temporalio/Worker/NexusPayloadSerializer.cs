@@ -15,6 +15,14 @@ namespace Temporalio.Worker
     /// </summary>
     internal class NexusPayloadSerializer : ISerializer
     {
+        /// <summary>
+        /// Error type of an <see cref="ApplicationFailureException"/> reserved for payload
+        /// validation failures raised by a data converter. A non-retryable failure of this type
+        /// means the input itself is invalid, so it is reported as a bad request rather than a
+        /// handler failure.
+        /// </summary>
+        private const string PayloadValidationErrorType = "PayloadValidationError";
+
         private readonly DataConverter dataConverter;
 
         /// <summary>
@@ -56,7 +64,8 @@ namespace Temporalio.Worker
             // retryable INTERNAL errors since they are typically transient (e.g. a remote
             // decryption service is temporarily down). Application failures and handler
             // exceptions are passed through untouched so users can control the resulting
-            // Nexus error.
+            // Nexus error, except non-retryable payload validation failures which report
+            // invalid input and therefore become non-retryable BAD_REQUEST errors.
             if (dataConverter.PayloadCodec != null)
             {
                 try
@@ -68,6 +77,14 @@ namespace Temporalio.Worker
                         throw new ArgumentException($"Expected 1 payload, found {decoded.Count}");
                     }
                     payload = decoded.First();
+                }
+                catch (Exception e) when (IsPayloadValidationFailure(e))
+                {
+                    throw new HandlerException(
+                        HandlerErrorType.BadRequest,
+                        "Invalid operation input",
+                        e,
+                        HandlerErrorRetryBehavior.NonRetryable);
                 }
                 catch (Exception e) when (
                     e is not ApplicationFailureException && e is not HandlerException)
@@ -83,11 +100,20 @@ namespace Temporalio.Worker
             // BAD_REQUEST errors since the payload data doesn't match the expected type/format
             // and retrying with the same input will never succeed. Application failures and
             // handler exceptions are passed through untouched so users can control the
-            // resulting Nexus error.
+            // resulting Nexus error, except non-retryable payload validation failures which
+            // report invalid input and therefore become non-retryable BAD_REQUEST errors.
             object? result;
             try
             {
                 result = dataConverter.PayloadConverter.ToValue(payload, type);
+            }
+            catch (Exception e) when (IsPayloadValidationFailure(e))
+            {
+                throw new HandlerException(
+                    HandlerErrorType.BadRequest,
+                    "Invalid operation input",
+                    e,
+                    HandlerErrorRetryBehavior.NonRetryable);
             }
             catch (Exception e) when (
                 e is not ApplicationFailureException && e is not HandlerException)
@@ -108,5 +134,16 @@ namespace Temporalio.Worker
             }
             return result;
         }
+
+        /// <summary>
+        /// Whether the given exception reports that the payload itself is invalid, i.e. it is a
+        /// non-retryable application failure with the reserved payload validation error type.
+        /// </summary>
+        /// <param name="e">Exception to check.</param>
+        /// <returns>True if the exception reports an invalid payload.</returns>
+        private static bool IsPayloadValidationFailure(Exception e) =>
+            e is ApplicationFailureException appExc &&
+            appExc.NonRetryable &&
+            appExc.ErrorType == PayloadValidationErrorType;
     }
 }
