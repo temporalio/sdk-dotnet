@@ -314,7 +314,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                     catch (TaskCanceledException)
                     {
                         cancellationReasonSource.SetResult(ctx.CancellationReason);
-                        return "canceled";
+                        throw;
                     }
                     catch (Exception)
                     {
@@ -401,13 +401,14 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     public async Task ExecuteNexusOperationAsync_ScheduleToStartTimeout_FailsAsExpected()
     {
         var cancellationReasonSource = new TaskCompletionSource<string?>();
+        var handlerBlockSource = new TaskCompletionSource();
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
                 OperationHandler.Sync<string, string>(async (ctx, name) =>
                 {
                     try
                     {
-                        await Task.Delay(40000, ctx.CancellationToken);
+                        await handlerBlockSource.Task.WaitAsync(ctx.CancellationToken);
                         cancellationReasonSource.SetResult("none");
                         return "done";
                     }
