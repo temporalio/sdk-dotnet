@@ -7,19 +7,21 @@ appropriate heading (create the heading if it does not yet exist). Within
 each heading content can be free-form. Feel free to include examples, links
 to docs, or any other relevant information.
 
-### Added            — new features
-### Changed          — changes in existing functionality
-### Deprecated       — soon-to-be-removed features
-### Breaking Changes — removed or backwards-incompatible features
-### Fixed            — notable bug fixes
-### Security         — notable security fixes
+### Added                   — new features
+### Changed                 — changes in existing functionality
+### Deprecated              — soon-to-be-removed features
+### :boom: Breaking Changes — removed or backwards-incompatible features
+### Fixed                   — notable bug fixes
+### Security                — notable security fixes
 -->
 
 # Changelog
 
 ## [Unreleased]
 
-### Breaking Changes
+## [1.18.0] - 2026-08-13
+
+### :boom: Breaking Changes
 
 - Removed the unused `NexusHandlerFailureException`; Nexus handler failures are represented by
   `NexusRpc.Handlers.HandlerException`. The SDK-created `TemporalNexusClient` implementation is now
@@ -34,6 +36,10 @@ to docs, or any other relevant information.
   `TemporalConnectionOptions.PayloadLimits`. If you use a proxy between the worker and server that
   alters the size of payloads (e.g. compression, encryption, external storage), it is advised that
   you disable size enforcement by setting `DisablePayloadErrorLimit` to `true` on the worker.
+- Activity failures now include the latest heartbeat details atomically instead of force-flushing a
+  throttled heartbeat first. Temporal Server 1.16.0 or newer is required to guarantee those details
+  are preserved on failure; workers warn when the server does not advertise support.
+
 ### Added
 
 - Added the experimental `Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry` package, with
@@ -55,6 +61,15 @@ to docs, or any other relevant information.
   backs a Nexus operation with a standalone activity (async only). Cancellation of
   activity-execution operations can be customized by overriding
   `TemporalOperationHandler<TInput, TResult>.CancelActivityExecutionAsync`.
+- Worker heartbeats now report the hosting .NET runtime and its version. Set the new
+  `TemporalRuntimeOptions.DisableEnvironmentInfo` to omit all runtime, hosting, and platform
+  information from heartbeats.
+- Workers are now automatically enrolled into poller autoscaling when the namespace advertises the
+  `poller_autoscaling_auto_enroll` capability. This only applies to poller types left at their
+  default (the worker set neither a fixed poller count nor a poller behavior); explicitly configured
+  pollers are left unchanged.
+- Workers now log a [TMPRL1104] warning when a workflow task takes longer than 5 seconds. Set
+  `TEMPORAL_WORKFLOW_TASK_DURATION_WARN_SECONDS` to change the threshold.
 
 ### Changed
 
@@ -66,6 +81,22 @@ to docs, or any other relevant information.
 - Hardened read-only workflow context enforcement so queries, update validators, and patch activation
   callbacks cannot mutate handlers or workflow details, invoke patches, or schedule workflow work.
   Patch activation callbacks also cannot use workflow randomness or issue workflow commands.
+- A `NexusRpc.Handlers.HandlerException` thrown by a payload codec or payload converter while
+  decoding Nexus operation input is now propagated as-is instead of being wrapped in an `Internal`
+  (codec) or `BadRequest` (converter) handler exception. This matches the existing pass-through
+  behavior for `ApplicationFailureException` and lets codecs and converters control the resulting
+  Nexus error type and retry behavior.
+
+### Fixed
+
+- Workers no longer advertise a worker control task queue unless the namespace supports worker
+  heartbeats and commands and the built-in Nexus command worker is running.
+- Local activity resolutions are now delivered to workflows as each activity completes instead of
+  waiting for every local activity in the workflow task. This allows sequences of short local
+  activities to make progress while a long-running local activity executes in parallel, while
+  preserving the resolution ordering recorded in existing histories during replay.
+- Try-cancel child workflows no longer cause nondeterminism when they complete or fail after their
+  cancellation was requested.
 
 ### [1.17.0] - 2026-07-13
 

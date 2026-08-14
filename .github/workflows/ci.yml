@@ -13,6 +13,7 @@ jobs:
   build-lint-test:
     env:
       RestoreLockedMode: true
+      TEMPORAL_CLIENT_CLOUD_API_VERSION: v0.19.1
     strategy:
       fail-fast: false
       matrix:
@@ -87,20 +88,65 @@ jobs:
       - name: Confirm bench works
         run: dotnet run --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 5 --max-cached-workflows 100 --max-concurrent 100
 
-      - name: Test cloud (mTLS)
-        # Only supported in non-fork, non-Dependabot runs since secrets are not available in those contexts.
+      - name: Check Cloud test eligibility
+        id: cloud-test-eligibility
+        # Secrets are unavailable to Dependabot and pull requests from forks.
         if: ${{ matrix.cloudTestTarget && github.actor != 'dependabot[bot]' && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
+        shell: bash
+        run: echo "enabled=true" >> "$GITHUB_OUTPUT"
+
+      - name: Generate Cloud test certificates
+        if: ${{ steps.cloud-test-eligibility.outputs.enabled == 'true' }}
+        shell: bash
+        run: |
+          cert_dir="$RUNNER_TEMP/cloud-test-certs"
+          mkdir "$cert_dir"
+          openssl req -x509 -newkey rsa:2048 -nodes -days 1 \
+            -keyout "$cert_dir/ca.key" -out "$cert_dir/ca.pem" \
+            -subj '/CN=Temporal .NET SDK Cloud CI CA'
+          openssl req -newkey rsa:2048 -nodes \
+            -keyout "$cert_dir/client.key" -out "$cert_dir/client.csr" \
+            -subj '/CN=Temporal .NET SDK Cloud CI'
+          openssl x509 -req -days 1 -in "$cert_dir/client.csr" \
+            -CA "$cert_dir/ca.pem" -CAkey "$cert_dir/ca.key" -CAcreateserial \
+            -out "$cert_dir/client.pem" -extfile <(printf 'extendedKeyUsage=clientAuth')
+          {
+            echo "TEMPORAL_CLOUD_CLIENT_CA_PATH=$cert_dir/ca.pem"
+            echo "TEMPORAL_TLS_CLIENT_CERT_PATH=$cert_dir/client.pem"
+            echo "TEMPORAL_TLS_CLIENT_KEY_PATH=$cert_dir/client.key"
+          } >> "$GITHUB_ENV"
+
+      - name: Create Cloud namespace
+        id: create-cloud-namespace
+        if: ${{ steps.cloud-test-eligibility.outputs.enabled == 'true' }}
         env:
-          TEMPORAL_TEST_CLIENT_TARGET_HOST: ${{ vars.TEMPORAL_CLIENT_NAMESPACE }}.tmprl.cloud:7233
-          TEMPORAL_TEST_CLIENT_NAMESPACE: ${{ vars.TEMPORAL_CLIENT_NAMESPACE }}
-          TEMPORAL_TEST_CLIENT_CERT: ${{ secrets.TEMPORAL_CLIENT_CERT }}
-          TEMPORAL_TEST_CLIENT_KEY: ${{ secrets.TEMPORAL_CLIENT_KEY }}
+          TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
+        run: dotnet run --project tests/Temporalio.Tests -- cloud-namespace create
+
+      - name: Test cloud (mTLS)
+        if: ${{ steps.cloud-test-eligibility.outputs.enabled == 'true' }}
+        env:
+          TEMPORAL_TEST_ENV_CONFIG_SERVER: true
+          TEMPORAL_ADDRESS: ${{ steps.create-cloud-namespace.outputs.namespace }}.tmprl.cloud:7233
+          TEMPORAL_NAMESPACE: ${{ steps.create-cloud-namespace.outputs.namespace }}
         run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.ExecuteWorkflowAsync_Simple_Succeeds"
 
+      - name: Delete Cloud namespace
+        id: delete-cloud-namespace
+        if: ${{ always() && steps.cloud-test-eligibility.outputs.enabled == 'true' && steps.create-cloud-namespace.outputs.namespace != '' }}
+        continue-on-error: true
+        env:
+          TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
+        run: dotnet run --project tests/Temporalio.Tests -- cloud-namespace delete "${{ steps.create-cloud-namespace.outputs.namespace }}"
+
+      - name: Report Cloud namespace cleanup failure
+        if: ${{ always() && steps.delete-cloud-namespace.outcome == 'failure' }}
+        shell: bash
+        run: echo "::warning title=Cloud namespace cleanup failed::Failed to delete Cloud namespace ${{ steps.create-cloud-namespace.outputs.namespace }}"
+
       - name: Test cloud (API key)
-        # Only supported in non-fork, non-Dependabot runs since secrets are not available in those contexts.
         # Uses API key auth to test auto-TLS feature (TLS auto-enabled when API key provided).
-        if: ${{ matrix.cloudTestTarget && github.actor != 'dependabot[bot]' && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
+        if: ${{ steps.cloud-test-eligibility.outputs.enabled == 'true' }}
         env:
           TEMPORAL_TEST_CLIENT_TARGET_HOST: ca-central-1.aws.api.temporal.io:7233
           TEMPORAL_TEST_CLIENT_NAMESPACE: ${{ vars.TEMPORAL_CLIENT_NAMESPACE }}
@@ -108,12 +154,10 @@ jobs:
         run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.ExecuteWorkflowAsync_Simple_Succeeds"
 
       - name: Test cloud operations client
-        # Only supported in non-fork, non-Dependabot runs since secrets are not available in those contexts.
-        if: ${{ matrix.cloudTestTarget && github.actor != 'dependabot[bot]' && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
+        if: ${{ steps.cloud-test-eligibility.outputs.enabled == 'true' }}
         env:
           TEMPORAL_CLIENT_CLOUD_NAMESPACE: sdk-ci.a2dd6
           TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
-          TEMPORAL_CLIENT_CLOUD_API_VERSION: 2024-05-13-00
         run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.TemporalCloudOperationsClientTests.*"
 
       - name: Upload native symbols

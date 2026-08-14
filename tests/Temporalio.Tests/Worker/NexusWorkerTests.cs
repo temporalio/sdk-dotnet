@@ -1713,6 +1713,137 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             exc3.Message);
     }
 
+    private class HandlerExceptionCodec : IPayloadCodec
+    {
+        public Task<IReadOnlyCollection<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads) =>
+            Task.FromResult(payloads);
+
+        public Task<IReadOnlyCollection<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads)
+        {
+            // Only fail for the Nexus input so unrelated decodes (e.g. workflow failure
+            // details on the caller side) are unaffected
+            if (payloads.Any(p => p.Data.ToStringUtf8().Contains("codec-handler-error")))
+            {
+                throw new HandlerException(
+                    HandlerErrorType.NotFound, "Intentional codec handler exception");
+            }
+            return Task.FromResult(payloads);
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_CodecHandlerException_IsPassedThrough()
+    {
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadCodec = new HandlerExceptionCodec(),
+        };
+        var codecClient = new TemporalClient(Client.Connection, newOptions);
+
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>((ctx, name) => $"Hello, {name}")));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        workerOptions = (TemporalWorkerOptions)workerOptions.Clone();
+        workerOptions.Interceptors = new IWorkerInterceptor[] { new XunitExceptionInterceptor() };
+        workerOptions.AddWorkflow(WorkflowDefinition.Create(
+            typeof(CustomFuncWorkflow),
+            null,
+            _args => new CustomFuncWorkflow(async () =>
+            {
+                await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(
+                        svc => svc.DoSomething("codec-handler-error"),
+                        // Bound the operation so a regression (i.e. wrapping in a retryable
+                        // INTERNAL handler exception) fails the test instead of hanging
+                        new() { ScheduleToCloseTimeout = TimeSpan.FromSeconds(20) });
+                return null;
+            })));
+
+        using var worker = new TemporalWorker(codecClient, workerOptions);
+        var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(
+            () => worker.ExecuteAsync(async () =>
+            {
+                var handle = await codecClient.StartWorkflowAsync(
+                    (CustomFuncWorkflow wf) => wf.RunAsync(),
+                    new($"wf-{Guid.NewGuid()}", workerOptions.TaskQueue!));
+                await handle.GetResultAsync();
+            }));
+        var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
+        // The user's handler exception is passed through instead of being wrapped in an
+        // INTERNAL handler exception
+        var exc3 = Assert.IsType<HandlerException>(exc2.InnerException);
+        Assert.Equal(HandlerErrorType.NotFound, exc3.ErrorType);
+        Assert.Contains("Intentional codec handler exception", exc3.Message);
+        Assert.DoesNotContain("Payload codec failed to decode", exc3.Message);
+    }
+
+    private class HandlerExceptionPayloadConverter : IPayloadConverter
+    {
+        private readonly IPayloadConverter inner = DataConverter.Default.PayloadConverter;
+
+        public Payload ToPayload(object? value) => inner.ToPayload(value);
+
+        public object? ToValue(Payload payload, Type type)
+        {
+            var value = inner.ToValue(payload, type);
+            // Only fail for the Nexus input so unrelated conversions are unaffected
+            if (value as string == "converter-handler-error")
+            {
+                throw new HandlerException(
+                    HandlerErrorType.NotFound, "Intentional converter handler exception");
+            }
+            return value;
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_ConverterHandlerException_IsPassedThrough()
+    {
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadConverter = new HandlerExceptionPayloadConverter(),
+        };
+        var converterClient = new TemporalClient(Client.Connection, newOptions);
+
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>((ctx, name) => $"Hello, {name}")));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        workerOptions = (TemporalWorkerOptions)workerOptions.Clone();
+        workerOptions.Interceptors = new IWorkerInterceptor[] { new XunitExceptionInterceptor() };
+        workerOptions.AddWorkflow(WorkflowDefinition.Create(
+            typeof(CustomFuncWorkflow),
+            null,
+            _args => new CustomFuncWorkflow(async () =>
+            {
+                await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("converter-handler-error"));
+                return null;
+            })));
+
+        using var worker = new TemporalWorker(converterClient, workerOptions);
+        var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(
+            () => worker.ExecuteAsync(async () =>
+            {
+                var handle = await converterClient.StartWorkflowAsync(
+                    (CustomFuncWorkflow wf) => wf.RunAsync(),
+                    new($"wf-{Guid.NewGuid()}", workerOptions.TaskQueue!));
+                await handle.GetResultAsync();
+            }));
+        var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
+        // The user's handler exception is passed through instead of being wrapped in a
+        // BAD_REQUEST handler exception
+        var exc3 = Assert.IsType<HandlerException>(exc2.InnerException);
+        Assert.Equal(HandlerErrorType.NotFound, exc3.ErrorType);
+        Assert.Contains("Intentional converter handler exception", exc3.Message);
+        Assert.DoesNotContain("Payload converter failed to decode", exc3.Message);
+    }
+
     [Fact]
     public async Task ExecuteNexusOperationAsync_GenericHandler_StartWorkflow_Succeeds()
     {
