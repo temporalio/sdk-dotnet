@@ -22,6 +22,7 @@ using Temporalio.Bridge.Api.WorkflowCompletion;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
+using Temporalio.Nexus;
 using Temporalio.Runtime;
 using Temporalio.Worker.Interceptors;
 using Temporalio.Workflows;
@@ -2688,15 +2689,15 @@ namespace Temporalio.Worker
                 }
 
                 // TODO(cretz): Support Nexus serialization context
-                var payloadConverter = instance.payloadConverterNoContext;
+                var payloadConverter = SystemNexusPayloadVisitor.IsSystemNexusEndpoint(
+                    input.ClientOptions.Endpoint) ?
+                    new SystemNexusPayloadConverter(
+                        instance.payloadConverterNoContext,
+                        instance.failureConverterNoContext) :
+                    instance.payloadConverterNoContext;
 
                 var seq = ++instance.nexusOperationCounter;
-                var inputPayload = SystemNexusPayloadVisitor.TryToInputPayload(
-                    input.ClientOptions.Endpoint,
-                    input.Arg,
-                    out var systemNexusInputPayload) ?
-                    systemNexusInputPayload :
-                    payloadConverter.ToPayload(input.Arg);
+                var inputPayload = payloadConverter.ToPayload(input.Arg);
                 var cmd = new ScheduleNexusOperation()
                 {
                     Seq = seq,
