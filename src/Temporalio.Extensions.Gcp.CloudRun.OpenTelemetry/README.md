@@ -18,6 +18,7 @@ Call `ApplyGoogleCloudRunOpenTelemetryDefaults` on the client connect options be
 and dispose the returned handle after the worker stops:
 
 ```csharp
+using System.Diagnostics;
 using Temporalio.Client;
 using Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry;
 using Temporalio.Worker;
@@ -39,9 +40,32 @@ using var worker = new TemporalWorker(
         AddWorkflow<MyWorkflow>().
         AddActivity(MyActivities.DoThing));
 
-// On SIGTERM, stop the worker, then flush traces within the shutdown window:
-await worker.ExecuteAsync(shutdownToken);
-await telemetry.FlushAsync(TimeSpan.FromSeconds(10));
+// Cloud Run allows 10 seconds from SIGTERM before terminating the instance. Track how much of
+// that window worker shutdown consumes so trace flushing uses only the time that remains.
+var shutdownStarted = new TaskCompletionSource<Stopwatch>(
+    TaskCreationOptions.RunContinuationsAsynchronously);
+using var registration = shutdownToken.Register(
+    () => shutdownStarted.TrySetResult(Stopwatch.StartNew()));
+
+try
+{
+    await worker.ExecuteAsync(shutdownToken);
+}
+catch (OperationCanceledException) when (shutdownToken.IsCancellationRequested)
+{
+    // SIGTERM cancellation is the expected shutdown path.
+}
+finally
+{
+    var elapsed = shutdownToken.IsCancellationRequested ?
+        (await shutdownStarted.Task).Elapsed :
+        TimeSpan.Zero;
+    var flushTimeout = TimeSpan.FromSeconds(10) - elapsed;
+    if (flushTimeout > TimeSpan.Zero)
+    {
+        await telemetry.FlushAsync(flushTimeout);
+    }
+}
 ```
 
 `ApplyGoogleCloudRunOpenTelemetryDefaults`:
@@ -88,6 +112,7 @@ keep a dedicated batch processor.
 ## Shutdown
 
 Cloud Run workers are long-running, so this extension does not flush automatically. On shutdown,
-stop the worker first, then call `FlushAsync` within the remaining termination grace period, then
-dispose the handle (disposing also flushes). Core SDK metrics have no explicit flush API and are
-exported periodically by the runtime.
+stop the worker first, catch the expected cancellation from `ExecuteAsync`, then call `FlushAsync`
+from a `finally` block within the remaining termination grace period. Dispose the handle afterward
+(disposing also flushes). Core SDK metrics have no explicit flush API and are exported periodically
+by the runtime.

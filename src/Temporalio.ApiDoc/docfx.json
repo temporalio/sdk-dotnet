@@ -8,6 +8,7 @@
             "Temporalio.Extensions.Aws.Lambda/*.csproj",
             "Temporalio.Extensions.Aws.Lambda.OpenTelemetry/*.csproj",
             "Temporalio.Extensions.DiagnosticSource/*.csproj",
+            "Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/*.csproj",
             "Temporalio.Extensions.Hosting/*.csproj",
             "Temporalio.Extensions.OpenTelemetry/*.csproj"
           ],
