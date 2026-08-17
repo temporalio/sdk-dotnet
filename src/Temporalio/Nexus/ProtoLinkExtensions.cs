@@ -299,7 +299,21 @@ namespace Temporalio.Nexus
             return evt;
         }
 
-        // Simple query param parser because .NET stdlib doesn't have one in all versions.
+        /// <summary>
+        /// Parse a URI query string into its parameters. Simple hand-rolled parser because the .NET
+        /// stdlib does not have one in all versions we target.
+        /// </summary>
+        /// <param name="uri">URI whose query string to parse.</param>
+        /// <returns>
+        /// The query parameters, with both keys and values percent-decoded. Values are additionally
+        /// form-decoded, i.e. <c>+</c> becomes a space, since that is how a query value is encoded on
+        /// the way out; the replacement is safe to do before percent-decoding because a literal
+        /// <c>+</c> is encoded as <c>%2B</c>. A parameter present with no <c>=</c> maps to an empty
+        /// string, so callers cannot distinguish <c>?reason</c> from <c>?reason=</c>. Keys are looked
+        /// up with the dictionary's default ordinal comparer, so lookups are case-sensitive and
+        /// <c>reason</c> and <c>Reason</c> are different parameters. A query repeating a key throws,
+        /// which callers treat as an invalid link like any other malformed URI.
+        /// </returns>
         private static Dictionary<string, string> ParseQueryParams(Uri uri) =>
             uri.Query.
                 TrimStart('?').

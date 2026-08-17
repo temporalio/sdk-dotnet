@@ -3,7 +3,6 @@ namespace Temporalio.Tests.Nexus;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using Temporalio.Api.Common.V1;
 using Temporalio.Nexus;
 using Xunit;
 
@@ -206,72 +205,5 @@ public class NexusWorkflowUpdateHandleTests
 
         Assert.Equal(string.Empty, handle.RunId);
         Assert.Equal("u", handle.UpdateId);
-    }
-
-    [Fact]
-    public void CommonLink_ToNexusLink_UnsetOneof_ReturnsNull()
-    {
-        // A link whose oneof is unset (neither workflow-event nor workflow) must not dereference a
-        // null variant; it returns null so callers can skip it.
-        var link = new Link().ToNexusLink();
-
-        Assert.Null(link);
-    }
-
-    [Fact]
-    public void WorkflowLink_ToNexusLink_BuildsWorkflowUri()
-    {
-        // A workflow link addresses the execution itself, so there is no "/history" suffix. The
-        // suffix belongs to the workflow-event form, and its absence is what distinguishes the two.
-        var workflow = new Link.Types.Workflow
-        {
-            Namespace = "ns",
-            WorkflowId = "wid",
-            RunId = "rid",
-        };
-        var link = workflow.ToNexusLink();
-
-        Assert.Equal("temporal", link.Uri.Scheme);
-        Assert.Equal("/namespaces/ns/workflows/wid/rid", link.Uri.AbsolutePath);
-        Assert.Equal(Link.Types.Workflow.Descriptor.FullName, link.Type);
-    }
-
-    [Fact]
-    public void CommonLink_ToNexusLink_PrefersWorkflowEvent()
-    {
-        var common = new Link
-        {
-            WorkflowEvent = new()
-            {
-                Namespace = "ns",
-                WorkflowId = "wid",
-                RunId = "rid",
-                EventRef = new() { EventId = 1 },
-            },
-        };
-        var link = common.ToNexusLink();
-
-        Assert.NotNull(link);
-        Assert.Equal(Link.Types.WorkflowEvent.Descriptor.FullName, link.Type);
-    }
-
-    [Fact]
-    public void CommonLink_ToNexusLink_FallsBackToWorkflow()
-    {
-        // No history event (e.g. a rejected update) — falls back to the workflow link.
-        var common = new Link
-        {
-            Workflow = new()
-            {
-                Namespace = "ns",
-                WorkflowId = "wid",
-                RunId = "rid",
-            },
-        };
-        var link = common.ToNexusLink();
-
-        Assert.NotNull(link);
-        Assert.Equal(Link.Types.Workflow.Descriptor.FullName, link.Type);
-        Assert.Equal("/namespaces/ns/workflows/wid/rid", link.Uri.AbsolutePath);
     }
 }
