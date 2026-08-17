@@ -1,4 +1,5 @@
 using System;
+using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
 
 namespace Temporalio.Nexus
@@ -7,44 +8,26 @@ namespace Temporalio.Nexus
     /// Payload converter for System Nexus outer protobuf envelopes.
     /// </summary>
     /// <remarks>
-    /// This converter applies transfer type conversion to the outer System Nexus envelope while
-    /// making the application's converters available to generated transfer types.
+    /// This converter applies transfer type conversion to the outer System Nexus envelope.
     /// </remarks>
     internal sealed class SystemNexusPayloadConverter : IPayloadConverter
     {
-        private readonly IPayloadConverter userPayloadConverter;
-        private readonly IFailureConverter userFailureConverter;
-        private readonly IPayloadConverter outerPayloadConverter;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SystemNexusPayloadConverter"/> class.
-        /// </summary>
-        /// <param name="userPayloadConverter">The application's payload converter.</param>
-        /// <param name="userFailureConverter">The application's failure converter.</param>
-        internal SystemNexusPayloadConverter(
-            IPayloadConverter userPayloadConverter,
-            IFailureConverter userFailureConverter)
-        {
-            this.userPayloadConverter = userPayloadConverter;
-            this.userFailureConverter = userFailureConverter;
-            outerPayloadConverter = TemporalTransferTypePayloadConverter.Wrap(
+        private static readonly IPayloadConverter OuterPayloadConverter =
+            TemporalTransferTypePayloadConverter.Wrap(
                 new DefaultPayloadConverter(new BinaryProtoConverter()));
+
+        /// <inheritdoc />
+        public Payload ToPayload(object? value)
+        {
+            // TODO: Scope the generated System Nexus support converter context here once the
+            // generated support file is ingested into the SDK.
+            return OuterPayloadConverter.ToPayload(value);
         }
 
         /// <inheritdoc />
-        public Temporalio.Api.Common.V1.Payload ToPayload(object? value)
+        public object? ToValue(Payload payload, Type type)
         {
-            using var context = SystemNexusConverterContext.Push(
-                userPayloadConverter, userFailureConverter);
-            return outerPayloadConverter.ToPayload(value);
-        }
-
-        /// <inheritdoc />
-        public object? ToValue(Temporalio.Api.Common.V1.Payload payload, Type type)
-        {
-            using var context = SystemNexusConverterContext.Push(
-                userPayloadConverter, userFailureConverter);
-            return outerPayloadConverter.ToValue(payload, type);
+            return OuterPayloadConverter.ToValue(payload, type);
         }
     }
 }

@@ -2688,16 +2688,16 @@ namespace Temporalio.Worker
                         new CanceledFailureException("Nexus operation cancelled before scheduled"));
                 }
 
-                // TODO(cretz): Support Nexus serialization context
-                var payloadConverter = SystemNexusPayloadVisitor.IsSystemNexusEndpoint(
+                // TODO: Scope the generated System Nexus support converter context around this
+                // operation converter once the generated support file is ingested into the SDK.
+                var systemNexusPayloadConverter = SystemNexusPayloadVisitor.IsSystemNexusEndpoint(
                     input.ClientOptions.Endpoint) ?
-                    new SystemNexusPayloadConverter(
-                        instance.payloadConverterNoContext,
-                        instance.failureConverterNoContext) :
-                    instance.payloadConverterNoContext;
+                    new SystemNexusPayloadConverter() : null;
+                var operationPayloadConverter =
+                    systemNexusPayloadConverter ?? instance.payloadConverterNoContext;
 
                 var seq = ++instance.nexusOperationCounter;
-                var inputPayload = payloadConverter.ToPayload(input.Arg);
+                var inputPayload = operationPayloadConverter.ToPayload(input.Arg);
                 var cmd = new ScheduleNexusOperation()
                 {
                     Seq = seq,
@@ -2726,7 +2726,10 @@ namespace Temporalio.Worker
                 var workflowCommand = new WorkflowCommand() { ScheduleNexusOperation = cmd };
                 if (input.Options.Summary is { } summary)
                 {
-                    workflowCommand.UserMetadata = new() { Summary = payloadConverter.ToPayload(summary) };
+                    workflowCommand.UserMetadata = new()
+                    {
+                        Summary = instance.payloadConverterNoContext.ToPayload(summary),
+                    };
                 }
                 instance.AddCommand(workflowCommand);
 
@@ -2762,7 +2765,7 @@ namespace Temporalio.Worker
                             // If there is a start sync fail, we have to fail the handle task and
                             // there's nothing more we can do here
                             var handle = new NexusWorkflowOperationHandleImpl<TResult>(
-                                payloadConverter,
+                                operationPayloadConverter,
                                 // TODO(cretz): Support Nexus serialization context, ideally not
                                 // creating failure converter with context until actually needed
                                 instance.failureConverterNoContext,
@@ -2772,7 +2775,7 @@ namespace Temporalio.Worker
                                 // TODO(cretz): Support Nexus serialization context
                                 handleSource.SetException(
                                     instance.failureConverterNoContext.ToException(
-                                        syncStartFail, payloadConverter));
+                                        syncStartFail, operationPayloadConverter));
                                 return;
                             }
 

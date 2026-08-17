@@ -5,7 +5,6 @@ using Temporalio.Client;
 using Temporalio.Converters;
 using Temporalio.Tests.Converters;
 using Temporalio.Worker;
-using Temporalio.Worker.Interceptors;
 using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
@@ -18,7 +17,7 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public async Task ExecuteWorkflowAsync_SignalWithStartFromWorkflow_Succeeds()
+    public async Task ExecuteWorkflowAsync_SignalWithStartFromWorkflow_SucceedsAndReplays()
     {
         var newOptions = (TemporalClientOptions)Client.Options.Clone();
         newOptions.DataConverter = DataConverter.Default with
@@ -32,10 +31,11 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
             async worker =>
             {
                 var targetWorkflowId = $"workflow-{Guid.NewGuid()}";
-                var resultWorkflowId = await codecClient.ExecuteWorkflowAsync(
+                var callerHandle = await codecClient.StartWorkflowAsync(
                     (SystemNexusSignalWithStartCallerWorkflow workflow) =>
                         workflow.RunAsync(targetWorkflowId, worker.Options.TaskQueue!),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                var resultWorkflowId = await callerHandle.GetResultAsync();
                 Assert.Equal(targetWorkflowId, resultWorkflowId);
 
                 var targetHandle = codecClient.GetWorkflowHandle<
@@ -46,6 +46,14 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
                 Assert.Contains("Started: start-value", events);
                 Assert.Contains("Signal: signal-one", events);
                 Assert.Contains("Signal: signal-two", events);
+
+                var replayer = new WorkflowReplayer(
+                    new WorkflowReplayerOptions
+                    {
+                        DataConverter = newOptions.DataConverter,
+                    }.AddWorkflow<SystemNexusSignalWithStartCallerWorkflow>());
+                var replay = await replayer.ReplayWorkflowAsync(await callerHandle.FetchHistoryAsync());
+                Assert.Null(replay.ReplayFailure);
             },
             workerOptions,
             codecClient);
