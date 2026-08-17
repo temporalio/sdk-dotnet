@@ -8455,18 +8455,18 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteWorkflowAsync_PrematureDispose_WorkflowCompletes()
     {
-        using var waitEvent = new AutoResetEvent(false);
+        var waitSource = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var worker = new TemporalWorker(Client, PrepareWorkerOptions<SimpleWorkflow>(new()));
         Task task = worker.ExecuteAsync(async () =>
         {
-            waitEvent.WaitOne();
+            await waitSource.Task;
             var result = await Client.ExecuteWorkflowAsync(
                 (SimpleWorkflow wf) => wf.RunAsync("Temporal"),
                 new(id: $"dotnet-workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("Hello, Temporal!", result);
         });
         worker.Dispose();
-        waitEvent.Set();
+        waitSource.SetResult();
         await task;
     }
 
