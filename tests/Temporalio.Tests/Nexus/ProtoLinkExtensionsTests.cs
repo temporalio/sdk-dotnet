@@ -385,6 +385,31 @@ public class ProtoLinkExtensionsTests
     }
 
     [Fact]
+    public void ToWorkflow_ReasonKeyLookupIsCaseSensitive()
+    {
+        // Query params are held in a dictionary with the default ordinal comparer, so "Reason" is a
+        // different param than "reason" and does not populate the field.
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id?Reason=nope"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+
+        Assert.Equal(string.Empty, link.ToWorkflow().Reason);
+    }
+
+    [Fact]
+    public void ToWorkflow_RepeatedReasonKey_Throws()
+    {
+        // A repeated key cannot go into the dictionary, so it surfaces as the same ArgumentException
+        // as any other malformed link. Callers converting links catch that and drop the link with a
+        // warning rather than failing the operation.
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id?reason=a&reason=b"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+
+        Assert.Throws<ArgumentException>(() => link.ToWorkflow());
+    }
+
+    [Fact]
     public void ToWorkflow_LiteralPlusInPathIsPreserved()
     {
         // A "+" in a path segment is a literal "+", not a space. Path segments are percent decoded
@@ -430,6 +455,8 @@ public class ProtoLinkExtensionsTests
     [Fact]
     public void ProtoToNexusLink_WorkflowVariant_Dispatches()
     {
+        // The workflow variant is what a link carries when there is no history event to point at,
+        // e.g. a Query or a rejected update.
         var protoLink = new Api.Common.V1.Link
         {
             Workflow = new() { Namespace = "ns", WorkflowId = "wf", RunId = "run" },
@@ -500,11 +527,12 @@ public class ProtoLinkExtensionsTests
     [Fact]
     public void ToWorkflow_AcceptsEmptyRunId()
     {
-        // Characterization, not a statement of intent. A trailing slash still yields the expected
-        // segment count, so the run ID comes back empty rather than being rejected. The same
-        // leniency exists in the workflow-event, activity, and nexus-operation converters, since
-        // they share this path parsing, so tightening it is a decision about all four rather than
-        // about this converter.
+        // A trailing slash still yields the expected segment count, so the run ID comes back empty
+        // rather than being rejected. The workflow-event, activity, and nexus-operation converters
+        // are equally lenient because all four share this path parsing, so tightening it is a
+        // decision about all four and belongs with that change rather than this one. This test
+        // exists so that whichever way it is decided, the behavior changes visibly instead of
+        // silently.
         var link = new NexusLink(
             new Uri("temporal:///namespaces/ns/workflows/wf-id/"),
             Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
@@ -515,7 +543,7 @@ public class ProtoLinkExtensionsTests
     [Fact]
     public void ToWorkflow_AcceptsEmptyNamespace()
     {
-        // Characterization; see ToWorkflow_AcceptsEmptyRunId.
+        // The same shared-path-parsing leniency as ToWorkflow_AcceptsEmptyRunId; see that test.
         var link = new NexusLink(
             new Uri("temporal:///namespaces//workflows/wf-id/run-id"),
             Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);

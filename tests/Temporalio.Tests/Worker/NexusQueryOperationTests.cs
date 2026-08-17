@@ -151,7 +151,9 @@ public class NexusQueryOperationTests : WorkflowEnvironmentTestBase
         {
             var caller = await RunCallerAsync(
                 taskQueue, endpoint, new(counter.Id, Fail: true));
-            await AssertOperationFailedWithAsync(HandlerErrorType.BadRequest, caller);
+            // The query handler faulted, not the Nexus request, so this is Internal and explicitly
+            // non-retryable rather than BadRequest.
+            await AssertOperationFailedWithAsync(HandlerErrorType.Internal, caller);
         });
     }
 
@@ -180,7 +182,7 @@ public class NexusQueryOperationTests : WorkflowEnvironmentTestBase
 
             var caller = await RunCallerAsync(
                 taskQueue, endpointName, new(counter.Id, RejectNotOpen: true));
-            await AssertOperationFailedWithAsync(HandlerErrorType.BadRequest, caller);
+            await AssertOperationFailedWithAsync(HandlerErrorType.Internal, caller);
         });
     }
 
