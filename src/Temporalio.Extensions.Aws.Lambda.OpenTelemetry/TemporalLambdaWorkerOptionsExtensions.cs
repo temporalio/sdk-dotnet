@@ -1,6 +1,7 @@
 using System;
 using OpenTelemetry.Trace;
 using OpenTelemetryConfiguration = Temporalio.Extensions.OpenTelemetry.OpenTelemetryConfiguration;
+using OpenTelemetryTracerProviderFactory = Temporalio.Extensions.OpenTelemetry.OpenTelemetryTracerProviderFactory;
 using ResolvedOpenTelemetryOptions = Temporalio.Extensions.OpenTelemetry.ResolvedOpenTelemetryOptions;
 
 namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
@@ -40,7 +41,7 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
 
             var resolvedOptions = ResolveOptions(openTelemetryOptions);
 #pragma warning disable CA2000 // The per-invocation shutdown hook owns provider disposal.
-            var tracerProvider = OpenTelemetryConfiguration.
+            var tracerProvider = OpenTelemetryTracerProviderFactory.
                 CreateTracerProvider(resolvedOptions, builder => builder.AddXRayTraceId());
 #pragma warning restore CA2000
 
@@ -59,7 +60,7 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
                     try
                     {
                         await OpenTelemetryConfiguration.ForceFlushAsync(
-                            tracerProvider,
+                            tracerProvider.ForceFlush,
                             options.ShutdownDeadlineBuffer,
                             cancellationToken).ConfigureAwait(false);
                     }

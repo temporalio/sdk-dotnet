@@ -1,6 +1,7 @@
 using System;
 using Temporalio.Client;
 using OpenTelemetryConfiguration = Temporalio.Extensions.OpenTelemetry.OpenTelemetryConfiguration;
+using OpenTelemetryTracerProviderFactory = Temporalio.Extensions.OpenTelemetry.OpenTelemetryTracerProviderFactory;
 using ResolvedOpenTelemetryOptions = Temporalio.Extensions.OpenTelemetry.ResolvedOpenTelemetryOptions;
 
 namespace Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry
@@ -47,7 +48,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry
 
             var resolvedOptions = ResolveOptions(openTelemetryOptions);
 #pragma warning disable CA2000 // The returned shutdown handle owns provider disposal.
-            var tracerProvider = OpenTelemetryConfiguration.
+            var tracerProvider = OpenTelemetryTracerProviderFactory.
                 CreateTracerProvider(resolvedOptions);
 #pragma warning restore CA2000
 

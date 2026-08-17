@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using OpenTelemetry;
-using OpenTelemetry.Exporter;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using Temporalio.Client;
 using Temporalio.Client.Interceptors;
 using Temporalio.Runtime;
@@ -58,36 +54,6 @@ namespace Temporalio.Extensions.OpenTelemetry
         }
 
         /// <summary>
-        /// Creates the standard OTLP tracer provider, optionally customized by a platform wrapper.
-        /// </summary>
-        /// <param name="options">Resolved OpenTelemetry options.</param>
-        /// <param name="configureBuilder">Optional platform-specific builder customization.</param>
-        /// <returns>The created tracer provider.</returns>
-        internal static TracerProvider CreateTracerProvider(
-            ResolvedOpenTelemetryOptions options,
-            Action<TracerProviderBuilder>? configureBuilder = null)
-        {
-            var builder = Sdk.CreateTracerProviderBuilder();
-            configureBuilder?.Invoke(builder);
-            return builder.
-                SetResourceBuilder(
-                    ResourceBuilder.CreateDefault().AddService(options.ServiceName)).
-                AddSource(
-                    TracingInterceptor.ClientSource.Name,
-                    TracingInterceptor.WorkflowsSource.Name,
-                    TracingInterceptor.ActivitiesSource.Name,
-                    TracingInterceptor.NexusSource.Name).
-                AddOtlpExporter(exporterOptions =>
-                {
-                    exporterOptions.Endpoint = options.CollectorEndpoint;
-#pragma warning disable CS0618 // Provider extensions use OTLP gRPC collectors on localhost:4317.
-                    exporterOptions.Protocol = OtlpExportProtocol.Grpc;
-#pragma warning restore CS0618
-                }).
-                Build();
-        }
-
-        /// <summary>
         /// Applies the standard Temporal runtime and tracing interceptor configuration.
         /// </summary>
         /// <param name="clientOptions">Client options to mutate.</param>
@@ -103,12 +69,12 @@ namespace Temporalio.Extensions.OpenTelemetry
         /// <summary>
         /// Force-flushes a tracer provider without blocking the caller's thread.
         /// </summary>
-        /// <param name="tracerProvider">Tracer provider to flush.</param>
+        /// <param name="forceFlush">Function that force-flushes a provider.</param>
         /// <param name="flushTimeout">Maximum time for the provider flush.</param>
         /// <param name="cancellationToken">Cancellation token for waiting on the flush.</param>
         /// <returns>A task for the flush.</returns>
         internal static async Task ForceFlushAsync(
-            TracerProvider tracerProvider,
+            Func<int, bool> forceFlush,
             TimeSpan flushTimeout,
             CancellationToken cancellationToken)
         {
@@ -118,7 +84,7 @@ namespace Temporalio.Extensions.OpenTelemetry
             }
 
             var flushTask = Task.Run(
-                () => tracerProvider.ForceFlush(ToTimeoutMilliseconds(flushTimeout)));
+                () => forceFlush(ToTimeoutMilliseconds(flushTimeout)));
             try
             {
                 await flushTask.WaitAsync(cancellationToken).ConfigureAwait(false);

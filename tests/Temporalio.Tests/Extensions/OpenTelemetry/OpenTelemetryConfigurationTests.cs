@@ -21,7 +21,7 @@ public class OpenTelemetryConfigurationTests
 
 #pragma warning disable CA2025 // The task is completed before the provider exits scope.
         var flushTask = TemporalOpenTelemetry.OpenTelemetryConfiguration.ForceFlushAsync(
-            provider,
+            provider.ForceFlush,
             TimeSpan.FromSeconds(10),
             CancellationToken.None);
 #pragma warning restore CA2025
@@ -54,7 +54,7 @@ public class OpenTelemetryConfigurationTests
 
 #pragma warning disable CA2025 // The provider exits scope after the blocking flush is released.
         var flushTask = TemporalOpenTelemetry.OpenTelemetryConfiguration.ForceFlushAsync(
-            provider,
+            provider.ForceFlush,
             TimeSpan.FromSeconds(10),
             cts.Token);
 #pragma warning restore CA2025

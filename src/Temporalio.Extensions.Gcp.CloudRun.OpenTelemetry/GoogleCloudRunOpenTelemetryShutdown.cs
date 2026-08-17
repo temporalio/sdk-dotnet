@@ -41,7 +41,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry
         /// </remarks>
         public Task FlushAsync(TimeSpan flushTimeout, CancellationToken cancellationToken = default) =>
             OpenTelemetryConfiguration.ForceFlushAsync(
-                this.tracerProvider, flushTimeout, cancellationToken);
+                this.tracerProvider.ForceFlush, flushTimeout, cancellationToken);
 
         /// <summary>
         /// Dispose the owned tracer provider, flushing any remaining traces.

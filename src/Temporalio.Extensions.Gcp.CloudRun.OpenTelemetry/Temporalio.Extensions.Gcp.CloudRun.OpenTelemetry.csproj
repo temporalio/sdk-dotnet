@@ -17,8 +17,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="OpenTelemetry" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Temporalio\Temporalio.csproj" />
     <ProjectReference Include="..\Temporalio.Extensions.OpenTelemetry\Temporalio.Extensions.OpenTelemetry.csproj" />
+  </ItemGroup>
+
+  <!-- Share the OTLP provider construction without adding its SDK dependencies to the common package. -->
+  <ItemGroup>
+    <Compile Include="..\Temporalio.Extensions.Aws.Lambda.OpenTelemetry\OpenTelemetryTracerProviderFactory.cs" Link="OpenTelemetryTracerProviderFactory.cs" />
   </ItemGroup>
 
   <!-- Allow tests to use internals -->

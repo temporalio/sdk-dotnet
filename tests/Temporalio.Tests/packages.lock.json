@@ -462,6 +462,8 @@
       "temporalio.extensions.aws.lambda.opentelemetry": {
         "type": "Project",
         "dependencies": {
+          "OpenTelemetry": "[1.15.3, )",
+          "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.15.3, )",
           "OpenTelemetry.Extensions.AWS": "[1.15.1, )",
           "Temporalio": "[1.18.0, )",
           "Temporalio.Extensions.Aws.Lambda": "[1.18.0, )",
@@ -477,6 +479,8 @@
       "temporalio.extensions.gcp.cloudrun.opentelemetry": {
         "type": "Project",
         "dependencies": {
+          "OpenTelemetry": "[1.15.3, )",
+          "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.15.3, )",
           "Temporalio": "[1.18.0, )",
           "Temporalio.Extensions.OpenTelemetry": "[1.18.0, )"
         }
@@ -491,9 +495,7 @@
       "temporalio.extensions.opentelemetry": {
         "type": "Project",
         "dependencies": {
-          "OpenTelemetry": "[1.15.3, )",
           "OpenTelemetry.Api": "[1.15.3, )",
-          "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.15.3, )",
           "Temporalio": "[1.18.0, )"
         }
       },
