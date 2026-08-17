@@ -13,7 +13,6 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
     /// <remarks>WARNING: AWS Lambda support is experimental.</remarks>
     public static class TemporalLambdaWorkerOptionsExtensions
     {
-        private const string DefaultCollectorEndpoint = "http://localhost:4317";
         private const string DefaultServiceName = "temporal-lambda-worker";
         private const string LambdaFunctionNameEnvironmentVariable = "AWS_LAMBDA_FUNCTION_NAME";
 
@@ -80,22 +79,24 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
             LambdaWorkerOpenTelemetryOptions? options = null)
         {
             options ??= new LambdaWorkerOpenTelemetryOptions();
-            return OpenTelemetryConfiguration.ResolveOptions(
+            var collectorEndpoint = OpenTelemetryConfiguration.FirstNonWhitespaceOrDefault(
                 new string?[]
                 {
                     options.CollectorEndpoint,
                     Environment.GetEnvironmentVariable(
                         OpenTelemetryConfiguration.OtlpEndpointEnvironmentVariable),
-                    DefaultCollectorEndpoint,
-                },
+                }) ?? OpenTelemetryConfiguration.DefaultOtlpEndpoint;
+            var serviceName = OpenTelemetryConfiguration.FirstNonWhitespaceOrDefault(
                 new string?[]
                 {
                     options.ServiceName,
                     Environment.GetEnvironmentVariable(
                         OpenTelemetryConfiguration.ServiceNameEnvironmentVariable),
                     Environment.GetEnvironmentVariable(LambdaFunctionNameEnvironmentVariable),
-                    DefaultServiceName,
-                },
+                }) ?? DefaultServiceName;
+            return OpenTelemetryConfiguration.ResolveOptions(
+                collectorEndpoint,
+                serviceName,
                 options.MetricsExportInterval,
                 nameof(options));
         }

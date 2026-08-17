@@ -12,9 +12,11 @@ using TemporalOpenTelemetry = Temporalio.Extensions.OpenTelemetry;
 public class TemporalLambdaWorkerOptionsExtensionsTests
 {
     private const string OTelExporterOtlpEndpointEnvironmentVariable =
-        "OTEL_EXPORTER_OTLP_ENDPOINT";
+        TemporalOpenTelemetry.OpenTelemetryConfiguration.OtlpEndpointEnvironmentVariable;
 
-    private const string OTelServiceNameEnvironmentVariable = "OTEL_SERVICE_NAME";
+    private const string OTelServiceNameEnvironmentVariable =
+        TemporalOpenTelemetry.OpenTelemetryConfiguration.ServiceNameEnvironmentVariable;
+
     private const string LambdaFunctionNameEnvironmentVariable = "AWS_LAMBDA_FUNCTION_NAME";
 
     [Fact]

@@ -8,6 +8,13 @@ using TemporalOpenTelemetry = Temporalio.Extensions.OpenTelemetry;
 public class OpenTelemetryConfigurationTests
 {
     [Fact]
+    public void FirstNonWhitespaceOrDefault_NoValue_ReturnsNull()
+    {
+        Assert.Null(TemporalOpenTelemetry.OpenTelemetryConfiguration.
+            FirstNonWhitespaceOrDefault(new string?[] { null, string.Empty, " ", "\t" }));
+    }
+
+    [Fact]
     public async Task ForceFlushAsync_RunsForceFlushOffCallerThread()
     {
         using var flushStarted = new ManualResetEventSlim();

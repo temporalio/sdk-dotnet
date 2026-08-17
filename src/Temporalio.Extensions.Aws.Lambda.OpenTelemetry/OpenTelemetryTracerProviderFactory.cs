@@ -22,8 +22,7 @@ namespace Temporalio.Extensions.OpenTelemetry
             Action<TracerProviderBuilder>? configureBuilder = null)
         {
             var builder = Sdk.CreateTracerProviderBuilder();
-            configureBuilder?.Invoke(builder);
-            return builder.
+            builder = builder.
                 SetResourceBuilder(
                     ResourceBuilder.CreateDefault().AddService(options.ServiceName)).
                 AddSource(
@@ -37,8 +36,9 @@ namespace Temporalio.Extensions.OpenTelemetry
 #pragma warning disable CS0618 // Provider extensions use OTLP gRPC collectors on localhost:4317.
                     exporterOptions.Protocol = OtlpExportProtocol.Grpc;
 #pragma warning restore CS0618
-                }).
-                Build();
+                });
+            configureBuilder?.Invoke(builder);
+            return builder.Build();
         }
     }
 }

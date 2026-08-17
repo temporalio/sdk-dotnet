@@ -24,19 +24,24 @@ namespace Temporalio.Extensions.OpenTelemetry
         /// </summary>
         internal const string OtlpEndpointEnvironmentVariable = "OTEL_EXPORTER_OTLP_ENDPOINT";
 
+        /// <summary>
+        /// Default endpoint for OTLP over gRPC.
+        /// </summary>
+        internal const string DefaultOtlpEndpoint = "http://localhost:4317";
+
         private const string ServiceNameResourceAttribute = "service.name";
 
         /// <summary>
-        /// Resolves common options from provider-ordered candidate values.
+        /// Resolves common options from provider-resolved values.
         /// </summary>
-        /// <param name="collectorEndpointCandidates">Collector endpoint candidates in priority order.</param>
-        /// <param name="serviceNameCandidates">Service name candidates in priority order.</param>
+        /// <param name="collectorEndpoint">Collector endpoint.</param>
+        /// <param name="serviceName">Service name.</param>
         /// <param name="metricsExportInterval">Metrics export interval.</param>
         /// <param name="optionsParameterName">Public options parameter name for validation errors.</param>
         /// <returns>Resolved OpenTelemetry options.</returns>
         internal static ResolvedOpenTelemetryOptions ResolveOptions(
-            IEnumerable<string?> collectorEndpointCandidates,
-            IEnumerable<string?> serviceNameCandidates,
+            string collectorEndpoint,
+            string serviceName,
             TimeSpan metricsExportInterval,
             string optionsParameterName)
         {
@@ -48,10 +53,18 @@ namespace Temporalio.Extensions.OpenTelemetry
             }
 
             return new ResolvedOpenTelemetryOptions(
-                new Uri(FirstNonEmpty(collectorEndpointCandidates)),
-                FirstNonEmpty(serviceNameCandidates),
+                new Uri(collectorEndpoint),
+                serviceName,
                 metricsExportInterval);
         }
+
+        /// <summary>
+        /// Returns the first non-whitespace value, or null if no such value exists.
+        /// </summary>
+        /// <param name="values">Candidate values in priority order.</param>
+        /// <returns>The first non-whitespace value, or null.</returns>
+        internal static string? FirstNonWhitespaceOrDefault(IEnumerable<string?> values) =>
+            values.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
 
         /// <summary>
         /// Applies the standard Temporal runtime and tracing interceptor configuration.
@@ -69,7 +82,10 @@ namespace Temporalio.Extensions.OpenTelemetry
         /// <summary>
         /// Force-flushes a tracer provider without blocking the caller's thread.
         /// </summary>
-        /// <param name="forceFlush">Function that force-flushes a provider.</param>
+        /// <param name="forceFlush">
+        /// Function accepting a timeout in milliseconds and returning whether the flush completed
+        /// within that timeout.
+        /// </param>
         /// <param name="flushTimeout">Maximum time for the provider flush.</param>
         /// <param name="cancellationToken">Cancellation token for waiting on the flush.</param>
         /// <returns>A task for the flush.</returns>
@@ -94,9 +110,6 @@ namespace Temporalio.Extensions.OpenTelemetry
                 flushTask.Forget();
             }
         }
-
-        private static string FirstNonEmpty(IEnumerable<string?> values) =>
-            values.First(value => !string.IsNullOrEmpty(value))!;
 
         private static List<IClientInterceptor> AddTracingInterceptor(
             IReadOnlyCollection<IClientInterceptor>? interceptors)

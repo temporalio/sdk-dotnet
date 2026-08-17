@@ -13,7 +13,6 @@ namespace Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry
     /// <remarks>WARNING: Google Cloud Run support is experimental.</remarks>
     public static class TemporalClientConnectOptionsExtensions
     {
-        private const string DefaultCollectorEndpoint = "http://localhost:4317";
         private const string DefaultServiceName = "temporal-worker";
         private const string CloudRunWorkerPoolEnvironmentVariable = "CLOUD_RUN_WORKER_POOL";
         private const string CloudRunServiceEnvironmentVariable = "K_SERVICE";
@@ -67,14 +66,14 @@ namespace Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry
             GoogleCloudRunOpenTelemetryOptions? options = null)
         {
             options ??= new GoogleCloudRunOpenTelemetryOptions();
-            return OpenTelemetryConfiguration.ResolveOptions(
+            var collectorEndpoint = OpenTelemetryConfiguration.FirstNonWhitespaceOrDefault(
                 new string?[]
                 {
                     options.CollectorEndpoint,
                     Environment.GetEnvironmentVariable(
                         OpenTelemetryConfiguration.OtlpEndpointEnvironmentVariable),
-                    DefaultCollectorEndpoint,
-                },
+                }) ?? OpenTelemetryConfiguration.DefaultOtlpEndpoint;
+            var serviceName = OpenTelemetryConfiguration.FirstNonWhitespaceOrDefault(
                 new string?[]
                 {
                     options.ServiceName,
@@ -82,8 +81,10 @@ namespace Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry
                         OpenTelemetryConfiguration.ServiceNameEnvironmentVariable),
                     Environment.GetEnvironmentVariable(CloudRunWorkerPoolEnvironmentVariable),
                     Environment.GetEnvironmentVariable(CloudRunServiceEnvironmentVariable),
-                    DefaultServiceName,
-                },
+                }) ?? DefaultServiceName;
+            return OpenTelemetryConfiguration.ResolveOptions(
+                collectorEndpoint,
+                serviceName,
                 options.MetricsExportInterval,
                 nameof(options));
         }

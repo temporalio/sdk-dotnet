@@ -11,9 +11,11 @@ using TemporalOpenTelemetry = Temporalio.Extensions.OpenTelemetry;
 public class TemporalClientConnectOptionsExtensionsTests
 {
     private const string OTelExporterOtlpEndpointEnvironmentVariable =
-        "OTEL_EXPORTER_OTLP_ENDPOINT";
+        TemporalOpenTelemetry.OpenTelemetryConfiguration.OtlpEndpointEnvironmentVariable;
 
-    private const string OTelServiceNameEnvironmentVariable = "OTEL_SERVICE_NAME";
+    private const string OTelServiceNameEnvironmentVariable =
+        TemporalOpenTelemetry.OpenTelemetryConfiguration.ServiceNameEnvironmentVariable;
+
     private const string CloudRunWorkerPoolEnvironmentVariable = "CLOUD_RUN_WORKER_POOL";
     private const string CloudRunServiceEnvironmentVariable = "K_SERVICE";
 
@@ -118,17 +120,22 @@ public class TemporalClientConnectOptionsExtensionsTests
         using var env = new EnvironmentScope(
             KeyValuePair.Create<string, string?>(
                 OTelExporterOtlpEndpointEnvironmentVariable,
-                null),
+                " "),
             KeyValuePair.Create<string, string?>(
                 OTelServiceNameEnvironmentVariable,
-                null),
+                "\t"),
             KeyValuePair.Create<string, string?>(
                 CloudRunWorkerPoolEnvironmentVariable,
                 null),
             KeyValuePair.Create<string, string?>(
                 CloudRunServiceEnvironmentVariable,
                 null));
-        var resolved = TemporalClientConnectOptionsExtensions.ResolveOptions();
+        var resolved = TemporalClientConnectOptionsExtensions.ResolveOptions(
+            new GoogleCloudRunOpenTelemetryOptions
+            {
+                CollectorEndpoint = "\r\n",
+                ServiceName = " ",
+            });
 
         Assert.Equal(new Uri("http://localhost:4317"), resolved.CollectorEndpoint);
         Assert.Equal("temporal-worker", resolved.ServiceName);
