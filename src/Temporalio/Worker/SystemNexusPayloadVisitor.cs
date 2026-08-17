@@ -11,33 +11,11 @@ namespace Temporalio.Worker
 {
     internal static partial class SystemNexusPayloadVisitor
     {
-        private static readonly BinaryProtoConverter ProtoPayloadConverter = new();
-
         internal delegate Task PayloadVisitor(Payload payload);
 
         internal delegate Task PayloadsVisitor(RepeatedField<Payload> payloads);
 
         internal delegate Task EnvelopeVisitor(Payload payload);
-
-        internal static bool TryToInputPayload(
-            string? endpoint,
-            object? value,
-            out Payload payload)
-        {
-            payload = null!;
-            if (!IsSystemNexusEndpoint(endpoint))
-            {
-                return false;
-            }
-
-            if (!ProtoPayloadConverter.TryToPayload(value, out var converted) || converted == null)
-            {
-                return false;
-            }
-
-            payload = converted;
-            return true;
-        }
 
         internal static Task<bool> TryVisitInputAsync(
             string? endpoint,

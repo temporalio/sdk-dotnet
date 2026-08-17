@@ -200,7 +200,7 @@ static void GeneratePayloadVisitor(
     builder.AppendLine("            return true;");
     builder.AppendLine("        }");
     builder.AppendLine();
-    builder.AppendLine("        private static bool IsSystemNexusEndpoint(string? endpoint) => endpoint == TemporalSystemEndpoint;");
+    builder.AppendLine("        internal static bool IsSystemNexusEndpoint(string? endpoint) => endpoint == TemporalSystemEndpoint;");
     builder.AppendLine();
 
     foreach (var operation in operationMessages)

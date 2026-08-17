@@ -19,6 +19,12 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### Added
+
+- Added `SystemNexusConverterContext`, which exposes the application's original payload and failure
+  converters while a System Nexus transfer type converter is executing. This lets generated System
+  Nexus transfer types serialize nested values without recursively applying their own transfer hooks.
+
 ### Changed
 
 - A non-retryable `ApplicationFailureException` with error type `PayloadValidationError` thrown by a
