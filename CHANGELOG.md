@@ -19,6 +19,16 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### Changed
+
+- A non-retryable `ApplicationFailureException` with error type `PayloadValidationError` thrown by a
+  payload codec or payload converter while decoding Nexus operation input is now reported as a
+  non-retryable `BadRequest` handler exception (with the application failure as its cause) instead of
+  an `Internal` one. This lets a data converter signal that the input itself is invalid. The handler
+  exception is reported as `Invalid operation input`, which is distinct from the `failed to decode
+  Nexus operation input` message used when decoding itself fails. Application failures of any other
+  error type, and retryable `PayloadValidationError` failures, keep their existing behavior.
+
 ## [1.18.0] - 2026-08-13
 
 ### :boom: Breaking Changes
