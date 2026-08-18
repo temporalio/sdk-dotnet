@@ -88,7 +88,9 @@ public class ActivityScopeTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "The host-created client omits Cloud TLS and authentication options.")]
     public async Task ActivityScope_CustomInstance_IsAccessible()
     {
         // Create the host

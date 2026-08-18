@@ -756,7 +756,9 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Requires Cloud Nexus endpoint setup and cleanup.")]
     public async Task TracingInterceptor_Nexus_HasTracing()
     {
         // Create Nexus endpoint

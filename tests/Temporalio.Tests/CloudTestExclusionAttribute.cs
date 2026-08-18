@@ -8,7 +8,13 @@ using Xunit.Sdk;
     "Temporalio.Tests")]
 public sealed class CloudTestExclusionAttribute : Attribute, ITraitAttribute
 {
-    public CloudTestExclusionAttribute(CloudTestExclusionReason reason) => Reason = reason;
+    public CloudTestExclusionAttribute(CloudTestExclusionReason reason, string note)
+    {
+        Reason = reason;
+        Note = note;
+    }
 
     public CloudTestExclusionReason Reason { get; }
+
+    public string Note { get; }
 }

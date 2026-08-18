@@ -66,7 +66,9 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "The host-created client omits Cloud TLS and authentication options.")]
     public async Task TemporalWorkerService_ExecuteAsync_SimpleWorker()
     {
         using var loggerFactory = new TestUtils.LogCaptureFactory(NullLoggerFactory.Instance);
@@ -167,7 +169,9 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "The secondary host-created client omits Cloud TLS and authentication options.")]
     public async Task TemporalWorkerService_ExecuteAsync_MultipleWorkers()
     {
         var taskQueue1 = $"tq-{Guid.NewGuid()}";
@@ -238,7 +242,9 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    [CloudTestExclusion(CloudTestExclusionReason.RequiresLocalServer)]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresLocalServer,
+        "Starts a second local server to verify worker client replacement.")]
     public async Task TemporalWorkerService_WorkerClientReplacement_UsesNewClient()
     {
         // We are going to start a second ephemeral server and then replace the client. So we will

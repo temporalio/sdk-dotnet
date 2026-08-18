@@ -7,7 +7,7 @@ public sealed class CloudTestExclusionDiscoverer : ITraitDiscoverer
 {
     public IEnumerable<KeyValuePair<string, string>> GetTraits(IAttributeInfo traitAttribute)
     {
-        var reason = (CloudTestExclusionReason)traitAttribute.GetConstructorArguments().Single();
+        var reason = (CloudTestExclusionReason)traitAttribute.GetConstructorArguments().First();
         if (!Enum.IsDefined(typeof(CloudTestExclusionReason), reason))
         {
             throw new InvalidOperationException($"Unknown exclusion reason: {reason}");

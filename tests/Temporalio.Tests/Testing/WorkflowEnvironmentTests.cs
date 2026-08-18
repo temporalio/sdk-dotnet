@@ -13,7 +13,9 @@ using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
 
-[CloudTestExclusion(CloudTestExclusionReason.RequiresLocalServer)]
+[CloudTestExclusion(
+    CloudTestExclusionReason.RequiresLocalServer,
+    "Covers local and time-skipping test-server APIs.")]
 public class WorkflowEnvironmentTests : TestBase
 {
     // Time-skipping test server only runs on x86/x64

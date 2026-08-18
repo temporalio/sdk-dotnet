@@ -50,22 +50,30 @@ public class CloudTestExclusionTests
             attr => attr.AttributeType == typeof(CloudTestExclusionAttribute)));
     }
 
-    [CloudTestExclusion(CloudTestExclusionReason.RequiresCloudProvisioning)]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresCloudProvisioning,
+        "Provides attribute metadata for the discoverer test.")]
     private void RequiresCloudProvisioning()
     {
     }
 
-    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Provides attribute metadata for the discoverer test.")]
     private void NeedsCloudAdaptation()
     {
     }
 
-    [CloudTestExclusion(CloudTestExclusionReason.RequiresLocalServer)]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresLocalServer,
+        "Provides attribute metadata for the discoverer test.")]
     private void RequiresLocalServer()
     {
     }
 
-    [CloudTestExclusion((CloudTestExclusionReason)int.MaxValue)]
+    [CloudTestExclusion(
+        (CloudTestExclusionReason)int.MaxValue,
+        "Provides attribute metadata for the discoverer test.")]
     private void UnknownReason()
     {
     }

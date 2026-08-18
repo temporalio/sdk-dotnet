@@ -11,7 +11,9 @@ using Xunit.Abstractions;
 
 namespace Temporalio.Tests.Extensions.Hosting;
 
-[CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
+[CloudTestExclusion(
+    CloudTestExclusionReason.NeedsCloudAdaptation,
+    "Requires Cloud Nexus endpoint setup and cleanup.")]
 public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
 {
     public NexusWorkerServiceTests(ITestOutputHelper output, WorkflowEnvironment env)
