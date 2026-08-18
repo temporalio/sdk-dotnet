@@ -18,6 +18,8 @@ to docs, or any other relevant information.
 # Changelog
 
 ## [Unreleased]
+
+### Added                   — new features
 - Support Workflow Queries as Nexus operations. A query issued from inside a Nexus operation handler
   now propagates the link the server returns for the workflow that processed it, so the caller's
   Nexus operation event points back at the queried workflow. Requires a server that populates
@@ -41,6 +43,17 @@ to docs, or any other relevant information.
 - Workflow task completions larger than the gRPC request size limit are now paginated
   automatically when the namespace supports it. Paginated workflow task completions require
   Temporal Server 1.32.0 or later.
+### Changed                 — changes in existing functionality
+
+### Deprecated              — soon-to-be-removed features
+
+### :boom: Breaking Changes — removed or backwards-incompatible features
+
+### Fixed                   — notable bug fixes
+
+### Security                — notable security fixes
+
+
 
 ### Changed
 
