@@ -34,11 +34,10 @@ public class CloudTestExclusionTests
     [Fact]
     public void GetTraits_UnknownReason_Throws()
     {
-        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
+        Assert.Throws<InvalidOperationException>(() =>
             new CloudTestExclusionDiscoverer().
                 GetTraits(GetAttributeInfo(nameof(UnknownReason))).
                 ToList());
-        Assert.Equal("reason", exception.ParamName);
     }
 
     private static ReflectionAttributeInfo GetAttributeInfo(string methodName)

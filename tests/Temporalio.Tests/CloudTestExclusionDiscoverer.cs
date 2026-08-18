@@ -15,7 +15,7 @@ public sealed class CloudTestExclusionDiscoverer : ITraitDiscoverer
                 nameof(CloudTestExclusionReason.NeedsCloudAdaptation),
             CloudTestExclusionReason.RequiresLocalServer =>
                 nameof(CloudTestExclusionReason.RequiresLocalServer),
-            _ => throw new ArgumentOutOfRangeException(nameof(reason), reason, "Unknown reason"),
+            _ => throw new InvalidOperationException($"Unknown exclusion reason: {reason}"),
         };
         yield return new("CloudTest", "Excluded");
         yield return new("CloudTestExclusionReason", reasonName);
