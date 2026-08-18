@@ -301,24 +301,28 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     public async Task ExecuteNexusOperationAsync_SyncTimeout_FailsAsExpected()
     {
         var cancellationReasonSource = new TaskCompletionSource<string?>();
+        var neverCompletedSource = new TaskCompletionSource();
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
                 OperationHandler.Sync<string, string>(async (ctx, name) =>
                 {
                     try
                     {
-                        await Task.Delay(40000, ctx.CancellationToken);
-                        cancellationReasonSource.SetResult("none");
+                        await neverCompletedSource.Task.WaitAsync(ctx.CancellationToken);
+                        cancellationReasonSource.TrySetResult("none");
                         return "done";
                     }
                     catch (TaskCanceledException)
                     {
-                        cancellationReasonSource.SetResult(ctx.CancellationReason);
-                        return "canceled";
+                        cancellationReasonSource.TrySetResult(ctx.CancellationReason);
+                        // A successful sync result here would race the server's timeout and could
+                        // complete the operation, leaving the workflow to succeed. Throwing makes
+                        // the server retry instead, re-invoking this handler, hence TrySetResult.
+                        throw;
                     }
                     catch (Exception)
                     {
-                        cancellationReasonSource.SetResult("other exception");
+                        cancellationReasonSource.TrySetResult("other exception");
                         throw;
                     }
                 })));
@@ -401,24 +405,28 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     public async Task ExecuteNexusOperationAsync_ScheduleToStartTimeout_FailsAsExpected()
     {
         var cancellationReasonSource = new TaskCompletionSource<string?>();
+        var neverCompletedSource = new TaskCompletionSource();
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
                 OperationHandler.Sync<string, string>(async (ctx, name) =>
                 {
                     try
                     {
-                        await Task.Delay(40000, ctx.CancellationToken);
-                        cancellationReasonSource.SetResult("none");
+                        await neverCompletedSource.Task.WaitAsync(ctx.CancellationToken);
+                        cancellationReasonSource.TrySetResult("none");
                         return "done";
                     }
                     catch (TaskCanceledException)
                     {
-                        cancellationReasonSource.SetResult(ctx.CancellationReason);
-                        return "canceled";
+                        cancellationReasonSource.TrySetResult(ctx.CancellationReason);
+                        // A successful sync result here would race the server's timeout and could
+                        // complete the operation, leaving the workflow to succeed. Throwing makes
+                        // the server retry instead, re-invoking this handler, hence TrySetResult.
+                        throw;
                     }
                     catch (Exception)
                     {
-                        cancellationReasonSource.SetResult("other exception");
+                        cancellationReasonSource.TrySetResult("other exception");
                         throw;
                     }
                 })));
