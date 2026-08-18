@@ -54,9 +54,6 @@ to docs, or any other relevant information.
   than being retried until the operation times out. `WorkflowQueryFailedException` and
   `WorkflowQueryRejectedException` map to a non-retryable `BadRequest` handler error, since neither
   outcome can change on a retry.
-
-### Changed
-
 - A non-retryable `ApplicationFailureException` with error type `PayloadValidationError` thrown by a
   payload codec or payload converter while decoding Nexus operation input is now reported as a
   non-retryable `BadRequest` handler exception (with the application failure as its cause) instead of
