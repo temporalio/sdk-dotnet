@@ -18,6 +18,10 @@ to docs, or any other relevant information.
 # Changelog
 
 ## [Unreleased]
+- Support Workflow Queries as Nexus operations. A query issued from inside a Nexus operation handler
+  now propagates the link the server returns for the workflow that processed it, so the caller's
+  Nexus operation event points back at the queried workflow. Requires a server that populates
+  `QueryWorkflowResponse.link`; older servers leave it unset and nothing is propagated.
 
 ### Added
 
@@ -87,10 +91,6 @@ to docs, or any other relevant information.
   pollers are left unchanged.
 - Workers now log a [TMPRL1104] warning when a workflow task takes longer than 5 seconds. Set
   `TEMPORAL_WORKFLOW_TASK_DURATION_WARN_SECONDS` to change the threshold.
-- Support Workflow Queries as Nexus operations. A query issued from inside a Nexus operation handler
-  now propagates the link the server returns for the workflow that processed it, so the caller's
-  Nexus operation event points back at the queried workflow. Requires a server that populates
-  `QueryWorkflowResponse.link`; older servers leave it unset and nothing is propagated.
 
 ### Changed
 
