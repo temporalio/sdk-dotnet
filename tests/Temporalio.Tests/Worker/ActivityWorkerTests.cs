@@ -370,15 +370,15 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteActivityAsync_CaughtReset()
     {
-        var activityReached = new TaskCompletionSource();
+        var activityReached = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         [Activity]
         async Task<string> CatchResetAsync()
         {
-            activityReached.SetResult();
             var ctx = ActivityExecutionContext.Current;
             while (!ctx.CancellationToken.IsCancellationRequested)
             {
                 ctx.Heartbeat("some-heartbeat-details");
+                activityReached.TrySetResult();
                 await Task.Delay(300);
             }
             return $"Cancel reason: {ctx.CancelReason}, reset: {ctx.CancellationDetails?.IsReset}, heartbeat details: {ctx.Info.HeartbeatDetails}";
@@ -389,7 +389,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             heartbeatTimeout: TimeSpan.FromSeconds(1),
             afterStarted: async handle =>
             {
-                // Wait for activity to be reached, then reset the activity
+                // Queue the first heartbeat before resetting so time skipping cannot trigger its timeout.
                 await activityReached.Task.WaitAsync(TimeSpan.FromSeconds(20));
                 await Client.WorkflowService.ResetActivityAsync(new()
                 {
