@@ -129,7 +129,13 @@ jobs:
           TEMPORAL_TEST_ENV_CONFIG_SERVER: true
           TEMPORAL_ADDRESS: ${{ steps.create-cloud-namespace.outputs.namespace }}.tmprl.cloud:7233
           TEMPORAL_NAMESPACE: ${{ steps.create-cloud-namespace.outputs.namespace }}
-        run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.ExecuteWorkflowAsync_Simple_Succeeds"
+        run: |
+          dotnet test tests/Temporalio.Tests/Temporalio.Tests.csproj --no-build \
+            --filter "CloudTest!=Excluded" \
+            --logger "console;verbosity=detailed" \
+            --logger "trx;LogFilePrefix=cloud-mtls-results" \
+            --results-directory tests/Temporalio.Tests/CloudTestResults \
+            --blame-crash -v n --blame-hang-timeout 10m
 
       - name: Delete Cloud namespace
         id: delete-cloud-namespace
@@ -143,6 +149,15 @@ jobs:
         if: ${{ always() && steps.delete-cloud-namespace.outcome == 'failure' }}
         shell: bash
         run: echo "::warning title=Cloud namespace cleanup failed::Failed to delete Cloud namespace ${{ steps.create-cloud-namespace.outputs.namespace }}"
+
+      - name: Upload Cloud test results
+        if: ${{ !cancelled() && steps.cloud-test-eligibility.outputs.enabled == 'true' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: cloud-mtls-test-results-${{ matrix.os }}
+          path: tests/Temporalio.Tests/CloudTestResults/**/*.trx
+          if-no-files-found: warn
+          overwrite: true
 
       - name: Test cloud (API key)
         # Uses API key auth to test auto-TLS feature (TLS auto-enabled when API key provided).
