@@ -41,16 +41,6 @@ to docs, or any other relevant information.
   `WorkflowQueryRejectedException` map to a non-retryable `BadRequest` handler error, since neither
   outcome can change on a retry.
 
-### Deprecated              — soon-to-be-removed features
-
-### :boom: Breaking Changes — removed or backwards-incompatible features
-
-### Fixed                   — notable bug fixes
-
-### Security                — notable security fixes
-
-
-
 ### Changed
 
 - A non-retryable `ApplicationFailureException` with error type `PayloadValidationError` thrown by a
