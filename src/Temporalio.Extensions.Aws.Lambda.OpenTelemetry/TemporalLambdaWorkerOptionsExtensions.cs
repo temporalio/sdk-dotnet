@@ -1,15 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using OpenTelemetry;
-using OpenTelemetry.Exporter;
-using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Temporalio.Client.Interceptors;
-using Temporalio.Runtime;
-using TemporalOpenTelemetry = Temporalio.Extensions.OpenTelemetry;
+using OpenTelemetryConfiguration = Temporalio.Extensions.OpenTelemetry.OpenTelemetryConfiguration;
+using OpenTelemetryTracerProviderFactory = Temporalio.Extensions.OpenTelemetry.OpenTelemetryTracerProviderFactory;
+using ResolvedOpenTelemetryOptions = Temporalio.Extensions.OpenTelemetry.ResolvedOpenTelemetryOptions;
 
 namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
 {
@@ -20,14 +13,8 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
     /// <remarks>WARNING: AWS Lambda support is experimental.</remarks>
     public static class TemporalLambdaWorkerOptionsExtensions
     {
-        private const string DefaultCollectorEndpoint = "http://localhost:4317";
         private const string DefaultServiceName = "temporal-lambda-worker";
-        private const string OTelExporterOtlpEndpointEnvironmentVariable =
-            "OTEL_EXPORTER_OTLP_ENDPOINT";
-
-        private const string OTelServiceNameEnvironmentVariable = "OTEL_SERVICE_NAME";
         private const string LambdaFunctionNameEnvironmentVariable = "AWS_LAMBDA_FUNCTION_NAME";
-        private const string ServiceNameResourceAttribute = "service.name";
 
         /// <summary>
         /// Configure OpenTelemetry metrics and tracing with AWS Lambda defaults.
@@ -53,12 +40,13 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
 
             var resolvedOptions = ResolveOptions(openTelemetryOptions);
 #pragma warning disable CA2000 // The per-invocation shutdown hook owns provider disposal.
-            var tracerProvider = CreateTracerProvider(resolvedOptions);
+            var tracerProvider = OpenTelemetryTracerProviderFactory.
+                CreateTracerProvider(resolvedOptions, builder => builder.AddXRayTraceId());
 #pragma warning restore CA2000
 
-            options.ClientOptions.Interceptors = AddTracingInterceptor(
-                options.ClientOptions.Interceptors);
-            options.ClientOptions.Runtime = CreateRuntime(resolvedOptions);
+            OpenTelemetryConfiguration.ApplyToClientOptions(
+                options.ClientOptions,
+                resolvedOptions);
             options.AddShutdownHook(
                 async cancellationToken =>
                 {
@@ -70,8 +58,8 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
                     // resources before the next warm invocation can accumulate another provider.
                     try
                     {
-                        await ForceFlushAsync(
-                            tracerProvider,
+                        await OpenTelemetryConfiguration.ForceFlushAsync(
+                            tracerProvider.ForceFlush,
                             options.ShutdownDeadlineBuffer,
                             cancellationToken).ConfigureAwait(false);
                     }
@@ -87,130 +75,30 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
         /// </summary>
         /// <param name="options">Options to resolve.</param>
         /// <returns>Resolved options.</returns>
-        internal static ResolvedLambdaWorkerOpenTelemetryOptions ResolveOptions(
+        internal static ResolvedOpenTelemetryOptions ResolveOptions(
             LambdaWorkerOpenTelemetryOptions? options = null)
         {
             options ??= new LambdaWorkerOpenTelemetryOptions();
-            if (options.MetricsExportInterval <= TimeSpan.Zero)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(options),
-                    "MetricsExportInterval must be greater than zero");
-            }
-
-            var serviceName = FirstNonEmpty(
-                options.ServiceName,
-                Environment.GetEnvironmentVariable(OTelServiceNameEnvironmentVariable),
-                Environment.GetEnvironmentVariable(LambdaFunctionNameEnvironmentVariable),
-                DefaultServiceName);
-            var collectorEndpoint = FirstNonEmpty(
-                options.CollectorEndpoint,
-                Environment.GetEnvironmentVariable(OTelExporterOtlpEndpointEnvironmentVariable),
-                DefaultCollectorEndpoint);
-
-            return new ResolvedLambdaWorkerOpenTelemetryOptions(
-                new Uri(collectorEndpoint),
+            var collectorEndpoint = OpenTelemetryConfiguration.FirstNonWhitespaceOrDefault(
+                new string?[]
+                {
+                    options.CollectorEndpoint,
+                    Environment.GetEnvironmentVariable(
+                        OpenTelemetryConfiguration.OtlpEndpointEnvironmentVariable),
+                }) ?? OpenTelemetryConfiguration.DefaultOtlpEndpoint;
+            var serviceName = OpenTelemetryConfiguration.FirstNonWhitespaceOrDefault(
+                new string?[]
+                {
+                    options.ServiceName,
+                    Environment.GetEnvironmentVariable(
+                        OpenTelemetryConfiguration.ServiceNameEnvironmentVariable),
+                    Environment.GetEnvironmentVariable(LambdaFunctionNameEnvironmentVariable),
+                }) ?? DefaultServiceName;
+            return OpenTelemetryConfiguration.ResolveOptions(
+                collectorEndpoint,
                 serviceName,
-                options.MetricsExportInterval);
-        }
-
-        /// <summary>
-        /// Force-flush the tracer provider asynchronously.
-        /// </summary>
-        /// <param name="tracerProvider">Tracer provider to flush.</param>
-        /// <param name="shutdownDeadlineBuffer">Maximum time to wait for the flush.</param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>A task for the flush.</returns>
-        internal static async Task ForceFlushAsync(
-            TracerProvider tracerProvider,
-            TimeSpan shutdownDeadlineBuffer,
-            CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return;
-            }
-
-            var flushTask = Task.Run(
-                () => tracerProvider.ForceFlush(ToTimeoutMilliseconds(shutdownDeadlineBuffer)));
-            try
-            {
-                await flushTask.WaitAsync(cancellationToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-            {
-                flushTask.Forget();
-            }
-        }
-
-        private static string FirstNonEmpty(params string?[] values) =>
-            values.First(value => !string.IsNullOrEmpty(value))!;
-
-        private static TracerProvider CreateTracerProvider(
-            ResolvedLambdaWorkerOpenTelemetryOptions options) =>
-            Sdk.CreateTracerProviderBuilder().
-                AddXRayTraceId().
-                SetResourceBuilder(
-                    ResourceBuilder.CreateDefault().AddService(options.ServiceName)).
-                AddSource(
-                    TemporalOpenTelemetry.TracingInterceptor.ClientSource.Name,
-                    TemporalOpenTelemetry.TracingInterceptor.WorkflowsSource.Name,
-                    TemporalOpenTelemetry.TracingInterceptor.ActivitiesSource.Name,
-                    TemporalOpenTelemetry.TracingInterceptor.NexusSource.Name).
-                AddOtlpExporter(exporterOptions =>
-                {
-                    exporterOptions.Endpoint = options.CollectorEndpoint;
-#pragma warning disable CS0618 // ADOT Lambda parity uses OTLP gRPC on localhost:4317.
-                    exporterOptions.Protocol = OtlpExportProtocol.Grpc;
-#pragma warning restore CS0618
-                }).
-                Build();
-
-        private static List<IClientInterceptor> AddTracingInterceptor(
-            IReadOnlyCollection<IClientInterceptor>? interceptors)
-        {
-            var newInterceptors = interceptors?.ToList() ?? new List<IClientInterceptor>();
-            newInterceptors.Add(new TemporalOpenTelemetry.TracingInterceptor());
-            return newInterceptors;
-        }
-
-        private static TemporalRuntime CreateRuntime(
-            ResolvedLambdaWorkerOpenTelemetryOptions options)
-        {
-            var openTelemetryOptions = new Temporalio.Runtime.OpenTelemetryOptions(
-                options.CollectorEndpoint)
-            {
-                MetricsExportInterval = options.MetricsExportInterval,
-                Protocol = OpenTelemetryProtocol.Grpc,
-            };
-            return new TemporalRuntime(new TemporalRuntimeOptions
-            {
-                Telemetry = new TelemetryOptions
-                {
-                    Metrics = new MetricsOptions(openTelemetryOptions)
-                    {
-                        GlobalTags = new[]
-                        {
-                            new KeyValuePair<string, string>(
-                                ServiceNameResourceAttribute,
-                                options.ServiceName),
-                        },
-                    },
-                },
-            });
-        }
-
-        private static int ToTimeoutMilliseconds(TimeSpan timeout)
-        {
-            if (timeout <= TimeSpan.Zero)
-            {
-                return 0;
-            }
-            if (timeout.TotalMilliseconds >= int.MaxValue)
-            {
-                return int.MaxValue;
-            }
-            return (int)timeout.TotalMilliseconds;
+                options.MetricsExportInterval,
+                nameof(options));
         }
     }
 }

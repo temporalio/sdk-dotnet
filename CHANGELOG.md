@@ -52,6 +52,11 @@ to docs, or any other relevant information.
 
 ### Added
 
+- Added the experimental `Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry` package, with
+  OpenTelemetry helpers (metrics + tracing over OTLP to a collector sidecar) for Temporal workers
+  running on Google Cloud Run. The Cloud Run and existing AWS Lambda helpers now share a
+  provider-neutral configuration layer for OTLP tracing, Temporal metrics and interceptors, and
+  shutdown flushing while retaining provider-specific defaults and lifecycle behavior.
 - Added experimental SDK payload converter support for values and target types that expose
   Temporal transfer type conversion hooks. This lets hook-aware types delegate
   their wire representation to the configured payload converter, preserving SDK

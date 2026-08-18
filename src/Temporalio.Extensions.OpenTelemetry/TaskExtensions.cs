@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
+namespace Temporalio.Extensions.OpenTelemetry
 {
     /// <summary>
     /// Task helpers for target frameworks without built-in cancellation-aware waiting.
@@ -18,7 +18,7 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
         /// <exception cref="ArgumentNullException"><paramref name="task" /> is null.</exception>
         /// <exception cref="OperationCanceledException">Cancellation is requested before the task completes.</exception>
 #pragma warning disable VSTHRD003 // This helper intentionally awaits a caller-owned task
-        public static async Task WaitAsync(this Task task, CancellationToken cancellationToken)
+        internal static async Task WaitAsync(this Task task, CancellationToken cancellationToken)
         {
             if (task == null)
             {
@@ -52,7 +52,7 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
         /// </summary>
         /// <param name="task">Task whose fault should be observed.</param>
         /// <exception cref="ArgumentNullException"><paramref name="task" /> is null.</exception>
-        public static void Forget(this Task task)
+        internal static void Forget(this Task task)
         {
             if (task == null)
             {
