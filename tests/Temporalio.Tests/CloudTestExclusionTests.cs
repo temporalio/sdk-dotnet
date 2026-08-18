@@ -8,8 +8,8 @@ public class CloudTestExclusionTests
 {
     [Theory]
     [InlineData(
-        nameof(CloudUnavailable),
-        nameof(CloudTestExclusionReason.CloudUnavailable))]
+        nameof(RequiresCloudProvisioning),
+        nameof(CloudTestExclusionReason.RequiresCloudProvisioning))]
     [InlineData(
         nameof(NeedsCloudAdaptation),
         nameof(CloudTestExclusionReason.NeedsCloudAdaptation))]
@@ -50,8 +50,8 @@ public class CloudTestExclusionTests
             attr => attr.AttributeType == typeof(CloudTestExclusionAttribute)));
     }
 
-    [CloudTestExclusion(CloudTestExclusionReason.CloudUnavailable)]
-    private void CloudUnavailable()
+    [CloudTestExclusion(CloudTestExclusionReason.RequiresCloudProvisioning)]
+    private void RequiresCloudProvisioning()
     {
     }
 

@@ -10,7 +10,8 @@ public sealed class CloudTestExclusionDiscoverer : ITraitDiscoverer
         var reason = (CloudTestExclusionReason)traitAttribute.GetConstructorArguments().Single();
         var reasonName = reason switch
         {
-            CloudTestExclusionReason.CloudUnavailable => nameof(CloudTestExclusionReason.CloudUnavailable),
+            CloudTestExclusionReason.RequiresCloudProvisioning =>
+                nameof(CloudTestExclusionReason.RequiresCloudProvisioning),
             CloudTestExclusionReason.NeedsCloudAdaptation =>
                 nameof(CloudTestExclusionReason.NeedsCloudAdaptation),
             CloudTestExclusionReason.RequiresLocalServer =>

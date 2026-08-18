@@ -1384,7 +1384,7 @@ To inventory excluded tests, filter on `CloudTest=Excluded`, or filter on `Cloud
 particular category:
 
 * `RequiresLocalServer` for tests of local server behavior
-* `CloudUnavailable` for functionality or permissions unavailable in Cloud CI
+* `RequiresCloudProvisioning` for functionality or permissions unavailable in Cloud CI
 * `NeedsCloudAdaptation` for otherwise compatible tests that still need adaptation
 
 The following environment variables can be set to override the environment:
