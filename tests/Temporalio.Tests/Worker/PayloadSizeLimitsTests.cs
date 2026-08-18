@@ -18,6 +18,7 @@ using Xunit.Abstractions;
 // [TMPRL1103] error log), the DisablePayloadErrorLimit opt-out lets the oversized payload reach
 // (and be rejected by) the server, and the connection's PayloadsWarnSize threshold produces a
 // forwarded [TMPRL1103] warning.
+[CloudTestExclusion(CloudTestExclusionReason.RequiresLocalServer)]
 public class PayloadSizeLimitsTests : TestBase
 {
     private const int PayloadErrorLimit = 10 * 1024;

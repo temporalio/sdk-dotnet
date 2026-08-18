@@ -11,6 +11,8 @@ namespace Temporalio.Tests.Common.EnvConfig
     /// Environment configuration tests following Python/TypeScript patterns for cross-SDK consistency.
     /// Comprehensive test suite covering all aspects of environment configuration.
     /// </summary>
+    // Tests whose controlled inputs are changed by the Cloud harness's process-wide TEMPORAL_*
+    // variables are excluded individually below.
     public class ClientConfigTests : TestBase
     {
         // Test fixtures matching Python/TypeScript patterns
@@ -58,6 +60,7 @@ client_key_data = ""client-key-data""
 
         // === PROFILE LOADING TESTS (7 tests) ===
         [Fact]
+        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_From_File_Default()
         {
             var source = DataSource.FromUTF8String(TomlConfigBase);
@@ -78,6 +81,7 @@ client_key_data = ""client-key-data""
         }
 
         [Fact]
+        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_From_File_Custom()
         {
             var source = DataSource.FromUTF8String(TomlConfigBase);
@@ -101,6 +105,7 @@ client_key_data = ""client-key-data""
         }
 
         [Fact]
+        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_From_Data_Default()
         {
             var source = DataSource.FromUTF8String(TomlConfigBase);
@@ -119,6 +124,7 @@ client_key_data = ""client-key-data""
         }
 
         [Fact]
+        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_From_Data_Custom()
         {
             var source = DataSource.FromUTF8String(TomlConfigBase);
@@ -417,6 +423,7 @@ x-custom-header = ""custom-value""
         }
 
         [Fact]
+        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void DefaultProfileNotFoundReturnsEmptyProfile()
         {
             var toml = @"
@@ -440,6 +447,7 @@ address = ""other-address""
 
         // === TLS CONFIGURATION TESTS (7 tests) ===
         [Fact]
+        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_Api_Key_Enables_Tls()
         {
             var toml = @"
@@ -466,6 +474,7 @@ api_key = ""my-api-key""
         }
 
         [Fact]
+        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_Tls_Options()
         {
             var source = DataSource.FromUTF8String(TomlConfigTlsDetailed);
@@ -501,6 +510,7 @@ api_key = ""my-api-key""
         }
 
         [Fact]
+        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_Tls_From_Paths()
         {
             var tempDir = Path.GetTempPath();
@@ -627,6 +637,7 @@ client_cert_data = ""some-data""
         }
 
         [Fact]
+        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_Tls_Client_Key_Fallback()
         {
             var toml = @"
@@ -832,6 +843,7 @@ server_name = ""should-be-ignored""
 
         // === INTEGRATION/E2E TESTS (6 tests) ===
         [Fact]
+        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void ClientConfigLoadClientConnectConfigWorksWithFilePathAndEnvOverrides()
         {
             var source = DataSource.FromUTF8String(TomlConfigBase);
@@ -859,6 +871,7 @@ server_name = ""should-be-ignored""
         }
 
         [Fact]
+        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Client_Connect_Config()
         {
             // Test the complete round-trip from config to connection options
@@ -903,6 +916,7 @@ authorization = ""Bearer test-token""
 
         // === E2E CLIENT CONNECTION TESTS (4 tests) ===
         [Fact]
+        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_E2e_Basic_Development_Profile_Client_Connection()
         {
             // Test basic development profile configuration for client connection
@@ -938,6 +952,7 @@ namespace = ""development""
         }
 
         [Fact]
+        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_E2e_Production_Tls_Api_Key_Client_Connection()
         {
             // Test production profile with TLS and API key for secure client connection
@@ -1026,6 +1041,7 @@ api_key = ""default-api-key""
         }
 
         [Fact]
+        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_E2e_Multi_Profile_Different_Client_Connections()
         {
             // Test that different profiles create different client connections appropriately

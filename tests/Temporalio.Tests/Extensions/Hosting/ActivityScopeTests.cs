@@ -88,6 +88,7 @@ public class ActivityScopeTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ActivityScope_CustomInstance_IsAccessible()
     {
         // Create the host

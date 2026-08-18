@@ -12,6 +12,7 @@ using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
 
+[CloudTestExclusion(CloudTestExclusionReason.CloudUnavailable)]
 public class TemporalClientNexusOperationTests : WorkflowEnvironmentTestBase
 {
     public TemporalClientNexusOperationTests(ITestOutputHelper output, WorkflowEnvironment env)

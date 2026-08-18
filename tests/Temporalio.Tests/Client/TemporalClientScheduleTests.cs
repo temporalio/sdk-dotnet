@@ -17,6 +17,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task CreateScheduleAsync_Basics_Succeeds()
     {
         await TestUtils.AssertNoSchedulesAsync(Client);
@@ -359,6 +360,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task CreateScheduleAsync_Backfill_CreatesProperActions()
     {
         await TestUtils.AssertNoSchedulesAsync(Client);

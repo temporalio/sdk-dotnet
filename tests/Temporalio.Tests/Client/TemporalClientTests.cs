@@ -60,6 +60,7 @@ public class TemporalClientTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.RequiresLocalServer)]
     public async Task ConnectAsync_Connection_AllGrpcCallsSupported()
     {
         // The approach we'll take here is to just start the dev server and reflectively make each

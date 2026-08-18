@@ -66,6 +66,7 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task TemporalWorkerService_ExecuteAsync_SimpleWorker()
     {
         using var loggerFactory = new TestUtils.LogCaptureFactory(NullLoggerFactory.Instance);
@@ -166,6 +167,7 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task TemporalWorkerService_ExecuteAsync_MultipleWorkers()
     {
         var taskQueue1 = $"tq-{Guid.NewGuid()}";
@@ -236,6 +238,7 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.RequiresLocalServer)]
     public async Task TemporalWorkerService_WorkerClientReplacement_UsesNewClient()
     {
         // We are going to start a second ephemeral server and then replace the client. So we will

@@ -459,6 +459,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.RequiresLocalServer)]
     public async Task ExecuteWorkflowAsync_HistoryInfo_IsAccurate()
     {
         await ExecuteWorkerAsync<HistoryInfoWorkflow>(async worker =>
@@ -1576,6 +1577,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteWorkflowAsync_SearchAttributes_ProperlyUpserted()
     {
         await EnsureSearchAttributesPresentAsync();
@@ -1633,6 +1635,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteWorkflowAsync_ChildWorkflowSearchAttributes_SetProperly()
     {
         await EnsureSearchAttributesPresentAsync();
@@ -1807,6 +1810,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteWorkflowAsync_ContinueAsNewSearchAttributes_SetProperly()
     {
         await EnsureSearchAttributesPresentAsync();
@@ -2932,6 +2936,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteWorkflowAsync_PatchSearchAttribute_ReturnsProperly()
     {
         await EnsureSearchAttributesPresentAsync();
@@ -7868,6 +7873,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteWorkflowAsync_ConverterContext_ProperlyAvailable()
     {
         // It is accepted that this does not test every pemutation of every way a payload converter,

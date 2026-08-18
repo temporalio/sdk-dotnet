@@ -95,6 +95,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_SimpleService_Succeeds()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -120,6 +121,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_ContextHasEndpoint()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -143,6 +145,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_SimpleWorkflow_Succeeds()
     {
         WorkflowRunOperationContext? capturedContext = null;
@@ -202,6 +205,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_WaitForeverWorkflow_CanBeCanceled()
     {
         // Build the worker options w/ the nexus service
@@ -298,6 +302,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_SyncTimeout_FailsAsExpected()
     {
         var cancellationReasonSource = new TaskCompletionSource<string?>();
@@ -342,6 +347,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_RequestDeadline_SetOnContext()
     {
         var requestDeadlineSource = new TaskCompletionSource<DateTime?>();
@@ -365,6 +371,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_OperationSummary_FoundInHistory()
     {
         string expectedSummary = "custom operation summary";
@@ -398,6 +405,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_ScheduleToStartTimeout_FailsAsExpected()
     {
         var cancellationReasonSource = new TaskCompletionSource<string?>();
@@ -442,6 +450,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_StartToCloseTimeout_FailsAsExpected()
     {
         // Build a workflow-backed async operation that will never complete
@@ -489,6 +498,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_SimpleWorkflow_ConflictPolicy()
     {
         // Example of a Nexus service that creates a second operation with the same ID and
@@ -560,6 +570,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_HandlerSignal_ForwardsInboundLinks()
     {
         // A target workflow that the handler will signal from inside the operation. The signal it
@@ -612,6 +623,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_HandlerStart_ForwardsInboundLinks()
     {
         // A handler that plain-starts a target workflow from inside the operation. The start request
@@ -663,6 +675,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [SkippableFact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_HandlerSignal_PropagatesBacklink()
     {
         // The backward direction is gated by the server's history.enableCHASMSignalBacklinks dynamic
@@ -726,6 +739,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [SkippableFact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_HandlerSignalsMultiple_PropagatesAllBacklinks()
     {
         // Integration-level counterpart to the unit-level accumulation tests: a single operation
@@ -803,6 +817,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [SkippableFact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_AsyncHandlerSignal_PropagatesBacklinkOnStarted()
     {
         // Backlink propagation for an async operation: the handler signals a target workflow (the
@@ -876,6 +891,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_BadArgs_FailsOperation()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -897,6 +913,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_Untyped_Succeeds()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -912,6 +929,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_InputManip_Succeeds()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -932,6 +950,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_ApplicationFailure_NonRetryable()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -957,6 +976,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_OperationException_ProperlyFails()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -979,6 +999,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_OperationExceptionWithCause_PreservesCauseChain()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -1009,6 +1030,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_OperationExceptionCanceled_ProperlyFails()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -1031,6 +1053,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_OperationExceptionCanceledWithCause_PreservesCauseChain()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -1059,6 +1082,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_HandlerException_ProperlyFails()
     {
         // Non-retryable
@@ -1083,6 +1107,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_ManualDefinition_Succeeds()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -1145,6 +1170,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_Interceptor_Reached()
     {
         var workflowId = $"wf-{Guid.NewGuid()}";
@@ -1179,6 +1205,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_ServiceNotFound_ProperlyFails()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -1201,6 +1228,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_OperationNotFound_ProperlyFails()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -1288,6 +1316,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_VoidTypes_Succeeds()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -1395,6 +1424,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_CancelWaitCompleted_ProperlyCancels()
     {
         var ret = await RunCancelOperationScenarioAsync(ICancelTypeService.Scenario.WaitCompletedTargetTimerAndRethrow);
@@ -1415,6 +1445,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_CancelWaitRequested_ProperlyCancels()
     {
         var ret = await RunCancelOperationScenarioAsync(ICancelTypeService.Scenario.WaitRequestedTargetHang);
@@ -1434,6 +1465,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_CancelWaitRequested_ProperlyFails()
     {
         // Confirm workflow fails trying to cancel
@@ -1446,6 +1478,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_CancelAbandon_ProperlyCancels()
     {
         var ret = await RunCancelOperationScenarioAsync(ICancelTypeService.Scenario.Abandon);
@@ -1465,6 +1498,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_CancelTryCancel_ProperlyCancels()
     {
         var ret = await RunCancelOperationScenarioAsync(ICancelTypeService.Scenario.TryCancelHandlerFail);
@@ -1562,6 +1596,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_CodecFailure_IsRetried()
     {
         var codec = new FailOnceCodec();
@@ -1619,6 +1654,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_NoValueInputWithCodec_Succeeds()
     {
         var newOptions = (TemporalClientOptions)Client.Options.Clone();
@@ -1666,6 +1702,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_ConverterFailure_IsNotRetried()
     {
         var newOptions = (TemporalClientOptions)Client.Options.Clone();
@@ -1732,6 +1769,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_CodecHandlerException_IsPassedThrough()
     {
         var newOptions = (TemporalClientOptions)Client.Options.Clone();
@@ -1800,6 +1838,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_ConverterHandlerException_IsPassedThrough()
     {
         var newOptions = (TemporalClientOptions)Client.Options.Clone();
@@ -1845,6 +1884,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_GenericHandler_StartWorkflow_Succeeds()
     {
         // Build the worker options w/ the nexus service using the new generic handler
@@ -1867,6 +1907,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_GenericHandler_Cancel_Succeeds()
     {
         // Build the worker options w/ the nexus service using the new generic handler
@@ -1900,6 +1941,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_GenericHandler_SyncResult_Succeeds()
     {
         // Build the worker options w/ a handler that returns a sync result
@@ -1918,6 +1960,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_GenericHandler_LinksAndContext_Populated()
     {
         // Capture the context and client passed to the generic handler so we can assert plumbing
@@ -1970,6 +2013,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_GenericHandler_CancelOperation_CancelsUnderlying()
     {
         // The default CancelWorkflowRunAsync should cancel the underlying workflow when the
@@ -2007,6 +2051,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_GenericHandler_CancelOverride_Invoked()
     {
         // Subclass with a CancelWorkflowRunAsync override; verify the override is used and
@@ -2046,6 +2091,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_GenericHandler_StartWorkflowByName_Succeeds()
     {
         // Use the by-name overload of TemporalNexusClient.StartWorkflowAsync
@@ -2068,6 +2114,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_GenericHandler_ConflictPolicy_UseExisting()
     {
         // Two operations with the same workflow ID + UseExisting policy attach to the same
@@ -2102,6 +2149,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_GenericHandler_NoInputOverload_Succeeds()
     {
         // Exercise the no-input [TemporalOperation] path (2-arg method signature)
@@ -2148,6 +2196,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_GenericHandler_StartActivity_Succeeds()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -2183,6 +2232,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_GenericHandler_StartActivityByName_Succeeds()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -2209,6 +2259,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_GenericHandler_CancelActivity_CancelsUnderlying()
     {
         ActivityStubs.WaitForCancelReached = new TaskCompletionSource();
@@ -2261,6 +2312,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_GenericHandler_CancelActivityOverride_Invoked()
     {
         ActivityStubs.WaitForCancelReached = new TaskCompletionSource();
@@ -2381,6 +2433,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_WorkflowStart()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -2405,6 +2458,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_SyncResult()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -2428,6 +2482,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_NoInput()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -2467,6 +2522,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_VoidTypes()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -2508,6 +2564,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_MixedWithHandlerFactory()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -2606,6 +2663,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_CompositeGenericInput()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -2695,6 +2753,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_BindsToInstance()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -2739,6 +2798,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task ExecuteNexusOperationAsync_TemporalOperationAttribute_ExceptionPropagatesUnwrapped()
     {
         // Compiled Expression call should propagate the user exception directly (no

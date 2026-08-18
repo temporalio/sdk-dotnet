@@ -15,6 +15,7 @@ using Xunit.Abstractions;
 /// End-to-end scaffold for UpdateWorkflow-backed Nexus operations, encoding the reviewer scenario
 /// punch-list from the feature's design.
 /// </summary>
+[CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
 public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
 {
     public NexusUpdateOperationTests(ITestOutputHelper output, WorkflowEnvironment env)

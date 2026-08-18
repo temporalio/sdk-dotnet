@@ -83,6 +83,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_SingletonNexusService_SingletonDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -99,6 +100,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_SingletonNexusService_ScopedDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -115,6 +117,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_SingletonNexusService_TransientDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -131,6 +134,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_ScopedNexusService_SingletonDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -147,6 +151,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_ScopedNexusService_ScopedDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -163,6 +168,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_ScopedNexusService_TransientDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -179,6 +185,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_TransientNexusService_SingletonDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -195,6 +202,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_TransientNexusService_ScopedDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -211,6 +219,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_TransientNexusService_TransientDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -248,6 +257,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     // fresh service instance) per operation call. Expected counts mirror the [NexusOperationHandler]
     // tests above.
     [Theory]
+    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     [InlineData(ServiceLifetime.Singleton, ServiceLifetime.Singleton, 2)]
     [InlineData(ServiceLifetime.Singleton, ServiceLifetime.Scoped, 2)]
     [InlineData(ServiceLifetime.Singleton, ServiceLifetime.Transient, 2)]

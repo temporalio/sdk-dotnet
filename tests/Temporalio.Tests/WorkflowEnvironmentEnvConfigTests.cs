@@ -3,6 +3,7 @@ namespace Temporalio.Tests;
 using Temporalio.Common.EnvConfig;
 using Xunit;
 
+[CloudTestExclusion(CloudTestExclusionReason.RequiresLocalServer)]
 public class WorkflowEnvironmentEnvConfigTests
 {
     [Fact]
