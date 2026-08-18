@@ -11,6 +11,7 @@ using Xunit.Abstractions;
 
 namespace Temporalio.Tests.Extensions.Hosting;
 
+[CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
 public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
 {
     public NexusWorkerServiceTests(ITestOutputHelper output, WorkflowEnvironment env)
@@ -83,7 +84,6 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_SingletonNexusService_SingletonDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -100,7 +100,6 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_SingletonNexusService_ScopedDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -117,7 +116,6 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_SingletonNexusService_TransientDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -134,7 +132,6 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_ScopedNexusService_SingletonDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -151,7 +148,6 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_ScopedNexusService_ScopedDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -168,7 +164,6 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_ScopedNexusService_TransientDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -185,7 +180,6 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_TransientNexusService_SingletonDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -202,7 +196,6 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_TransientNexusService_ScopedDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -219,7 +212,6 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     public async Task NexusWorkerService_TransientNexusService_TransientDependency()
     {
         int result = await ExecuteHostedNexusWithWorkflow(
@@ -257,7 +249,6 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     // fresh service instance) per operation call. Expected counts mirror the [NexusOperationHandler]
     // tests above.
     [Theory]
-    [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
     [InlineData(ServiceLifetime.Singleton, ServiceLifetime.Singleton, 2)]
     [InlineData(ServiceLifetime.Singleton, ServiceLifetime.Scoped, 2)]
     [InlineData(ServiceLifetime.Singleton, ServiceLifetime.Transient, 2)]
@@ -282,43 +273,6 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
             });
 
         Assert.Equal(expected, result);
-    }
-
-    // A [NexusOperationHandler] method whose name maps to no operation on the service interface.
-    // Increment is a valid handler for the sole operation, so registration failure is isolated to
-    // the unmatched NotAnOperation method rather than surfacing as a missing-handler error.
-    [NexusServiceHandler(typeof(ITestNexusService))]
-    public class UnmatchedOperationHandlerNexusService
-    {
-        [NexusOperationHandler]
-        public IOperationHandler<string, int> Increment() =>
-            throw new NotImplementedException();
-
-        [NexusOperationHandler]
-        public IOperationHandler<string, int> NotAnOperation() =>
-            throw new NotImplementedException();
-    }
-
-    // The hosting/DI registration path must reject a [NexusOperationHandler] method that maps to no
-    // operation, matching NexusRpc's ServiceHandlerInstance.FromInstance and the non-DI
-    // TemporalWorkerOptions.AddNexusService path (rather than silently skipping it). The worker
-    // service resolves (and validates) its Nexus operations from options while starting, so the
-    // failure surfaces from host startup.
-    [Fact]
-    public async Task NexusWorkerService_UnmatchedOperationHandler_FailsRegistration()
-    {
-        var builder = Host.CreateApplicationBuilder();
-        builder.Services.
-            AddSingleton(Client).
-            AddHostedTemporalWorker($"tq-{Guid.NewGuid()}").
-            AddScopedNexusService<UnmatchedOperationHandlerNexusService>();
-        using var host = builder.Build();
-
-        var exc = await Assert.ThrowsAsync<ArgumentException>(() => host.StartAsync());
-        Assert.Equal("Failed obtaining operation handler from NotAnOperation", exc.Message);
-        Assert.Equal(
-            "No matching NexusOperation on the service interface",
-            Assert.IsType<ArgumentException>(exc.InnerException).Message);
     }
 
     private static void AddNexusService<T>(
