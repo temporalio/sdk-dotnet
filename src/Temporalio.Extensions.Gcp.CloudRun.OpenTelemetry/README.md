@@ -57,9 +57,8 @@ catch (OperationCanceledException) when (shutdownToken.IsCancellationRequested)
 }
 finally
 {
-    var elapsed = shutdownToken.IsCancellationRequested ?
-        (await shutdownStarted.Task).Elapsed :
-        TimeSpan.Zero;
+    shutdownStarted.TrySetResult(Stopwatch.StartNew());
+    var elapsed = (await shutdownStarted.Task).Elapsed;
     var flushTimeout = TimeSpan.FromSeconds(10) - elapsed;
     if (flushTimeout > TimeSpan.Zero)
     {
