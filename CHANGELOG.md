@@ -44,6 +44,16 @@ to docs, or any other relevant information.
   automatically when the namespace supports it. Paginated workflow task completions require
   Temporal Server 1.32.0 or later.
 ### Changed                 — changes in existing functionality
+- A `common.v1.Link.Workflow` now serializes to the workflow path
+  `temporal:///namespaces/{ns}/workflows/{wid}/{rid}` with the optional `reason` as a query param,
+  rather than reusing the workflow-event path with a `/history` suffix and dropping `reason`. The
+  previous form was indistinguishable from a workflow-event link except by its type, and did not
+  match the other SDKs. Inbound workflow links are now parsed as well, and a link with a trailing
+  path segment is rejected.
+- A Nexus operation backed by a workflow query now fails when the query fails or is rejected, rather
+  than being retried until the operation times out. `WorkflowQueryFailedException` and
+  `WorkflowQueryRejectedException` map to a non-retryable `BadRequest` handler error, since neither
+  outcome can change on a retry.
 
 ### Deprecated              — soon-to-be-removed features
 
@@ -164,16 +174,6 @@ to docs, or any other relevant information.
   (codec) or `BadRequest` (converter) handler exception. This matches the existing pass-through
   behavior for `ApplicationFailureException` and lets codecs and converters control the resulting
   Nexus error type and retry behavior.
-- A `common.v1.Link.Workflow` now serializes to the workflow path
-  `temporal:///namespaces/{ns}/workflows/{wid}/{rid}` with the optional `reason` as a query param,
-  rather than reusing the workflow-event path with a `/history` suffix and dropping `reason`. The
-  previous form was indistinguishable from a workflow-event link except by its type, and did not
-  match the other SDKs. Inbound workflow links are now parsed as well, and a link with a trailing
-  path segment is rejected.
-- A Nexus operation backed by a workflow query now fails when the query fails or is rejected, rather
-  than being retried until the operation times out. `WorkflowQueryFailedException` and
-  `WorkflowQueryRejectedException` map to a non-retryable `BadRequest` handler error, since neither
-  outcome can change on a retry.
 
 ### Fixed
 
