@@ -1377,8 +1377,8 @@ xUnit runner.
 Tests are eligible to run against Temporal Cloud unless they have a `CloudTestExclusion` attribute. Run or list the
 Cloud-eligible tests with:
 
-    dotnet test tests/Temporalio.Tests --filter 'CloudTest!=Excluded'
-    dotnet test tests/Temporalio.Tests --list-tests --filter 'CloudTest!=Excluded'
+    dotnet test tests/Temporalio.Tests --filter "CloudTest!=Excluded"
+    dotnet test tests/Temporalio.Tests --list-tests --filter "CloudTest!=Excluded"
 
 To inventory excluded tests, filter on `CloudTest=Excluded`, or filter on `CloudTestExclusionReason` to inspect a
 particular category:
