@@ -163,13 +163,7 @@ public class CustomMetricMeterTests : WorkflowEnvironmentTestBase
                 },
             },
         });
-        var client = await TemporalClient.ConnectAsync(
-            new()
-            {
-                TargetHost = Client.Connection.Options.TargetHost,
-                Namespace = Client.Options.Namespace,
-                Runtime = runtime,
-            });
+        var client = await ConnectClientWithRuntimeAsync(runtime);
 
         // Run workflow
         using var worker = new TemporalWorker(
@@ -310,13 +304,7 @@ public class CustomMetricMeterTests : WorkflowEnvironmentTestBase
                 },
             },
         });
-        var client = await TemporalClient.ConnectAsync(
-            new()
-            {
-                TargetHost = Client.Connection.Options.TargetHost,
-                Namespace = Client.Options.Namespace,
-                Runtime = runtime,
-            });
+        var client = await ConnectClientWithRuntimeAsync(runtime);
 
         // Run workflow
         using var worker = new TemporalWorker(
@@ -395,13 +383,7 @@ public class CustomMetricMeterTests : WorkflowEnvironmentTestBase
                 Metrics = new() { CustomMetricMeter = new CustomMetricMeter(meter, disableTracing) },
             },
         });
-        var client = await TemporalClient.ConnectAsync(
-            new()
-            {
-                TargetHost = Client.Connection.Options.TargetHost,
-                Namespace = Client.Options.Namespace,
-                Runtime = runtime,
-            });
+        var client = await ConnectClientWithRuntimeAsync(runtime);
 
         // Run workflow
         using var worker = new TemporalWorker(

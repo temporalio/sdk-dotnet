@@ -4075,13 +4075,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Metrics = new() { Prometheus = new(promAddr), MetricPrefix = "foo_" },
             },
         });
-        var client = await TemporalClient.ConnectAsync(
-            new()
-            {
-                TargetHost = Client.Connection.Options.TargetHost,
-                Namespace = Client.Options.Namespace,
-                Runtime = runtime,
-            });
+        var client = await ConnectClientWithRuntimeAsync(runtime);
 
         await ExecuteWorkerAsync<CustomMetricsWorkflow>(
             async worker =>
@@ -4180,13 +4174,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Metrics = new() { CustomMetricMeter = meter, MetricPrefix = "some-prefix_" },
             },
         });
-        var client = await TemporalClient.ConnectAsync(
-            new()
-            {
-                TargetHost = Client.Connection.Options.TargetHost,
-                Namespace = Client.Options.Namespace,
-                Runtime = runtime,
-            });
+        var client = await ConnectClientWithRuntimeAsync(runtime);
 
         // Run workflow
         var taskQueue = string.Empty;
@@ -4254,13 +4242,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     },
                 },
             });
-            var client = await TemporalClient.ConnectAsync(
-                new()
-                {
-                    TargetHost = Client.Connection.Options.TargetHost,
-                    Namespace = Client.Options.Namespace,
-                    Runtime = runtime,
-                });
+            var client = await ConnectClientWithRuntimeAsync(runtime);
             var taskQueue = string.Empty;
             await ExecuteWorkerAsync<SimpleWorkflow>(
                 async worker =>
@@ -8300,13 +8282,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Metrics = new() { Prometheus = new(promAddr), },
             },
         });
-        var client = await TemporalClient.ConnectAsync(
-            new()
-            {
-                TargetHost = Client.Connection.Options.TargetHost,
-                Namespace = Client.Options.Namespace,
-                Runtime = runtime,
-            });
+        var client = await ConnectClientWithRuntimeAsync(runtime);
 
         await ExecuteWorkerAsync<WaitOnSignalThenActivityWorkflow>(
         async worker =>
