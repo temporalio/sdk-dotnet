@@ -4366,8 +4366,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteWorkflowAsync_LastResult_ProperlyPresent()
     {
-        await TestUtils.AssertNoSchedulesAsync(Client);
-
         await ExecuteWorkerAsync<LastResultWorkflow>(async worker =>
         {
             // Create schedule, trigger twice, confirm second got result of first
@@ -4375,33 +4373,38 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 (LastResultWorkflow wf) => wf.RunAsync(),
                 new WorkflowOptions(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             var sched = await Client.CreateScheduleAsync(
-                "sched-id",
+                $"sched-{Guid.NewGuid()}",
                 new(schedAction, new ScheduleSpec()) { State = new() { Paused = true } });
-            async Task<string[]> AllResultsAsync()
+            try
             {
-                var desc = await sched.DescribeAsync();
-                return await Task.WhenAll(desc.Info.RecentActions.Select(async res =>
+                async Task<string[]> AllResultsAsync()
                 {
-                    var action = res.Action as ScheduleActionExecutionStartWorkflow;
-                    var handle = Client.GetWorkflowHandle(
-                        action!.WorkflowId) with
-                    { ResultRunId = action.FirstExecutionRunId };
-                    return await handle.GetResultAsync<string>();
-                }));
+                    var desc = await sched.DescribeAsync();
+                    return await Task.WhenAll(desc.Info.RecentActions.Select(async res =>
+                    {
+                        var action = res.Action as ScheduleActionExecutionStartWorkflow;
+                        var handle = Client.GetWorkflowHandle(
+                            action!.WorkflowId) with
+                        { ResultRunId = action.FirstExecutionRunId };
+                        return await handle.GetResultAsync<string>();
+                    }));
+                }
+
+                // Check first result
+                await sched.TriggerAsync();
+                await AssertMore.EqualEventuallyAsync(new string[] { "no result" }, AllResultsAsync);
+
+                // Check both results
+                await sched.TriggerAsync();
+                await AssertMore.EqualEventuallyAsync(
+                    new string[] { "no result", "last result: no result" },
+                    AllResultsAsync);
             }
-
-            // Check first result
-            await sched.TriggerAsync();
-            await AssertMore.EqualEventuallyAsync(new string[] { "no result" }, AllResultsAsync);
-
-            // Check both results
-            await sched.TriggerAsync();
-            await AssertMore.EqualEventuallyAsync(
-                new string[] { "no result", "last result: no result" },
-                AllResultsAsync);
+            finally
+            {
+                await sched.DeleteAsync();
+            }
         });
-
-        await TestUtils.DeleteAllSchedulesAsync(Client);
     }
 
     [Workflow]
