@@ -11,8 +11,6 @@ namespace Temporalio.Tests.Common.EnvConfig
     /// Environment configuration tests following Python/TypeScript patterns for cross-SDK consistency.
     /// Comprehensive test suite covering all aspects of environment configuration.
     /// </summary>
-    // Tests whose controlled inputs are changed by the Cloud harness's process-wide TEMPORAL_*
-    // variables are excluded individually below.
     public class ClientConfigTests : TestBase
     {
         // Test fixtures matching Python/TypeScript patterns
@@ -60,7 +58,6 @@ client_key_data = ""client-key-data""
 
         // === PROFILE LOADING TESTS (7 tests) ===
         [Fact]
-        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_From_File_Default()
         {
             var source = DataSource.FromUTF8String(TomlConfigBase);
@@ -68,6 +65,7 @@ client_key_data = ""client-key-data""
             {
                 Profile = "default",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             Assert.Equal("default-address", profile.Address);
@@ -81,7 +79,6 @@ client_key_data = ""client-key-data""
         }
 
         [Fact]
-        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_From_File_Custom()
         {
             var source = DataSource.FromUTF8String(TomlConfigBase);
@@ -89,6 +86,7 @@ client_key_data = ""client-key-data""
             {
                 Profile = "custom",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             Assert.Equal("custom-address", profile.Address);
@@ -105,7 +103,6 @@ client_key_data = ""client-key-data""
         }
 
         [Fact]
-        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_From_Data_Default()
         {
             var source = DataSource.FromUTF8String(TomlConfigBase);
@@ -113,6 +110,7 @@ client_key_data = ""client-key-data""
             {
                 Profile = "default",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             Assert.Equal("default-address", profile.Address);
@@ -124,7 +122,6 @@ client_key_data = ""client-key-data""
         }
 
         [Fact]
-        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_From_Data_Custom()
         {
             var source = DataSource.FromUTF8String(TomlConfigBase);
@@ -132,6 +129,7 @@ client_key_data = ""client-key-data""
             {
                 Profile = "custom",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             Assert.Equal("custom-address", profile.Address);
@@ -423,7 +421,6 @@ x-custom-header = ""custom-value""
         }
 
         [Fact]
-        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void DefaultProfileNotFoundReturnsEmptyProfile()
         {
             var toml = @"
@@ -437,6 +434,7 @@ address = ""other-address""
             {
                 Profile = null,
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Null(profile.Address);
             Assert.Null(profile.Namespace);
@@ -447,7 +445,6 @@ address = ""other-address""
 
         // === TLS CONFIGURATION TESTS (7 tests) ===
         [Fact]
-        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_Api_Key_Enables_Tls()
         {
             var toml = @"
@@ -460,6 +457,7 @@ api_key = ""my-api-key""
             {
                 Profile = "default",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             Assert.Equal("my-api-key", profile.ApiKey);
@@ -474,7 +472,6 @@ api_key = ""my-api-key""
         }
 
         [Fact]
-        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_Tls_Options()
         {
             var source = DataSource.FromUTF8String(TomlConfigTlsDetailed);
@@ -484,6 +481,7 @@ api_key = ""my-api-key""
             {
                 Profile = "tls_disabled",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.NotNull(profileDisabled.Tls);
             Assert.True(profileDisabled.Tls.Disabled);
@@ -497,6 +495,7 @@ api_key = ""my-api-key""
             {
                 Profile = "tls_with_certs",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.NotNull(profileCerts.Tls);
             Assert.Equal("custom-server", profileCerts.Tls.ServerName);
@@ -510,7 +509,6 @@ api_key = ""my-api-key""
         }
 
         [Fact]
-        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_Tls_From_Paths()
         {
             var tempDir = Path.GetTempPath();
@@ -538,6 +536,7 @@ client_key_path = ""{keyPath.Replace('\\', '/')}""
                 {
                     Profile = "default",
                     ConfigSource = source,
+                    OverrideEnvVars = new Dictionary<string, string>(),
                 });
 
                 Assert.NotNull(profile.Tls);
@@ -637,7 +636,6 @@ client_cert_data = ""some-data""
         }
 
         [Fact]
-        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Profile_Tls_Client_Key_Fallback()
         {
             var toml = @"
@@ -652,6 +650,7 @@ client_key_data = ""client-key-data""
             {
                 Profile = "default",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             Assert.NotNull(profile.Tls);
@@ -843,7 +842,6 @@ server_name = ""should-be-ignored""
 
         // === INTEGRATION/E2E TESTS (6 tests) ===
         [Fact]
-        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void ClientConfigLoadClientConnectConfigWorksWithFilePathAndEnvOverrides()
         {
             var source = DataSource.FromUTF8String(TomlConfigBase);
@@ -852,6 +850,7 @@ server_name = ""should-be-ignored""
             var options1 = ClientEnvConfig.LoadClientConnectOptions(new ClientEnvConfig.ProfileLoadOptions
             {
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Equal("default-address", options1.TargetHost);
             Assert.Equal("default-namespace", options1.Namespace);
@@ -871,7 +870,6 @@ server_name = ""should-be-ignored""
         }
 
         [Fact]
-        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_Load_Client_Connect_Config()
         {
             // Test the complete round-trip from config to connection options
@@ -893,6 +891,7 @@ authorization = ""Bearer test-token""
             var defaultOptions = ClientEnvConfig.LoadClientConnectOptions(new ClientEnvConfig.ProfileLoadOptions
             {
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Equal("localhost:7233", defaultOptions.TargetHost);
             Assert.Equal("integration-test", defaultOptions.Namespace);
@@ -904,6 +903,7 @@ authorization = ""Bearer test-token""
             {
                 Profile = "integration",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Equal("integration.example.com:7233", integrationOptions.TargetHost);
             Assert.Equal("integration-namespace", integrationOptions.Namespace);
@@ -916,7 +916,6 @@ authorization = ""Bearer test-token""
 
         // === E2E CLIENT CONNECTION TESTS (4 tests) ===
         [Fact]
-        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_E2e_Basic_Development_Profile_Client_Connection()
         {
             // Test basic development profile configuration for client connection
@@ -930,6 +929,7 @@ namespace = ""development""
             {
                 Profile = "development",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             // Validate profile configuration
@@ -952,7 +952,6 @@ namespace = ""development""
         }
 
         [Fact]
-        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_E2e_Production_Tls_Api_Key_Client_Connection()
         {
             // Test production profile with TLS and API key for secure client connection
@@ -969,6 +968,7 @@ server_name = ""production.temporal.cloud""
             {
                 Profile = "production",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             // Validate profile configuration
@@ -1041,7 +1041,6 @@ api_key = ""default-api-key""
         }
 
         [Fact]
-        [CloudTestExclusion(CloudTestExclusionReason.NeedsCloudAdaptation)]
         public void Test_E2e_Multi_Profile_Different_Client_Connections()
         {
             // Test that different profiles create different client connections appropriately
@@ -1070,6 +1069,7 @@ environment = ""production""
             var config = ClientEnvConfig.Load(new ClientEnvConfig.ConfigLoadOptions
             {
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Equal(3, config.Profiles.Count);
 
@@ -1078,6 +1078,7 @@ environment = ""production""
             {
                 Profile = "development",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Equal("localhost:7233", devOptions.TargetHost);
             Assert.Equal("dev", devOptions.Namespace);
@@ -1089,6 +1090,7 @@ environment = ""production""
             {
                 Profile = "staging",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Equal("staging.temporal.io:7233", stagingOptions.TargetHost);
             Assert.Equal("staging", stagingOptions.Namespace);
@@ -1100,6 +1102,7 @@ environment = ""production""
             {
                 Profile = "production",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Equal("production.temporal.cloud:7233", prodOptions.TargetHost);
             Assert.Equal("production", prodOptions.Namespace);
