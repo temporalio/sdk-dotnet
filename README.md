@@ -1380,12 +1380,8 @@ Cloud-eligible tests with:
     dotnet test tests/Temporalio.Tests --filter "CloudTest!=Excluded"
     dotnet test tests/Temporalio.Tests --list-tests --filter "CloudTest!=Excluded"
 
-To inventory excluded tests, filter on `CloudTest=Excluded`, or filter on `CloudTestExclusionReason` to inspect a
-particular category:
-
-* `RequiresLocalServer` for tests of local server behavior
-* `RequiresCloudProvisioning` for functionality or permissions unavailable in Cloud CI
-* `NeedsCloudAdaptation` for otherwise compatible tests that still need adaptation
+To inventory excluded tests, filter on `CloudTest=Excluded`, or filter on
+[`CloudTestExclusionReason`](tests/Temporalio.Tests/CloudTestExclusionReason.cs) to inspect a particular category.
 
 The following environment variables can be set to override the environment:
 
