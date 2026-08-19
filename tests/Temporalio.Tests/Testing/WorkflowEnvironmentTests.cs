@@ -2,11 +2,14 @@ namespace Temporalio.Tests.Testing;
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using NexusRpc;
+using NexusRpc.Handlers;
 using Temporalio.Activities;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Exceptions;
+using Temporalio.Nexus;
 using Temporalio.Testing;
 using Temporalio.Worker;
 using Temporalio.Workflows;
@@ -238,6 +241,73 @@ public class WorkflowEnvironmentTests : TestBase
             // Wait for result
             await handle.GetResultAsync();
             Assert.True(watch.Elapsed < TimeSpan.FromSeconds(5));
+        });
+    }
+
+    [NexusService]
+    public interface INexusWorkflowRunService
+    {
+        [NexusOperation]
+        string RunOperation(string input);
+    }
+
+    [Workflow]
+    public class NexusBackingWorkflow
+    {
+        [WorkflowRun]
+        public Task<string> RunAsync(string input) => Task.FromResult($"done: {input}");
+    }
+
+    [NexusServiceHandler(typeof(INexusWorkflowRunService))]
+    public class NexusWorkflowRunServiceHandler
+    {
+        [NexusOperationHandler]
+        public IOperationHandler<string, string> RunOperation() =>
+            WorkflowRunOperationHandler.FromHandleFactory(
+                (WorkflowRunOperationContext context, string input) =>
+                    context.StartWorkflowAsync(
+                        (NexusBackingWorkflow wf) => wf.RunAsync(input),
+                        new() { Id = $"nexus-wf-{Guid.NewGuid()}" }));
+    }
+
+    [Workflow]
+    public class NexusCallerWorkflow
+    {
+        private readonly string endpoint;
+
+        public NexusCallerWorkflow(string endpoint) => this.endpoint = endpoint;
+
+        [WorkflowRun]
+        public async Task<string> RunAsync(string input)
+        {
+            return await Workflow.CreateNexusWorkflowClient<INexusWorkflowRunService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.RunOperation(input));
+        }
+    }
+
+    [OnlyIntelFact]
+    public async Task StartTimeSkippingAsync_NexusWorkflowRunOperation_Completes()
+    {
+        await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var endpointName = $"nexus-endpoint-{taskQueue}";
+        await env.CreateNexusEndpointAsync(endpointName, taskQueue);
+        using var worker = new TemporalWorker(
+            env.Client,
+            new TemporalWorkerOptions(taskQueue).
+                AddNexusService(new NexusWorkflowRunServiceHandler()).
+                AddWorkflow<NexusBackingWorkflow>().
+                AddWorkflow(WorkflowDefinition.Create(
+                    typeof(NexusCallerWorkflow),
+                    null,
+                    _args => new NexusCallerWorkflow(endpointName))));
+        await worker.ExecuteAsync(async () =>
+        {
+            // Run the caller workflow which invokes a Nexus workflow-run operation
+            var result = await env.Client.ExecuteWorkflowAsync(
+                (NexusCallerWorkflow wf) => wf.RunAsync("test-input"),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: taskQueue));
+            Assert.Equal("done: test-input", result);
         });
     }
 
