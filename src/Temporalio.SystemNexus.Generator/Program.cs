@@ -11,16 +11,17 @@ var apiProtoDir = Path.Join(protoDir, "api_upstream");
 var nexusWitDir = Path.Join(apiProtoDir, "nexus");
 var descriptorPath = Path.Join(generatorDir, "obj/SystemNexus/temporal_api.bin");
 var stagingOutputDir = Path.Join(generatorDir, "obj/SystemNexus/Generated");
+var stagingWitDir = Path.Join(generatorDir, "obj/SystemNexus/Wit");
 var workflowsGeneratedDir = Path.Join(projectDir, "src/Temporalio/Workflows/Generated");
 var workerGeneratedDir = Path.Join(projectDir, "src/Temporalio/Worker/Generated");
 var obsoleteOutputDir = Path.Join(projectDir, "src/Temporalio/SystemNexus/Generated");
-var operationsPath = Path.Join(workflowsGeneratedDir, "Operations.cs");
 
 EnsureNexGen();
 BuildDescriptor();
+PrepareNexusWit();
 GenerateNexusApi();
 PostProcessGeneratedNexusApi();
-GeneratePayloadVisitor(operationsPath, descriptorPath, workerGeneratedDir);
+GeneratePayloadVisitor(descriptorPath, workerGeneratedDir);
 return 0;
 
 void EnsureNexGen()
@@ -46,7 +47,7 @@ void BuildDescriptor()
             "-I=" + protoDir,
             "--include_imports",
             "--descriptor_set_out=" + descriptorPath,
-            Path.Join(apiProtoDir, "temporal/api/workflowservice/v1/request_response.proto"),
+            Path.Join(apiProtoDir, "temporal/api/workflowservice/v1/service.proto"),
         });
 }
 
@@ -62,20 +63,68 @@ void GenerateNexusApi()
         NexGenCommand(),
         new[]
         {
-            "generate",
-            "--lang",
             "dotnet",
-            "--input",
-            Path.Join(nexusWitDir, "workflow-service.wit"),
-            "--input",
-            Path.Join(nexusWitDir, "deps"),
             "--support-file",
             Path.Join(generatorDir, "wit/deps/nexus-temporal-types/dotnet/TemporalSupport.cs"),
             "--descriptors",
             descriptorPath,
             "--output",
             stagingOutputDir,
+            "--native-api",
+            Path.Join(stagingWitDir, "workflow-service.wit"),
+            Path.Join(stagingWitDir, "deps"),
         });
+}
+
+void PrepareNexusWit()
+{
+    RecreateDirectory(stagingWitDir);
+    foreach (var sourcePath in Directory.GetFiles(nexusWitDir, "*", SearchOption.AllDirectories))
+    {
+        var destinationPath = Path.Join(stagingWitDir, Path.GetRelativePath(nexusWitDir, sourcePath));
+        Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
+        File.Copy(sourcePath, destinationPath);
+    }
+
+    var modelPath = Path.Join(stagingWitDir, "deps/nexus-temporal-types/model.wit");
+    var model = File.ReadAllText(modelPath);
+    model = model.Replace(
+        "  ///   dotnet=\"object?\"\n  ///   dotnet-to=\"ProtoExtensions.ToPayload\"",
+        "  ///   dotnet=\"object?\"\n  ///   dotnet-from=\"ProtoExtensions.FromPayload\"\n  ///   dotnet-to=\"ProtoExtensions.ToPayload\"");
+    model = model.Replace(
+        "  /// @nexus.type dotnet=\"IReadOnlyCollection<object?>\" dotnet-to=\"ProtoExtensions.ToPayloads\"",
+        "  /// @nexus.type\n  ///   dotnet=\"IReadOnlyCollection<object?>\"\n  ///   dotnet-from=\"ProtoExtensions.FromPayloads\"\n  ///   dotnet-to=\"ProtoExtensions.ToPayloads\"");
+    model = model.Replace(
+        "  ///   dotnet=\"string\"\n  ///   dotnet-to=\"ProtoExtensions.ToWorkflowTypeProto\"",
+        "  ///   dotnet=\"string\"\n  ///   dotnet-from=\"ProtoExtensions.FromWorkflowTypeProto\"\n  ///   dotnet-to=\"ProtoExtensions.ToWorkflowTypeProto\"");
+    model = model.Replace(
+        "  ///   dotnet=\"Temporalio.Common.RetryPolicy\"\n  ///   typescript-import",
+        "  ///   dotnet=\"Temporalio.Common.RetryPolicy\"\n  ///   dotnet-from=\"ProtoExtensions.FromRetryPolicyProto\"\n  ///   typescript-import");
+    model = model.Replace(
+        "  ///   dotnet=\"string\"\n  ///   dotnet-to=\"ProtoExtensions.ToTaskQueueProto\"",
+        "  ///   dotnet=\"string\"\n  ///   dotnet-from=\"ProtoExtensions.FromTaskQueueProto\"\n  ///   dotnet-to=\"ProtoExtensions.ToTaskQueueProto\"");
+    model = model.Replace(
+        "  ///   dotnet=\"Temporalio.Common.SearchAttributeCollection\"\n  ///   typescript-import",
+        "  ///   dotnet=\"Temporalio.Common.SearchAttributeCollection\"\n  ///   dotnet-from=\"ProtoExtensions.FromSearchAttributesProto\"\n  ///   typescript-import");
+    model = model.Replace(
+        "  ///   dotnet=\"Temporalio.Common.Priority\"\n  ///   typescript-import",
+        "  ///   dotnet=\"Temporalio.Common.Priority\"\n  ///   dotnet-from=\"ProtoExtensions.FromPriorityProto\"\n  ///   typescript-import");
+    model = model.Replace(
+        "  ///   dotnet=\"Temporalio.Common.VersioningOverride\"\n  ///   typescript-import",
+        "  ///   dotnet=\"Temporalio.Common.VersioningOverride\"\n  ///   dotnet-from=\"ProtoExtensions.FromVersioningOverrideProto\"\n  ///   typescript-import");
+    model = model.Replace(
+        "  ///   dotnet=\"System.TimeSpan\"\n  ///   typescript-import",
+        "  ///   dotnet=\"System.TimeSpan\"\n  ///   dotnet-from=\"ProtoExtensions.FromDurationProto\"\n  ///   typescript-import");
+    model = model.Replace(
+        "  /// @nexus.type python=\"collections.abc.Mapping[str, typing.Any]\" typescript=\"Record<string, unknown>\" dotnet=\"IReadOnlyDictionary<string, object?>\"",
+        "  /// @nexus.type\n  ///   python=\"collections.abc.Mapping[str, typing.Any]\"\n  ///   typescript=\"Record<string, unknown>\"\n  ///   dotnet=\"IReadOnlyDictionary<string, object?>\"\n  ///   dotnet-from=\"ProtoExtensions.FromMemoProto\"");
+    File.WriteAllText(modelPath, model);
+
+    var workflowServicePath = Path.Join(stagingWitDir, "workflow-service.wit");
+    var workflowService = File.ReadAllText(workflowServicePath).Replace(
+        "dotnet=\"TemporalWorkflowContext.WorkflowNamespace\"",
+        "dotnet=\"TemporalWorkflowContext.WorkflowNamespace()\"");
+    File.WriteAllText(workflowServicePath, workflowService);
 }
 
 void PostProcessGeneratedNexusApi()
@@ -90,7 +139,7 @@ void PostProcessGeneratedNexusApi()
 
     WriteWorkflowGeneratedFile("Models.cs");
     WriteWorkflowGeneratedFile("Operations.cs");
-    WriteWorkflowGeneratedFile("Service.cs");
+    WriteWorkflowGeneratedFile("Services.cs", "Service.cs");
     WriteWorkflowGeneratedFile(Path.Join("Support", "TemporalSupport.cs"), "TemporalSupport.cs");
 }
 
@@ -103,11 +152,11 @@ void WriteWorkflowGeneratedFile(string stagingRelativePath, string? outputFileNa
     var contents = File.ReadAllText(sourcePath);
     contents = Regex.Replace(
         contents,
-        @"^using (NexGen\.Support|Temporalio\.Workflows);\r?\n",
+        @"^using (Nexgen\.Support|Temporalio\.Workflows);\r?\n",
         string.Empty,
         RegexOptions.Multiline);
-    contents = contents.Replace("namespace NexGen.Support", "namespace Temporalio.Workflows");
-    contents = contents.Replace("NexGen.Support.", string.Empty);
+    contents = contents.Replace("namespace Nexgen.Support", "namespace Temporalio.Workflows");
+    contents = contents.Replace("Nexgen.Support.", string.Empty);
     File.WriteAllText(destinationPath, contents);
 }
 
@@ -122,28 +171,11 @@ static void RecreateDirectory(string path)
 }
 
 static void GeneratePayloadVisitor(
-    string operationsPath,
     string descriptorPath,
     string outputDir)
 {
-    var generatedDir = Path.GetDirectoryName(operationsPath) ??
-        throw new InvalidOperationException($"No directory for {operationsPath}");
-    var servicePath = Path.Combine(generatedDir, "Service.cs");
-    var source = File.ReadAllText(servicePath);
-    var operations = ParseOperations(source);
-    if (operations.Count == 0)
-    {
-        throw new InvalidOperationException($"No generated operations found in {servicePath}");
-    }
-
     var messages = LoadMessages(descriptorPath);
-    var messagesByCsharpType = messages.Values.ToDictionary(
-        message => NormalizeTypeName(message.CsharpType),
-        message => message);
-    var operationMessages = operations.Select(operation =>
-        new OperationMessages(
-            GetMessage(messagesByCsharpType, operation.InputType),
-            GetMessage(messagesByCsharpType, operation.OutputType))).ToList();
+    var operationMessages = LoadWorkflowServiceOperationMessages(descriptorPath, messages);
     var containsPayloadMemo = new Dictionary<string, bool>();
     var emittedVisitors = new HashSet<string>();
     var emittedMethods = new HashSet<string>();
@@ -152,6 +184,7 @@ static void GeneratePayloadVisitor(
     builder.AppendLine("// <auto-generated />");
     builder.AppendLine("// Generated by Temporalio.SystemNexus.Generator. DO NOT EDIT!");
     builder.AppendLine("#nullable enable");
+    builder.AppendLine("#pragma warning disable CS0612");
     builder.AppendLine();
     builder.AppendLine("using System;");
     builder.AppendLine("using System.CodeDom.Compiler;");
@@ -170,8 +203,8 @@ static void GeneratePayloadVisitor(
 
     foreach (var operation in operationMessages)
     {
-        EmitEnvelopeVisitor(builder, operation.Input, emittedVisitors);
-        EmitEnvelopeVisitor(builder, operation.Output, emittedVisitors);
+        EmitEnvelopeVisitor(builder, operation.Input, messages, containsPayloadMemo, emittedVisitors);
+        EmitEnvelopeVisitor(builder, operation.Output, messages, containsPayloadMemo, emittedVisitors);
     }
 
     builder.AppendLine("            };");
@@ -209,32 +242,6 @@ static void GeneratePayloadVisitor(
     File.WriteAllText(Path.Combine(outputDir, "SystemNexusPayloadVisitor.cs"), builder.ToString());
 }
 
-static List<OperationInfo> ParseOperations(string serviceSource)
-{
-    var operations = new List<OperationInfo>();
-    var serviceMatches = Regex.Matches(
-        serviceSource,
-        @"\[NexusService\(""[^""]+""\)\]\s+internal\s+interface\s+\w+\s*\{(?<body>.*?)^\s*\}",
-        RegexOptions.Multiline | RegexOptions.Singleline,
-        TimeSpan.FromSeconds(5));
-    foreach (Match serviceMatch in serviceMatches)
-    {
-        var operationMatches = Regex.Matches(
-            serviceMatch.Groups["body"].Value,
-            @"\[NexusOperation\(""[^""]+""\)\]\s+(?<output>[A-Za-z0-9_.:]+)\s+\w+\((?<input>[A-Za-z0-9_.:]+)\s+\w+\);",
-            RegexOptions.Multiline,
-            TimeSpan.FromSeconds(5));
-        foreach (Match operationMatch in operationMatches)
-        {
-            operations.Add(new OperationInfo(
-                NormalizeTypeName(operationMatch.Groups["input"].Value),
-                NormalizeTypeName(operationMatch.Groups["output"].Value)));
-        }
-    }
-
-    return operations;
-}
-
 static IReadOnlyDictionary<string, MessageInfo> LoadMessages(string descriptorPath)
 {
     var descriptorSet = FileDescriptorSet.Parser.ParseFrom(File.ReadAllBytes(descriptorPath));
@@ -256,6 +263,28 @@ static IReadOnlyDictionary<string, MessageInfo> LoadMessages(string descriptorPa
     return messages;
 }
 
+static IReadOnlyList<OperationMessages> LoadWorkflowServiceOperationMessages(
+    string descriptorPath,
+    IReadOnlyDictionary<string, MessageInfo> messages)
+{
+    var descriptorSet = FileDescriptorSet.Parser.ParseFrom(File.ReadAllBytes(descriptorPath));
+    var workflowService = descriptorSet.File
+        .Where(file => file.Package == "temporal.api.workflowservice.v1")
+        .SelectMany(file => file.Service)
+        .SingleOrDefault(service => service.Name == "WorkflowService") ??
+        throw new InvalidOperationException("No WorkflowService descriptor found");
+    var operationMessages = workflowService.Method.Select(method => new OperationMessages(
+        GetMessage(messages, method.InputType),
+        GetMessage(messages, method.OutputType)))
+        .ToList();
+    if (operationMessages.Count == 0)
+    {
+        throw new InvalidOperationException("No WorkflowService methods found");
+    }
+
+    return operationMessages;
+}
+
 static void AddMessage(
     Dictionary<string, MessageInfo> messages,
     string protoPrefix,
@@ -274,12 +303,12 @@ static void AddMessage(
 }
 
 static MessageInfo GetMessage(
-    IReadOnlyDictionary<string, MessageInfo> messagesByCsharpType,
-    string csharpType)
+    IReadOnlyDictionary<string, MessageInfo> messages,
+    string protoTypeName)
 {
-    if (!messagesByCsharpType.TryGetValue(NormalizeTypeName(csharpType), out var message))
+    if (!TryGetMessage(protoTypeName, messages, out var message))
     {
-        throw new InvalidOperationException($"No protobuf message descriptor found for {csharpType}");
+        throw new InvalidOperationException($"No protobuf message descriptor found for {protoTypeName}");
     }
 
     return message;
@@ -288,9 +317,12 @@ static MessageInfo GetMessage(
 static void EmitEnvelopeVisitor(
     StringBuilder builder,
     MessageInfo message,
+    IReadOnlyDictionary<string, MessageInfo> messages,
+    Dictionary<string, bool> containsPayloadMemo,
     HashSet<string> emittedVisitors)
 {
-    if (!emittedVisitors.Add(message.FullName))
+    if (!ContainsPayload(message, messages, containsPayloadMemo) ||
+        !emittedVisitors.Add(message.FullName))
     {
         return;
     }
@@ -310,7 +342,8 @@ static void EmitVisitMethod(
     Dictionary<string, bool> containsPayloadMemo,
     HashSet<string> emittedMethods)
 {
-    if (!emittedMethods.Add(message.FullName))
+    if (!ContainsPayload(message, messages, containsPayloadMemo) ||
+        !emittedMethods.Add(message.FullName))
     {
         return;
     }
@@ -639,11 +672,6 @@ static string NexGenCommand() =>
 
 static string UniqueLocalName(MessageInfo message, FieldDescriptorProto field, string prefix) =>
     $"{prefix}_{Regex.Replace(message.FullName, @"[^A-Za-z0-9_]", "_")}_{field.Number}";
-
-static string NormalizeTypeName(string typeName) =>
-    typeName.StartsWith("global::", StringComparison.Ordinal) ? typeName["global::".Length..] : typeName;
-
-internal sealed record OperationInfo(string InputType, string OutputType);
 
 internal sealed record OperationMessages(MessageInfo Input, MessageInfo Output);
 
