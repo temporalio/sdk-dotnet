@@ -123,6 +123,7 @@ jobs:
             temporalio.extensions.aws.lambda
             temporalio.extensions.aws.lambda.opentelemetry
             temporalio.extensions.diagnosticsource
+            temporalio.extensions.gcp.cloudrun.opentelemetry
             temporalio.extensions.hosting
             temporalio.extensions.opentelemetry
           )
