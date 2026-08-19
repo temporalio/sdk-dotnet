@@ -19,21 +19,21 @@ readonly test_dir
 trap 'rm -rf "$test_dir"' EXIT
 export GITHUB_REPOSITORY=temporalio/sdk-dotnet
 export RUNNER_TEMP="$test_dir"
-declare -a release_args
+declare make_latest release_prerelease
 
-set_release_args false
-if (( ${#release_args[@]} != 0 )); then
-  echo "Stable releases must leave latest selection to GitHub" >&2
+set_release_metadata false
+if [[ "$release_prerelease" != false || "$make_latest" != legacy ]]; then
+  echo "Stable releases must explicitly use GitHub's legacy latest selection" >&2
   exit 1
 fi
 
-set_release_args true
-if [[ "${release_args[*]}" != '--prerelease --latest=false' ]]; then
+set_release_metadata true
+if [[ "$release_prerelease" != true || "$make_latest" != false ]]; then
   echo "Prereleases must be excluded from latest selection" >&2
   exit 1
 fi
 
-if set_release_args invalid 2>/dev/null; then
+if set_release_metadata invalid 2>/dev/null; then
   echo "Invalid prerelease metadata was accepted" >&2
   exit 1
 fi

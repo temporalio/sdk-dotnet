@@ -8,12 +8,15 @@
 
 set -euo pipefail
 
-set_release_args() {
+set_release_metadata() {
   local prerelease=$1
 
-  release_args=()
   if [[ "$prerelease" == true ]]; then
-    release_args=(--prerelease --latest=false)
+    release_prerelease=true
+    make_latest=false
+  elif [[ "$prerelease" == false ]]; then
+    release_prerelease=false
+    make_latest=legacy
   elif [[ "$prerelease" != false ]]; then
     echo "PRERELEASE must be true or false, got: $prerelease" >&2
     return 1
@@ -25,8 +28,7 @@ main() {
   local release_commit="${2:?Usage: create-github-release.sh VERSION COMMIT PRERELEASE}"
   local prerelease="${3:?Usage: create-github-release.sh VERSION COMMIT PRERELEASE}"
   local generated_notes notable_changes release release_draft release_name
-  local release_notes release_prerelease tag_commit
-  local -a release_args tag_args
+  local release_notes release_prerelease tag_commit make_latest
 
   : "${GH_TOKEN:?GH_TOKEN must authenticate GitHub CLI requests}"
   : "${GITHUB_REPOSITORY:?GITHUB_REPOSITORY must identify the release repository}"
@@ -41,15 +43,13 @@ main() {
   release_notes="$RUNNER_TEMP/release-notes.md"
 
   # Refuse to reuse a version tag from another commit. If the tag does not
-  # exist, `gh release create` creates it at the immutable release commit.
-  tag_args=(--target "$release_commit")
+  # exist, the create-release API creates it at the immutable release commit.
   if git rev-parse --verify --quiet "refs/tags/$version" >/dev/null; then
     tag_commit=$(git rev-list -n 1 "$version")
     if [[ "$tag_commit" != "$release_commit" ]]; then
       echo "Tag $version points to $tag_commit, expected $release_commit" >&2
       exit 1
     fi
-    tag_args=(--verify-tag)
   fi
 
   # A successful rerun must not replace or silently modify an existing release.
@@ -93,15 +93,18 @@ main() {
     cat "$generated_notes"
   } > "$release_notes"
 
-  # Stable releases use GitHub's server-side default, which selects latest
-  # automatically by date and semantic version without a client-side race.
-  # Prereleases must be explicitly excluded from latest selection.
-  set_release_args "$prerelease"
-  gh release create "$version" \
-    "${tag_args[@]}" \
-    "${release_args[@]}" \
-    --title "$version" \
-    --notes-file "$release_notes"
+  # Request legacy selection explicitly: omitting make_latest defaults to true,
+  # while legacy makes GitHub choose by date and semantic version server-side.
+  set_release_metadata "$prerelease"
+  gh api --method POST "repos/$GITHUB_REPOSITORY/releases" \
+    -f tag_name="$version" \
+    -f target_commitish="$release_commit" \
+    -f name="$version" \
+    -F body=@"$release_notes" \
+    -F draft=false \
+    -F prerelease="$release_prerelease" \
+    -f make_latest="$make_latest" \
+    --silent
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
