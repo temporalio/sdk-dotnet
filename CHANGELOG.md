@@ -19,6 +19,8 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### Added
+
 ### Changed
 
 - A non-retryable `ApplicationFailureException` with error type `PayloadValidationError` thrown by a
