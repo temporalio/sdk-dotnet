@@ -27,37 +27,57 @@ version_is_newer() {
   return 1
 }
 
-select_release_args() {
-  local version=$1
-  local prerelease=$2
-  local latest_release latest_error latest_tag
+select_latest_release() {
+  local candidate_version=$1
+  shift
+  local entry release_id release_tag release_version
 
-  if [[ "$prerelease" == true ]]; then
-    release_args=(--prerelease --latest=false)
-    return
+  latest_release_id=
+  latest_release_tag=
+  latest_release_version=
+  candidate_found=false
+  for entry in "$@"; do
+    IFS=$'\t' read -r release_id release_tag <<< "$entry"
+    [[ "$release_tag" == "$candidate_version" ]] && candidate_found=true
+    release_version=${release_tag#v}
+    [[ "$release_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || continue
+    if [[ -z "$latest_release_id" ]] || \
+       version_is_newer "$release_version" "$latest_release_version"; then
+      latest_release_id=$release_id
+      latest_release_tag=$release_tag
+      latest_release_version=$release_version
+    fi
+  done
+  if [[ "$candidate_found" != true || -z "$latest_release_id" ]]; then
+    echo "Unable to find the new release while selecting the latest stable version" >&2
+    return 1
   fi
-  if [[ "$prerelease" != false ]]; then
+}
+
+reconcile_latest_release() {
+  local candidate_version=$1
+  local prerelease=$2
+  local stable_release_data
+  local -a stable_releases
+
+  [[ "$prerelease" == true ]] && return
+  [[ "$prerelease" == false ]] || {
     echo "PRERELEASE must be true or false, got: $prerelease" >&2
     return 1
-  fi
+  }
 
-  latest_error="$RUNNER_TEMP/latest-release-error"
-  if latest_release=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" 2> "$latest_error"); then
-    latest_tag=$(jq -r .tag_name <<< "$latest_release")
-    if version_is_newer "$version" "$latest_tag"; then
-      release_args=(--latest)
-    else
-      # A delayed retry of an older version must not replace a newer release as
-      # the repository's latest stable release.
-      release_args=(--latest=false)
-    fi
-  elif grep -q '(HTTP 404)' "$latest_error"; then
-    release_args=(--latest)
-  else
-    cat "$latest_error" >&2
-    echo "Unable to determine the repository's latest release" >&2
-    return 1
-  fi
+  stable_release_data=$(gh api --paginate \
+    "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
+    --jq '.[] | select(.draft == false and .prerelease == false) | [.id, .tag_name] | @tsv')
+  mapfile -t stable_releases <<< "$stable_release_data"
+  select_latest_release "$candidate_version" "${stable_releases[@]}"
+
+  # Every concurrent release independently selects the same highest stable
+  # version after it becomes visible. The release created last also reconciles
+  # last, so completion order cannot leave an older version marked as latest.
+  gh api --method PATCH "repos/$GITHUB_REPOSITORY/releases/$latest_release_id" \
+    -f make_latest=true --silent
+  echo "GitHub release $latest_release_tag is the latest stable release"
 }
 
 main() {
@@ -71,6 +91,10 @@ main() {
   : "${GH_TOKEN:?GH_TOKEN must authenticate GitHub CLI requests}"
   : "${GITHUB_REPOSITORY:?GITHUB_REPOSITORY must identify the release repository}"
   : "${RUNNER_TEMP:?RUNNER_TEMP must identify a temporary output directory}"
+  [[ "$prerelease" == true || "$prerelease" == false ]] || {
+    echo "PRERELEASE must be true or false, got: $prerelease" >&2
+    exit 1
+  }
 
   notable_changes="$RUNNER_TEMP/notable-changes.md"
   generated_notes="$RUNNER_TEMP/generated-notes.md"
@@ -101,6 +125,7 @@ main() {
       exit 1
     fi
     echo "GitHub release $version already exists at the expected tag"
+    reconcile_latest_release "$version" "$prerelease"
     exit 0
   fi
 
@@ -129,12 +154,16 @@ main() {
     cat "$generated_notes"
   } > "$release_notes"
 
-  select_release_args "$version" "$prerelease"
+  # Defer the latest marker until after creation so concurrent versions can
+  # reconcile it deterministically instead of racing read-then-create calls.
+  release_args=(--latest=false)
+  [[ "$prerelease" == true ]] && release_args=(--prerelease --latest=false)
   gh release create "$version" \
     "${tag_args[@]}" \
     "${release_args[@]}" \
     --title "$version" \
     --notes-file "$release_notes"
+  reconcile_latest_release "$version" "$prerelease"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then

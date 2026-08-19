@@ -19,41 +19,31 @@ readonly test_dir
 trap 'rm -rf "$test_dir"' EXIT
 export GITHUB_REPOSITORY=temporalio/sdk-dotnet
 export RUNNER_TEMP="$test_dir"
-declare -a release_args
+declare latest_release_id latest_release_tag
 
-assert_args() {
-  local expected=$1
-  local actual
-  actual=$(printf '%s ' "${release_args[@]}")
-  [[ "${actual% }" == "$expected" ]] || {
-    echo "Expected release arguments '$expected', got '${actual% }'" >&2
-    exit 1
-  }
+select_latest_release 1.2.3 \
+  $'101\t1.2.2' \
+  $'102\t1.2.3' \
+  $'103\t1.3.0-beta.1' \
+  $'104\tv1.1.9'
+[[ "$latest_release_id" == 102 && "$latest_release_tag" == 1.2.3 ]] || {
+  echo "The highest stable release was not selected" >&2
+  exit 1
 }
 
-gh() {
-  if [[ "$MOCK_LATEST" == 404 ]]; then
-    echo 'gh: Not Found (HTTP 404)' >&2
-    return 1
-  fi
-  printf '{"tag_name":"%s"}\n' "$MOCK_LATEST"
+# A later stable release must win even when the older candidate finishes last.
+select_latest_release 1.2.3 \
+  $'201\t1.2.3' \
+  $'202\t1.2.4'
+[[ "$latest_release_id" == 202 && "$latest_release_tag" == 1.2.4 ]] || {
+  echo "An older retry would incorrectly replace a newer latest release" >&2
+  exit 1
 }
 
-MOCK_LATEST=1.2.2
-select_release_args 1.2.3 false
-assert_args --latest
-
-MOCK_LATEST=1.2.4
-select_release_args 1.2.3 false
-assert_args --latest=false
-
-MOCK_LATEST=404
-select_release_args 1.2.3 false
-assert_args --latest
-
-MOCK_LATEST=1.2.2
-select_release_args 1.2.3-beta.1 true
-assert_args '--prerelease --latest=false'
+if select_latest_release 1.2.3 $'301\t1.2.4' 2>/dev/null; then
+  echo "Latest selection accepted a listing that omitted the new release" >&2
+  exit 1
+fi
 
 mkdir -p "$test_dir/local" "$test_dir/package-content" "$test_dir/signed-content"
 printf 'candidate package content\n' > "$test_dir/package-content/content.txt"
