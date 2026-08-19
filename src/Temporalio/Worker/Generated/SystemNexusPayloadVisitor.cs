@@ -13,8 +13,6 @@ namespace Temporalio.Worker
     [GeneratedCode("Temporalio.SystemNexus.Generator", null)]
     internal static partial class SystemNexusPayloadVisitor
     {
-        private const string TemporalSystemEndpoint = "__temporal_system";
-
         private static readonly IReadOnlyDictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>> EnvelopeVisitors =
             new Dictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>>
             {
@@ -34,14 +32,13 @@ namespace Temporalio.Worker
                         visitEnvelope),
             };
 
-        private static async Task<bool> TryVisitAsync(
-            string? endpoint,
+        internal static async Task<bool> TryVisitAsync(
             Payload payload,
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads,
-            EnvelopeVisitor? visitEnvelope)
+            EnvelopeVisitor? visitEnvelope = null)
         {
-            if (!IsSystemNexusEndpoint(endpoint))
+            if (!IsSystemPayload(payload))
             {
                 return false;
             }
@@ -55,8 +52,6 @@ namespace Temporalio.Worker
             await visit(payload, visitPayload, visitPayloads, visitEnvelope).ConfigureAwait(false);
             return true;
         }
-
-        internal static bool IsSystemNexusEndpoint(string? endpoint) => endpoint == TemporalSystemEndpoint;
 
         private static async Task Visit_temporal_api_common_v1_Memo(
             global::Temporalio.Api.Common.V1.Memo value,
