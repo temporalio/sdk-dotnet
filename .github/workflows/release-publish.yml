@@ -95,6 +95,7 @@ jobs:
     with:
       environment: nugetint
       index-url: https://apiint.nugettest.org/v3/index.json
+      symbol-package-base-url: https://globalcdn.int.nugettest.org/symbol-packages
       token-service-url: https://int.nugettest.org/api/v2/token
       audience: https://int.nugettest.org
       artifact-run-id: ${{ needs.candidate.outputs.artifact-run-id }}
@@ -135,6 +136,7 @@ jobs:
     with:
       environment: nugetprod
       index-url: https://api.nuget.org/v3/index.json
+      symbol-package-base-url: https://globalcdn.nuget.org/symbol-packages
       token-service-url: https://www.nuget.org/api/v2/token
       artifact-run-id: ${{ needs.candidate.outputs.artifact-run-id }}
       commit: ${{ needs.candidate.outputs.commit }}

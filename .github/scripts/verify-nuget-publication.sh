@@ -78,23 +78,27 @@ find_local_package() {
   local artifact_dir=$1
   local package_id=$2
   local version=$3
+  local extension=$4
   local -a matches
 
   mapfile -t matches < <(
-    find "$artifact_dir" -type f -iname "$package_id.$version.nupkg" ! -iname '*.snupkg'
+    find "$artifact_dir" -type f -iname "$package_id.$version.$extension"
   )
   if [[ ${#matches[@]} -ne 1 ]]; then
-    echo "Expected exactly one artifact for $package_id $version, found ${#matches[@]}" >&2
+    echo "Expected exactly one $extension artifact for $package_id $version, found ${#matches[@]}" >&2
     return 1
   fi
   printf '%s\n' "${matches[0]}"
 }
 
 main() {
-  local artifact_dir="${1:?Usage: verify-nuget-publication.sh ARTIFACT_DIR INDEX_URL VERSION}"
-  local index_url="${2:?Usage: verify-nuget-publication.sh ARTIFACT_DIR INDEX_URL VERSION}"
-  local version="${3:?Usage: verify-nuget-publication.sh ARTIFACT_DIR INDEX_URL VERSION}"
+  local usage="Usage: verify-nuget-publication.sh ARTIFACT_DIR INDEX_URL SYMBOL_PACKAGE_BASE_URL VERSION"
+  local artifact_dir="${1:?$usage}"
+  local index_url="${2:?$usage}"
+  local symbol_package_base_url="${3:?$usage}"
+  local version="${4:?$usage}"
   local host package_id package_url local_package published_package
+  local symbol_package_url local_symbol_package published_symbol_package
   local deadline=${NUGET_WAIT_DEADLINE_SECONDS:-1800}
   local interval=${NUGET_WAIT_INTERVAL_SECONDS:-15}
   local scratch_dir
@@ -102,6 +106,10 @@ main() {
 
   [[ "$index_url" =~ ^https://[^/]+/ ]] || {
     echo "NuGet index URL must use HTTPS and include a path: $index_url" >&2
+    exit 1
+  }
+  [[ "$symbol_package_base_url" =~ ^https://[^/]+/[^/]+$ ]] || {
+    echo "Symbol package base URL must use HTTPS: $symbol_package_base_url" >&2
     exit 1
   }
   [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z]+([.-][0-9A-Za-z]+)*)?$ ]] || {
@@ -128,12 +136,25 @@ main() {
         pending+=("$package_id")
         continue
       fi
-      local_package=$(find_local_package "$artifact_dir" "$package_id" "$version")
+      local_package=$(find_local_package "$artifact_dir" "$package_id" "$version" nupkg)
       if ! verify_published_package "$local_package" "$published_package" "$scratch_dir"; then
         echo "Published $package_id $version does not match the workflow artifact" >&2
         exit 1
       fi
-      echo "  $package_id $version is available and matches the workflow artifact"
+
+      symbol_package_url="$symbol_package_base_url/$package_id.$version.snupkg"
+      published_symbol_package="$scratch_dir/$package_id.snupkg"
+      if ! curl -fsSL "$symbol_package_url" -o "$published_symbol_package" 2>/dev/null; then
+        pending+=("$package_id")
+        continue
+      fi
+      local_symbol_package=$(find_local_package "$artifact_dir" "$package_id" "$version" snupkg)
+      if ! verify_published_package \
+          "$local_symbol_package" "$published_symbol_package" "$scratch_dir"; then
+        echo "Published symbols for $package_id $version do not match the workflow artifact" >&2
+        exit 1
+      fi
+      echo "  $package_id $version runtime and symbol packages match the workflow artifact"
     done
     remaining=("${pending[@]}")
     (( ${#remaining[@]} == 0 )) && break
@@ -147,7 +168,7 @@ main() {
     echo "Waiting for ${interval}s..."
     sleep "$interval"
   done
-  echo "All packages $version are available on $host and match the workflow artifact"
+  echo "All runtime and symbol packages $version match the workflow artifact"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then

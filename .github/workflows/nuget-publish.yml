@@ -19,6 +19,10 @@ on:
           /v3-flatcontainer) to confirm the packages are restorable.
         required: true
         type: string
+      symbol-package-base-url:
+        description: "Base URL from which the gallery's published .snupkg files can be downloaded."
+        required: true
+        type: string
       token-service-url:
         description: "Trusted Publishing OIDC token-exchange endpoint for this gallery."
         required: true
@@ -130,4 +134,10 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
           INDEX_URL: ${{ inputs.index-url }}
-        run: .github/scripts/verify-nuget-publication.sh "$GITHUB_WORKSPACE/nuget-package" "$INDEX_URL" "$VERSION"
+          SYMBOL_PACKAGE_BASE_URL: ${{ inputs.symbol-package-base-url }}
+        run: >-
+          .github/scripts/verify-nuget-publication.sh
+          "$GITHUB_WORKSPACE/nuget-package"
+          "$INDEX_URL"
+          "$SYMBOL_PACKAGE_BASE_URL"
+          "$VERSION"
