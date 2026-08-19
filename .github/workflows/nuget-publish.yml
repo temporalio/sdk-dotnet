@@ -107,47 +107,27 @@ jobs:
     needs: publish
     runs-on: ubuntu-latest
     permissions:
+      actions: read
       contents: read
     steps:
-      - name: Wait for packages to be available
+      - name: Checkout publication verifier
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ inputs.commit }}
+          sparse-checkout: .github/scripts/verify-nuget-publication.sh
+          sparse-checkout-cone-mode: false
+
+      - name: Download NuGet artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          github-token: ${{ github.token }}
+          name: ${{ inputs.artifact-name }}
+          path: ${{ github.workspace }}/nuget-package
+          run-id: ${{ inputs.artifact-run-id }}
+
+      - name: Wait for and verify packages
         env:
           VERSION: ${{ inputs.version }}
           INDEX_URL: ${{ inputs.index-url }}
-        run: |
-          set -euo pipefail
-          # Flat-container is served from the same host as the V3 index.
-          host="${INDEX_URL#https://}"
-          host="${host%%/*}"
-          remaining=(
-            temporalio
-            temporalio.extensions.aws.lambda
-            temporalio.extensions.aws.lambda.opentelemetry
-            temporalio.extensions.diagnosticsource
-            temporalio.extensions.gcp.cloudrun.opentelemetry
-            temporalio.extensions.hosting
-            temporalio.extensions.opentelemetry
-          )
-          deadline=$(( $(date +%s) + 1800 )) # 30 minutes
-          while true; do
-            pending=()
-            for pkg in "${remaining[@]}"; do
-              if curl -fsSL "https://$host/v3-flatcontainer/$pkg/index.json" 2>/dev/null \
-                   | jq -e --arg v "$VERSION" '.versions | index($v)' >/dev/null; then
-                echo "  $pkg $VERSION is available on $host"
-              else
-                pending+=("$pkg")
-              fi
-            done
-            remaining=("${pending[@]}")
-            [ "${#remaining[@]}" -eq 0 ] && break
-            if [ "$(date +%s)" -ge "$deadline" ]; then
-              echo "Timed out on $host; still not available:" >&2
-              printf '  - %s\n' "${remaining[@]}" >&2
-              exit 1
-            fi
-            echo "Pending on $host:"
-            printf '  - %s\n' "${remaining[@]}"
-            echo "Waiting for 15s..."
-            sleep 15
-          done
-          echo "All packages $VERSION available on $host"
+        run: .github/scripts/verify-nuget-publication.sh "$GITHUB_WORKSPACE/nuget-package" "$INDEX_URL" "$VERSION"

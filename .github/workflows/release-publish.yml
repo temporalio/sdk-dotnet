@@ -21,7 +21,10 @@ permissions:
   contents: read
 
 concurrency:
-  group: sdk-dotnet-release-publication
+  # GitHub keeps at most one pending run per concurrency group. Keying this to
+  # the immutable candidate prevents a later version from discarding an older
+  # version that is still waiting for an environment approval.
+  group: sdk-dotnet-release-${{ github.event.workflow_run.head_sha }}
   cancel-in-progress: false
 
 jobs:
