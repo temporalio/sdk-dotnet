@@ -8,76 +8,16 @@
 
 set -euo pipefail
 
-version_is_newer() {
-  local candidate_version=$1
-  local current_version=${2#v}
-  local -a candidate_parts current_parts
-  local index candidate_part current_part
+set_release_args() {
+  local prerelease=$1
 
-  [[ "$candidate_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || return 1
-  [[ "$current_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || return 1
-  IFS=. read -r -a candidate_parts <<< "$candidate_version"
-  IFS=. read -r -a current_parts <<< "$current_version"
-  for index in 0 1 2; do
-    candidate_part=$((10#${candidate_parts[$index]}))
-    current_part=$((10#${current_parts[$index]}))
-    (( candidate_part > current_part )) && return 0
-    (( candidate_part < current_part )) && return 1
-  done
-  return 1
-}
-
-select_latest_release() {
-  local candidate_version=$1
-  shift
-  local entry release_id release_tag release_version
-
-  latest_release_id=
-  latest_release_tag=
-  latest_release_version=
-  candidate_found=false
-  for entry in "$@"; do
-    IFS=$'\t' read -r release_id release_tag <<< "$entry"
-    [[ "$release_tag" == "$candidate_version" ]] && candidate_found=true
-    release_version=${release_tag#v}
-    [[ "$release_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || continue
-    if [[ -z "$latest_release_id" ]] || \
-       version_is_newer "$release_version" "$latest_release_version"; then
-      latest_release_id=$release_id
-      latest_release_tag=$release_tag
-      latest_release_version=$release_version
-    fi
-  done
-  if [[ "$candidate_found" != true || -z "$latest_release_id" ]]; then
-    echo "Unable to find the new release while selecting the latest stable version" >&2
-    return 1
-  fi
-}
-
-reconcile_latest_release() {
-  local candidate_version=$1
-  local prerelease=$2
-  local stable_release_data
-  local -a stable_releases
-
-  [[ "$prerelease" == true ]] && return
-  [[ "$prerelease" == false ]] || {
+  release_args=()
+  if [[ "$prerelease" == true ]]; then
+    release_args=(--prerelease --latest=false)
+  elif [[ "$prerelease" != false ]]; then
     echo "PRERELEASE must be true or false, got: $prerelease" >&2
     return 1
-  }
-
-  stable_release_data=$(gh api --paginate \
-    "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
-    --jq '.[] | select(.draft == false and .prerelease == false) | [.id, .tag_name] | @tsv')
-  mapfile -t stable_releases <<< "$stable_release_data"
-  select_latest_release "$candidate_version" "${stable_releases[@]}"
-
-  # Every concurrent release independently selects the same highest stable
-  # version after it becomes visible. The release created last also reconciles
-  # last, so completion order cannot leave an older version marked as latest.
-  gh api --method PATCH "repos/$GITHUB_REPOSITORY/releases/$latest_release_id" \
-    -f make_latest=true --silent
-  echo "GitHub release $latest_release_tag is the latest stable release"
+  fi
 }
 
 main() {
@@ -125,7 +65,6 @@ main() {
       exit 1
     fi
     echo "GitHub release $version already exists at the expected tag"
-    reconcile_latest_release "$version" "$prerelease"
     exit 0
   fi
 
@@ -154,16 +93,15 @@ main() {
     cat "$generated_notes"
   } > "$release_notes"
 
-  # Defer the latest marker until after creation so concurrent versions can
-  # reconcile it deterministically instead of racing read-then-create calls.
-  release_args=(--latest=false)
-  [[ "$prerelease" == true ]] && release_args=(--prerelease --latest=false)
+  # Stable releases use GitHub's server-side default, which selects latest
+  # automatically by date and semantic version without a client-side race.
+  # Prereleases must be explicitly excluded from latest selection.
+  set_release_args "$prerelease"
   gh release create "$version" \
     "${tag_args[@]}" \
     "${release_args[@]}" \
     --title "$version" \
     --notes-file "$release_notes"
-  reconcile_latest_release "$version" "$prerelease"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then

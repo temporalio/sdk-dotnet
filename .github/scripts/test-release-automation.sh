@@ -19,29 +19,22 @@ readonly test_dir
 trap 'rm -rf "$test_dir"' EXIT
 export GITHUB_REPOSITORY=temporalio/sdk-dotnet
 export RUNNER_TEMP="$test_dir"
-declare latest_release_id latest_release_tag
+declare -a release_args
 
-select_latest_release 1.2.3 \
-  $'101\t1.2.2' \
-  $'102\t1.2.3' \
-  $'103\t1.3.0-beta.1' \
-  $'104\tv1.1.9'
-[[ "$latest_release_id" == 102 && "$latest_release_tag" == 1.2.3 ]] || {
-  echo "The highest stable release was not selected" >&2
+set_release_args false
+if (( ${#release_args[@]} != 0 )); then
+  echo "Stable releases must leave latest selection to GitHub" >&2
   exit 1
-}
+fi
 
-# A later stable release must win even when the older candidate finishes last.
-select_latest_release 1.2.3 \
-  $'201\t1.2.3' \
-  $'202\t1.2.4'
-[[ "$latest_release_id" == 202 && "$latest_release_tag" == 1.2.4 ]] || {
-  echo "An older retry would incorrectly replace a newer latest release" >&2
+set_release_args true
+if [[ "${release_args[*]}" != '--prerelease --latest=false' ]]; then
+  echo "Prereleases must be excluded from latest selection" >&2
   exit 1
-}
+fi
 
-if select_latest_release 1.2.3 $'301\t1.2.4' 2>/dev/null; then
-  echo "Latest selection accepted a listing that omitted the new release" >&2
+if set_release_args invalid 2>/dev/null; then
+  echo "Invalid prerelease metadata was accepted" >&2
   exit 1
 fi
 
