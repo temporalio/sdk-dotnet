@@ -10,7 +10,9 @@ public class SystemNexusPayloadConverterTests
     [Fact]
     public void TransferType_RoundTrips()
     {
-        var converter = new SystemNexusPayloadConverter();
+        var converter = new SystemNexusPayloadConverter(
+            DataConverter.Default.PayloadConverter,
+            DataConverter.Default.FailureConverter);
         var value = new SystemNexusRequest("value");
 
         var payload = converter.ToPayload(value);
