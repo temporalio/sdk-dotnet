@@ -2681,11 +2681,11 @@ namespace Temporalio.Worker
                         new CanceledFailureException("Nexus operation cancelled before scheduled"));
                 }
 
-                // TODO: Scope the generated System Nexus support converter context around this
-                // operation converter once the generated support file is ingested into the SDK.
                 var systemNexusPayloadConverter = SystemNexusPayloadVisitor.IsSystemNexusEndpoint(
                     input.ClientOptions.Endpoint) ?
-                    new SystemNexusPayloadConverter() : null;
+                    new SystemNexusPayloadConverter(
+                        instance.payloadConverterWorkflowContext,
+                        instance.failureConverterWorkflowContext) : null;
                 var operationPayloadConverter =
                     systemNexusPayloadConverter ?? instance.payloadConverterNoContext;
 

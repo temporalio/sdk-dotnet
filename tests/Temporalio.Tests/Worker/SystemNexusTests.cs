@@ -1,9 +1,6 @@
 namespace Temporalio.Tests.Worker;
 
 using Temporalio.Api.Enums.V1;
-using Temporalio.Client;
-using Temporalio.Converters;
-using Temporalio.Tests.Converters;
 using Temporalio.Worker;
 using Temporalio.Workflows;
 using Xunit;
@@ -19,26 +16,20 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteWorkflowAsync_SignalWithStartFromWorkflow_SucceedsAndReplays()
     {
-        var newOptions = (TemporalClientOptions)Client.Options.Clone();
-        newOptions.DataConverter = DataConverter.Default with
-        {
-            PayloadCodec = new Base64PayloadCodec(),
-        };
-        var codecClient = new TemporalClient(Client.Connection, newOptions);
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddWorkflow<SystemNexusSignalWithStartTargetWorkflow>();
         await ExecuteWorkerAsync<SystemNexusSignalWithStartCallerWorkflow>(
             async worker =>
             {
                 var targetWorkflowId = $"workflow-{Guid.NewGuid()}";
-                var callerHandle = await codecClient.StartWorkflowAsync(
+                var callerHandle = await Client.StartWorkflowAsync(
                     (SystemNexusSignalWithStartCallerWorkflow workflow) =>
                         workflow.RunAsync(targetWorkflowId, worker.Options.TaskQueue!),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                 var resultWorkflowId = await callerHandle.GetResultAsync();
                 Assert.Equal(targetWorkflowId, resultWorkflowId);
 
-                var targetHandle = codecClient.GetWorkflowHandle<
+                var targetHandle = Client.GetWorkflowHandle<
                     SystemNexusSignalWithStartTargetWorkflow,
                     IReadOnlyCollection<string>>(targetWorkflowId);
                 var events = await targetHandle.GetResultAsync();
@@ -48,15 +39,13 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
                 Assert.Contains("Signal: signal-two", events);
 
                 var replayer = new WorkflowReplayer(
-                    new WorkflowReplayerOptions
-                    {
-                        DataConverter = newOptions.DataConverter,
-                    }.AddWorkflow<SystemNexusSignalWithStartCallerWorkflow>());
+                    new WorkflowReplayerOptions().AddWorkflow<
+                        SystemNexusSignalWithStartCallerWorkflow>());
                 var replay = await replayer.ReplayWorkflowAsync(await callerHandle.FetchHistoryAsync());
                 Assert.Null(replay.ReplayFailure);
             },
             workerOptions,
-            codecClient);
+            Client);
     }
 
     [Workflow]
