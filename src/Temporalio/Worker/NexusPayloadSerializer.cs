@@ -15,14 +15,6 @@ namespace Temporalio.Worker
     /// </summary>
     internal class NexusPayloadSerializer : ISerializer
     {
-        /// <summary>
-        /// Error type of an <see cref="ApplicationFailureException"/> reserved for payload
-        /// validation failures raised by a data converter. A non-retryable failure of this type
-        /// means the input itself is invalid, so it is reported as a bad request rather than a
-        /// handler failure.
-        /// </summary>
-        private const string PayloadValidationErrorType = "PayloadValidationError";
-
         private readonly DataConverter dataConverter;
 
         /// <summary>
@@ -144,6 +136,6 @@ namespace Temporalio.Worker
         private static bool IsPayloadValidationFailure(Exception e) =>
             e is ApplicationFailureException appExc &&
             appExc.NonRetryable &&
-            appExc.ErrorType == PayloadValidationErrorType;
+            appExc.ErrorType == PayloadValidationException.ErrorType;
     }
 }

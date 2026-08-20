@@ -21,10 +21,7 @@ public class NexusPayloadSerializerTests
     [Fact]
     public async Task DeserializeAsync_ConverterPayloadValidationFailure_BecomesBadRequest()
     {
-        var cause = new ApplicationFailureException(
-            "Intentional payload validation failure",
-            errorType: "PayloadValidationError",
-            nonRetryable: true);
+        var cause = PayloadValidationException.Create(new { Reason = "invalid input" });
         var serializer = new NexusPayloadSerializer(DataConverter.Default with
         {
             PayloadConverter = new ThrowingPayloadConverter(cause),
@@ -39,7 +36,7 @@ public class NexusPayloadSerializerTests
         Assert.Equal("Invalid operation input", exc.Message);
         Assert.Same(cause, exc.InnerException);
         var inner = Assert.IsType<ApplicationFailureException>(exc.InnerException);
-        Assert.Equal("Intentional payload validation failure", inner.Message);
+        Assert.Equal("Payload validation failed", inner.Message);
         Assert.Equal("PayloadValidationError", inner.ErrorType);
         Assert.True(inner.NonRetryable);
     }
@@ -47,10 +44,7 @@ public class NexusPayloadSerializerTests
     [Fact]
     public async Task DeserializeAsync_CodecPayloadValidationFailure_BecomesBadRequest()
     {
-        var cause = new ApplicationFailureException(
-            "Intentional payload validation failure",
-            errorType: "PayloadValidationError",
-            nonRetryable: true);
+        var cause = PayloadValidationException.Create(new { Reason = "invalid input" });
         var serializer = new NexusPayloadSerializer(DataConverter.Default with
         {
             PayloadCodec = new ThrowingPayloadCodec(cause),
@@ -65,7 +59,7 @@ public class NexusPayloadSerializerTests
         Assert.Equal("Invalid operation input", exc.Message);
         Assert.Same(cause, exc.InnerException);
         var inner = Assert.IsType<ApplicationFailureException>(exc.InnerException);
-        Assert.Equal("Intentional payload validation failure", inner.Message);
+        Assert.Equal("Payload validation failed", inner.Message);
         Assert.Equal("PayloadValidationError", inner.ErrorType);
         Assert.True(inner.NonRetryable);
     }
