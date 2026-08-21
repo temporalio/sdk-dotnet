@@ -21,7 +21,7 @@ public class NexusPayloadSerializerTests
     [Fact]
     public async Task DeserializeAsync_ConverterPayloadValidationFailure_BecomesBadRequest()
     {
-        var cause = PayloadValidationException.Create(new { Reason = "invalid input" });
+        var cause = PayloadValidationError.CreateException(new { Reason = "invalid input" });
         var serializer = new NexusPayloadSerializer(DataConverter.Default with
         {
             PayloadConverter = new ThrowingPayloadConverter(cause),
@@ -44,7 +44,7 @@ public class NexusPayloadSerializerTests
     [Fact]
     public async Task DeserializeAsync_CodecPayloadValidationFailure_BecomesBadRequest()
     {
-        var cause = PayloadValidationException.Create(new { Reason = "invalid input" });
+        var cause = PayloadValidationError.CreateException(new { Reason = "invalid input" });
         var serializer = new NexusPayloadSerializer(DataConverter.Default with
         {
             PayloadCodec = new ThrowingPayloadCodec(cause),

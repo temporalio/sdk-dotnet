@@ -3,14 +3,14 @@ namespace Temporalio.Tests.Converters;
 using Temporalio.Converters;
 using Xunit;
 
-public class PayloadValidationExceptionTests
+public class PayloadValidationErrorTests
 {
     [Fact]
-    public void Create_WithDetails_CreatesExpectedApplicationFailure()
+    public void CreateException_WithDetails_CreatesExpectedApplicationFailure()
     {
         var details = new { Path = "name", Reason = "must not be empty" };
 
-        var exception = PayloadValidationException.Create(details);
+        var exception = PayloadValidationError.CreateException(details);
 
         Assert.Equal("Payload validation failed", exception.Message);
         Assert.Equal("PayloadValidationError", exception.ErrorType);
@@ -20,9 +20,9 @@ public class PayloadValidationExceptionTests
     }
 
     [Fact]
-    public void Create_WithNullDetails_CreatesApplicationFailureWithoutDetails()
+    public void CreateException_WithNullDetails_CreatesApplicationFailureWithoutDetails()
     {
-        var exception = PayloadValidationException.Create(null);
+        var exception = PayloadValidationError.CreateException(null);
 
         Assert.Equal("Payload validation failed", exception.Message);
         Assert.Equal("PayloadValidationError", exception.ErrorType);

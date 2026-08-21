@@ -21,8 +21,8 @@ to docs, or any other relevant information.
 
 ### Added
 
-- Added `PayloadValidationException.Create`, which payload converters and codecs can use to report
-  invalid Nexus operation input with structured details.
+- Added `PayloadValidationError.CreateException`, which payload converters and codecs can use to
+  report invalid Nexus operation input with structured details.
 
 ### Changed
 

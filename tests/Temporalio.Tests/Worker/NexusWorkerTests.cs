@@ -1865,7 +1865,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             switch (value as string)
             {
                 case "payload-validation-error":
-                    throw PayloadValidationException.Create(new { Reason = "invalid input" });
+                    throw PayloadValidationError.CreateException(new { Reason = "invalid input" });
                 case "other-application-error":
                     throw new ApplicationFailureException(
                         "Intentional application failure",
@@ -1986,7 +1986,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             // details on the caller side) are unaffected
             if (payloads.Any(p => p.Data.ToStringUtf8().Contains("codec-payload-validation-error")))
             {
-                throw PayloadValidationException.Create(new { Reason = "invalid input" });
+                throw PayloadValidationError.CreateException(new { Reason = "invalid input" });
             }
             if (payloads.Any(p => p.Data.ToStringUtf8().Contains("codec-other-application-error")))
             {
