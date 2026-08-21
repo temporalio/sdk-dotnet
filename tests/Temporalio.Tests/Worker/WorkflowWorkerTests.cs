@@ -5334,6 +5334,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresLocalServer,
+        "Requires two independent servers to verify worker client replacement.")]
     public async Task ExecuteWorkflowAsync_WorkerClientReplacement_UsesNewClient()
     {
         // We are going to create a second ephemeral server and start a workflow on each server.
