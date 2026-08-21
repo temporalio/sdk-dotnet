@@ -19,6 +19,11 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### Added
+
+- Added `PayloadValidationError.CreateException`, which payload converters and codecs can use to
+  report invalid Nexus operation input with structured details.
+
 ### Changed
 
 - A non-retryable `ApplicationFailureException` with error type `PayloadValidationError` thrown by a

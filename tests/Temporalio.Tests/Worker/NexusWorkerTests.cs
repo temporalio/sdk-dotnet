@@ -1865,10 +1865,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             switch (value as string)
             {
                 case "payload-validation-error":
-                    throw new ApplicationFailureException(
-                        "Intentional payload validation failure",
-                        errorType: "PayloadValidationError",
-                        nonRetryable: true);
+                    throw PayloadValidationError.CreateException(new { Reason = "invalid input" });
                 case "other-application-error":
                     throw new ApplicationFailureException(
                         "Intentional application failure",
@@ -1926,7 +1923,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             "Invalid operation input", exc3.Message);
         Assert.DoesNotContain("Payload converter failed to decode", exc3.Message);
         var exc4 = Assert.IsType<ApplicationFailureException>(exc3.InnerException);
-        Assert.Equal("Intentional payload validation failure", exc4.Message);
+        Assert.Equal("Payload validation failed", exc4.Message);
         Assert.Equal("PayloadValidationError", exc4.ErrorType);
     }
 
@@ -1989,10 +1986,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             // details on the caller side) are unaffected
             if (payloads.Any(p => p.Data.ToStringUtf8().Contains("codec-payload-validation-error")))
             {
-                throw new ApplicationFailureException(
-                    "Intentional payload validation failure",
-                    errorType: "PayloadValidationError",
-                    nonRetryable: true);
+                throw PayloadValidationError.CreateException(new { Reason = "invalid input" });
             }
             if (payloads.Any(p => p.Data.ToStringUtf8().Contains("codec-other-application-error")))
             {
@@ -2056,7 +2050,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         Assert.Contains("Invalid operation input", exc3.Message);
         Assert.DoesNotContain("Payload codec failed to decode", exc3.Message);
         var exc4 = Assert.IsType<ApplicationFailureException>(exc3.InnerException);
-        Assert.Equal("Intentional payload validation failure", exc4.Message);
+        Assert.Equal("Payload validation failed", exc4.Message);
         Assert.Equal("PayloadValidationError", exc4.ErrorType);
     }
 
