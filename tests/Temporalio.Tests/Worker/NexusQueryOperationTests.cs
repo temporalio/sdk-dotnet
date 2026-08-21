@@ -2,6 +2,7 @@ namespace Temporalio.Tests.Worker;
 
 using NexusRpc;
 using NexusRpc.Handlers;
+using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Exceptions;
 using Temporalio.Nexus;
@@ -15,11 +16,6 @@ using Xunit.Abstractions;
 /// nothing to history, so the handler simply queries and returns the result; there is no operation
 /// token and no completion callback.
 /// </summary>
-/// <remarks>
-/// The response link the server attaches to <c>QueryWorkflowResponse.Link</c> is verified in
-/// <c>Temporalio.Tests.Nexus.QueryResponseLinkTests</c> instead, since the server does not populate
-/// that field yet.
-/// </remarks>
 public class NexusQueryOperationTests : WorkflowEnvironmentTestBase
 {
     public NexusQueryOperationTests(ITestOutputHelper output, WorkflowEnvironment env)
@@ -123,6 +119,30 @@ public class NexusQueryOperationTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task QueryOperation_CapturesResponseLink()
+    {
+        // End-to-end response link check: the server attaches a link to QueryWorkflowResponse, the
+        // client hands it to the Nexus operation context, and the SDK puts it on the caller's
+        // NexusOperationCompleted event.
+        //
+        // Only the response direction is asserted. A Query writes nothing to the queried workflow's
+        // history, so there is no event on the callee side to carry a forward link, unlike signal.
+        await RunWithCounterAsync(async (endpoint, taskQueue, counter) =>
+        {
+            await counter.SignalAsync(wf => wf.BumpAsync());
+            await counter.SignalAsync(wf => wf.BumpAsync());
+
+            var caller = await RunCallerAsync(taskQueue, endpoint, new(counter.Id));
+            Assert.Equal(2, await caller.GetResultAsync<int>());
+
+            var completed = Assert.Single(
+                (await caller.FetchHistoryAsync()).Events,
+                e => e.EventType == EventType.NexusOperationCompleted);
+            AssertQueryResponseLink(completed, counter.Id);
+        });
+    }
+
+    [Fact]
     public async Task QueryOperation_UnknownWorkflow_FailsOperation()
     {
         await RunWithCounterAsync(async (endpoint, taskQueue, counter) =>
@@ -201,6 +221,26 @@ public class NexusQueryOperationTests : WorkflowEnvironmentTestBase
         var handlerExc = Assert.IsType<HandlerException>(nexusExc.InnerException);
         Assert.Equal(expected, handlerExc.ErrorType);
         Assert.False(handlerExc.IsRetryable);
+    }
+
+    /// <summary>
+    /// Assert that a caller-side event carries a response link naming the queried workflow. A Query
+    /// produces no history event, so the server answers with a <c>Link.Workflow</c> identifying the
+    /// execution that processed the Query rather than the <c>Link.WorkflowEvent</c> the signal and
+    /// update paths use.
+    /// </summary>
+    private static void AssertQueryResponseLink(
+        Api.History.V1.HistoryEvent evt, string queriedWorkflowId)
+    {
+        Assert.NotEmpty(evt.Links);
+        var link = evt.Links[0];
+        // A Query link must use the Workflow variant, not WorkflowEvent, because a Query writes
+        // nothing to history.
+        Assert.Equal(
+            Api.Common.V1.Link.VariantOneofCase.Workflow, link.VariantCase);
+        Assert.Equal(queriedWorkflowId, link.Workflow.WorkflowId);
+        // The link should name the run that processed the Query.
+        Assert.NotEqual(string.Empty, link.Workflow.RunId);
     }
 
     private async Task RunWithCounterAsync(
