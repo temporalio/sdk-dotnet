@@ -19,6 +19,16 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### Added
+
+- Added the experimental `Temporalio.Extensions.Gcp.CloudRun` package for long-lived Temporal
+  workers on Google Cloud Run worker pools and services. A `GoogleCloudRunMetadata` helper reads
+  Cloud Run instance metadata (the `CLOUD_RUN_WORKER_POOL`/`CLOUD_RUN_REVISION` or
+  `K_SERVICE`/`K_REVISION` environment variables and the instance id from the metadata server) to
+  derive a worker identity and a `WorkerDeploymentVersion`, and the `ApplyGoogleCloudRunDefaultsAsync`
+  and `ApplyGoogleCloudRunDefaults` extension methods apply those to `TemporalClientConnectOptions`
+  and `TemporalWorkerOptions` respectively.
+
 ### Changed
 
 - A non-retryable `ApplicationFailureException` with error type `PayloadValidationError` thrown by a

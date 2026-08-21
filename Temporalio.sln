@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporalio.Extensions.Aws.L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry", "src\Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry\Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry.csproj", "{1B74A58D-DB4A-49D1-8EF0-8AD91C2D66DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporalio.Extensions.Gcp.CloudRun", "src\Temporalio.Extensions.Gcp.CloudRun\Temporalio.Extensions.Gcp.CloudRun.csproj", "{74BFAEC2-FCBB-4A17-B684-072E1F982965}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{1B74A58D-DB4A-49D1-8EF0-8AD91C2D66DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B74A58D-DB4A-49D1-8EF0-8AD91C2D66DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B74A58D-DB4A-49D1-8EF0-8AD91C2D66DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74BFAEC2-FCBB-4A17-B684-072E1F982965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74BFAEC2-FCBB-4A17-B684-072E1F982965}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74BFAEC2-FCBB-4A17-B684-072E1F982965}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74BFAEC2-FCBB-4A17-B684-072E1F982965}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7AE1422A-0937-40D7-9A62-431DD0E2F6D5} = {758B61E2-9AB6-46BF-B53C-16BD140BF56B}
@@ -81,5 +87,6 @@ Global
 		{2610AFAE-FD3A-4583-8CA5-4869E1347A3C} = {F2683DAA-F157-448E-96C8-DF7BB019886D}
 		{9A2C7274-7ED2-4C92-BE92-13887C3309B4} = {758B61E2-9AB6-46BF-B53C-16BD140BF56B}
 		{1B74A58D-DB4A-49D1-8EF0-8AD91C2D66DA} = {758B61E2-9AB6-46BF-B53C-16BD140BF56B}
+		{74BFAEC2-FCBB-4A17-B684-072E1F982965} = {758B61E2-9AB6-46BF-B53C-16BD140BF56B}
 	EndGlobalSection
 EndGlobal
