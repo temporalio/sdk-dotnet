@@ -1374,6 +1374,15 @@ Extra args can be added after `--`, e.g. `-- -verbose` would show verbose logs a
 options. If the arguments are anything but `--help`, the current assembly is prepended to the args before sending to the
 xUnit runner.
 
+Tests are eligible to run against Temporal Cloud unless they have a `CloudTestExclusion` attribute. Run or list the
+Cloud-eligible tests with:
+
+    dotnet test tests/Temporalio.Tests --filter "CloudTest!=Excluded"
+    dotnet test tests/Temporalio.Tests --list-tests --filter "CloudTest!=Excluded"
+
+To inventory excluded tests, filter on `CloudTest=Excluded`, or filter on
+[`CloudTestExclusionReason`](tests/Temporalio.Tests/CloudTestExclusionReason.cs) to inspect a particular category.
+
 The following environment variables can be set to override the environment:
 
 * `TEMPORAL_TEST_CLIENT_TARGET_HOST` - This must be set for any of the variables below to apply

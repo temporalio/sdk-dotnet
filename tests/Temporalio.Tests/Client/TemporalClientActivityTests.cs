@@ -305,6 +305,9 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Cloud visibility may return a next-page token that resolves to an empty final page.")]
     public async Task ListActivitiesAsync_SimpleList_IsAccurate()
     {
         await ExecuteActivityWorkerAsync(SimpleActivityAsync, async taskQueue =>
