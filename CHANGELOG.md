@@ -24,11 +24,9 @@ to docs, or any other relevant information.
   now propagates the link the server returns for the workflow that processed it, so the caller's
   Nexus operation event points back at the queried workflow. Requires a server that populates
   `QueryWorkflowResponse.link`; older servers leave it unset and nothing is propagated.
-
-### Added
-
 - Added `PayloadValidationError.CreateException`, which payload converters and codecs can use to
   report invalid Nexus operation input with structured details.
+- 
 ### Changed                 — changes in existing functionality
 - A `common.v1.Link.Workflow` now serializes to the workflow path
   `temporal:///namespaces/{ns}/workflows/{wid}/{rid}` with the optional `reason` as a query param,
