@@ -137,6 +137,8 @@ namespace Temporalio.Nexus
                 new Api.Common.V1.Link { NexusOperation = link.ToNexusOperation() },
             var t when t == Api.Common.V1.Link.Types.Activity.Descriptor.FullName =>
                 new Api.Common.V1.Link { Activity = link.ToActivity() },
+            var t when t == Api.Common.V1.Link.Types.Workflow.Descriptor.FullName =>
+                new Api.Common.V1.Link { Workflow = link.ToWorkflow() },
             _ => throw new ArgumentException($"Unknown link type: {link.Type}"),
         };
 
@@ -158,18 +160,51 @@ namespace Temporalio.Nexus
         }
 
         /// <summary>
-        /// Convert a workflow link to a Nexus link. Unlike a workflow-event link, this points at a
-        /// workflow execution without referencing a particular history event, which is used when
-        /// there is no event to link to (e.g. a rejected update).
+        /// Convert a workflow link to a Nexus link. A workflow link addresses a workflow execution
+        /// as a whole rather than one event within it, so the URL carries no event path suffix and
+        /// no reference query params. It is used when there is no history event to point at, for
+        /// example a query or a rejected update. The optional reason explaining why the link exists
+        /// is carried as a query param.
         /// </summary>
         /// <param name="workflow">Workflow link to convert.</param>
         /// <returns>Nexus link.</returns>
         public static NexusLink ToNexusLink(this Api.Common.V1.Link.Types.Workflow workflow)
         {
+            // Build URI with empty authority so there is no host. UriBuilder cannot be used
+            // here because even with Host explicitly set to "", it emits "temporal:/path"
+            // (single slash) rather than the canonical "temporal:///path" form other SDKs use.
             var uriStr = "temporal:///namespaces/" + Uri.EscapeDataString(workflow.Namespace) +
                 "/workflows/" + Uri.EscapeDataString(workflow.WorkflowId) + "/" +
-                Uri.EscapeDataString(workflow.RunId) + "/history";
+                Uri.EscapeDataString(workflow.RunId);
+            if (workflow.Reason.Length > 0)
+            {
+                uriStr += "?reason=" + Uri.EscapeDataString(workflow.Reason);
+            }
             return new(new Uri(uriStr), Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+        }
+
+        /// <summary>
+        /// Convert a Nexus link to a workflow link. The run ID ends a workflow link, so anything
+        /// trailing is rejected. In particular this rejects the workflow-event form, which ends in
+        /// "history" and is otherwise identical.
+        /// </summary>
+        /// <param name="link">Nexus link.</param>
+        /// <returns>Workflow link.</returns>
+        /// <exception cref="ArgumentException">If the link is invalid.</exception>
+        public static Api.Common.V1.Link.Types.Workflow ToWorkflow(this NexusLink link)
+        {
+            var pathPieces = ParseTemporalLinkPath(link, "workflows", null);
+            var workflow = new Api.Common.V1.Link.Types.Workflow
+            {
+                Namespace = Uri.UnescapeDataString(pathPieces[1]),
+                WorkflowId = Uri.UnescapeDataString(pathPieces[3]),
+                RunId = Uri.UnescapeDataString(pathPieces[4]),
+            };
+            if (ParseQueryParams(link.Uri).TryGetValue("reason", out var reason))
+            {
+                workflow.Reason = reason;
+            }
+            return workflow;
         }
 
         /// <summary>
@@ -205,14 +240,7 @@ namespace Temporalio.Nexus
                 RunId = Uri.UnescapeDataString(pathPieces[4]),
             };
 
-            // Simple query param parser because .NET stdlib doesn't have one in all versions
-            var query = link.Uri.Query.
-                TrimStart('?').
-                Split(QuerySeparator, StringSplitOptions.RemoveEmptyEntries).
-                Select(v => v.Split(QueryValueSeparator, 2)).
-                ToDictionary(
-                    kv => Uri.UnescapeDataString(kv[0]),
-                    kv => kv.Length > 1 ? Uri.UnescapeDataString(kv[1]) : string.Empty);
+            var query = ParseQueryParams(link.Uri);
 
             if (!query.TryGetValue("referenceType", out var refType))
             {
@@ -271,9 +299,37 @@ namespace Temporalio.Nexus
             return evt;
         }
 
-        // Validate a Temporal-shaped link URI and return its path segments. Expected path shape
-        // is /namespaces/{namespace}/{kind}/{id}/{run}/{tail}.
-        private static string[] ParseTemporalLinkPath(NexusLink link, string expectedKind, string expectedTail)
+        /// <summary>
+        /// Parse a URI query string into its parameters. Simple hand-rolled parser because the .NET
+        /// stdlib does not have one in all versions we target.
+        /// </summary>
+        /// <param name="uri">URI whose query string to parse.</param>
+        /// <returns>
+        /// The query parameters, with both keys and values percent-decoded. Values are additionally
+        /// form-decoded, i.e. <c>+</c> becomes a space, since that is how a query value is encoded on
+        /// the way out; the replacement is safe to do before percent-decoding because a literal
+        /// <c>+</c> is encoded as <c>%2B</c>. A parameter present with no <c>=</c> maps to an empty
+        /// string, so callers cannot distinguish <c>?reason</c> from <c>?reason=</c>. Keys are looked
+        /// up with the dictionary's default ordinal comparer, so lookups are case-sensitive and
+        /// <c>reason</c> and <c>Reason</c> are different parameters. A query repeating a key throws,
+        /// which callers treat as an invalid link like any other malformed URI.
+        /// </returns>
+        private static Dictionary<string, string> ParseQueryParams(Uri uri) =>
+            uri.Query.
+                TrimStart('?').
+                Split(QuerySeparator, StringSplitOptions.RemoveEmptyEntries).
+                Select(v => v.Split(QueryValueSeparator, 2)).
+                ToDictionary(
+                    kv => Uri.UnescapeDataString(kv[0]),
+                    kv => kv.Length > 1 ?
+                        Uri.UnescapeDataString(kv[1].Replace("+", " ")) : string.Empty);
+
+        // Validate a Temporal-shaped link URI and return its path segments. Expected path shape is
+        // /namespaces/{namespace}/{kind}/{id}/{run}/{tail}, or /namespaces/{namespace}/{kind}/{id}/{run}
+        // when expectedTail is null. The length is matched exactly, so a link with a trailing segment
+        // is rejected when none is expected and vice versa.
+        private static string[] ParseTemporalLinkPath(
+            NexusLink link, string expectedKind, string? expectedTail)
         {
             if (link.Uri.Scheme != "temporal")
             {
@@ -284,10 +340,10 @@ namespace Temporalio.Nexus
                 throw new ArgumentException("Unexpected host");
             }
             var pathPieces = link.Uri.AbsolutePath.TrimStart('/').Split('/');
-            if (pathPieces.Length != 6 ||
+            if (pathPieces.Length != (expectedTail == null ? 5 : 6) ||
                 pathPieces[0] != "namespaces" ||
                 pathPieces[2] != expectedKind ||
-                pathPieces[5] != expectedTail)
+                (expectedTail != null && pathPieces[5] != expectedTail))
             {
                 throw new ArgumentException("Invalid path");
             }

@@ -224,4 +224,333 @@ public class ProtoLinkExtensionsTests
             Api.Common.V1.Link.Types.Activity.Descriptor.FullName);
         Assert.Throws<ArgumentException>(() => link.ToActivity());
     }
+
+    [Fact]
+    public void WorkflowLink_ToNexusLink_BuildsExpectedUri()
+    {
+        // A workflow link addresses the execution itself, so unlike a workflow-event link there is
+        // no "/history" suffix. That absence is the only thing distinguishing the two paths.
+        var workflow = new Api.Common.V1.Link.Types.Workflow
+        {
+            Namespace = "ns",
+            WorkflowId = "wf-id",
+            RunId = "run-id",
+        };
+        var nexusLink = workflow.ToNexusLink();
+
+        Assert.Equal("temporal", nexusLink.Uri.Scheme);
+        Assert.Equal(Api.Common.V1.Link.Types.Workflow.Descriptor.FullName, nexusLink.Type);
+        Assert.Equal("/namespaces/ns/workflows/wf-id/run-id", nexusLink.Uri.AbsolutePath);
+        Assert.Equal(string.Empty, nexusLink.Uri.Query);
+    }
+
+    [Fact]
+    public void WorkflowLink_ToNexusLink_EncodesReasonAsQueryParam()
+    {
+        var workflow = new Api.Common.V1.Link.Types.Workflow
+        {
+            Namespace = "ns",
+            WorkflowId = "wf-id",
+            RunId = "run-id",
+            Reason = "rejected update",
+        };
+        var nexusLink = workflow.ToNexusLink();
+
+        Assert.Equal("/namespaces/ns/workflows/wf-id/run-id", nexusLink.Uri.AbsolutePath);
+        Assert.Equal("?reason=rejected%20update", nexusLink.Uri.Query);
+    }
+
+    [Fact]
+    public void WorkflowLink_ToNexusLink_EscapesPathSegments()
+    {
+        // A slash and a space in the path must be percent escaped, otherwise the link resolves to a
+        // different workflow.
+        var workflow = new Api.Common.V1.Link.Types.Workflow
+        {
+            Namespace = "ns",
+            WorkflowId = "wf/id with space",
+            RunId = "run-id",
+        };
+        var nexusLink = workflow.ToNexusLink();
+
+        Assert.Equal(
+            "/namespaces/ns/workflows/wf%2Fid%20with%20space/run-id",
+            nexusLink.Uri.AbsolutePath);
+    }
+
+    [Fact]
+    public void ToWorkflow_ParsesUri()
+    {
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+
+        var workflow = link.ToWorkflow();
+        Assert.Equal("ns", workflow.Namespace);
+        Assert.Equal("wf-id", workflow.WorkflowId);
+        Assert.Equal("run-id", workflow.RunId);
+        Assert.Equal(string.Empty, workflow.Reason);
+    }
+
+    [Fact]
+    public void ToWorkflow_ParsesReason()
+    {
+        // Other SDKs form encode this param, so a "+" has to decode back to a space.
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id?reason=rejected+update"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+
+        Assert.Equal("rejected update", link.ToWorkflow().Reason);
+    }
+
+    [Fact]
+    public void ToWorkflow_ParsesPercentEncodedReason()
+    {
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id?reason=rejected%20update"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+
+        Assert.Equal("rejected update", link.ToWorkflow().Reason);
+    }
+
+    [Fact]
+    public void ToWorkflow_RejectsTrailingSegment()
+    {
+        // The workflow-event form addresses an event inside the workflow, so it must not be accepted
+        // as a workflow link even when the type says otherwise.
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id/history"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+        Assert.Throws<ArgumentException>(() => link.ToWorkflow());
+    }
+
+    [Fact]
+    public void ToWorkflow_RejectsMissingRunId()
+    {
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+        Assert.Throws<ArgumentException>(() => link.ToWorkflow());
+    }
+
+    [Fact]
+    public void ToWorkflow_RejectsNonTemporalScheme()
+    {
+        var link = new NexusLink(
+            new Uri("https://example/namespaces/ns/workflows/wf-id/run-id"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+        Assert.Throws<ArgumentException>(() => link.ToWorkflow());
+    }
+
+    [Fact]
+    public void ToWorkflow_FindsReasonByKeyNotPosition()
+    {
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id?foo=bar&reason=Query+processed"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+
+        Assert.Equal("Query processed", link.ToWorkflow().Reason);
+    }
+
+    [Fact]
+    public void ToWorkflow_EmptyReasonValue()
+    {
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id?reason="),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+
+        Assert.Equal(string.Empty, link.ToWorkflow().Reason);
+    }
+
+    [Fact]
+    public void ToWorkflow_BareReasonKey()
+    {
+        // A key with no "=" must not blow up on the missing value.
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id?reason"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+
+        Assert.Equal(string.Empty, link.ToWorkflow().Reason);
+    }
+
+    [Fact]
+    public void ToWorkflow_ReasonPrefixKeyIgnored()
+    {
+        // "reasonx" must not be treated as "reason".
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id?reasonx=nope"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+
+        Assert.Equal(string.Empty, link.ToWorkflow().Reason);
+    }
+
+    [Fact]
+    public void ToWorkflow_ReasonKeyLookupIsCaseSensitive()
+    {
+        // Query params are held in a dictionary with the default ordinal comparer, so "Reason" is a
+        // different param than "reason" and does not populate the field.
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id?Reason=nope"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+
+        Assert.Equal(string.Empty, link.ToWorkflow().Reason);
+    }
+
+    [Fact]
+    public void ToWorkflow_RepeatedReasonKey_Throws()
+    {
+        // A repeated key cannot go into the dictionary, so it surfaces as the same ArgumentException
+        // as any other malformed link. Callers converting links catch that and drop the link with a
+        // warning rather than failing the operation.
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id?reason=a&reason=b"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+
+        Assert.Throws<ArgumentException>(() => link.ToWorkflow());
+    }
+
+    [Fact]
+    public void ToWorkflow_LiteralPlusInPathIsPreserved()
+    {
+        // A "+" in a path segment is a literal "+", not a space. Path segments are percent decoded
+        // only; form decoding applies to query values.
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/a+b/run-id"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+
+        Assert.Equal("a+b", link.ToWorkflow().WorkflowId);
+    }
+
+    [Fact]
+    public void WorkflowLink_RoundTrips()
+    {
+        // Reserved characters in every field at once: path segments are percent escaped and the
+        // reason is a query value, so a reason containing "=" and "&" must not be split as syntax.
+        var workflow = new Api.Common.V1.Link.Types.Workflow
+        {
+            Namespace = "ns/with/slash",
+            WorkflowId = "wf id with space",
+            RunId = "run-id",
+            Reason = "reason with = and &",
+        };
+
+        var roundTripped = workflow.ToNexusLink().ToWorkflow();
+        Assert.Equal(workflow, roundTripped);
+    }
+
+    [Fact]
+    public void ToProtoLink_WorkflowShape_RoundTrips()
+    {
+        var workflow = new Api.Common.V1.Link.Types.Workflow
+        {
+            Namespace = "ns",
+            WorkflowId = "wf",
+            RunId = "run-id",
+            Reason = "Query processed",
+        };
+        var protoLink = workflow.ToNexusLink().ToProtoLink();
+        Assert.Equal(workflow, protoLink.Workflow);
+    }
+
+    [Fact]
+    public void ProtoToNexusLink_WorkflowVariant_Dispatches()
+    {
+        // The workflow variant is what a link carries when there is no history event to point at,
+        // e.g. a Query or a rejected update.
+        var protoLink = new Api.Common.V1.Link
+        {
+            Workflow = new() { Namespace = "ns", WorkflowId = "wf", RunId = "run" },
+        };
+        var nexusLink = protoLink.ToNexusLink();
+        Assert.NotNull(nexusLink);
+        Assert.Equal(
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName,
+            nexusLink.Type);
+        Assert.Equal(protoLink.Workflow, nexusLink.ToWorkflow());
+    }
+
+    [Fact]
+    public void ToWorkflowEvent_RejectsSuffixlessWorkflowPath()
+    {
+        // The inverse of ToWorkflow_RejectsTrailingSegment: a workflow link must not be readable as
+        // a workflow event.
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id"),
+            Api.Common.V1.Link.Types.WorkflowEvent.Descriptor.FullName);
+        Assert.Throws<ArgumentException>(() => link.ToWorkflowEvent());
+    }
+
+    [Fact]
+    public void WorkflowLink_LiteralPlusInReason_RoundTrips()
+    {
+        // Form encoding writes a space as "+" and a literal "+" as "%2B", so the reader has to
+        // replace "+" with a space before percent decoding. Doing it in the other order would turn
+        // this reason into "a b".
+        var workflow = new Api.Common.V1.Link.Types.Workflow
+        {
+            Namespace = "ns",
+            WorkflowId = "wf-id",
+            RunId = "run-id",
+            Reason = "a+b",
+        };
+        var nexusLink = workflow.ToNexusLink();
+
+        Assert.Equal("?reason=a%2Bb", nexusLink.Uri.Query);
+        Assert.Equal("a+b", nexusLink.ToWorkflow().Reason);
+    }
+
+    [Fact]
+    public void ToWorkflow_FormEncodedLiteralPlusInReason()
+    {
+        // The same case as written by an SDK that form encodes the whole query string.
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id?reason=a%2Bb"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+
+        Assert.Equal("a+b", link.ToWorkflow().Reason);
+    }
+
+    [Fact]
+    public void ToWorkflowEvent_FormDecodesQueryValues()
+    {
+        // Query values are form decoded. Request IDs are UUIDs in practice,
+        // so this is about cross-SDK consistency rather than a case that arises today.
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/run-id/history" +
+                "?referenceType=RequestIdReference&requestID=a+b" +
+                "&eventType=WorkflowExecutionStarted"),
+            Api.Common.V1.Link.Types.WorkflowEvent.Descriptor.FullName);
+
+        Assert.Equal("a b", link.ToWorkflowEvent().RequestIdRef.RequestId);
+    }
+
+    [Fact]
+    public void ToWorkflow_AcceptsEmptyRunId()
+    {
+        // A trailing slash still yields the expected segment count, so the run ID comes back empty
+        // rather than being rejected. The workflow-event, activity, and nexus-operation converters
+        // are equally lenient because all four share this path parsing, so tightening it is a
+        // decision about all four and belongs with that change rather than this one. This test
+        // exists so that whichever way it is decided, the behavior changes visibly instead of
+        // silently.
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces/ns/workflows/wf-id/"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+
+        Assert.Equal(string.Empty, link.ToWorkflow().RunId);
+    }
+
+    [Fact]
+    public void ToWorkflow_AcceptsEmptyNamespace()
+    {
+        // The same shared-path-parsing leniency as ToWorkflow_AcceptsEmptyRunId; see that test.
+        var link = new NexusLink(
+            new Uri("temporal:///namespaces//workflows/wf-id/run-id"),
+            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+
+        var workflow = link.ToWorkflow();
+        Assert.Equal(string.Empty, workflow.Namespace);
+        Assert.Equal("wf-id", workflow.WorkflowId);
+        Assert.Equal("run-id", workflow.RunId);
+    }
 }
