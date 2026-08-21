@@ -43,6 +43,7 @@ to docs, or any other relevant information.
 - Workflow task completions larger than the gRPC request size limit are now paginated
   automatically when the namespace supports it. Paginated workflow task completions require
   Temporal Server 1.32.0 or later.
+- 
 ### Changed                 — changes in existing functionality
 - A `common.v1.Link.Workflow` now serializes to the workflow path
   `temporal:///namespaces/{ns}/workflows/{wid}/{rid}` with the optional `reason` as a query param,
