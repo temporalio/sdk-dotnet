@@ -1,60 +1,111 @@
 name: Release Publish
-run-name: Release ${{ github.ref_name }}
+run-name: Release from ${{ github.event.workflow_run.head_branch }}@${{ github.event.workflow_run.head_sha }}
 
-# Automated NuGet publishing and smoke testing.
+# A merged version change is the release authorization. The workflow publishes
+# NuGet first, verifies the packages, and only then makes the GitHub release
+# public. Rerunning a partially completed release is safe: NuGet pushes skip
+# existing packages and the GitHub job accepts only the exact expected release.
 
 on:
-  workflow_dispatch: {}
+  workflow_run:
+    workflows:
+      - NuGet Package
+    types:
+      - completed
+    branches:
+      - main
+      - "releases/*"
 
 permissions:
+  actions: read
   contents: read
 
-jobs:
-  build:
-    uses: ./.github/workflows/nuget-package.yml
-    permissions:
-      contents: read
+concurrency:
+  # GitHub keeps at most one pending run per concurrency group. Keying this to
+  # the immutable candidate prevents a later version from discarding an older
+  # version that is still waiting for an environment approval.
+  group: sdk-dotnet-release-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
 
-  read-version:
+jobs:
+  candidate:
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     permissions:
+      actions: read
       contents: read
     outputs:
-      version: ${{ steps.read.outputs.version }}
+      artifact-run-id: ${{ steps.candidate.outputs.artifact-run-id }}
+      commit: ${{ steps.candidate.outputs.commit }}
+      prerelease: ${{ steps.candidate.outputs.prerelease }}
+      release: ${{ steps.candidate.outputs.release }}
+      version: ${{ steps.candidate.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.event.workflow_run.head_sha }}
 
-      - name: Read version
-        id: read
+      - name: Read release candidate
+        id: candidate
+        env:
+          ARTIFACT_RUN_ID: ${{ github.event.workflow_run.id }}
+          RELEASE_COMMIT: ${{ github.event.workflow_run.head_sha }}
         run: |
-          version=$(grep -oPm1 '(?<=<Version>)[^<]+' Directory.Build.props)
-          if [ -z "$version" ]; then
-            echo "Could not read <Version> from Directory.Build.props" >&2
+          set -euo pipefail
+
+          read_version() {
+            sed -n 's|^[[:space:]]*<Version>\([^<]*\)</Version>[[:space:]]*$|\1|p'
+          }
+
+          version=$(read_version < Directory.Build.props)
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z]+([.-][0-9A-Za-z]+)*)?$ ]]; then
+            echo "Directory.Build.props has an invalid release version: $version" >&2
             exit 1
           fi
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "Releasing version: $version"
+
+          base_commit=$(git rev-parse "$RELEASE_COMMIT^")
+          base_version=$(git show "$base_commit:Directory.Build.props" | read_version)
+
+          {
+            echo "artifact-run-id=$ARTIFACT_RUN_ID"
+            echo "commit=$RELEASE_COMMIT"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+          if [[ "$version" == "$base_version" ]]; then
+            echo "release=false" >> "$GITHUB_OUTPUT"
+            echo "The package version remains $version; there is no release to publish."
+          else
+            echo "release=true" >> "$GITHUB_OUTPUT"
+            [[ "$version" == *-* ]] && prerelease=true || prerelease=false
+            echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
+            echo "Releasing $version from $RELEASE_COMMIT (previous version: $base_version)"
+          fi
 
   publish-int:
-    needs:
-      - build
-      - read-version
+    needs: candidate
+    if: needs.candidate.outputs.release == 'true'
     permissions:
+      actions: read
       contents: read
       id-token: write
     uses: ./.github/workflows/nuget-publish.yml
     with:
       environment: nugetint
       index-url: https://apiint.nugettest.org/v3/index.json
+      symbol-package-base-url: https://globalcdn.int.nugettest.org/symbol-packages
       token-service-url: https://int.nugettest.org/api/v2/token
       audience: https://int.nugettest.org
-      version: ${{ needs.read-version.outputs.version }}
+      artifact-run-id: ${{ needs.candidate.outputs.artifact-run-id }}
+      commit: ${{ needs.candidate.outputs.commit }}
+      version: ${{ needs.candidate.outputs.version }}
 
   smoke-int:
     needs:
       - publish-int
-      - read-version
+      - candidate
     runs-on: windows-latest
     permissions:
       contents: read
@@ -62,33 +113,39 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
+          ref: ${{ needs.candidate.outputs.commit }}
           submodules: recursive
       - name: Smoke test against int.nugettest.org
         uses: ./.github/actions/smoke-test
         with:
           # New package resolves from int; transitive/third-party deps from prod.
           package-source: "https://apiint.nugettest.org/v3/index.json;https://api.nuget.org/v3/index.json"
-          version: ${{ needs.read-version.outputs.version }}
+          version: ${{ needs.candidate.outputs.version }}
           run-dotnet-framework: true
 
   publish-prod:
     needs:
       - smoke-int
-      - read-version
+      - candidate
     permissions:
+      actions: read
       contents: read
       id-token: write
     uses: ./.github/workflows/nuget-publish.yml
     with:
       environment: nugetprod
       index-url: https://api.nuget.org/v3/index.json
+      symbol-package-base-url: https://globalcdn.nuget.org/symbol-packages
       token-service-url: https://www.nuget.org/api/v2/token
-      version: ${{ needs.read-version.outputs.version }}
+      artifact-run-id: ${{ needs.candidate.outputs.artifact-run-id }}
+      commit: ${{ needs.candidate.outputs.commit }}
+      version: ${{ needs.candidate.outputs.version }}
 
   smoke-prod:
     needs:
       - publish-prod
-      - read-version
+      - candidate
     runs-on: windows-latest
     permissions:
       contents: read
@@ -96,10 +153,35 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
+          ref: ${{ needs.candidate.outputs.commit }}
           submodules: recursive
       - name: Smoke test against nuget.org
         uses: ./.github/actions/smoke-test
         with:
           package-source: "https://api.nuget.org/v3/index.json"
-          version: ${{ needs.read-version.outputs.version }}
+          version: ${{ needs.candidate.outputs.version }}
           run-dotnet-framework: true
+
+  github-release:
+    needs:
+      - candidate
+      - smoke-prod
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ needs.candidate.outputs.commit }}
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRERELEASE: ${{ needs.candidate.outputs.prerelease }}
+          RELEASE_COMMIT: ${{ needs.candidate.outputs.commit }}
+          VERSION: ${{ needs.candidate.outputs.version }}
+        run: .github/scripts/create-github-release.sh "$VERSION" "$RELEASE_COMMIT" "$PRERELEASE"
