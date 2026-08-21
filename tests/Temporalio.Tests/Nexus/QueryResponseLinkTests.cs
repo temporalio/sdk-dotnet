@@ -68,19 +68,19 @@ public class QueryResponseLinkTests
     public async Task QueryAsync_OutsideNexusContextIgnoresResponseLink()
     {
         // A query issued outside a Nexus operation handler must not touch the operation context at
-        // all. Guards against the propagation being reached without a context, which would throw.
+        // all. No context is installed here, so if the propagation dereferenced the current context
+        // without checking for one first, this query would throw instead of returning. The response
+        // still carries a link so the propagation has something to try to attach.
         var client = NewClient(new QueryWorkflowResponse
         {
             Link = WorkflowLink("wf-target", "target-run", "Query processed"),
             QueryResult = await ToPayloadsAsync("answer"),
         });
-        var context = NewContext();
 
         // Deliberately not inside WithContextAsync.
         var result = await QueryAsync<string>(client);
 
         Assert.Equal("answer", result);
-        Assert.Empty(context.ResponseLinks);
     }
 
     [Fact]
