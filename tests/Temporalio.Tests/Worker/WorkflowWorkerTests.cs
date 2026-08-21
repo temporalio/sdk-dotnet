@@ -224,8 +224,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     return "done";
                 case Scenario.DataflowReceiveAsync:
                     var block = new BufferBlock<string>();
+                    var receiveTask = block.ReceiveAsync();
                     await block.SendAsync("done");
-                    return await block.ReceiveAsync();
+                    return await receiveTask;
                 case Scenario.TaskWhenAnyWithResultThreeParam:
                     return await await Task.WhenAny(
                         Task.FromResult("done"), Task.FromResult("done"), Task.FromResult("done"));
