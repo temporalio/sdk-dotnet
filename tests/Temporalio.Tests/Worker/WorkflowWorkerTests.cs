@@ -1125,6 +1125,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresLocalServer,
+        "Requires history.enableSignalWithStartFromWorkflow dynamic configuration.")]
     public async Task ExecuteWorkflowAsync_SignalWithStartFromWorkflow_Succeeds()
     {
         var newOptions = (TemporalClientOptions)Client.Options.Clone();
