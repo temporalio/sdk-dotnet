@@ -846,6 +846,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Activity cancellation can complete after worker shutdown begins, exposing a bridge finalization race.")]
     public async Task ExecuteWorkflowAsync_Cancel_ProperlyCanceled()
     {
         Task AssertProperlyCanceled(
@@ -5885,6 +5888,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Leaves background workers with in-flight activities during shutdown, exposing a bridge finalization race.")]
     public async Task ExecuteWorkflowAsync_StdlibSemaphore_NonAsyncDeadlocks()
     {
         async Task AssertDeadlocks(Expression<Func<StdlibSemaphoreWorkflow, Task>> updateExpr)
