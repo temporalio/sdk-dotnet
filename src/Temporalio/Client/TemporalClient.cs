@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Temporalio.Converters;
 
 namespace Temporalio.Client
 {
@@ -21,6 +22,7 @@ namespace Temporalio.Client
         /// <param name="options">Options for this client.</param>
         public TemporalClient(ITemporalConnection connection, TemporalClientOptions options)
         {
+            options = (TemporalClientOptions)options.Clone();
             if (options.Plugins != null)
             {
                 foreach (var plugin in options.Plugins)
@@ -29,6 +31,7 @@ namespace Temporalio.Client
                 }
             }
 
+            options.DataConverter = TemporalTransferTypePayloadConverter.Wrap(options.DataConverter);
             Connection = connection;
             Options = options;
             OutboundInterceptor = new Impl(this);

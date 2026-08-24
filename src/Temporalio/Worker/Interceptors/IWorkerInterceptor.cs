@@ -34,7 +34,6 @@ namespace Temporalio.Worker.Interceptors
         /// </summary>
         /// <param name="nextInterceptor">The next interceptor in the chain to call.</param>
         /// <returns>Created interceptor.</returns>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
 #if NETCOREAPP3_0_OR_GREATER
         NexusOperationInboundInterceptor InterceptNexusOperation(NexusOperationInboundInterceptor nextInterceptor) =>
             nextInterceptor;

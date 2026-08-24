@@ -1,7 +1,12 @@
 version: 2
 updates:
   - package-ecosystem: "github-actions"
-    directory: "/"
+    # "/" only covers .github/workflows. The composite actions under
+    # .github/actions pin `uses:` refs of their own, so they need their own
+    # entries or those pins are never updated.
+    directories:
+      - "/"
+      - "/.github/actions/*"
     schedule:
       interval: "weekly"
     cooldown:
@@ -37,10 +42,23 @@ updates:
           - "OpenTelemetry*"
     # Dependencies of the shipped product projects (src/*) are kept on their
     # current versions to preserve low version floors for downstream consumers.
-    # Security updates still flow through, since update-types ignores don't
-    # apply to them. Build- and test-only dependencies are left updatable.
+    # The codegen tooling in .config/dotnet-tools.json is likewise pinned, since a
+    # new generator version rewrites checked-in generated code and needs a regen
+    # commit alongside it. Security updates still flow through, since update-types
+    # ignores don't apply to them. Other build- and test-only dependencies are
+    # left updatable. Entries are kept in alphabetical order.
     ignore:
       - dependency-name: "Amazon.Lambda.Core"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "ClangSharpPInvokeGenerator"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "docfx"
         update-types:
           - "version-update:semver-major"
           - "version-update:semver-minor"

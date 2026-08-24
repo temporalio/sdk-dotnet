@@ -27,7 +27,7 @@ namespace Temporalio.Api.Namespace.V1 {
             "Cid0ZW1wb3JhbC9hcGkvbmFtZXNwYWNlL3YxL21lc3NhZ2UucHJvdG8SGXRl",
             "bXBvcmFsLmFwaS5uYW1lc3BhY2UudjEaHmdvb2dsZS9wcm90b2J1Zi9kdXJh",
             "dGlvbi5wcm90bxofZ29vZ2xlL3Byb3RvYnVmL3RpbWVzdGFtcC5wcm90bxol",
-            "dGVtcG9yYWwvYXBpL2VudW1zL3YxL25hbWVzcGFjZS5wcm90byLDCAoNTmFt",
+            "dGVtcG9yYWwvYXBpL2VudW1zL3YxL25hbWVzcGFjZS5wcm90byL2CAoNTmFt",
             "ZXNwYWNlSW5mbxIMCgRuYW1lGAEgASgJEjQKBXN0YXRlGAIgASgOMiUudGVt",
             "cG9yYWwuYXBpLmVudW1zLnYxLk5hbWVzcGFjZVN0YXRlEhMKC2Rlc2NyaXB0",
             "aW9uGAMgASgJEhMKC293bmVyX2VtYWlsGAQgASgJEkAKBGRhdGEYBSADKAsy",
@@ -50,42 +50,43 @@ namespace Temporalio.Api.Namespace.V1 {
             "bXBsZXRpb25fcGFnaW5hdGlvbhgOIAEoCBInCh9zdGFuZGFsb25lX2FjdGl2",
             "aXR5X3N0YXJ0X2RlbGF5GA8gASgIEiwKJHN0YW5kYWxvbmVfYWN0aXZpdHlf",
             "YmF0Y2hfb3BlcmF0aW9ucxgQIAEoCBItCiVzdGFuZGFsb25lX2FjdGl2aXR5",
-            "X29wZXJhdG9yX2NvbW1hbmRzGBEgASgIGkYKBkxpbWl0cxIdChVibG9iX3Np",
+            "X29wZXJhdG9yX2NvbW1hbmRzGBEgASgIGnkKBkxpbWl0cxIdChVibG9iX3Np",
             "emVfbGltaXRfZXJyb3IYASABKAMSHQoVbWVtb19zaXplX2xpbWl0X2Vycm9y",
-            "GAIgASgDIp4ECg9OYW1lc3BhY2VDb25maWcSQwogd29ya2Zsb3dfZXhlY3V0",
-            "aW9uX3JldGVudGlvbl90dGwYASABKAsyGS5nb29nbGUucHJvdG9idWYuRHVy",
-            "YXRpb24SPAoMYmFkX2JpbmFyaWVzGAIgASgLMiYudGVtcG9yYWwuYXBpLm5h",
-            "bWVzcGFjZS52MS5CYWRCaW5hcmllcxJEChZoaXN0b3J5X2FyY2hpdmFsX3N0",
-            "YXRlGAMgASgOMiQudGVtcG9yYWwuYXBpLmVudW1zLnYxLkFyY2hpdmFsU3Rh",
-            "dGUSHAoUaGlzdG9yeV9hcmNoaXZhbF91cmkYBCABKAkSRwoZdmlzaWJpbGl0",
-            "eV9hcmNoaXZhbF9zdGF0ZRgFIAEoDjIkLnRlbXBvcmFsLmFwaS5lbnVtcy52",
-            "MS5BcmNoaXZhbFN0YXRlEh8KF3Zpc2liaWxpdHlfYXJjaGl2YWxfdXJpGAYg",
-            "ASgJEnUKH2N1c3RvbV9zZWFyY2hfYXR0cmlidXRlX2FsaWFzZXMYByADKAsy",
-            "TC50ZW1wb3JhbC5hcGkubmFtZXNwYWNlLnYxLk5hbWVzcGFjZUNvbmZpZy5D",
-            "dXN0b21TZWFyY2hBdHRyaWJ1dGVBbGlhc2VzRW50cnkaQwohQ3VzdG9tU2Vh",
-            "cmNoQXR0cmlidXRlQWxpYXNlc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1",
-            "ZRgCIAEoCToCOAEisAEKC0JhZEJpbmFyaWVzEkYKCGJpbmFyaWVzGAEgAygL",
-            "MjQudGVtcG9yYWwuYXBpLm5hbWVzcGFjZS52MS5CYWRCaW5hcmllcy5CaW5h",
-            "cmllc0VudHJ5GlkKDUJpbmFyaWVzRW50cnkSCwoDa2V5GAEgASgJEjcKBXZh",
-            "bHVlGAIgASgLMigudGVtcG9yYWwuYXBpLm5hbWVzcGFjZS52MS5CYWRCaW5h",
-            "cnlJbmZvOgI4ASJiCg1CYWRCaW5hcnlJbmZvEg4KBnJlYXNvbhgBIAEoCRIQ",
-            "CghvcGVyYXRvchgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2ds",
-            "ZS5wcm90b2J1Zi5UaW1lc3RhbXAi6gEKE1VwZGF0ZU5hbWVzcGFjZUluZm8S",
-            "EwoLZGVzY3JpcHRpb24YASABKAkSEwoLb3duZXJfZW1haWwYAiABKAkSRgoE",
-            "ZGF0YRgDIAMoCzI4LnRlbXBvcmFsLmFwaS5uYW1lc3BhY2UudjEuVXBkYXRl",
-            "TmFtZXNwYWNlSW5mby5EYXRhRW50cnkSNAoFc3RhdGUYBCABKA4yJS50ZW1w",
-            "b3JhbC5hcGkuZW51bXMudjEuTmFtZXNwYWNlU3RhdGUaKwoJRGF0YUVudHJ5",
-            "EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiKgoPTmFtZXNwYWNl",
-            "RmlsdGVyEhcKD2luY2x1ZGVfZGVsZXRlZBgBIAEoCEKYAQocaW8udGVtcG9y",
-            "YWwuYXBpLm5hbWVzcGFjZS52MUIMTWVzc2FnZVByb3RvUAFaKWdvLnRlbXBv",
-            "cmFsLmlvL2FwaS9uYW1lc3BhY2UvdjE7bmFtZXNwYWNlqgIbVGVtcG9yYWxp",
-            "by5BcGkuTmFtZXNwYWNlLlYx6gIeVGVtcG9yYWxpbzo6QXBpOjpOYW1lc3Bh",
-            "Y2U6OlYxYgZwcm90bzM="));
+            "GAIgASgDEjEKKXdvcmtmbG93X3Rhc2tfY29tcGxldGlvbl9zaXplX2xpbWl0",
+            "X2Vycm9yGAMgASgDIp4ECg9OYW1lc3BhY2VDb25maWcSQwogd29ya2Zsb3df",
+            "ZXhlY3V0aW9uX3JldGVudGlvbl90dGwYASABKAsyGS5nb29nbGUucHJvdG9i",
+            "dWYuRHVyYXRpb24SPAoMYmFkX2JpbmFyaWVzGAIgASgLMiYudGVtcG9yYWwu",
+            "YXBpLm5hbWVzcGFjZS52MS5CYWRCaW5hcmllcxJEChZoaXN0b3J5X2FyY2hp",
+            "dmFsX3N0YXRlGAMgASgOMiQudGVtcG9yYWwuYXBpLmVudW1zLnYxLkFyY2hp",
+            "dmFsU3RhdGUSHAoUaGlzdG9yeV9hcmNoaXZhbF91cmkYBCABKAkSRwoZdmlz",
+            "aWJpbGl0eV9hcmNoaXZhbF9zdGF0ZRgFIAEoDjIkLnRlbXBvcmFsLmFwaS5l",
+            "bnVtcy52MS5BcmNoaXZhbFN0YXRlEh8KF3Zpc2liaWxpdHlfYXJjaGl2YWxf",
+            "dXJpGAYgASgJEnUKH2N1c3RvbV9zZWFyY2hfYXR0cmlidXRlX2FsaWFzZXMY",
+            "ByADKAsyTC50ZW1wb3JhbC5hcGkubmFtZXNwYWNlLnYxLk5hbWVzcGFjZUNv",
+            "bmZpZy5DdXN0b21TZWFyY2hBdHRyaWJ1dGVBbGlhc2VzRW50cnkaQwohQ3Vz",
+            "dG9tU2VhcmNoQXR0cmlidXRlQWxpYXNlc0VudHJ5EgsKA2tleRgBIAEoCRIN",
+            "CgV2YWx1ZRgCIAEoCToCOAEisAEKC0JhZEJpbmFyaWVzEkYKCGJpbmFyaWVz",
+            "GAEgAygLMjQudGVtcG9yYWwuYXBpLm5hbWVzcGFjZS52MS5CYWRCaW5hcmll",
+            "cy5CaW5hcmllc0VudHJ5GlkKDUJpbmFyaWVzRW50cnkSCwoDa2V5GAEgASgJ",
+            "EjcKBXZhbHVlGAIgASgLMigudGVtcG9yYWwuYXBpLm5hbWVzcGFjZS52MS5C",
+            "YWRCaW5hcnlJbmZvOgI4ASJiCg1CYWRCaW5hcnlJbmZvEg4KBnJlYXNvbhgB",
+            "IAEoCRIQCghvcGVyYXRvchgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIa",
+            "Lmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAi6gEKE1VwZGF0ZU5hbWVzcGFj",
+            "ZUluZm8SEwoLZGVzY3JpcHRpb24YASABKAkSEwoLb3duZXJfZW1haWwYAiAB",
+            "KAkSRgoEZGF0YRgDIAMoCzI4LnRlbXBvcmFsLmFwaS5uYW1lc3BhY2UudjEu",
+            "VXBkYXRlTmFtZXNwYWNlSW5mby5EYXRhRW50cnkSNAoFc3RhdGUYBCABKA4y",
+            "JS50ZW1wb3JhbC5hcGkuZW51bXMudjEuTmFtZXNwYWNlU3RhdGUaKwoJRGF0",
+            "YUVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiKgoPTmFt",
+            "ZXNwYWNlRmlsdGVyEhcKD2luY2x1ZGVfZGVsZXRlZBgBIAEoCEKYAQocaW8u",
+            "dGVtcG9yYWwuYXBpLm5hbWVzcGFjZS52MUIMTWVzc2FnZVByb3RvUAFaKWdv",
+            "LnRlbXBvcmFsLmlvL2FwaS9uYW1lc3BhY2UvdjE7bmFtZXNwYWNlqgIbVGVt",
+            "cG9yYWxpby5BcGkuTmFtZXNwYWNlLlYx6gIeVGVtcG9yYWxpbzo6QXBpOjpO",
+            "YW1lc3BhY2U6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Enums.V1.NamespaceReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.NamespaceInfo), global::Temporalio.Api.Namespace.V1.NamespaceInfo.Parser, new[]{ "Name", "State", "Description", "OwnerEmail", "Data", "Id", "Capabilities", "Limits", "SupportsSchedules" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Capabilities), global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Capabilities.Parser, new[]{ "EagerWorkflowStart", "SyncUpdate", "AsyncUpdate", "WorkerHeartbeats", "ReportedProblemsSearchAttribute", "WorkflowPause", "StandaloneActivities", "WorkerPollCompleteOnShutdown", "PollerAutoscaling", "WorkerCommands", "StandaloneNexusOperation", "WorkflowUpdateCallbacks", "PollerAutoscalingAutoEnroll", "WorkflowTaskCompletionPagination", "StandaloneActivityStartDelay", "StandaloneActivityBatchOperations", "StandaloneActivityOperatorCommands" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Limits), global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Limits.Parser, new[]{ "BlobSizeLimitError", "MemoSizeLimitError" }, null, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Limits), global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Limits.Parser, new[]{ "BlobSizeLimitError", "MemoSizeLimitError", "WorkflowTaskCompletionSizeLimitError" }, null, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.NamespaceConfig), global::Temporalio.Api.Namespace.V1.NamespaceConfig.Parser, new[]{ "WorkflowExecutionRetentionTtl", "BadBinaries", "HistoryArchivalState", "HistoryArchivalUri", "VisibilityArchivalState", "VisibilityArchivalUri", "CustomSearchAttributeAliases" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.BadBinaries), global::Temporalio.Api.Namespace.V1.BadBinaries.Parser, new[]{ "Binaries" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.BadBinaryInfo), global::Temporalio.Api.Namespace.V1.BadBinaryInfo.Parser, new[]{ "Reason", "Operator", "CreateTime" }, null, null, null, null),
@@ -1480,6 +1481,7 @@ namespace Temporalio.Api.Namespace.V1 {
         public Limits(Limits other) : this() {
           blobSizeLimitError_ = other.blobSizeLimitError_;
           memoSizeLimitError_ = other.memoSizeLimitError_;
+          workflowTaskCompletionSizeLimitError_ = other.workflowTaskCompletionSizeLimitError_;
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
 
@@ -1521,6 +1523,23 @@ namespace Temporalio.Api.Namespace.V1 {
           }
         }
 
+        /// <summary>Field number for the "workflow_task_completion_size_limit_error" field.</summary>
+        public const int WorkflowTaskCompletionSizeLimitErrorFieldNumber = 3;
+        private long workflowTaskCompletionSizeLimitError_;
+        /// <summary>
+        /// Maximum total size in bytes of a single RespondWorkflowTaskCompleted request.
+        /// Requests exceeding this fail the workflow task with
+        /// WORKFLOW_TASK_FAILED_CAUSE_REQUEST_TOO_LARGE. 0 means no explicit limit.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public long WorkflowTaskCompletionSizeLimitError {
+          get { return workflowTaskCompletionSizeLimitError_; }
+          set {
+            workflowTaskCompletionSizeLimitError_ = value;
+          }
+        }
+
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
         public override bool Equals(object other) {
@@ -1538,6 +1557,7 @@ namespace Temporalio.Api.Namespace.V1 {
           }
           if (BlobSizeLimitError != other.BlobSizeLimitError) return false;
           if (MemoSizeLimitError != other.MemoSizeLimitError) return false;
+          if (WorkflowTaskCompletionSizeLimitError != other.WorkflowTaskCompletionSizeLimitError) return false;
           return Equals(_unknownFields, other._unknownFields);
         }
 
@@ -1547,6 +1567,7 @@ namespace Temporalio.Api.Namespace.V1 {
           int hash = 1;
           if (BlobSizeLimitError != 0L) hash ^= BlobSizeLimitError.GetHashCode();
           if (MemoSizeLimitError != 0L) hash ^= MemoSizeLimitError.GetHashCode();
+          if (WorkflowTaskCompletionSizeLimitError != 0L) hash ^= WorkflowTaskCompletionSizeLimitError.GetHashCode();
           if (_unknownFields != null) {
             hash ^= _unknownFields.GetHashCode();
           }
@@ -1573,6 +1594,10 @@ namespace Temporalio.Api.Namespace.V1 {
             output.WriteRawTag(16);
             output.WriteInt64(MemoSizeLimitError);
           }
+          if (WorkflowTaskCompletionSizeLimitError != 0L) {
+            output.WriteRawTag(24);
+            output.WriteInt64(WorkflowTaskCompletionSizeLimitError);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(output);
           }
@@ -1591,6 +1616,10 @@ namespace Temporalio.Api.Namespace.V1 {
             output.WriteRawTag(16);
             output.WriteInt64(MemoSizeLimitError);
           }
+          if (WorkflowTaskCompletionSizeLimitError != 0L) {
+            output.WriteRawTag(24);
+            output.WriteInt64(WorkflowTaskCompletionSizeLimitError);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(ref output);
           }
@@ -1606,6 +1635,9 @@ namespace Temporalio.Api.Namespace.V1 {
           }
           if (MemoSizeLimitError != 0L) {
             size += 1 + pb::CodedOutputStream.ComputeInt64Size(MemoSizeLimitError);
+          }
+          if (WorkflowTaskCompletionSizeLimitError != 0L) {
+            size += 1 + pb::CodedOutputStream.ComputeInt64Size(WorkflowTaskCompletionSizeLimitError);
           }
           if (_unknownFields != null) {
             size += _unknownFields.CalculateSize();
@@ -1624,6 +1656,9 @@ namespace Temporalio.Api.Namespace.V1 {
           }
           if (other.MemoSizeLimitError != 0L) {
             MemoSizeLimitError = other.MemoSizeLimitError;
+          }
+          if (other.WorkflowTaskCompletionSizeLimitError != 0L) {
+            WorkflowTaskCompletionSizeLimitError = other.WorkflowTaskCompletionSizeLimitError;
           }
           _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
         }
@@ -1648,6 +1683,10 @@ namespace Temporalio.Api.Namespace.V1 {
                 MemoSizeLimitError = input.ReadInt64();
                 break;
               }
+              case 24: {
+                WorkflowTaskCompletionSizeLimitError = input.ReadInt64();
+                break;
+              }
             }
           }
         #endif
@@ -1669,6 +1708,10 @@ namespace Temporalio.Api.Namespace.V1 {
               }
               case 16: {
                 MemoSizeLimitError = input.ReadInt64();
+                break;
+              }
+              case 24: {
+                WorkflowTaskCompletionSizeLimitError = input.ReadInt64();
                 break;
               }
             }

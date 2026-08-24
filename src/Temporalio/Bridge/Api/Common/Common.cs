@@ -29,15 +29,19 @@ namespace Temporalio.Bridge.Api.Common {
             "G05hbWVzcGFjZWRXb3JrZmxvd0V4ZWN1dGlvbhIRCgluYW1lc3BhY2UYASAB",
             "KAkSEwoLd29ya2Zsb3dfaWQYAiABKAkSDgoGcnVuX2lkGAMgASgJIkQKF1dv",
             "cmtlckRlcGxveW1lbnRWZXJzaW9uEhcKD2RlcGxveW1lbnRfbmFtZRgBIAEo",
-            "CRIQCghidWlsZF9pZBgCIAEoCSpAChBWZXJzaW9uaW5nSW50ZW50Eg8KC1VO",
-            "U1BFQ0lGSUVEEAASDgoKQ09NUEFUSUJMRRABEgsKB0RFRkFVTFQQAkIs6gIp",
-            "VGVtcG9yYWxpbzo6SW50ZXJuYWw6OkJyaWRnZTo6QXBpOjpDb21tb25iBnBy",
-            "b3RvMw=="));
+            "CRIQCghidWlsZF9pZBgCIAEoCSKSAQoWRXh0ZXJuYWxTdG9yYWdlTWV0cmlj",
+            "cxIVCg1wYXlsb2FkX2NvdW50GAEgASgEEhgKEHRvdGFsX3NpemVfYnl0ZXMY",
+            "AiABKAQSMQoOdG90YWxfZHVyYXRpb24YAyABKAsyGS5nb29nbGUucHJvdG9i",
+            "dWYuRHVyYXRpb24SFAoMZHJpdmVyX25hbWVzGAQgAygJKkAKEFZlcnNpb25p",
+            "bmdJbnRlbnQSDwoLVU5TUEVDSUZJRUQQABIOCgpDT01QQVRJQkxFEAESCwoH",
+            "REVGQVVMVBACQizqAilUZW1wb3JhbGlvOjpJbnRlcm5hbDo6QnJpZGdlOjpB",
+            "cGk6OkNvbW1vbmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.Common.VersioningIntent), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Common.NamespacedWorkflowExecution), global::Temporalio.Bridge.Api.Common.NamespacedWorkflowExecution.Parser, new[]{ "Namespace", "WorkflowId", "RunId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Common.WorkerDeploymentVersion), global::Temporalio.Bridge.Api.Common.WorkerDeploymentVersion.Parser, new[]{ "DeploymentName", "BuildId" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Common.WorkerDeploymentVersion), global::Temporalio.Bridge.Api.Common.WorkerDeploymentVersion.Parser, new[]{ "DeploymentName", "BuildId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Common.ExternalStorageMetrics), global::Temporalio.Bridge.Api.Common.ExternalStorageMetrics.Parser, new[]{ "PayloadCount", "TotalSizeBytes", "TotalDuration", "DriverNames" }, null, null, null, null)
           }));
     }
     #endregion
@@ -563,6 +567,320 @@ namespace Temporalio.Bridge.Api.Common {
           }
           case 18: {
             BuildId = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// Metrics for a set of external payload storage operations (all uploads and downloads)
+  /// performed while processing a task, so core can emit unified logging and metrics.
+  /// </summary>
+  internal sealed partial class ExternalStorageMetrics : pb::IMessage<ExternalStorageMetrics>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ExternalStorageMetrics> _parser = new pb::MessageParser<ExternalStorageMetrics>(() => new ExternalStorageMetrics());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ExternalStorageMetrics> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ExternalStorageMetrics() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ExternalStorageMetrics(ExternalStorageMetrics other) : this() {
+      payloadCount_ = other.payloadCount_;
+      totalSizeBytes_ = other.totalSizeBytes_;
+      totalDuration_ = other.totalDuration_ != null ? other.totalDuration_.Clone() : null;
+      driverNames_ = other.driverNames_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ExternalStorageMetrics Clone() {
+      return new ExternalStorageMetrics(this);
+    }
+
+    /// <summary>Field number for the "payload_count" field.</summary>
+    public const int PayloadCountFieldNumber = 1;
+    private ulong payloadCount_;
+    /// <summary>
+    /// Number of payloads stored or retrieved externally.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong PayloadCount {
+      get { return payloadCount_; }
+      set {
+        payloadCount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "total_size_bytes" field.</summary>
+    public const int TotalSizeBytesFieldNumber = 2;
+    private ulong totalSizeBytes_;
+    /// <summary>
+    /// Total size in bytes of the externally stored or retrieved payloads.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong TotalSizeBytes {
+      get { return totalSizeBytes_; }
+      set {
+        totalSizeBytes_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "total_duration" field.</summary>
+    public const int TotalDurationFieldNumber = 3;
+    private global::Google.Protobuf.WellKnownTypes.Duration totalDuration_;
+    /// <summary>
+    /// Wall-clock time spent on the external storage operations.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Duration TotalDuration {
+      get { return totalDuration_; }
+      set {
+        totalDuration_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "driver_names" field.</summary>
+    public const int DriverNamesFieldNumber = 4;
+    private static readonly pb::FieldCodec<string> _repeated_driverNames_codec
+        = pb::FieldCodec.ForString(34);
+    private readonly pbc::RepeatedField<string> driverNames_ = new pbc::RepeatedField<string>();
+    /// <summary>
+    /// Names of the drivers that participated in the operations.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<string> DriverNames {
+      get { return driverNames_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ExternalStorageMetrics);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ExternalStorageMetrics other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PayloadCount != other.PayloadCount) return false;
+      if (TotalSizeBytes != other.TotalSizeBytes) return false;
+      if (!object.Equals(TotalDuration, other.TotalDuration)) return false;
+      if(!driverNames_.Equals(other.driverNames_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PayloadCount != 0UL) hash ^= PayloadCount.GetHashCode();
+      if (TotalSizeBytes != 0UL) hash ^= TotalSizeBytes.GetHashCode();
+      if (totalDuration_ != null) hash ^= TotalDuration.GetHashCode();
+      hash ^= driverNames_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (PayloadCount != 0UL) {
+        output.WriteRawTag(8);
+        output.WriteUInt64(PayloadCount);
+      }
+      if (TotalSizeBytes != 0UL) {
+        output.WriteRawTag(16);
+        output.WriteUInt64(TotalSizeBytes);
+      }
+      if (totalDuration_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(TotalDuration);
+      }
+      driverNames_.WriteTo(output, _repeated_driverNames_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (PayloadCount != 0UL) {
+        output.WriteRawTag(8);
+        output.WriteUInt64(PayloadCount);
+      }
+      if (TotalSizeBytes != 0UL) {
+        output.WriteRawTag(16);
+        output.WriteUInt64(TotalSizeBytes);
+      }
+      if (totalDuration_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(TotalDuration);
+      }
+      driverNames_.WriteTo(ref output, _repeated_driverNames_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (PayloadCount != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(PayloadCount);
+      }
+      if (TotalSizeBytes != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(TotalSizeBytes);
+      }
+      if (totalDuration_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(TotalDuration);
+      }
+      size += driverNames_.CalculateSize(_repeated_driverNames_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ExternalStorageMetrics other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PayloadCount != 0UL) {
+        PayloadCount = other.PayloadCount;
+      }
+      if (other.TotalSizeBytes != 0UL) {
+        TotalSizeBytes = other.TotalSizeBytes;
+      }
+      if (other.totalDuration_ != null) {
+        if (totalDuration_ == null) {
+          TotalDuration = new global::Google.Protobuf.WellKnownTypes.Duration();
+        }
+        TotalDuration.MergeFrom(other.TotalDuration);
+      }
+      driverNames_.Add(other.driverNames_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            PayloadCount = input.ReadUInt64();
+            break;
+          }
+          case 16: {
+            TotalSizeBytes = input.ReadUInt64();
+            break;
+          }
+          case 26: {
+            if (totalDuration_ == null) {
+              TotalDuration = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(TotalDuration);
+            break;
+          }
+          case 34: {
+            driverNames_.AddEntriesFrom(input, _repeated_driverNames_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            PayloadCount = input.ReadUInt64();
+            break;
+          }
+          case 16: {
+            TotalSizeBytes = input.ReadUInt64();
+            break;
+          }
+          case 26: {
+            if (totalDuration_ == null) {
+              TotalDuration = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(TotalDuration);
+            break;
+          }
+          case 34: {
+            driverNames_.AddEntriesFrom(ref input, _repeated_driverNames_codec);
             break;
           }
         }

@@ -8,7 +8,7 @@ namespace Temporalio.Nexus
     /// </summary>
     /// <typeparam name="TResult">The result type.</typeparam>
     /// <remarks>
-    /// <para>WARNING: Nexus support is experimental.</para>
+    /// <para>WARNING: Temporal operation handlers are experimental.</para>
     /// <para>Use <see cref="SyncResult"/> for operations that complete immediately (e.g., signals).
     /// Use <see cref="AsyncResult"/> for operations that return an operation token for async
     /// completion (e.g., starting a workflow).</para>

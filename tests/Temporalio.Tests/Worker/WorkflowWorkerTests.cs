@@ -459,6 +459,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresLocalServer,
+        "Requires local dynamic configuration for the continue-as-new history threshold.")]
     public async Task ExecuteWorkflowAsync_HistoryInfo_IsAccurate()
     {
         await ExecuteWorkerAsync<HistoryInfoWorkflow>(async worker =>
@@ -843,6 +846,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Activity cancellation can complete after worker shutdown begins, exposing a bridge finalization race.")]
     public async Task ExecuteWorkflowAsync_Cancel_ProperlyCanceled()
     {
         Task AssertProperlyCanceled(
@@ -1122,6 +1128,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresLocalServer,
+        "Requires history.enableSignalWithStartFromWorkflow dynamic configuration.")]
     public async Task ExecuteWorkflowAsync_SignalWithStartFromWorkflow_Succeeds()
     {
         var newOptions = (TemporalClientOptions)Client.Options.Clone();
@@ -1576,6 +1585,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Requires custom search attributes that the Cloud harness does not provision.")]
     public async Task ExecuteWorkflowAsync_SearchAttributes_ProperlyUpserted()
     {
         await EnsureSearchAttributesPresentAsync();
@@ -1633,6 +1645,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Requires custom search attributes that the Cloud harness does not provision.")]
     public async Task ExecuteWorkflowAsync_ChildWorkflowSearchAttributes_SetProperly()
     {
         await EnsureSearchAttributesPresentAsync();
@@ -1807,6 +1822,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Requires custom search attributes that the Cloud harness does not provision.")]
     public async Task ExecuteWorkflowAsync_ContinueAsNewSearchAttributes_SetProperly()
     {
         await EnsureSearchAttributesPresentAsync();
@@ -2932,6 +2950,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Requires custom search attributes that the Cloud harness does not provision.")]
     public async Task ExecuteWorkflowAsync_PatchSearchAttribute_ReturnsProperly()
     {
         await EnsureSearchAttributesPresentAsync();
@@ -4070,13 +4091,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Metrics = new() { Prometheus = new(promAddr), MetricPrefix = "foo_" },
             },
         });
-        var client = await TemporalClient.ConnectAsync(
-            new()
-            {
-                TargetHost = Client.Connection.Options.TargetHost,
-                Namespace = Client.Options.Namespace,
-                Runtime = runtime,
-            });
+        var client = await ConnectClientWithRuntimeAsync(runtime);
 
         await ExecuteWorkerAsync<CustomMetricsWorkflow>(
             async worker =>
@@ -4175,13 +4190,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Metrics = new() { CustomMetricMeter = meter, MetricPrefix = "some-prefix_" },
             },
         });
-        var client = await TemporalClient.ConnectAsync(
-            new()
-            {
-                TargetHost = Client.Connection.Options.TargetHost,
-                Namespace = Client.Options.Namespace,
-                Runtime = runtime,
-            });
+        var client = await ConnectClientWithRuntimeAsync(runtime);
 
         // Run workflow
         var taskQueue = string.Empty;
@@ -4249,13 +4258,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     },
                 },
             });
-            var client = await TemporalClient.ConnectAsync(
-                new()
-                {
-                    TargetHost = Client.Connection.Options.TargetHost,
-                    Namespace = Client.Options.Namespace,
-                    Runtime = runtime,
-                });
+            var client = await ConnectClientWithRuntimeAsync(runtime);
             var taskQueue = string.Empty;
             await ExecuteWorkerAsync<SimpleWorkflow>(
                 async worker =>
@@ -4366,8 +4369,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteWorkflowAsync_LastResult_ProperlyPresent()
     {
-        await TestUtils.AssertNoSchedulesAsync(Client);
-
         await ExecuteWorkerAsync<LastResultWorkflow>(async worker =>
         {
             // Create schedule, trigger twice, confirm second got result of first
@@ -4375,33 +4376,38 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 (LastResultWorkflow wf) => wf.RunAsync(),
                 new WorkflowOptions(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             var sched = await Client.CreateScheduleAsync(
-                "sched-id",
+                $"sched-{Guid.NewGuid()}",
                 new(schedAction, new ScheduleSpec()) { State = new() { Paused = true } });
-            async Task<string[]> AllResultsAsync()
+            try
             {
-                var desc = await sched.DescribeAsync();
-                return await Task.WhenAll(desc.Info.RecentActions.Select(async res =>
+                async Task<string[]> AllResultsAsync()
                 {
-                    var action = res.Action as ScheduleActionExecutionStartWorkflow;
-                    var handle = Client.GetWorkflowHandle(
-                        action!.WorkflowId) with
-                    { ResultRunId = action.FirstExecutionRunId };
-                    return await handle.GetResultAsync<string>();
-                }));
+                    var desc = await sched.DescribeAsync();
+                    return await Task.WhenAll(desc.Info.RecentActions.Select(async res =>
+                    {
+                        var action = res.Action as ScheduleActionExecutionStartWorkflow;
+                        var handle = Client.GetWorkflowHandle(
+                            action!.WorkflowId) with
+                        { ResultRunId = action.FirstExecutionRunId };
+                        return await handle.GetResultAsync<string>();
+                    }));
+                }
+
+                // Check first result
+                await sched.TriggerAsync();
+                await AssertMore.EqualEventuallyAsync(new string[] { "no result" }, AllResultsAsync);
+
+                // Check both results
+                await sched.TriggerAsync();
+                await AssertMore.EqualEventuallyAsync(
+                    new string[] { "no result", "last result: no result" },
+                    AllResultsAsync);
             }
-
-            // Check first result
-            await sched.TriggerAsync();
-            await AssertMore.EqualEventuallyAsync(new string[] { "no result" }, AllResultsAsync);
-
-            // Check both results
-            await sched.TriggerAsync();
-            await AssertMore.EqualEventuallyAsync(
-                new string[] { "no result", "last result: no result" },
-                AllResultsAsync);
+            finally
+            {
+                await sched.DeleteAsync();
+            }
         });
-
-        await TestUtils.DeleteAllSchedulesAsync(Client);
     }
 
     [Workflow]
@@ -5331,6 +5337,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresLocalServer,
+        "Requires two independent servers to verify worker client replacement.")]
     public async Task ExecuteWorkflowAsync_WorkerClientReplacement_UsesNewClient()
     {
         // We are going to create a second ephemeral server and start a workflow on each server.
@@ -5885,6 +5894,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Leaves background workers with in-flight activities during shutdown, exposing a bridge finalization race.")]
     public async Task ExecuteWorkflowAsync_StdlibSemaphore_NonAsyncDeadlocks()
     {
         async Task AssertDeadlocks(Expression<Func<StdlibSemaphoreWorkflow, Task>> updateExpr)
@@ -7868,15 +7880,20 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Requires Cloud Nexus endpoint setup and cleanup.")]
     public async Task ExecuteWorkflowAsync_ConverterContext_ProperlyAvailable()
     {
         // It is accepted that this does not test every pemutation of every way a payload converter,
         // failure converter, and codec are used in clients, workflows, and activities.
 
         // Context-aware data converter and client
+        var encodingConverters =
+            ((DefaultPayloadConverter)DataConverter.Default.PayloadConverter).EncodingConverters;
         var dataConverter = new DataConverter(
             PayloadConverter: new DefaultPayloadConverter(
-                ((DefaultPayloadConverter)Client.Options.DataConverter.PayloadConverter).EncodingConverters.Select(e =>
+                encodingConverters.Select(e =>
                     e is JsonPlainConverter ? new ContextJsonPlainConverter() : e).ToArray()),
             FailureConverter: new ContextFailureConverter(),
             PayloadCodec: new ContextPayloadCodec());
@@ -8292,13 +8309,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Metrics = new() { Prometheus = new(promAddr), },
             },
         });
-        var client = await TemporalClient.ConnectAsync(
-            new()
-            {
-                TargetHost = Client.Connection.Options.TargetHost,
-                Namespace = Client.Options.Namespace,
-                Runtime = runtime,
-            });
+        var client = await ConnectClientWithRuntimeAsync(runtime);
 
         await ExecuteWorkerAsync<WaitOnSignalThenActivityWorkflow>(
         async worker =>
@@ -8449,22 +8460,21 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new TemporalWorkerOptions(parentTaskQueue).AddAllActivities(acts));
     }
 
-    // See https://github.com/temporalio/sdk-dotnet/issues/500
     [Fact]
     public async Task ExecuteWorkflowAsync_PrematureDispose_WorkflowCompletes()
     {
-        using var waitEvent = new AutoResetEvent(false);
+        var waitSource = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var worker = new TemporalWorker(Client, PrepareWorkerOptions<SimpleWorkflow>(new()));
         Task task = worker.ExecuteAsync(async () =>
         {
-            waitEvent.WaitOne();
+            await waitSource.Task;
             var result = await Client.ExecuteWorkflowAsync(
                 (SimpleWorkflow wf) => wf.RunAsync("Temporal"),
                 new(id: $"dotnet-workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("Hello, Temporal!", result);
         });
         worker.Dispose();
-        waitEvent.Set();
+        waitSource.SetResult();
         await task;
     }
 

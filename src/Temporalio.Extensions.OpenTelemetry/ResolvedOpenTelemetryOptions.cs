@@ -1,19 +1,19 @@
 using System;
 
-namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
+namespace Temporalio.Extensions.OpenTelemetry
 {
     /// <summary>
-    /// Resolved OpenTelemetry options for Lambda workers.
+    /// Resolved configuration shared by platform-specific OpenTelemetry extensions.
     /// </summary>
-    internal sealed class ResolvedLambdaWorkerOpenTelemetryOptions
+    internal sealed class ResolvedOpenTelemetryOptions
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ResolvedLambdaWorkerOpenTelemetryOptions"/> class.
+        /// Initializes a new instance of the <see cref="ResolvedOpenTelemetryOptions"/> class.
         /// </summary>
         /// <param name="collectorEndpoint">OTLP collector endpoint.</param>
         /// <param name="serviceName">OpenTelemetry service name.</param>
         /// <param name="metricsExportInterval">Metrics export interval.</param>
-        public ResolvedLambdaWorkerOpenTelemetryOptions(
+        internal ResolvedOpenTelemetryOptions(
             Uri collectorEndpoint,
             string serviceName,
             TimeSpan metricsExportInterval)
@@ -26,16 +26,16 @@ namespace Temporalio.Extensions.Aws.Lambda.OpenTelemetry
         /// <summary>
         /// Gets the OTLP collector endpoint.
         /// </summary>
-        public Uri CollectorEndpoint { get; }
+        internal Uri CollectorEndpoint { get; }
 
         /// <summary>
         /// Gets the OpenTelemetry service name.
         /// </summary>
-        public string ServiceName { get; }
+        internal string ServiceName { get; }
 
         /// <summary>
         /// Gets how often the Core SDK exports metrics to the collector.
         /// </summary>
-        public TimeSpan MetricsExportInterval { get; }
+        internal TimeSpan MetricsExportInterval { get; }
     }
 }

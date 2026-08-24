@@ -23,7 +23,6 @@ namespace Temporalio.Worker.Tuning
         /// <summary>
         /// Nexus operation slot type.
         /// </summary>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         NexusOperation,
     }
 }

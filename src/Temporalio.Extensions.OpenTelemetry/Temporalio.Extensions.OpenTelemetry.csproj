@@ -19,6 +19,19 @@
     <ProjectReference Include="..\Temporalio\Temporalio.csproj" />
   </ItemGroup>
 
+  <!-- Allow provider wrappers and tests to use the shared implementation without adding public API. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Temporalio.Extensions.Aws.Lambda.OpenTelemetry</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Temporalio.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
   <!-- Pack the README -->
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />

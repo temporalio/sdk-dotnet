@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NexusRpc.Handlers;
 using Temporalio.Activities;
+using Temporalio.Nexus;
 using Temporalio.Worker.Tuning;
 using Temporalio.Workflows;
 
@@ -97,7 +98,6 @@ namespace Temporalio.Worker
         /// Gets the Nexus service instances. Most users will use AddNexusService to add to this
         /// list.
         /// </summary>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public IList<ServiceHandlerInstance> NexusServices => nexusServices;
 
         /// <summary>
@@ -108,7 +108,6 @@ namespace Temporalio.Worker
         /// <summary>
         /// Gets or sets the task factory for Nexus tasks. Default is <see cref="Task.Factory" />.
         /// </summary>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public TaskFactory NexusTaskFactory { get; set; } = Task.Factory;
 
         /// <summary>
@@ -209,7 +208,6 @@ namespace Temporalio.Worker
         /// Gets or sets the maximum number of Nexus tasks that will ever be given to this worker
         /// concurrently. Default is 100. Mutually exclusive with <see cref="Tuner"/>.
         /// </summary>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public int? MaxConcurrentNexusTasks { get; set; }
 
         /// <summary>
@@ -251,7 +249,6 @@ namespace Temporalio.Worker
         /// Gets or sets the maximum number of concurrent poll Nexus task requests we will perform
         /// at a time on this worker's task queue. Default is 5.
         /// </summary>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public int MaxConcurrentNexusTaskPolls { get; set; } = 5;
 
         /// <summary>
@@ -270,7 +267,6 @@ namespace Temporalio.Worker
         /// Gets or sets the behavior of the Nexus task poller.
         /// </summary>
         /// <remarks>If set, will override any value set in <see cref="MaxConcurrentNexusTaskPolls"/>.</remarks>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public PollerBehavior? NexusTaskPollerBehavior { get; set; }
 
         /// <summary>
@@ -488,12 +484,15 @@ namespace Temporalio.Worker
         /// Add the given Nexus service handler.
         /// </summary>
         /// <param name="serviceHandler">Service handler to add. It is expected to be an instance of
-        /// a class with a <see cref="NexusServiceHandlerAttribute"/> attribute.</param>
+        /// a class with a <see cref="NexusServiceHandlerAttribute"/> attribute. Methods may use
+        /// either <see cref="TemporalOperationAttribute"/> (for direct Temporal-backed operations)
+        /// or <see cref="NexusOperationHandlerAttribute"/> (for operation handler factories).
+        /// </param>
         /// <returns>This options instance for chaining.</returns>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public TemporalWorkerOptions AddNexusService(object serviceHandler)
         {
-            NexusServices.Add(ServiceHandlerInstance.FromInstance(serviceHandler));
+            NexusServices.Add(ServiceHandlerInstance.FromInstance(
+                serviceHandler, TemporalOperationMethodExtension.Extensions));
             return this;
         }
 
@@ -502,7 +501,6 @@ namespace Temporalio.Worker
         /// </summary>
         /// <param name="serviceHandler">Service handler to add..</param>
         /// <returns>This options instance for chaining.</returns>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public TemporalWorkerOptions AddNexusService(ServiceHandlerInstance serviceHandler)
         {
             NexusServices.Add(serviceHandler);

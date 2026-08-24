@@ -107,6 +107,74 @@ public class PayloadConverterTests : TestBase
         Assert.Contains(ActivityType.Descriptor.FullName, e.Message);
     }
 
+    [Fact]
+    public void ToPayload_TransferTypeHooks_Succeed()
+    {
+        var dataConverter = TemporalTransferTypePayloadConverter.Wrap(new DataConverter(
+            new ContextStringPayloadConverter(),
+            new DefaultFailureConverter())).WithSerializationContext(
+                new ISerializationContext.Workflow("default", "workflow-id"));
+        var value = new TransferTypeHookValue("payload-value");
+
+        var payload = dataConverter.PayloadConverter.ToPayload(value);
+        Assert.Equal("workflow-id:payload-value", payload.Data.ToStringUtf8());
+        Assert.Equal(
+            value,
+            dataConverter.PayloadConverter.ToValue(payload, typeof(TransferTypeHookValue)));
+    }
+
+    [Fact]
+    public void ToPayload_TransferTypeHooks_DoesNotUseInheritedAttribute()
+    {
+        var converter = TemporalTransferTypePayloadConverter.Wrap(new ContextStringPayloadConverter());
+
+        var payload = converter.ToPayload(new DerivedTransferTypeHookValue("payload-value"));
+
+        Assert.NotEqual("test/context-string", payload.Metadata["encoding"].ToStringUtf8());
+    }
+
+    [Fact]
+    public void ToPayload_TransferTypeHooks_BaseTypeWithAttribute_Succeed()
+    {
+        var converter = TemporalTransferTypePayloadConverter.Wrap(new ContextStringPayloadConverter());
+        var value = new BaseTransferTypeHookValue("payload-value");
+
+        var payload = converter.ToPayload(value);
+
+        Assert.Equal(":base:payload-value", payload.Data.ToStringUtf8());
+        Assert.Equal(value, converter.ToValue(payload, typeof(BaseTransferTypeHookValue)));
+    }
+
+    [Fact]
+    public void ToPayload_TransferTypeHooks_DerivedTypeWithAttribute_Succeed()
+    {
+        var converter = TemporalTransferTypePayloadConverter.Wrap(new ContextStringPayloadConverter());
+        var value = new AnnotatedDerivedTransferTypeHookValue("payload-value");
+
+        var payload = converter.ToPayload(value);
+
+        Assert.Equal(":derived:payload-value", payload.Data.ToStringUtf8());
+        Assert.Equal(value, converter.ToValue(payload, typeof(AnnotatedDerivedTransferTypeHookValue)));
+    }
+
+    [Theory]
+    [InlineData(typeof(NonAssignableConverterHookValue), "does not implement")]
+    [InlineData(typeof(AbstractConverterHookValue), "abstract")]
+    [InlineData(typeof(OpenGenericConverterHookValue), "open generic")]
+    [InlineData(typeof(ParameterConstructorConverterHookValue), "public parameterless constructor")]
+    [InlineData(typeof(PrivateConstructorConverterHookValue), "public parameterless constructor")]
+    public void ToPayload_TransferTypeHooks_InvalidConverterType_Fails(
+        Type type,
+        string expectedMessage)
+    {
+        var converter = TemporalTransferTypePayloadConverter.Wrap(new DefaultPayloadConverter());
+        var value = Activator.CreateInstance(type, "payload-value");
+
+        var exception = Assert.Throws<InvalidOperationException>(() => converter.ToPayload(value));
+
+        Assert.Contains(expectedMessage, exception.Message);
+    }
+
     private static Payload AssertPayload(
         object? value,
         string expectedEncoding,
@@ -173,5 +241,156 @@ public class PayloadConverterTests : TestBase
                 new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase })
         {
         }
+    }
+
+    [TemporalTransferTypeConverter(typeof(TransferTypeHookValueConverter))]
+    public sealed record TransferTypeHookValue(string Value);
+
+    public class TransferTypeHookValueConverter : ITemporalTransferTypeConverter
+    {
+        public Type TransferType => typeof(string);
+
+        public object ToTransferType(object? value) => ((TransferTypeHookValue)value!).Value;
+
+        public object FromTransferType(object? transferType) =>
+            new TransferTypeHookValue((string)transferType!);
+    }
+
+    [TemporalTransferTypeConverter(typeof(BaseTransferTypeHookValueConverter))]
+    public record BaseTransferTypeHookValue(string Value);
+
+    public record DerivedTransferTypeHookValue(string Value) :
+        BaseTransferTypeHookValue(Value);
+
+    [TemporalTransferTypeConverter(typeof(AnnotatedDerivedTransferTypeHookValueConverter))]
+    public record AnnotatedDerivedTransferTypeHookValue(string Value) :
+        BaseTransferTypeHookValue(Value);
+
+    public class BaseTransferTypeHookValueConverter : ITemporalTransferTypeConverter
+    {
+        public Type TransferType => typeof(string);
+
+        public object ToTransferType(object? value) =>
+            $"base:{((BaseTransferTypeHookValue)value!).Value}";
+
+        public object FromTransferType(object? transferType) =>
+            new BaseTransferTypeHookValue(((string)transferType!)[5..]);
+    }
+
+    public class AnnotatedDerivedTransferTypeHookValueConverter :
+        ITemporalTransferTypeConverter
+    {
+        public Type TransferType => typeof(string);
+
+        public object ToTransferType(object? value) =>
+            $"derived:{((AnnotatedDerivedTransferTypeHookValue)value!).Value}";
+
+        public object FromTransferType(object? transferType) =>
+            new AnnotatedDerivedTransferTypeHookValue(((string)transferType!)[8..]);
+    }
+
+    [TemporalTransferTypeConverter(typeof(string))]
+    public sealed record NonAssignableConverterHookValue(string Value);
+
+    [TemporalTransferTypeConverter(typeof(AbstractTransferTypeHookValueConverter))]
+    public sealed record AbstractConverterHookValue(string Value);
+
+    public abstract class AbstractTransferTypeHookValueConverter :
+        ITemporalTransferTypeConverter
+    {
+        public abstract Type TransferType { get; }
+
+        public abstract object? ToTransferType(object? value);
+
+        public abstract object? FromTransferType(object? transferType);
+    }
+
+    [TemporalTransferTypeConverter(typeof(GenericTransferTypeHookValueConverter<>))]
+    public sealed record OpenGenericConverterHookValue(string Value);
+
+    public class GenericTransferTypeHookValueConverter<T> : ITemporalTransferTypeConverter
+    {
+        public Type TransferType => typeof(string);
+
+        public object? ToTransferType(object? value) => throw new NotImplementedException();
+
+        public object? FromTransferType(object? transferType) => throw new NotImplementedException();
+    }
+
+    [TemporalTransferTypeConverter(typeof(ParameterConstructorTransferTypeHookValueConverter))]
+    public sealed record ParameterConstructorConverterHookValue(string Value);
+
+    public class ParameterConstructorTransferTypeHookValueConverter :
+        ITemporalTransferTypeConverter
+    {
+        public ParameterConstructorTransferTypeHookValueConverter(string value)
+        {
+        }
+
+        public Type TransferType => typeof(string);
+
+        public object? ToTransferType(object? value) => throw new NotImplementedException();
+
+        public object? FromTransferType(object? transferType) => throw new NotImplementedException();
+    }
+
+    [TemporalTransferTypeConverter(typeof(PrivateConstructorTransferTypeHookValueConverter))]
+    public sealed record PrivateConstructorConverterHookValue(string Value);
+
+    public class PrivateConstructorTransferTypeHookValueConverter :
+        ITemporalTransferTypeConverter
+    {
+        private PrivateConstructorTransferTypeHookValueConverter()
+        {
+        }
+
+        public Type TransferType => typeof(string);
+
+        public object? ToTransferType(object? value) => throw new NotImplementedException();
+
+        public object? FromTransferType(object? transferType) => throw new NotImplementedException();
+    }
+
+    public class ContextStringPayloadConverter :
+        IPayloadConverter,
+        IWithSerializationContext<IPayloadConverter>
+    {
+        private static readonly DefaultPayloadConverter FallbackPayloadConverter =
+            new DefaultPayloadConverter();
+
+        private readonly string? workflowId;
+
+        public ContextStringPayloadConverter(string? workflowId = null) =>
+            this.workflowId = workflowId;
+
+        public Payload ToPayload(object? value)
+        {
+            if (value is string str)
+            {
+                return new()
+                {
+                    Metadata =
+                    {
+                        ["encoding"] = ByteString.CopyFromUtf8("test/context-string"),
+                    },
+                    Data = ByteString.CopyFromUtf8($"{workflowId}:{str}"),
+                };
+            }
+            return FallbackPayloadConverter.ToPayload(value);
+        }
+
+        public object? ToValue(Payload payload, Type type)
+        {
+            if (type == typeof(string) &&
+                payload.Metadata["encoding"].ToStringUtf8() == "test/context-string")
+            {
+                var encoded = payload.Data.ToStringUtf8();
+                return encoded[(encoded.IndexOf(':') + 1)..];
+            }
+            return FallbackPayloadConverter.ToValue(payload, type);
+        }
+
+        public IPayloadConverter WithSerializationContext(ISerializationContext context) =>
+            new ContextStringPayloadConverter(((ISerializationContext.IHasWorkflow)context).WorkflowId);
     }
 }

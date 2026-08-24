@@ -29,7 +29,7 @@ runs:
   steps:
     - name: Setup .NET (non-Alpine)
       if: ${{ inputs.is-alpine != 'true' }}
-      uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
+      uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
       with:
         global-json-file: global.json
 
@@ -41,9 +41,13 @@ runs:
         PACKAGE_SOURCE: ${{ inputs.package-source }}
         VERSION: ${{ inputs.version }}
       run: |
+        # The SDK preinstalled in this image is the one that runs the smoke test, so this
+        # tag must stay on a patch within global.json's feature band and must be bumped
+        # whenever that band changes; the floating 10.0-alpine tag jumps bands
+        # (10.0.302 -> 10.0.400) and breaks SDK resolution.
         docker run --rm -v "$(pwd):/workspace" -w /workspace \
           -e PACKAGE_SOURCE -e VERSION \
-          mcr.microsoft.com/dotnet/sdk:10.0-alpine \
+          mcr.microsoft.com/dotnet/sdk:10.0.302-alpine3.24 \
           sh -c '
             version_arg=""
             [ -n "$VERSION" ] && version_arg="--version $VERSION"

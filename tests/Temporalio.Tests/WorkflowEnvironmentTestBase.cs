@@ -5,6 +5,7 @@ namespace Temporalio.Tests;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Common;
+using Temporalio.Runtime;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -45,6 +46,15 @@ public abstract class WorkflowEnvironmentTestBase : TestBase
     protected WorkflowEnvironment Env { get; private init; }
 
     protected ITemporalClient Client { get; private init; }
+
+    protected async Task<TemporalClient> ConnectClientWithRuntimeAsync(TemporalRuntime runtime)
+    {
+        var connectionOptions = (TemporalConnectionOptions)Client.Connection.Options.Clone();
+        connectionOptions.Runtime = runtime;
+        return new(
+            await TemporalConnection.ConnectAsync(connectionOptions),
+            (TemporalClientOptions)Client.Options.Clone());
+    }
 
     /// <summary>Check for Worker Versioning feature support.</summary>
     /// <returns>True if the server supports it.</returns>

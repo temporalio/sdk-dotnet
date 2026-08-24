@@ -6,8 +6,13 @@ public static class Program
 
     internal static bool Verbose { get; private set; }
 
-    public static int Main(string[] args)
+    public static async Task<int> Main(string[] args)
     {
+        if (args.Length > 0 && args[0] == "cloud-namespace")
+        {
+            return await CloudNamespaceCommand.RunAsync(args[1..]);
+        }
+
         InProc = true;
         Verbose = args.Contains("-verbose");
         // Always put self assembly as first arg if "--help" isn't first arg

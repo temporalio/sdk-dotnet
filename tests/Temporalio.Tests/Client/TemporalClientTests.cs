@@ -60,6 +60,9 @@ public class TemporalClientTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresLocalServer,
+        "Starts a development server to invoke every RPC method.")]
     public async Task ConnectAsync_Connection_AllGrpcCallsSupported()
     {
         // The approach we'll take here is to just start the dev server and reflectively make each

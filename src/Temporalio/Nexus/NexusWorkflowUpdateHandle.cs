@@ -9,7 +9,7 @@ namespace Temporalio.Nexus
     /// Update handle representing an update-workflow operation started from a Nexus operation. It
     /// carries the identifiers needed to encode/decode an update-workflow operation token.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
+    /// <remarks>WARNING: Workflow updates as Nexus operations are experimental.</remarks>
     internal class NexusWorkflowUpdateHandle
     {
         /// <summary>

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NexusRpc.Handlers;
 using Temporalio.Activities;
 using Temporalio.Client.Interceptors;
+using Temporalio.Nexus;
 using Temporalio.Worker.Interceptors;
 using Temporalio.Workflows;
 
@@ -67,7 +68,6 @@ namespace Temporalio.Common
         /// Gets the Nexus service instances. Most users will use AddNexusService to add to this
         /// list.
         /// </summary>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public IList<ServiceHandlerInstance> NexusServices { get; } = new List<ServiceHandlerInstance>();
 
         /// <summary>
@@ -194,12 +194,15 @@ namespace Temporalio.Common
         /// Add the given Nexus service handler.
         /// </summary>
         /// <param name="serviceHandler">Service handler to add. It is expected to be an instance of
-        /// a class with a <see cref="NexusServiceHandlerAttribute"/> attribute.</param>
+        /// a class with a <see cref="NexusServiceHandlerAttribute"/> attribute. Methods may use
+        /// either <see cref="TemporalOperationAttribute"/> (for direct Temporal-backed operations)
+        /// or <see cref="NexusOperationHandlerAttribute"/> (for operation handler factories).
+        /// </param>
         /// <returns>This options instance for chaining.</returns>
-        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public SimplePluginOptions AddNexusService(object serviceHandler)
         {
-            NexusServices.Add(ServiceHandlerInstance.FromInstance(serviceHandler));
+            NexusServices.Add(ServiceHandlerInstance.FromInstance(
+                serviceHandler, TemporalOperationMethodExtension.Extensions));
             return this;
         }
 

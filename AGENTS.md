@@ -14,6 +14,10 @@ document as your quick reference when submitting pull requests.
   Server or the time-skipping test server that is lazily downloaded and run as a sub-process on first
   use (see `Temporalio.Testing.WorkflowEnvironment`). No separate server setup is required for most
   tests.
+- Declaration lists in config files are kept alphabetized, case-insensitively and ignoring any
+  quoting. This covers `Directory.Packages.props`, each `ItemGroup` in `Directory.Build.props`,
+  `.config/dotnet-tools.json`, the `[tasks.*]` blocks in `mise.toml`, and the Dependabot `ignore`
+  list. Insert new entries in order rather than appending them.
 - The build treats warnings as errors (`TreatWarningsAsErrors`) and enables the full analyzer set
   (`AnalysisMode=AllEnabledByDefault`) plus StyleCop. A build that produces analyzer warnings will
   fail. Fix the underlying issue rather than suppressing it, unless a suppression is already the
@@ -56,8 +60,7 @@ dotnet run --project tests/Temporalio.Tests          # all tests
 dotnet run --project tests/Temporalio.Tests -- --help  # see runner options
 ```
 
-API documentation is generated with [docfx](https://dotnet.github.io/docfx/) via
-`docfx src/Temporalio.ApiDoc/docfx.json`.
+API documentation is generated with [docfx](https://dotnet.github.io/docfx/) via `mise run docs`.
 
 The following environment variables override the test environment to run against an external server:
 
@@ -84,7 +87,7 @@ The following environment variables override the test environment to run against
   them:
 
   ```bash
-  dotnet pack -c Debug /p:GenerateCompatibilitySuppressionFile=true
+  mise run apicompat:baseline
   ```
 
   Then review the diff to `src/Temporalio/CompatibilitySuppressions.xml` and keep only the intended
@@ -130,6 +133,8 @@ Reviewers will look for:
   - `tests/Temporalio.SimpleBench/`, `tests/Temporalio.SmokeTest*/` – benchmarks and smoke tests
 - `Directory.Build.props` – shared MSBuild properties
 - `Directory.Packages.props` – central package versions (this repo uses central package management).
+- `.config/dotnet-tools.json` – pinned .NET codegen tools (ClangSharpPInvokeGenerator, docfx).
+- `mise.toml` – pinned `protoc` and `nex-gen`, plus the `gen`/`docs` tasks CI runs.
 - `.editorconfig` – analyzer/StyleCop rule configuration and Temporal-specific overrides.
 - `README.md`, `CONTRIBUTING.md` – contributor and development guide.
 - `bin/`, `obj/`, `target/` – compiled output. You never need to look in here.
@@ -141,11 +146,12 @@ Reviewers will look for:
 - Workflow code must be deterministic. The README's "Workflow Logic Constraints" section (including
   ".NET Task Determinism") explains the rules and the Workflow-specific `.editorconfig` overrides —
   read it before changing Workflow internals.
-- The interop layer is regenerated from the C header with ClangSharpPInvokeGenerator:
-  `ClangSharpPInvokeGenerator @src/Temporalio/Bridge/GenerateInterop.rsp`.
-- Protobuf types are regenerated with `dotnet run --project src/Temporalio.Api.Generator` (requires
-  `protoc` on the `PATH`; use `protoc` 23.x for now). Regenerate and commit the output rather than
-  hand-editing generated files under `src/Temporalio/Api/`.
+- Generated code is regenerated with [mise](https://mise.jdx.dev/) tasks, which install their pinned
+  tools on first run: `mise run gen` for everything, or `mise run gen:api`
+  (`Temporalio.Api.*` protobuf types), `mise run gen:nexus` (system Nexus service bindings), and
+  `mise run gen:interop` (bridge interop layer from the C header) individually. Regenerate and commit
+  the output rather than hand-editing generated files; CI runs `mise run gen` and fails on any diff.
+  `gen:interop` only works on Windows since its generator ships Windows-only native `libclang`.
 - `src/Temporalio/Bridge/sdk-core` is a git submodule pointing at
   [`sdk-rust`](https://github.com/temporalio/sdk-rust); change it via the submodule, not by editing
   files in place.

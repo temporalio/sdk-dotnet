@@ -31,6 +31,11 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Temporalio.Tests</_Parameter1>
     </AssemblyAttribute>
+    <!-- Hosting reuses the [TemporalOperation] validation/handler-factory internals to add
+         dependency-injection support for Nexus operations. -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Temporalio.Extensions.Hosting</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
   <!-- Build/copy debug/release bridge DLL -->

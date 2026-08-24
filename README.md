@@ -80,8 +80,7 @@ Extensions:
   - [Code formatting](#code-formatting)
     - [VisualStudio Code](#visualstudio-code)
   - [Testing](#testing)
-  - [Rebuilding Rust extension and interop layer](#rebuilding-rust-extension-and-interop-layer)
-  - [Regenerating protos](#regenerating-protos)
+  - [Regenerating code](#regenerating-code)
   - [Regenerating API docs](#regenerating-api-docs)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -1325,6 +1324,8 @@ Prerequisites:
 * [.NET SDK](https://learn.microsoft.com/en-us/dotnet/core/install/) — version pinned in [`global.json`](global.json)
 * [Rust](https://www.rust-lang.org/) (i.e. `cargo` on the `PATH`)
 * [Protobuf Compiler](https://protobuf.dev/) (i.e. `protoc` on the `PATH`)
+* [mise](https://mise.jdx.dev/getting-started.html) — running `mise install` in the repository root installs the
+  `protoc` version pinned in [`mise.toml`](mise.toml) and puts it on the `PATH`, matching what CI uses
 * This repository, cloned recursively
 
 With all prerequisites in place, run:
@@ -1373,6 +1374,15 @@ Extra args can be added after `--`, e.g. `-- -verbose` would show verbose logs a
 options. If the arguments are anything but `--help`, the current assembly is prepended to the args before sending to the
 xUnit runner.
 
+Tests are eligible to run against Temporal Cloud unless they have a `CloudTestExclusion` attribute. Run or list the
+Cloud-eligible tests with:
+
+    dotnet test tests/Temporalio.Tests --filter "CloudTest!=Excluded"
+    dotnet test tests/Temporalio.Tests --list-tests --filter "CloudTest!=Excluded"
+
+To inventory excluded tests, filter on `CloudTest=Excluded`, or filter on
+[`CloudTestExclusionReason`](tests/Temporalio.Tests/CloudTestExclusionReason.cs) to inspect a particular category.
+
 The following environment variables can be set to override the environment:
 
 * `TEMPORAL_TEST_CLIENT_TARGET_HOST` - This must be set for any of the variables below to apply
@@ -1380,35 +1390,45 @@ The following environment variables can be set to override the environment:
 * `TEMPORAL_TEST_CLIENT_CERT` - Optional, must be present if below is
 * `TEMPORAL_TEST_CLIENT_KEY` - Optional, must be present if above is
 
-### Rebuilding Rust extension and interop layer
+### Regenerating code
 
-To regen core interop from header, install
-[ClangSharpPInvokeGenerator](https://github.com/dotnet/ClangSharp#generating-bindings) like:
+Every generator is a [mise](https://mise.jdx.dev/) task. The .NET tools they need are pinned in
+[`.config/dotnet-tools.json`](.config/dotnet-tools.json) and the rest in [`mise.toml`](mise.toml). To regenerate
+everything the way CI does:
 
-    dotnet tool install --global ClangSharpPInvokeGenerator
+    mise run gen
 
-Then, run:
+Or regenerate a single piece:
 
-    ClangSharpPInvokeGenerator @src/Temporalio/Bridge/GenerateInterop.rsp
+* `mise run gen:api` - the `Temporalio.Api.*` protobuf types
+* `mise run gen:nexus` - the system Nexus workflow service bindings
+* `mise run gen:interop` - the bridge interop layer, from the `sdk-core` C header, using
+  [ClangSharpPInvokeGenerator](https://github.com/dotnet/ClangSharp#generating-bindings)
 
-The Rust DLL is built automatically when the project is built. `protoc` may need to be on the `PATH` to build the Rust
-DLL.
+Each task installs the tools it needs on first run, so nothing has to be installed globally. Run `mise tasks` to see
+them all. Commit the regenerated output rather than hand-editing generated files; CI runs `mise run gen` and fails if
+it produces a diff.
 
-This can be annoying to install on linux - so alternatively, publish your PR and you can download the
-patch from the windows build when it fails because of a mismatch. It uploads the patch as an artifact.
+`gen:interop` runs on Windows only, because the generator package ships native `libclang` binaries for Windows alone
+(it can be made to work on Linux, but it is annoying to set up). It is ordered last so the other generators still
+complete elsewhere.
 
-### Regenerating protos
+If you cannot run a generator locally, let CI produce the output for you. The "Regen confirm unchanged" step uploads a
+`generator-diff` artifact holding a single `generator.diff`, a unified diff of everything the regen changed. From the
+repository root:
 
-Must have `protoc` on the `PATH`. This project uses [mise](https://mise.jdx.dev/) to manage the `protoc` version,
-matching what CI uses. After [installing mise](https://mise.jdx.dev/getting-started.html), run `mise install` in the
-repository root to install the version pinned in [`mise.toml`](mise.toml) and put `protoc` on your `PATH`.
+    gh run download <run-id> -n generator-diff
+    git apply generator.diff
 
-Then:
+The artifact can also be downloaded as a zip from the Artifacts section of the workflow run page. Review the result and
+commit it as you would your own regen.
 
-    dotnet run --project src/Temporalio.Api.Generator
+The Rust DLL itself is built automatically when the project is built, and needs `protoc` on the `PATH` (see
+[Build](#build)).
 
 ### Regenerating API docs
 
-Install [docfx](https://dotnet.github.io/docfx/), then run:
+    mise run docs
 
-    docfx src/Temporalio.ApiDoc/docfx.json
+This builds the docs with [docfx](https://dotnet.github.io/docfx/) at the version pinned in
+[`.config/dotnet-tools.json`](.config/dotnet-tools.json).

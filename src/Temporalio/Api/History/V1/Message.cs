@@ -23045,8 +23045,8 @@ namespace Temporalio.Api.History.V1 {
   }
 
   /// <summary>
-  /// Attributes for an event indicating that time skipping state changed for a workflow execution,
-  /// either time was advanced or time skipping was disabled automatically due to the fast_forward completing.
+  /// Attributes for an event indicating that time skipping state changed for a workflow execution:
+  /// either time was advanced, or time skipping was stopped automatically due to the fast_forward completing.
   /// The worker_may_ignore field in HistoryEvent should always be set true for this event.
   /// </summary>
   public sealed partial class WorkflowExecutionTimeSkippingTransitionedEventAttributes : pb::IMessage<WorkflowExecutionTimeSkippingTransitionedEventAttributes>
@@ -23114,7 +23114,7 @@ namespace Temporalio.Api.History.V1 {
     public const int DisabledAfterFastForwardFieldNumber = 2;
     private bool disabledAfterFastForward_;
     /// <summary>
-    /// When true, time skipping has been disabled automatically due to a call to fast_forward completing.
+    /// When true, time skipping has been stopped automatically due to a call to fast_forward completing.
     /// (-- api-linter: core::0140::prepositions=disabled
     ///     aip.dev/not-precedent: "after" is used to indicate temporal ordering. --)
     /// </summary>

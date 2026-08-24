@@ -7,7 +7,6 @@ namespace Temporalio.Worker.Interceptors
     /// <summary>
     /// Inbound interceptor to intercept Nexus operation calls coming from the server.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public abstract class NexusOperationInboundInterceptor
     {
         /// <summary>
