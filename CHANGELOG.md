@@ -23,9 +23,6 @@ to docs, or any other relevant information.
 
 - Added `PayloadValidationError.CreateException`, which payload converters and codecs can use to
   report invalid Nexus operation input with structured details.
-- Added `SystemNexusConverterContext`, which exposes the application's original payload and failure
-  converters while a System Nexus transfer type converter is executing. This lets generated System
-  Nexus transfer types serialize nested values without recursively applying their own transfer hooks.
 
 ### Changed
 
