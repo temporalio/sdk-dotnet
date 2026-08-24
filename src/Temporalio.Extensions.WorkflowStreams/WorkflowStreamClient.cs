@@ -190,15 +190,25 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// <returns>Task completing when the client has closed.</returns>
         public async Task CloseAsync()
         {
-            await publisher.CloseAsync().ConfigureAwait(false);
-            List<SubscriptionDriver> drivers;
-            lock (liveSubscriptionsLock)
+            try
             {
-                drivers = new List<SubscriptionDriver>(liveSubscriptions);
+                await publisher.CloseAsync().ConfigureAwait(false);
             }
-            foreach (var driver in drivers)
+            finally
             {
-                driver.Close();
+                // The subscriptions are closed even when the final drain throws (a deferred
+                // FlushTimeoutException, or a send failure against an already-completed
+                // workflow); otherwise they would stay registered and polling while the caller
+                // sees only the publisher's error.
+                List<SubscriptionDriver> drivers;
+                lock (liveSubscriptionsLock)
+                {
+                    drivers = new List<SubscriptionDriver>(liveSubscriptions);
+                }
+                foreach (var driver in drivers)
+                {
+                    driver.Close();
+                }
             }
         }
 

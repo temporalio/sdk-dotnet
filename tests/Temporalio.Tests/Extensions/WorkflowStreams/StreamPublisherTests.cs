@@ -182,6 +182,42 @@ public class StreamPublisherTests
         await publisher2.CloseAsync();
     }
 
+    [Fact]
+    public async Task FlushTimeout_InBackgroundLoop_DoesNotStopLaterPublishes()
+    {
+        var signal = new RecordingSignal { Failure = new InvalidOperationException("boom") };
+        long timestamp = 0;
+        var publisher = NewPublisher(
+            signal,
+            TimeSpan.FromMilliseconds(50),
+            maxRetry: TimeSpan.FromSeconds(1),
+            getTimestamp: () => timestamp,
+            timestampFrequency: 1);
+
+        // The background loop picks this up, fails to send (transient "boom"), and keeps the
+        // batch pending across retries.
+        publisher.Publish("t", "a", forceFlush: false);
+        await Task.Delay(200);
+
+        // Push past the max retry duration so the next background tick drops the batch with a
+        // FlushTimeoutException, which stops the loop.
+        timestamp = 2;
+        await Task.Delay(300);
+
+        // A later publish must still reach the workflow on its own: the loop restarts rather
+        // than leaving the publisher silently buffering until someone calls FlushAsync.
+        signal.Failure = null;
+        publisher.Publish("t", "b", forceFlush: false);
+        await signal.SentTask.WaitAsync(TimeSpan.FromSeconds(10));
+
+        var input = Assert.Single(signal.Recorded());
+        Assert.Equal("b", DecodeItem(input, 0));
+        Assert.Equal(2, input.Sequence);
+
+        // The deferred timeout is still surfaced once, on close.
+        await Assert.ThrowsAsync<FlushTimeoutException>(() => publisher.CloseAsync());
+    }
+
     private static StreamPublisher NewPublisher(
         RecordingSignal signal,
         TimeSpan? batchInterval = null,

@@ -83,17 +83,23 @@ namespace Temporalio.Extensions.WorkflowStreams
                 }
             }
 
+            // Both handlers are registered with Abandon rather than the WarnAndAbandon default: a
+            // long poll is outstanding essentially all the time, so the default would log
+            // TMPRL1102 on every completion of a stream-hosting workflow, pointing users at a
+            // handler attribute they cannot reach.
             Workflow.Signals.Add(
                 WorkflowStreamConstants.PublishSignalName,
                 WorkflowSignalDefinition.CreateWithoutAttribute(
                     WorkflowStreamConstants.PublishSignalName,
-                    (Func<PublishInput, Task>)HandlePublishAsync));
+                    (Func<PublishInput, Task>)HandlePublishAsync,
+                    HandlerUnfinishedPolicy.Abandon));
             Workflow.Updates.Add(
                 WorkflowStreamConstants.PollUpdateName,
                 WorkflowUpdateDefinition.CreateWithoutAttribute(
                     WorkflowStreamConstants.PollUpdateName,
                     (Func<PollInput, Task<PollResult>>)HandlePollAsync,
-                    (Action<PollInput>)ValidatePoll));
+                    (Action<PollInput>)ValidatePoll,
+                    HandlerUnfinishedPolicy.Abandon));
             Workflow.Queries.Add(
                 WorkflowStreamConstants.OffsetQueryName,
                 WorkflowQueryDefinition.CreateWithoutAttribute(

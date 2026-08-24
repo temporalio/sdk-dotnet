@@ -310,10 +310,14 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
                 catch (FlushTimeoutException e)
                 {
                     // The pending batch was dropped and can't be recovered. Stash the error so
-                    // FlushAsync/CloseAsync surface it and stop the loop.
+                    // FlushAsync/CloseAsync surface it and stop the loop. Clearing started lets
+                    // the next Publish restart the loop; without it the publisher would silently
+                    // buffer forever after a single timeout. EnsureStartedLocked still refuses to
+                    // restart once closed.
                     lock (stateLock)
                     {
                         deferredError = e;
+                        started = false;
                     }
                     return;
                 }
