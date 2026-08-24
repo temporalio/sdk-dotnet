@@ -29,6 +29,8 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
         private readonly TimeSpan batchInterval;
         private readonly int maxBatchSize;
         private readonly TimeSpan maxRetryDuration;
+        private readonly Func<long> getTimestamp;
+        private readonly long timestampFrequency;
         private readonly object stateLock = new();
         private readonly CancellationTokenSource backgroundCts = new();
 
@@ -57,12 +59,18 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
         /// <param name="maxBatchSize">Buffer size that triggers a flush; 0 disables.</param>
         /// <param name="maxRetryDuration">Max time to retry a failed flush before surfacing a
         /// <see cref="FlushTimeoutException" />.</param>
+        /// <param name="getTimestamp">Monotonic timestamp source, or null for
+        /// <see cref="Stopwatch.GetTimestamp" />.</param>
+        /// <param name="timestampFrequency">Timestamp units per second, or null for
+        /// <see cref="Stopwatch.Frequency" />.</param>
         public StreamPublisher(
             Func<PublishInput, Task> signalFunc,
             IPayloadConverter payloadConverter,
             TimeSpan batchInterval,
             int maxBatchSize,
-            TimeSpan maxRetryDuration)
+            TimeSpan maxRetryDuration,
+            Func<long>? getTimestamp = null,
+            long? timestampFrequency = null)
         {
             this.signalFunc = signalFunc;
             this.payloadConverter = payloadConverter;
@@ -70,6 +78,8 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
             this.batchInterval = batchInterval;
             this.maxBatchSize = maxBatchSize;
             this.maxRetryDuration = maxRetryDuration;
+            this.getTimestamp = getTimestamp ?? Stopwatch.GetTimestamp;
+            this.timestampFrequency = timestampFrequency ?? Stopwatch.Frequency;
         }
 
         /// <summary>
@@ -80,26 +90,33 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
         /// <remarks>
         /// Conversion happens here, on the caller's thread, so an unconvertible value fails the
         /// publish call itself instead of poisoning the buffer and silently wedging every later
-        /// item behind it in the background flush loop. After close, values are still buffered
-        /// silently but never sent.
+        /// item behind it in the background flush loop. Publishing after close throws.
         /// </remarks>
         /// <param name="topic">Topic to publish on.</param>
         /// <param name="value">Value to publish.</param>
         /// <param name="forceFlush">Wake the background loop to send immediately.</param>
         public void Publish(string topic, object? value, bool forceFlush)
         {
+            lock (stateLock)
+            {
+                if (closed)
+                {
+                    throw new ObjectDisposedException(nameof(StreamPublisher));
+                }
+            }
             var payload = value is Payload p ? p : payloadConverter.ToPayload(value);
             var entry = new PublishEntry { Topic = topic, Data = PayloadWire.Encode(payload) };
             lock (stateLock)
             {
-                buffer.Add(entry);
-                if (!closed)
+                if (closed)
                 {
-                    EnsureStartedLocked();
-                    if (forceFlush || (maxBatchSize > 0 && buffer.Count >= maxBatchSize))
-                    {
-                        wakeTcs.TrySetResult(null);
-                    }
+                    throw new ObjectDisposedException(nameof(StreamPublisher));
+                }
+                buffer.Add(entry);
+                EnsureStartedLocked();
+                if (forceFlush || (maxBatchSize > 0 && buffer.Count >= maxBatchSize))
+                {
+                    wakeTcs.TrySetResult(null);
                 }
             }
         }
@@ -121,8 +138,8 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
                     if (pending != null)
                     {
                         var elapsedSeconds =
-                            (Stopwatch.GetTimestamp() - pendingStartTimestamp) /
-                            (double)Stopwatch.Frequency;
+                            (getTimestamp() - pendingStartTimestamp) /
+                            (double)timestampFrequency;
                         if (elapsedSeconds > maxRetryDuration.TotalSeconds)
                         {
                             // Advance the confirmed sequence so the next batch gets a fresh
@@ -147,7 +164,7 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
                         seq = sequence + 1;
                         pending = batch;
                         pendingSeq = seq;
-                        pendingStartTimestamp = Stopwatch.GetTimestamp();
+                        pendingStartTimestamp = getTimestamp();
                     }
                     else
                     {

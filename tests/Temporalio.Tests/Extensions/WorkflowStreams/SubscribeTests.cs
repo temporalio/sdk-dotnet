@@ -1,6 +1,7 @@
 namespace Temporalio.Tests.Extensions.WorkflowStreams;
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Temporalio.Activities;
 using Temporalio.Client;
@@ -221,6 +222,27 @@ public class SubscribeTests : WorkflowEnvironmentTestBase
                 subscription.Dispose();
 #pragma warning restore CA1849, VSTHRD103
                 Assert.False(await subscription.MoveNextAsync());
+            }
+            await handle.SignalAsync("Finish", Array.Empty<object?>());
+            await handle.GetResultAsync();
+        });
+    }
+
+    [Fact]
+    public async Task AsyncEnumerationCancellation_InterruptsWaitingPoll()
+    {
+        await ExecuteWorkerAsync<StreamHostWorkflow>(async worker =>
+        {
+            var handle = await StartHostWorkflowAsync(worker);
+            using (var streamClient = NewStreamClient(handle.Id))
+            using (var cancellation = new CancellationTokenSource())
+            await using (var subscription = streamClient.Subscribe(FastPoll()))
+            {
+                var enumerator = subscription.GetAsyncEnumerator(cancellation.Token);
+                var moveNext = enumerator.MoveNextAsync().AsTask();
+                await cancellation.CancelAsync();
+
+                Assert.False(await moveNext.WaitAsync(TimeSpan.FromSeconds(10)));
             }
             await handle.SignalAsync("Finish", Array.Empty<object?>());
             await handle.GetResultAsync();

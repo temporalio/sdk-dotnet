@@ -247,6 +247,10 @@ public class WorkflowDefinitionTests
     }
 
     [Fact]
+    public void WorkflowStreamReservedHandlerPrefix_IsAllowed() =>
+        AssertGood<Good.WorkflowStreamHandlers>();
+
+    [Fact]
     public void NoDynamicOptionsOnNonDynamicWorkflow() =>
         AssertBad<Bad.DynamicOptionsOnNonDynamicWorkflow>("can only be used in dynamic workflows");
 
@@ -609,6 +613,22 @@ public class WorkflowDefinitionTests
 
     public static class Good
     {
+        [Workflow]
+        public class WorkflowStreamHandlers
+        {
+            [WorkflowRun]
+            public Task RunAsync() => Task.CompletedTask;
+
+            [WorkflowSignal("__temporal_workflow_stream_publish")]
+            public Task PublishAsync() => Task.CompletedTask;
+
+            [WorkflowQuery("__temporal_workflow_stream_offset")]
+            public long Offset() => 0;
+
+            [WorkflowUpdate("__temporal_workflow_stream_poll")]
+            public Task PollAsync() => Task.CompletedTask;
+        }
+
         [Workflow]
         public interface IWf1
         {

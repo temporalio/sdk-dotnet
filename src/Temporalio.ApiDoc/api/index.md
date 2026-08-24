@@ -21,3 +21,4 @@ Extensions:
 * [Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry](/api/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry.html)
 * [Temporalio.Extensions.Hosting](/api/Temporalio.Extensions.Hosting.html)
 * [Temporalio.Extensions.OpenTelemetry](/api/Temporalio.Extensions.OpenTelemetry.html)
+* [Temporalio.Extensions.WorkflowStreams](/api/Temporalio.Extensions.WorkflowStreams.html)

@@ -2,15 +2,18 @@
 
   <PropertyGroup>
     <Description>Temporal SDK .NET Workflow Streams Extension (Experimental)</Description>
-    <!-- New package: no published baseline exists to validate against (the root
-         Directory.Build.props enables package validation globally) -->
-    <EnablePackageValidation>false</EnablePackageValidation>
     <IncludeSymbols>true</IncludeSymbols>
     <LangVersion>9.0</LangVersion>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <TargetFrameworks>netcoreapp3.1;netstandard2.0;net462</TargetFrameworks>
+    <!--
+      This package has no published baseline yet, so there is nothing for package
+      validation to compare against. Remove this override once the first release
+      publishes a baseline (then it inherits PackageValidationBaselineVersion).
+    -->
+    <PackageValidationBaselineVersion></PackageValidationBaselineVersion>
   </PropertyGroup>
 
   <ItemGroup>

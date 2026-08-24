@@ -1,12 +1,14 @@
 namespace Temporalio.Tests.Extensions.WorkflowStreams;
 
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Temporalio.Client;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Temporalio.Extensions.WorkflowStreams;
+using Temporalio.Extensions.WorkflowStreams.Internal;
 using Temporalio.Worker;
 using Temporalio.Workflows;
 using Xunit;
@@ -156,6 +158,85 @@ public class WorkflowStreamTests : WorkflowEnvironmentTestBase
                 handle.ExecuteUpdateAsync("Truncate", new object?[] { 10L }));
             appFailure = Assert.IsType<ApplicationFailureException>(outOfRange.InnerException);
             Assert.Equal(WorkflowStreamConstants.ErrorTypeTruncateOutOfRange, appFailure.ErrorType);
+
+            await handle.SignalAsync("Finish", Array.Empty<object?>());
+            await handle.GetResultAsync();
+        });
+    }
+
+    [Fact]
+    public async Task Truncate_FailsPollThatWasAlreadyWaiting()
+    {
+        await ExecuteWorkerAsync<StreamHostWorkflow>(async worker =>
+        {
+            var handle = await StartHostWorkflowAsync(worker);
+            await handle.SignalAsync(
+                WorkflowStreamConstants.PublishSignalName,
+                new object?[] { WorkflowStreamTestUtils.PublishInputFor("pub1", 1, "events", "a") });
+
+            var poll = await handle.StartUpdateAsync<PollResult>(
+                WorkflowStreamConstants.PollUpdateName,
+                new object?[] { new PollInput { FromOffset = 1 } },
+                new WorkflowUpdateStartOptions(WorkflowUpdateStage.Accepted));
+            await handle.ExecuteUpdateAsync(
+                "PublishLocalAndTruncate", new object?[] { "events", "b", 2L });
+
+            var truncated = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
+                () => poll.GetResultAsync());
+            var appFailure = Assert.IsType<ApplicationFailureException>(truncated.InnerException);
+            Assert.Equal(WorkflowStreamConstants.ErrorTypeTruncatedOffset, appFailure.ErrorType);
+
+            await handle.SignalAsync("Finish", Array.Empty<object?>());
+            await handle.GetResultAsync();
+        });
+    }
+
+    [Fact]
+    public async Task Poll_PagesResponsesAtSizeLimit()
+    {
+        await ExecuteWorkerAsync<StreamHostWorkflow>(async worker =>
+        {
+            var handle = await StartHostWorkflowAsync(worker);
+            var payload = DataConverter.Default.PayloadConverter.ToPayload(
+                Enumerable.Repeat((byte)'x', 200_000).ToArray());
+            for (var i = 0; i < 8; i++)
+            {
+                await handle.SignalAsync(
+                    WorkflowStreamConstants.PublishSignalName,
+                    new object?[]
+                    {
+                        new PublishInput
+                        {
+                            Items =
+                            {
+                                new PublishEntry
+                                {
+                                    Topic = "big",
+                                    Data = PayloadWire.Encode(payload),
+                                },
+                            },
+                        },
+                    });
+            }
+
+            var offset = 0L;
+            var gathered = 0;
+            var sawMoreReady = false;
+            while (gathered < 8)
+            {
+                var result = await handle.ExecuteUpdateAsync<PollResult>(
+                    WorkflowStreamConstants.PollUpdateName,
+                    new object?[] { new PollInput { FromOffset = offset } });
+                gathered += result.Items.Count;
+                offset = result.NextOffset;
+                sawMoreReady |= result.MoreReady;
+                if (gathered == 8)
+                {
+                    Assert.False(result.MoreReady);
+                }
+            }
+            Assert.True(sawMoreReady);
+            Assert.Equal(8, gathered);
 
             await handle.SignalAsync("Finish", Array.Empty<object?>());
             await handle.GetResultAsync();

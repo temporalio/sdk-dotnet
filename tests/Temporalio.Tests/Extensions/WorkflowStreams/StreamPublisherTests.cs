@@ -97,6 +97,16 @@ public class StreamPublisherTests
     }
 
     [Fact]
+    public async Task Publish_AfterCloseThrows()
+    {
+        var publisher = NewPublisher(new RecordingSignal());
+
+        await publisher.CloseAsync();
+
+        Assert.Throws<ObjectDisposedException>(() => publisher.Publish("t", "a", forceFlush: false));
+    }
+
+    [Fact]
     public async Task ForceFlush_SendsImmediately()
     {
         var signal = new RecordingSignal();
@@ -114,7 +124,13 @@ public class StreamPublisherTests
     public async Task FlushTimeout_AfterMaxRetryDuration()
     {
         var signal = new RecordingSignal { Failure = new InvalidOperationException("boom") };
-        var publisher = NewPublisher(signal, TimeSpan.FromHours(1), maxRetry: TimeSpan.FromMilliseconds(50));
+        long timestamp = 0;
+        var publisher = NewPublisher(
+            signal,
+            TimeSpan.FromHours(1),
+            maxRetry: TimeSpan.FromSeconds(1),
+            getTimestamp: () => timestamp,
+            timestampFrequency: 1);
 
         publisher.Publish("t", "a", forceFlush: false);
 
@@ -122,11 +138,16 @@ public class StreamPublisherTests
         var boom = await Assert.ThrowsAsync<InvalidOperationException>(() => publisher.FlushAsync());
         Assert.Equal("boom", boom.Message);
 
-        // Wait past the retry window; the next flush sees the window exceeded and throws
-        // FlushTimeoutException instead. The wall-clock wait is inherent to the retry window.
-        await Task.Delay(200);
+        timestamp = 2;
 
         await Assert.ThrowsAsync<FlushTimeoutException>(() => publisher.FlushAsync());
+
+        // The failed batch may have reached the workflow before its acknowledgement failed, so
+        // a later batch must use a fresh sequence rather than being silently deduplicated.
+        signal.Failure = null;
+        publisher.Publish("t", "b", forceFlush: false);
+        await publisher.FlushAsync();
+        Assert.Equal(2, Assert.Single(signal.Recorded()).Sequence);
 
         await publisher.CloseAsync();
     }
@@ -166,13 +187,17 @@ public class StreamPublisherTests
         TimeSpan? batchInterval = null,
         int maxBatchSize = 0,
         TimeSpan? maxRetry = null,
-        IPayloadConverter? converter = null) =>
+        IPayloadConverter? converter = null,
+        Func<long>? getTimestamp = null,
+        long? timestampFrequency = null) =>
         new(
             signal.Send,
             converter ?? Converter,
             batchInterval ?? TimeSpan.FromSeconds(2),
             maxBatchSize,
-            maxRetry ?? WorkflowStreamConstants.DefaultMaxRetryDuration);
+            maxRetry ?? WorkflowStreamConstants.DefaultMaxRetryDuration,
+            getTimestamp,
+            timestampFrequency);
 
     private static string DecodeItem(PublishInput input, int index) =>
         Converter.ToValue<string>(PayloadWire.Decode(input.Items[index].Data!));

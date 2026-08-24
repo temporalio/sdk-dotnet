@@ -1,4 +1,5 @@
 #pragma warning disable CA1031 // We do want to catch _all_ exceptions in this file sometimes
+#pragma warning disable CA1001 // Cancellation source lives for the lifetime of this short-lived driver
 
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,8 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
         private readonly Action<SubscriptionDriver> onFinish;
         private readonly TaskCompletionSource<object?> doneTcs = new(
             TaskCreationOptions.RunContinuationsAsynchronously);
+
+        private readonly CancellationTokenSource closeCts = new();
 
         // The run the most recent poll's update was admitted to. Captured before waiting for the
         // update's outcome so that, if that run continues-as-new mid-poll (failing the outcome),
@@ -83,13 +86,13 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
         }
 
         /// <summary>
-        /// Stops the subscription before the next poll; a poll already blocked on the server is
-        /// not interrupted, and its result is discarded. Completes Completion normally without
-        /// calling OnCompleted. Idempotent.
+        /// Stops the subscription, interrupting an in-flight poll. Completes Completion normally
+        /// without calling OnCompleted. Idempotent.
         /// </summary>
         internal void Close()
         {
             closed = true;
+            closeCts.Cancel();
             FinishSilent();
         }
 
@@ -112,16 +115,20 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
                         // for the outcome. With a Completed wait stage a mid-poll
                         // continue-as-new would fail StartUpdateAsync without a handle, losing
                         // the run ID. There is intentionally no RPC timeout: this is the long
-                        // poll.
+                        // poll, but closing the subscription cancels its RPC.
                         var handle = await latestRunHandle.StartUpdateAsync<PollResult>(
                             WorkflowStreamConstants.PollUpdateName,
                             new object?[]
                             {
                                 new PollInput { Topics = new List<string>(topics), FromOffset = offset },
                             },
-                            new WorkflowUpdateStartOptions(WorkflowUpdateStage.Accepted)).ConfigureAwait(false);
+                            new WorkflowUpdateStartOptions(WorkflowUpdateStage.Accepted)
+                            {
+                                Rpc = new RpcOptions { CancellationToken = closeCts.Token },
+                            }).ConfigureAwait(false);
                         polledRunId = handle.WorkflowRunId ?? string.Empty;
-                        result = await handle.GetResultAsync().ConfigureAwait(false);
+                        result = await handle.GetResultAsync(
+                            new RpcOptions { CancellationToken = closeCts.Token }).ConfigureAwait(false);
                     }
                     catch (Exception e)
                     {
@@ -179,7 +186,7 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
                     }
                     if (!result.MoreReady && pollCooldown > TimeSpan.Zero)
                     {
-                        await Task.Delay(pollCooldown).ConfigureAwait(false);
+                        await Task.Delay(pollCooldown, closeCts.Token).ConfigureAwait(false);
                     }
                 }
             }
@@ -225,7 +232,7 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
                     // chain/terminal checks below fire on a genuine end).
                     if (pollCooldown > TimeSpan.Zero)
                     {
-                        await Task.Delay(pollCooldown).ConfigureAwait(false);
+                        await Task.Delay(pollCooldown, closeCts.Token).ConfigureAwait(false);
                     }
                     return true;
                 }
@@ -243,7 +250,10 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
                 var handle = string.IsNullOrEmpty(polledRunId)
                     ? latestRunHandle
                     : client.GetWorkflowHandle(workflowId, polledRunId);
-                status = (await handle.DescribeAsync().ConfigureAwait(false)).Status;
+                status = (await handle.DescribeAsync(new WorkflowDescribeOptions
+                {
+                    Rpc = new RpcOptions { CancellationToken = closeCts.Token },
+                }).ConfigureAwait(false)).Status;
             }
             catch (Exception)
             {

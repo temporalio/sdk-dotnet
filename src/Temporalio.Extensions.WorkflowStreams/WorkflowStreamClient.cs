@@ -128,7 +128,7 @@ namespace Temporalio.Extensions.WorkflowStreams
         ///     // use item
         /// }
         /// </code>
-        /// (or drive <see cref="WorkflowStreamSubscription.MoveNextAsync" /> manually).
+        /// (or drive <see cref="WorkflowStreamSubscription.MoveNextAsync()" /> manually).
         /// </summary>
         /// <remarks>
         /// Polling is fully async: no thread is held while a poll is blocked on the server, so
@@ -137,7 +137,7 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// converter. The subscription ends cleanly when the workflow reaches a terminal state,
         /// automatically follows continue-as-new chains, and also ends when this client is
         /// closed. Polling starts lazily on the first
-        /// <see cref="WorkflowStreamSubscription.MoveNextAsync" />.
+        /// <see cref="WorkflowStreamSubscription.MoveNextAsync()" />.
         /// </remarks>
         /// <param name="options">Subscribe options, or null for defaults.</param>
         /// <returns>The subscription.</returns>

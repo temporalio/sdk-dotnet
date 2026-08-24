@@ -32,6 +32,20 @@ public class PayloadWireTests
     }
 
     [Fact]
+    public void Encode_MatchesCrossSdkCanonicalBytes()
+    {
+        var payload = new Payload
+        {
+            Metadata = { ["encoding"] = ByteString.CopyFromUtf8("binary/plain") },
+            Data = ByteString.CopyFromUtf8("abc"),
+        };
+
+        Assert.Equal(
+            "ChgKCGVuY29kaW5nEgxiaW5hcnkvcGxhaW4SA2FiYw==",
+            PayloadWire.Encode(payload));
+    }
+
+    [Fact]
     public void Decode_BadBase64_ThrowsArgumentException() =>
         Assert.Throws<ArgumentException>(() => PayloadWire.Decode("not valid base64!!!"));
 

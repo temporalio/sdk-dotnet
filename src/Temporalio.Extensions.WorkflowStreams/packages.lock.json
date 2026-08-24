@@ -37,7 +37,7 @@
         "dependencies": {
           "Google.Protobuf": "[3.26.1, )",
           "Microsoft.Extensions.Logging.Abstractions": "[2.2.0, )",
-          "NexusRpc": "[0.3.0, )"
+          "NexusRpc": "[0.4.0, )"
         }
       },
       "Google.Protobuf": {
@@ -58,9 +58,9 @@
       },
       "NexusRpc": {
         "type": "CentralTransitive",
-        "requested": "[0.3.0, )",
-        "resolved": "0.3.0",
-        "contentHash": "Kr+NMSZ5428AvxpzShdJcQxc9w6HT8SM6FXQMekC4K9wGpmC1m/L2pQJydpvVTwRBu3qAIYKPI37KWexF4Gtcg=="
+        "requested": "[0.4.0, )",
+        "resolved": "0.4.0",
+        "contentHash": "2cdRtmwT/vskWqJvojODvR7CpRhLWAnCeVT5Z8sPdRDX8P/Ywpw48T2lqgqhxM8JROfoflHzhSiXo4h1ln3/MQ=="
       }
     },
     ".NETFramework,Version=v4.6.2": {
@@ -170,7 +170,7 @@
           "Google.Protobuf": "[3.26.1, )",
           "Microsoft.Bcl.HashCode": "[6.0.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[2.2.0, )",
-          "NexusRpc": "[0.3.0, )",
+          "NexusRpc": "[0.4.0, )",
           "System.Text.Json": "[9.0.4, )"
         }
       },
@@ -197,9 +197,9 @@
       },
       "NexusRpc": {
         "type": "CentralTransitive",
-        "requested": "[0.3.0, )",
-        "resolved": "0.3.0",
-        "contentHash": "Kr+NMSZ5428AvxpzShdJcQxc9w6HT8SM6FXQMekC4K9wGpmC1m/L2pQJydpvVTwRBu3qAIYKPI37KWexF4Gtcg==",
+        "requested": "[0.4.0, )",
+        "resolved": "0.4.0",
+        "contentHash": "2cdRtmwT/vskWqJvojODvR7CpRhLWAnCeVT5Z8sPdRDX8P/Ywpw48T2lqgqhxM8JROfoflHzhSiXo4h1ln3/MQ==",
         "dependencies": {
           "Microsoft.Bcl.HashCode": "6.0.0",
           "System.ValueTuple": "4.6.1"
@@ -324,7 +324,7 @@
           "Google.Protobuf": "[3.26.1, )",
           "Microsoft.Bcl.HashCode": "[6.0.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[2.2.0, )",
-          "NexusRpc": "[0.3.0, )",
+          "NexusRpc": "[0.4.0, )",
           "System.Text.Json": "[9.0.4, )"
         }
       },
@@ -352,9 +352,9 @@
       },
       "NexusRpc": {
         "type": "CentralTransitive",
-        "requested": "[0.3.0, )",
-        "resolved": "0.3.0",
-        "contentHash": "Kr+NMSZ5428AvxpzShdJcQxc9w6HT8SM6FXQMekC4K9wGpmC1m/L2pQJydpvVTwRBu3qAIYKPI37KWexF4Gtcg==",
+        "requested": "[0.4.0, )",
+        "resolved": "0.4.0",
+        "contentHash": "2cdRtmwT/vskWqJvojODvR7CpRhLWAnCeVT5Z8sPdRDX8P/Ywpw48T2lqgqhxM8JROfoflHzhSiXo4h1ln3/MQ==",
         "dependencies": {
           "Microsoft.Bcl.HashCode": "6.0.0"
         }

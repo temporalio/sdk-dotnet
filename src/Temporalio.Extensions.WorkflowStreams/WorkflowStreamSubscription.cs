@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
-#if NETCOREAPP3_0_OR_GREATER
 using System.Threading;
-#endif
 using System.Threading.Tasks;
 using Temporalio.Extensions.WorkflowStreams.Internal;
 
@@ -12,7 +10,7 @@ namespace Temporalio.Extensions.WorkflowStreams
     /// <summary>
     /// An async, single-use subscription over a workflow stream. Polling runs on the thread pool
     /// without occupying a thread while a poll is blocked on the server; the consumer only waits
-    /// for the next item. The subscription ends cleanly (<see cref="MoveNextAsync" /> returns
+    /// for the next item. The subscription ends cleanly (<see cref="MoveNextAsync()" /> returns
     /// false) when the workflow reaches a terminal state, and automatically follows
     /// continue-as-new chains; closing the owning <see cref="WorkflowStreamClient" /> also ends
     /// it.
@@ -20,9 +18,8 @@ namespace Temporalio.Extensions.WorkflowStreams
     /// <remarks>
     /// WARNING: This API is experimental and may change.
     /// <para>
-    /// <see cref="Dispose" /> stops the subscription before the next poll; a poll already blocked
-    /// on the server is not interrupted. Items already buffered still drain after
-    /// <see cref="Dispose" />.
+    /// <see cref="Dispose" /> stops the subscription and interrupts a poll blocked on the server.
+    /// Items already buffered still drain after <see cref="Dispose" />.
     /// </para>
     /// </remarks>
 #if NETCOREAPP3_0_OR_GREATER
@@ -51,6 +48,7 @@ namespace Temporalio.Extensions.WorkflowStreams
         private bool errorThrown;
 #if NETCOREAPP3_0_OR_GREATER
         private int enumeratorTaken;
+        private CancellationToken enumerationCancellationToken;
 #endif
 
         /// <summary>
@@ -67,7 +65,7 @@ namespace Temporalio.Extensions.WorkflowStreams
         }
 
         /// <summary>
-        /// Gets the item most recently produced by <see cref="MoveNextAsync" />.
+        /// Gets the item most recently produced by <see cref="MoveNextAsync()" />.
         /// </summary>
         public WorkflowStreamItem Current { get; private set; } = default!;
 
@@ -128,8 +126,25 @@ namespace Temporalio.Extensions.WorkflowStreams
         }
 
         /// <summary>
-        /// Stops the subscription before the next poll; a poll already blocked on the server is
-        /// not interrupted. Items already fetched still drain. Idempotent.
+        /// Advances to the next item, ending the subscription when
+        /// <paramref name="cancellationToken" /> is canceled.
+        /// </summary>
+        /// <param name="cancellationToken">Token that stops the subscription and any in-flight
+        /// poll.</param>
+        /// <returns>True if <see cref="Current" /> holds a new item; false at the end of the
+        /// stream or when canceled.</returns>
+        public async Task<bool> MoveNextAsync(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            using (cancellationToken.Register(Dispose))
+            {
+                return await MoveNextAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Stops the subscription and interrupts an in-flight poll. Items already fetched still
+        /// drain. Idempotent.
         /// </summary>
         public void Dispose()
         {
@@ -148,7 +163,7 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// Returns this subscription as its own enumerator. The subscription is single-use, so
         /// this may only be called once (typically via <c>await foreach</c>).
         /// </summary>
-        /// <param name="cancellationToken">Ignored; stopping is done via <see cref="Dispose" />.
+        /// <param name="cancellationToken">Token that stops iteration and any in-flight poll.
         /// </param>
         /// <returns>This subscription.</returns>
         public IAsyncEnumerator<WorkflowStreamItem> GetAsyncEnumerator(
@@ -159,12 +174,13 @@ namespace Temporalio.Extensions.WorkflowStreams
                 throw new InvalidOperationException(
                     "WorkflowStreamSubscription is single-use and cannot be enumerated twice");
             }
+            enumerationCancellationToken = cancellationToken;
             return this;
         }
 
         /// <inheritdoc />
         ValueTask<bool> IAsyncEnumerator<WorkflowStreamItem>.MoveNextAsync() =>
-            new ValueTask<bool>(MoveNextAsync());
+            new ValueTask<bool>(MoveNextAsync(enumerationCancellationToken));
 
         /// <summary>
         /// Disposes the subscription; see <see cref="Dispose" />.

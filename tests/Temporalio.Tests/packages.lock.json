@@ -502,7 +502,7 @@
       "temporalio.extensions.workflowstreams": {
         "type": "Project",
         "dependencies": {
-          "Temporalio": "[1.17.0, )"
+          "Temporalio": "[1.18.0, )"
         }
       },
       "Amazon.Lambda.Core": {

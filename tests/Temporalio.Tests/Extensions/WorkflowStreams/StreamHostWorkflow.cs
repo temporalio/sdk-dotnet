@@ -51,4 +51,12 @@ public class StreamHostWorkflow
         stream.Truncate(upToOffset);
         return Task.CompletedTask;
     }
+
+    [WorkflowUpdate]
+    public Task PublishLocalAndTruncateAsync(string topic, string value, long upToOffset)
+    {
+        stream.Topic(topic).Publish(value);
+        stream.Truncate(upToOffset);
+        return Task.CompletedTask;
+    }
 }

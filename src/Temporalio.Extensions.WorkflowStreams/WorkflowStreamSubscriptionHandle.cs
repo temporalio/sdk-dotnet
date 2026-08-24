@@ -28,8 +28,7 @@ namespace Temporalio.Extensions.WorkflowStreams
         public Task Completion => driver.Completion;
 
         /// <summary>
-        /// Stops the subscription before the next poll; a poll already blocked on the server is
-        /// not interrupted, and its result is discarded. Idempotent. Does not trigger
+        /// Stops the subscription and interrupts an in-flight poll. Idempotent. Does not trigger
         /// <see cref="WorkflowStreamListener.OnCompleted" />.
         /// </summary>
         public void Dispose() => driver.Close();
