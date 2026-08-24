@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Temporalio.Bridge.Api.WorkflowActivation;
 using Temporalio.Common;
+using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Temporalio.Runtime;
 using Temporalio.Worker.Interceptors;
@@ -218,7 +219,7 @@ namespace Temporalio.Worker
                             Namespace: options.Namespace,
                             TaskQueue: options.TaskQueue,
                             Workflows: options.Workflows,
-                            DataConverter: options.DataConverter,
+                            DataConverter: TemporalTransferTypePayloadConverter.Wrap(options.DataConverter),
                             Interceptors: options.Interceptors ?? Array.Empty<IWorkerInterceptor>(),
                             LoggerFactory: options.LoggerFactory,
                             WorkflowInstanceFactory: options.WorkflowInstanceFactory,

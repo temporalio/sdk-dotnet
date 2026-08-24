@@ -2692,7 +2692,9 @@ namespace Temporalio.Worker
                 // operation converter once the generated support file is ingested into the SDK.
                 var systemNexusPayloadConverter = SystemNexusPayloadVisitor.IsSystemNexusEndpoint(
                     input.ClientOptions.Endpoint) ?
-                    new SystemNexusPayloadConverter() : null;
+                    new SystemNexusPayloadConverter(
+                        instance.payloadConverterNoContext,
+                        instance.failureConverterNoContext) : null;
                 var operationPayloadConverter =
                     systemNexusPayloadConverter ?? instance.payloadConverterNoContext;
 
