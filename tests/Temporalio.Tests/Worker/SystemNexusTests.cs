@@ -17,6 +17,9 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresLocalServer,
+        "Requires local dynamic configuration to enable signal with start from a workflow.")]
     public async Task ExecuteWorkflowAsync_SignalWithStartFromWorkflow_SucceedsAndReplays()
     {
         var newOptions = (TemporalClientOptions)Client.Options.Clone();
