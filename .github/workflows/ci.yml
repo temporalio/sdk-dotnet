@@ -219,8 +219,7 @@ jobs:
 
   # Runs the sdk features repo tests with this repo's current SDK code
   features-tests:
-    # Temporary test with features fix
-    uses: temporalio/features/.github/workflows/dotnet.yaml@dotnet-rust-cache
+    uses: temporalio/features/.github/workflows/dotnet.yaml@main
     with:
       dotnet-repo-path: ${{github.event.pull_request.head.repo.full_name}}
       version: ${{github.event.pull_request.head.ref}}
