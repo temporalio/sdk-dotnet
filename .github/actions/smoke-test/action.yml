@@ -44,10 +44,10 @@ runs:
         # The SDK preinstalled in this image is the one that runs the smoke test, so this
         # tag must stay on a patch within global.json's feature band and must be bumped
         # whenever that band changes; the floating 10.0-alpine tag jumps bands
-        # (10.0.302 -> 10.0.400) and breaks SDK resolution.
+        # (10.0.400 -> 10.0.5xx) and breaks SDK resolution.
         docker run --rm -v "$(pwd):/workspace" -w /workspace \
           -e PACKAGE_SOURCE -e VERSION \
-          mcr.microsoft.com/dotnet/sdk:10.0.302-alpine3.24 \
+          mcr.microsoft.com/dotnet/sdk:10.0.400-alpine3.24 \
           sh -c '
             version_arg=""
             [ -n "$VERSION" ] && version_arg="--version $VERSION"
