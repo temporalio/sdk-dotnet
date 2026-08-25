@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Temporalio.Api.Generator/Temporal.Api.Generator.csproj" />
+    <Project Path="src/Temporalio.Extensions.Aws.Lambda.OpenTelemetry/Temporalio.Extensions.Aws.Lambda.OpenTelemetry.csproj" />
+    <Project Path="src/Temporalio.Extensions.Aws.Lambda/Temporalio.Extensions.Aws.Lambda.csproj" />
+    <Project Path="src/Temporalio.Extensions.DiagnosticSource/Temporalio.Extensions.DiagnosticSource.csproj" />
+    <Project Path="src/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry.csproj" />
+    <Project Path="src/Temporalio.Extensions.Hosting/Temporalio.Extensions.Hosting.csproj" />
+    <Project Path="src/Temporalio.Extensions.OpenTelemetry/Temporalio.Extensions.OpenTelemetry.csproj" />
+    <Project Path="src/Temporalio.SystemNexus.Generator/Temporalio.SystemNexus.Generator.csproj" />
+    <Project Path="src/Temporalio/Temporalio.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj" />
+    <Project Path="tests/Temporalio.Tests/Temporalio.Tests.csproj" />
+  </Folder>
+</Solution>
