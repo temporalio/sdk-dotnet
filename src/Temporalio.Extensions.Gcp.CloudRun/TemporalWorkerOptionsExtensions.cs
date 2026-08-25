@@ -1,4 +1,5 @@
 using System;
+using Temporalio.Common;
 using Temporalio.Worker;
 
 namespace Temporalio.Extensions.Gcp.CloudRun
@@ -17,9 +18,11 @@ namespace Temporalio.Extensions.Gcp.CloudRun
         /// <returns>The same <paramref name="options" /> for chaining.</returns>
         /// <remarks>
         /// This sets <see cref="TemporalWorkerOptions.DeploymentOptions" /> with worker versioning
-        /// enabled, using the deployment version derived from the Cloud Run name and revision. It
-        /// throws if the name or revision is empty, which usually means the process is not running
-        /// on a Google Cloud Run worker pool or service.
+        /// enabled, using the deployment version derived from the Cloud Run name and revision, and
+        /// pins workflows to this version by default (<see cref="VersioningBehavior.Pinned" />; a
+        /// per-workflow behavior takes precedence). It throws if the name or revision is empty,
+        /// which usually means the process is not running on a Google Cloud Run worker pool or
+        /// service.
         /// WARNING: Google Cloud Run support is experimental.
         /// </remarks>
         public static TemporalWorkerOptions ApplyGoogleCloudRunDefaults(
@@ -37,7 +40,10 @@ namespace Temporalio.Extensions.Gcp.CloudRun
 
             options.DeploymentOptions = new WorkerDeploymentOptions(
                 metadata.ToWorkerDeploymentVersion(),
-                useWorkerVersioning: true);
+                useWorkerVersioning: true)
+            {
+                DefaultVersioningBehavior = VersioningBehavior.Pinned,
+            };
             return options;
         }
     }

@@ -93,7 +93,8 @@ From those values:
 * `ToWorkerDeploymentVersion()` returns a `WorkerDeploymentVersion` whose deployment name is the
   Cloud Run name and whose build id is the Cloud Run revision.
   `TemporalWorkerOptions.ApplyGoogleCloudRunDefaults` sets it on
-  `TemporalWorkerOptions.DeploymentOptions` with `useWorkerVersioning: true`, so each Cloud Run
+  `TemporalWorkerOptions.DeploymentOptions` with `useWorkerVersioning: true` and a
+  `VersioningBehavior.Pinned` default (a per-workflow behavior takes precedence), so each Cloud Run
   revision maps to a worker deployment version. It throws if the name or revision is empty, which
   usually means the process is not running on Cloud Run.
 
