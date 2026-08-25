@@ -476,6 +476,12 @@
           "Temporalio": "[1.18.0, )"
         }
       },
+      "temporalio.extensions.gcp.cloudrun": {
+        "type": "Project",
+        "dependencies": {
+          "Temporalio": "[1.18.0, )"
+        }
+      },
       "temporalio.extensions.gcp.cloudrun.opentelemetry": {
         "type": "Project",
         "dependencies": {
