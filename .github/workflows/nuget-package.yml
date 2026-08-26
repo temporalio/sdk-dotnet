@@ -41,13 +41,13 @@ jobs:
             out-file: libtemporalio_sdk_core_c_bridge.so
             out-prefix: linux-musl-x64
             # Need Alpine container since GH runner doesn't have one
-            container: mcr.microsoft.com/dotnet/sdk:10.0.302-alpine3.24
+            container: mcr.microsoft.com/dotnet/sdk:10.0.400-alpine3.24
             runsOn: ubuntu-latest
           - os: alpine-arm
             out-file: libtemporalio_sdk_core_c_bridge.so
             out-prefix: linux-musl-arm64
             # Need Alpine container since GH runner doesn't have one
-            container: mcr.microsoft.com/dotnet/sdk:10.0.302-alpine3.24
+            container: mcr.microsoft.com/dotnet/sdk:10.0.400-alpine3.24
             runsOn: ubuntu-24.04-arm64-2-core
           - os: macos-intel
             out-file: libtemporalio_sdk_core_c_bridge.dylib
