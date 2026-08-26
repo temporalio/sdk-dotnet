@@ -8,17 +8,15 @@ var projectDir = Path.GetFullPath(Path.Join(currFile, "../../../"));
 var generatorDir = Path.Join(projectDir, "src/Temporalio.SystemNexus.Generator");
 var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/crates/protos/protos");
 var apiProtoDir = Path.Join(protoDir, "api_upstream");
-var nexusWitDir = Path.Join(apiProtoDir, "nexus");
 var descriptorPath = Path.Join(generatorDir, "obj/SystemNexus/temporal_api.bin");
 var stagingOutputDir = Path.Join(generatorDir, "obj/SystemNexus/Generated");
-var stagingWitDir = Path.Join(generatorDir, "obj/SystemNexus/Wit");
+var temporaryNexusWitDir = Path.Join(generatorDir, "wit/temporary-nexus-input");
 var workflowsGeneratedDir = Path.Join(projectDir, "src/Temporalio/Workflows/Generated");
 var workerGeneratedDir = Path.Join(projectDir, "src/Temporalio/Worker/Generated");
 var obsoleteOutputDir = Path.Join(projectDir, "src/Temporalio/SystemNexus/Generated");
 
 EnsureNexGen();
 BuildDescriptor();
-PrepareNexusWit();
 GenerateNexusApi();
 PostProcessGeneratedNexusApi();
 GeneratePayloadVisitor(descriptorPath, workerGeneratedDir);
@@ -26,14 +24,13 @@ return 0;
 
 void EnsureNexGen()
 {
-    var nexGenCommand = NexGenCommand();
     var helpArgs = new[] { "help" };
-    if (RunProcess(nexGenCommand, helpArgs, ignoreExitCode: true) == 0)
+    if (RunNexGen(helpArgs, ignoreExitCode: true) == 0)
     {
         return;
     }
 
-    throw new InvalidOperationException($"Unable to run nex-gen command {nexGenCommand}");
+    throw new InvalidOperationException("Unable to run nexgen");
 }
 
 void BuildDescriptor()
@@ -59,72 +56,20 @@ void GenerateNexusApi()
     }
 
     Directory.CreateDirectory(stagingOutputDir);
-    RunProcess(
-        NexGenCommand(),
+    RunNexGen(
         new[]
         {
             "dotnet",
+            "--native-api",
+            Path.Join(temporaryNexusWitDir, "workflow-service.wit"),
+            Path.Join(temporaryNexusWitDir, "deps"),
             "--support-file",
             Path.Join(generatorDir, "wit/deps/nexus-temporal-types/dotnet/TemporalSupport.cs"),
             "--descriptors",
             descriptorPath,
             "--output",
             stagingOutputDir,
-            "--native-api",
-            Path.Join(stagingWitDir, "workflow-service.wit"),
-            Path.Join(stagingWitDir, "deps"),
         });
-}
-
-void PrepareNexusWit()
-{
-    RecreateDirectory(stagingWitDir);
-    foreach (var sourcePath in Directory.GetFiles(nexusWitDir, "*", SearchOption.AllDirectories))
-    {
-        var destinationPath = Path.Join(stagingWitDir, Path.GetRelativePath(nexusWitDir, sourcePath));
-        Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
-        File.Copy(sourcePath, destinationPath);
-    }
-
-    var modelPath = Path.Join(stagingWitDir, "deps/nexus-temporal-types/model.wit");
-    var model = File.ReadAllText(modelPath);
-    model = model.Replace(
-        "  ///   dotnet=\"object?\"\n  ///   dotnet-to=\"ProtoExtensions.ToPayload\"",
-        "  ///   dotnet=\"object?\"\n  ///   dotnet-from=\"ProtoExtensions.FromPayload\"\n  ///   dotnet-to=\"ProtoExtensions.ToPayload\"");
-    model = model.Replace(
-        "  /// @nexus.type dotnet=\"IReadOnlyCollection<object?>\" dotnet-to=\"ProtoExtensions.ToPayloads\"",
-        "  /// @nexus.type\n  ///   dotnet=\"IReadOnlyCollection<object?>\"\n  ///   dotnet-from=\"ProtoExtensions.FromPayloads\"\n  ///   dotnet-to=\"ProtoExtensions.ToPayloads\"");
-    model = model.Replace(
-        "  ///   dotnet=\"string\"\n  ///   dotnet-to=\"ProtoExtensions.ToWorkflowTypeProto\"",
-        "  ///   dotnet=\"string\"\n  ///   dotnet-from=\"ProtoExtensions.FromWorkflowTypeProto\"\n  ///   dotnet-to=\"ProtoExtensions.ToWorkflowTypeProto\"");
-    model = model.Replace(
-        "  ///   dotnet=\"Temporalio.Common.RetryPolicy\"\n  ///   typescript-import",
-        "  ///   dotnet=\"Temporalio.Common.RetryPolicy\"\n  ///   dotnet-from=\"ProtoExtensions.FromRetryPolicyProto\"\n  ///   typescript-import");
-    model = model.Replace(
-        "  ///   dotnet=\"string\"\n  ///   dotnet-to=\"ProtoExtensions.ToTaskQueueProto\"",
-        "  ///   dotnet=\"string\"\n  ///   dotnet-from=\"ProtoExtensions.FromTaskQueueProto\"\n  ///   dotnet-to=\"ProtoExtensions.ToTaskQueueProto\"");
-    model = model.Replace(
-        "  ///   dotnet=\"Temporalio.Common.SearchAttributeCollection\"\n  ///   typescript-import",
-        "  ///   dotnet=\"Temporalio.Common.SearchAttributeCollection\"\n  ///   dotnet-from=\"ProtoExtensions.FromSearchAttributesProto\"\n  ///   typescript-import");
-    model = model.Replace(
-        "  ///   dotnet=\"Temporalio.Common.Priority\"\n  ///   typescript-import",
-        "  ///   dotnet=\"Temporalio.Common.Priority\"\n  ///   dotnet-from=\"ProtoExtensions.FromPriorityProto\"\n  ///   typescript-import");
-    model = model.Replace(
-        "  ///   dotnet=\"Temporalio.Common.VersioningOverride\"\n  ///   typescript-import",
-        "  ///   dotnet=\"Temporalio.Common.VersioningOverride\"\n  ///   dotnet-from=\"ProtoExtensions.FromVersioningOverrideProto\"\n  ///   typescript-import");
-    model = model.Replace(
-        "  ///   dotnet=\"System.TimeSpan\"\n  ///   typescript-import",
-        "  ///   dotnet=\"System.TimeSpan\"\n  ///   dotnet-from=\"ProtoExtensions.FromDurationProto\"\n  ///   typescript-import");
-    model = model.Replace(
-        "  /// @nexus.type python=\"collections.abc.Mapping[str, typing.Any]\" typescript=\"Record<string, unknown>\" dotnet=\"IReadOnlyDictionary<string, object?>\"",
-        "  /// @nexus.type\n  ///   python=\"collections.abc.Mapping[str, typing.Any]\"\n  ///   typescript=\"Record<string, unknown>\"\n  ///   dotnet=\"IReadOnlyDictionary<string, object?>\"\n  ///   dotnet-from=\"ProtoExtensions.FromMemoProto\"");
-    File.WriteAllText(modelPath, model);
-
-    var workflowServicePath = Path.Join(stagingWitDir, "workflow-service.wit");
-    var workflowService = File.ReadAllText(workflowServicePath).Replace(
-        "dotnet=\"TemporalWorkflowContext.WorkflowNamespace\"",
-        "dotnet=\"TemporalWorkflowContext.WorkflowNamespace()\"");
-    File.WriteAllText(workflowServicePath, workflowService);
 }
 
 void PostProcessGeneratedNexusApi()
@@ -667,8 +612,17 @@ static int RunProcess(string fileName, IEnumerable<string> arguments, bool ignor
     return process.ExitCode;
 }
 
-static string NexGenCommand() =>
-    Environment.GetEnvironmentVariable("NEX_GEN_BIN") is { Length: > 0 } value ? value : "nex-gen";
+static int RunNexGen(IEnumerable<string> arguments, bool ignoreExitCode = false)
+{
+    if (Environment.GetEnvironmentVariable("NEXGEN_BIN") is { Length: > 0 } value)
+    {
+        return RunProcess(value, arguments, ignoreExitCode);
+    }
+    return RunProcess(
+        "mise",
+        arguments.Prepend("nexgen").Prepend("--").Prepend("exec"),
+        ignoreExitCode);
+}
 
 static string UniqueLocalName(MessageInfo message, FieldDescriptorProto field, string prefix) =>
     $"{prefix}_{Regex.Replace(message.FullName, @"[^A-Za-z0-9_]", "_")}_{field.Number}";

@@ -21,6 +21,13 @@ namespace Nexgen.Support
         internal static string WorkflowNamespace() => Workflow.Info.Namespace;
     }
 
+    internal static class WorkflowServiceSerializationContexts
+    {
+        internal static ISerializationContext SignalWithStartWorkflow(
+            SignalWithStartWorkflowRequest request) =>
+            new ISerializationContext.Workflow(request.Namespace, request.Id);
+    }
+
     internal static class TemporalFunctionNames
     {
         internal static (MethodInfo Method, IReadOnlyCollection<object?> Args) ExtractCall<TDelegate>(
@@ -165,6 +172,21 @@ namespace Nexgen.Support
             ToMemo(value);
 
         internal static IReadOnlyDictionary<string, object?> FromMemoProto(ApiCommon.Memo value) =>
+            value.Fields.ToDictionary(
+                item => item.Key,
+                item => FromPayload(item.Value));
+
+        internal static ApiCommon.Header ToHeaderProto(this IReadOnlyDictionary<string, object?> value)
+        {
+            var header = new ApiCommon.Header();
+            foreach (var item in value)
+            {
+                header.Fields.Add(item.Key, ToPayload(item.Value));
+            }
+            return header;
+        }
+
+        internal static IReadOnlyDictionary<string, object?> FromHeaderProto(ApiCommon.Header value) =>
             value.Fields.ToDictionary(
                 item => item.Key,
                 item => FromPayload(item.Value));

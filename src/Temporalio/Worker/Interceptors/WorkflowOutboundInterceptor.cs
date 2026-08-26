@@ -110,5 +110,14 @@ namespace Temporalio.Worker.Interceptors
         /// <returns>Operation handle.</returns>
         public virtual Task<NexusWorkflowOperationHandle<TResult>> ScheduleNexusOperationAsync<TResult>(
             ScheduleNexusOperationInput input) => Next.ScheduleNexusOperationAsync<TResult>(input);
+
+        /// <summary>
+        /// Intercept scheduling a Temporal System Nexus operation.
+        /// </summary>
+        /// <typeparam name="TResult">Result type of the operation.</typeparam>
+        /// <param name="input">System operation details.</param>
+        /// <returns>Operation handle.</returns>
+        public virtual Task<NexusWorkflowOperationHandle<TResult>> ScheduleSystemNexusOperationAsync<TResult>(
+            ScheduleSystemNexusOperationInput<TResult> input) => Next.ScheduleSystemNexusOperationAsync<TResult>(input);
     }
 }

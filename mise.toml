@@ -38,7 +38,7 @@ run = "dotnet clangsharppinvokegenerator @src/Temporalio/Bridge/GenerateInterop.
 
 [tasks."gen:nexus"]
 description = "Regenerate the system Nexus service bindings"
-tools = { "cargo:nex-gen" = "0.1.5" }
+tools = { "cargo:nexgen" = { version = "0.2.2", features = "advanced" } }
 run = "dotnet run --project src/Temporalio.SystemNexus.Generator"
 
 [tasks."tools:restore"]

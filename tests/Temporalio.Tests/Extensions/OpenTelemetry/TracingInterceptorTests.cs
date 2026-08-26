@@ -692,6 +692,28 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task TracingInterceptor_SystemNexusSignalWithStart_PropagatesHeaders()
+    {
+        var activities = await WithTracingWorkerAsync(
+            async (client, worker) =>
+            {
+                var targetId = $"signal-with-start-target-{Guid.NewGuid()}";
+                var caller = await client.StartWorkflowAsync(
+                    (SignalWithStartHeaderCallerWorkflow workflow) =>
+                        workflow.RunAsync(targetId, worker.Options.TaskQueue!),
+                    new(id: $"signal-with-start-caller-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                Assert.Equal(targetId, await caller.GetResultAsync());
+                Assert.True(await client.GetWorkflowHandle<SignalWithStartHeaderTargetWorkflow, bool>(targetId).
+                    GetResultAsync());
+            },
+            options => options.
+                AddWorkflow<SignalWithStartHeaderCallerWorkflow>().
+                AddWorkflow<SignalWithStartHeaderTargetWorkflow>());
+
+        Assert.Contains(activities, activity => activity.OperationName == "SignalWithStartWorkflow");
+    }
+
+    [Fact]
     public async Task TracingInterceptor_UpdateWithStart_HaveProperSpans()
     {
         var activities = await WithTracingWorkerAsync(async (client, worker) =>
@@ -1178,6 +1200,40 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
             {
                 throw new InvalidOperationException(msg);
             }
+        }
+    }
+
+    [Workflow]
+    public class SignalWithStartHeaderCallerWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync(string targetId, string taskQueue)
+        {
+            var handle = await Workflow.SignalWithStartWorkflowAsync(
+                (SignalWithStartHeaderTargetWorkflow workflow) => workflow.RunAsync(),
+                workflow => workflow.NotifyAsync(),
+                new(targetId, taskQueue));
+            return handle.Id;
+        }
+    }
+
+    [Workflow]
+    public class SignalWithStartHeaderTargetWorkflow
+    {
+        private bool notified;
+
+        [WorkflowRun]
+        public async Task<bool> RunAsync()
+        {
+            await Workflow.WaitConditionAsync(() => notified);
+            return Workflow.Info.Headers?.ContainsKey("_tracer-data") == true;
+        }
+
+        [WorkflowSignal]
+        public Task NotifyAsync()
+        {
+            notified = true;
+            return Task.CompletedTask;
         }
     }
 
