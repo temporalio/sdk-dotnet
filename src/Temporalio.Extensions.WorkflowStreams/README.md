@@ -207,3 +207,12 @@ The protocol envelope types are serialized by the workflow's and client's
 *configured* data converter. The default converter produces the wire-compatible
 snake_case field names (the types are annotated with `JsonPropertyName`); a
 custom converter must produce the same field names for cross-language interop.
+
+The .NET publisher intentionally differs from the current Java and Go
+implementations in two ways:
+
+- If the background flush loop reaches its maximum retry duration, the next
+  publish restarts automatic flushing. The timeout is still reported by the
+  next explicit flush or close.
+- Publishing after the client has closed throws `ObjectDisposedException`
+  instead of accepting an item that can no longer be delivered.
