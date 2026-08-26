@@ -15,11 +15,17 @@ namespace Temporalio.Extensions.WorkflowStreams
     /// </remarks>
     public class PublishEntry
     {
+        private string topic = string.Empty;
+
         /// <summary>
-        /// Gets or sets the topic this entry is published on. Null means no topic.
+        /// Gets or sets the topic this entry is published on. Empty means no topic.
         /// </summary>
         [JsonPropertyName("topic")]
-        public string? Topic { get; set; }
+        public string Topic
+        {
+            get => topic;
+            set => topic = value ?? string.Empty;
+        }
 
         /// <summary>
         /// Gets or sets the base64-encoded, serialized

@@ -126,19 +126,24 @@ namespace Temporalio.Extensions.WorkflowStreams
         }
 
         /// <summary>
-        /// Advances to the next item, ending the subscription when
-        /// <paramref name="cancellationToken" /> is canceled.
+        /// Advances to the next item, throwing when <paramref name="cancellationToken" /> is
+        /// canceled.
         /// </summary>
         /// <param name="cancellationToken">Token that stops the subscription and any in-flight
         /// poll.</param>
         /// <returns>True if <see cref="Current" /> holds a new item; false at the end of the
-        /// stream or when canceled.</returns>
+        /// stream.</returns>
+        /// <exception cref="OperationCanceledException">
+        /// <paramref name="cancellationToken" /> was canceled.
+        /// </exception>
         public async Task<bool> MoveNextAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             using (cancellationToken.Register(Dispose))
             {
-                return await MoveNextAsync().ConfigureAwait(false);
+                var result = await MoveNextAsync().ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
+                return result;
             }
         }
 

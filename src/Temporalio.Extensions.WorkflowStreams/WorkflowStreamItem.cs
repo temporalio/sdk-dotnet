@@ -14,20 +14,20 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowStreamItem"/> class.
         /// </summary>
-        /// <param name="topic">Topic the item was published on, or null for no topic.</param>
+        /// <param name="topic">Topic the item was published on, or empty for no topic.</param>
         /// <param name="payload">The item's raw payload.</param>
         /// <param name="offset">The item's offset, global across topics.</param>
-        public WorkflowStreamItem(string? topic, Payload payload, long offset)
+        public WorkflowStreamItem(string topic, Payload payload, long offset)
         {
-            Topic = topic;
+            Topic = topic ?? string.Empty;
             Payload = payload;
             Offset = offset;
         }
 
         /// <summary>
-        /// Gets the topic the item was published on, or null for no topic.
+        /// Gets the topic the item was published on, or empty for no topic.
         /// </summary>
-        public string? Topic { get; }
+        public string Topic { get; }
 
         /// <summary>
         /// Gets the item's raw payload.

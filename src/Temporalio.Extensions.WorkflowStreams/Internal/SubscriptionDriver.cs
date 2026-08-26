@@ -25,6 +25,7 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
         private readonly WorkflowHandle latestRunHandle;
         private readonly List<string> topics;
         private readonly TimeSpan pollCooldown;
+        private readonly TimeSpan? pollRpcTimeout;
         private readonly WorkflowStreamListener listener;
         private readonly Action<SubscriptionDriver> onFinish;
         private readonly TaskCompletionSource<object?> doneTcs = new(
@@ -50,12 +51,15 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
         /// <param name="listener">Listener receiving the items.</param>
         /// <param name="onFinish">Callback invoked once when the driver finishes, before the
         /// listener callback and before <see cref="Completion" /> completes.</param>
+        /// <param name="pollRpcTimeout">Outcome poll timeout override for tests, or null to use
+        /// the connection default.</param>
         public SubscriptionDriver(
             ITemporalClient client,
             string workflowId,
             SubscribeOptions options,
             WorkflowStreamListener listener,
-            Action<SubscriptionDriver> onFinish)
+            Action<SubscriptionDriver> onFinish,
+            TimeSpan? pollRpcTimeout = null)
         {
             this.client = client;
             this.workflowId = workflowId;
@@ -65,6 +69,7 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
             pollCooldown = options.PollCooldown;
             this.listener = listener;
             this.onFinish = onFinish;
+            this.pollRpcTimeout = pollRpcTimeout;
         }
 
         /// <summary>
@@ -127,8 +132,24 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
                                 Rpc = new RpcOptions { CancellationToken = closeCts.Token },
                             }).ConfigureAwait(false);
                         polledRunId = handle.WorkflowRunId ?? string.Empty;
-                        result = await handle.GetResultAsync(
-                            new RpcOptions { CancellationToken = closeCts.Token }).ConfigureAwait(false);
+                        while (true)
+                        {
+                            try
+                            {
+                                result = await handle.GetResultAsync(new RpcOptions
+                                {
+                                    CancellationToken = closeCts.Token,
+                                    Timeout = pollRpcTimeout,
+                                }).ConfigureAwait(false);
+                                break;
+                            }
+                            catch (WorkflowUpdateRpcTimeoutOrCanceledException) when (!closed)
+                            {
+                                // Poll the already-accepted update again. Starting another update
+                                // would leak the first one and consume the workflow's in-flight
+                                // update budget whenever the transport deadline expires.
+                            }
+                        }
                     }
                     catch (Exception e)
                     {

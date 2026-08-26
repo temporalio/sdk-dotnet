@@ -34,6 +34,9 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// pollers.
         /// </summary>
         /// <param name="value">Value to publish.</param>
+        /// <exception cref="Temporalio.Exceptions.ApplicationFailureException">
+        /// The serialized item exceeds the poll response size limit.
+        /// </exception>
         public void Publish(object? value) => stream.PublishToTopic(Name, value);
     }
 }

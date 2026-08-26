@@ -43,9 +43,20 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// <param name="client">Temporal client to communicate through.</param>
         /// <param name="workflowId">Workflow ID hosting the stream.</param>
         /// <param name="options">Client options, or null for defaults.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="client" /> or <paramref name="workflowId" /> is null.
+        /// </exception>
         public WorkflowStreamClient(
             ITemporalClient client, string workflowId, WorkflowStreamClientOptions? options = null)
         {
+            if (client == null)
+            {
+                throw new ArgumentNullException(nameof(client));
+            }
+            if (workflowId == null)
+            {
+                throw new ArgumentNullException(nameof(workflowId));
+            }
             this.client = client;
             this.workflowId = workflowId;
             var opts = options ?? new WorkflowStreamClientOptions();
@@ -88,8 +99,13 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// </summary>
         /// <param name="name">Topic name.</param>
         /// <returns>The topic handle.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is null.</exception>
         public TopicHandle Topic(string name)
         {
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
             lock (topicHandlesLock)
             {
                 if (!topicHandles.TryGetValue(name, out var handle))
@@ -214,8 +230,12 @@ namespace Temporalio.Extensions.WorkflowStreams
 
         /// <summary>
         /// Closes the client synchronously; see <see cref="CloseAsync" />, which is preferred
-        /// over this blocking form.
+        /// over this blocking form. This can throw if the final flush fails, including while
+        /// unwinding a <c>using</c> block, so prefer <c>await using</c> where available.
         /// </summary>
+        /// <exception cref="FlushTimeoutException">
+        /// A pending batch could not be sent within the max retry duration.
+        /// </exception>
         public void Dispose()
         {
             // Safe to block: every await inside CloseAsync uses ConfigureAwait(false), so no

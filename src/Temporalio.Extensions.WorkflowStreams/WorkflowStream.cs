@@ -113,8 +113,13 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// </summary>
         /// <param name="name">Topic name.</param>
         /// <returns>The topic handle.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is null.</exception>
         public WorkflowTopicHandle Topic(string name)
         {
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
             if (!topicHandles.TryGetValue(name, out var handle))
             {
                 handle = new WorkflowTopicHandle(name, this);
@@ -238,6 +243,15 @@ namespace Temporalio.Extensions.WorkflowStreams
         internal void PublishToTopic(string name, object? value)
         {
             var payload = value is Payload p ? p : payloadConverter.ToPayload(value);
+            var encoded = PayloadWire.Encode(payload);
+            if (PayloadWire.IsTooLarge(encoded, name))
+            {
+                throw new ApplicationFailureException(
+                    $"workflowstreams: published item exceeds the " +
+                    $"{WorkflowStreamConstants.MaxPollResponseBytes}-byte poll response limit",
+                    WorkflowStreamConstants.ErrorTypeItemTooLarge,
+                    nonRetryable: true);
+            }
             log.Add(new Entry(name, payload));
         }
 
@@ -271,6 +285,12 @@ namespace Temporalio.Extensions.WorkflowStreams
                 {
                     // A malformed entry would be a protocol violation; skip it rather than
                     // corrupting the log.
+                    continue;
+                }
+                if (PayloadWire.IsTooLarge(entry.Data ?? string.Empty, entry.Topic))
+                {
+                    // A signal has no response through which to reject one entry. Dropping it
+                    // prevents every subscriber reaching this offset from wedging the workflow.
                     continue;
                 }
                 log.Add(new Entry(entry.Topic, payload));
@@ -320,13 +340,13 @@ namespace Temporalio.Extensions.WorkflowStreams
             for (long i = logOffset; i < log.Count; i++)
             {
                 var entry = log[(int)i];
-                if (topicSet != null && (entry.Topic == null || !topicSet.Contains(entry.Topic)))
+                if (topicSet != null && !topicSet.Contains(entry.Topic))
                 {
                     continue;
                 }
                 var globalOffset = baseOffset + i;
                 var encoded = PayloadWire.Encode(entry.Payload);
-                var itemSize = PayloadWire.WireSize(encoded, entry.Topic ?? string.Empty);
+                var itemSize = PayloadWire.WireSize(encoded, entry.Topic);
                 if (size + itemSize > WorkflowStreamConstants.MaxPollResponseBytes && items.Count > 0)
                 {
                     // Resume from this item on the next poll.
@@ -348,13 +368,13 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// </summary>
         private sealed class Entry
         {
-            public Entry(string? topic, Payload payload)
+            public Entry(string topic, Payload payload)
             {
                 Topic = topic;
                 Payload = payload;
             }
 
-            public string? Topic { get; }
+            public string Topic { get; }
 
             public Payload Payload { get; }
         }

@@ -282,6 +282,16 @@ public class WorkflowStreamTests : WorkflowEnvironmentTestBase
             Assert.True(result);
         });
 
+    [Fact]
+    public async Task WorkflowPublish_RejectsItemLargerThanPollResponse() =>
+        await ExecuteWorkerAsync<OversizedPublishWorkflow>(async worker =>
+        {
+            var result = await Client.ExecuteWorkflowAsync(
+                (OversizedPublishWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            Assert.Equal(WorkflowStreamConstants.ErrorTypeItemTooLarge, result);
+        });
+
     private async Task<WorkflowHandle<StreamHostWorkflow>> StartHostWorkflowAsync(TemporalWorker worker)
     {
         var handle = await Client.StartWorkflowAsync(
@@ -348,6 +358,26 @@ public class WorkflowStreamTests : WorkflowEnvironmentTestBase
             catch (ArgumentException)
             {
                 return Task.FromResult(true);
+            }
+        }
+    }
+
+    [Workflow]
+    public class OversizedPublishWorkflow
+    {
+        [WorkflowRun]
+        public Task<string?> RunAsync()
+        {
+            var stream = new WorkflowStream();
+            try
+            {
+                stream.Topic("events").Publish(
+                    new string('x', WorkflowStreamConstants.MaxPollResponseBytes));
+                return Task.FromResult<string?>(null);
+            }
+            catch (ApplicationFailureException e)
+            {
+                return Task.FromResult<string?>(e.ErrorType);
             }
         }
     }

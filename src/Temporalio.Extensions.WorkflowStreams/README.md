@@ -89,14 +89,13 @@ From an activity, use `FromActivity` to target the parent workflow:
 [Activity]
 public async Task PublishActivityAsync()
 {
-    using var client = WorkflowStreamClient.FromActivity();
+    await using var client = WorkflowStreamClient.FromActivity();
     var topic = client.Topic("events");
     for (var i = 0; i < 100; i++)
     {
         topic.Publish($"item {i}");
     }
-    // Dispose/CloseAsync flushes the remaining buffer
-    await client.CloseAsync();
+    // DisposeAsync flushes the remaining buffer.
 }
 ```
 
@@ -104,13 +103,17 @@ From a starter or any code with an `ITemporalClient`, use the constructor with
 an explicit workflow ID:
 
 ```csharp
-using var client = new WorkflowStreamClient(temporalClient, workflowId);
+await using var client = new WorkflowStreamClient(temporalClient, workflowId);
 client.Topic("events").Publish("from outside", forceFlush: true);
 ```
 
 Items are buffered and flushed automatically every batch interval (default 2s),
 when the buffer reaches the max batch size, on `forceFlush`, on an explicit
 `FlushAsync()`, or on `CloseAsync()`.
+
+Prefer `await using` or an explicit `CloseAsync()` over synchronous `Dispose()`.
+The final flush can fail, including with `FlushTimeoutException`; synchronous
+disposal blocks and can replace an exception already leaving a `using` body.
 
 ## Subscribing
 

@@ -36,6 +36,10 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// </summary>
         /// <param name="value">Value to publish.</param>
         /// <param name="forceFlush">Wake the publisher and send immediately.</param>
+        /// <exception cref="System.ArgumentException">
+        /// The value cannot be converted or the serialized item exceeds the poll response size
+        /// limit.
+        /// </exception>
         public void Publish(object? value, bool forceFlush = false) =>
             client.PublishToTopic(Name, value, forceFlush);
 

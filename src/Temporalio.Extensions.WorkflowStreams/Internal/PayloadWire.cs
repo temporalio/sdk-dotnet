@@ -47,5 +47,14 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
         /// <param name="topic">Topic the item was published on.</param>
         /// <returns>Estimated wire size in characters.</returns>
         public static int WireSize(string encoded, string topic) => encoded.Length + topic.Length;
+
+        /// <summary>
+        /// Gets whether one item is too large to fit in a paged poll response.
+        /// </summary>
+        /// <param name="encoded">Base64-encoded item data.</param>
+        /// <param name="topic">Topic the item was published on.</param>
+        /// <returns>True if the item exceeds the response cap.</returns>
+        public static bool IsTooLarge(string encoded, string topic) =>
+            WireSize(encoded, topic) > WorkflowStreamConstants.MaxPollResponseBytes;
     }
 }

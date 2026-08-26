@@ -46,32 +46,38 @@ namespace Temporalio.Extensions.WorkflowStreams
         public const string ErrorTypeStreamDraining = "StreamDraining";
 
         /// <summary>
-        /// Default interval between automatic client-side publisher flushes.
-        /// </summary>
-        public static readonly TimeSpan DefaultBatchInterval = TimeSpan.FromSeconds(2);
-
-        /// <summary>
-        /// Default minimum interval between polls when no more items are immediately ready.
-        /// </summary>
-        public static readonly TimeSpan DefaultPollCooldown = TimeSpan.FromMilliseconds(100);
-
-        /// <summary>
-        /// Default how long the workflow retains per-publisher dedup state since the publisher's
-        /// last accepted batch.
-        /// </summary>
-        public static readonly TimeSpan DefaultPublisherTtl = TimeSpan.FromMinutes(15);
-
-        /// <summary>
-        /// Default maximum time the client-side publisher retries a failed flush before surfacing
-        /// a <see cref="FlushTimeoutException" />.
-        /// </summary>
-        public static readonly TimeSpan DefaultMaxRetryDuration = TimeSpan.FromMinutes(10);
-
-        /// <summary>
         /// Caps the estimated wire size of a single poll response. Responses that would exceed
         /// this are truncated and signal <c>more_ready</c> so the subscriber pages through the
         /// remainder.
         /// </summary>
         internal const int MaxPollResponseBytes = 1_000_000;
+
+        /// <summary>
+        /// Application failure type thrown when one workflow-published item cannot fit in a poll
+        /// response.
+        /// </summary>
+        internal const string ErrorTypeItemTooLarge = "ItemTooLarge";
+
+        /// <summary>
+        /// Default interval between automatic client-side publisher flushes.
+        /// </summary>
+        internal static readonly TimeSpan DefaultBatchInterval = TimeSpan.FromSeconds(2);
+
+        /// <summary>
+        /// Default minimum interval between polls when no more items are immediately ready.
+        /// </summary>
+        internal static readonly TimeSpan DefaultPollCooldown = TimeSpan.FromMilliseconds(100);
+
+        /// <summary>
+        /// Default how long the workflow retains per-publisher dedup state since the publisher's
+        /// last accepted batch.
+        /// </summary>
+        internal static readonly TimeSpan DefaultPublisherTtl = TimeSpan.FromMinutes(15);
+
+        /// <summary>
+        /// Default maximum time the client-side publisher retries a failed flush before surfacing
+        /// a <see cref="FlushTimeoutException" />.
+        /// </summary>
+        internal static readonly TimeSpan DefaultMaxRetryDuration = TimeSpan.FromMinutes(10);
     }
 }

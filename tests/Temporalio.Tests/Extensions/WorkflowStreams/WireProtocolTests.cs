@@ -101,6 +101,19 @@ public class WireProtocolTests
         Assert.Equal("d", decoded.Items[0].Data);
     }
 
+    [Fact]
+    public void WireTopics_NormalizeNullToEmpty()
+    {
+        var publishEntry = DataConverter.Default.PayloadConverter.ToValue<PublishEntry>(
+            DataConverter.Default.PayloadConverter.ToPayload(new { topic = (string?)null, data = "d" }));
+        var wireItem = DataConverter.Default.PayloadConverter.ToValue<WireItem>(
+            DataConverter.Default.PayloadConverter.ToPayload(
+                new { topic = (string?)null, data = "d", offset = 1 }));
+
+        Assert.Equal(string.Empty, publishEntry.Topic);
+        Assert.Equal(string.Empty, wireItem.Topic);
+    }
+
     private static JsonElement SerializeToJson(object dto)
     {
         var payload = DataConverter.Default.PayloadConverter.ToPayload(dto);

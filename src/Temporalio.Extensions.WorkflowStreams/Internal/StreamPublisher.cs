@@ -1,4 +1,4 @@
-#pragma warning disable CA1001 // Sync primitives are reclaimed with the owning client; neither is used via WaitHandle, so disposal would add nothing
+#pragma warning disable CA1001 // Semaphore is reclaimed with the owning client and is never used via WaitHandle
 
 using System;
 using System.Collections.Generic;
@@ -31,6 +31,7 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
         private readonly TimeSpan maxRetryDuration;
         private readonly Func<long> getTimestamp;
         private readonly long timestampFrequency;
+        private readonly Func<TimeSpan, CancellationToken, Task> delayAsync;
         private readonly object stateLock = new();
         private readonly CancellationTokenSource backgroundCts = new();
 
@@ -63,6 +64,7 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
         /// <see cref="Stopwatch.GetTimestamp" />.</param>
         /// <param name="timestampFrequency">Timestamp units per second, or null for
         /// <see cref="Stopwatch.Frequency" />.</param>
+        /// <param name="delayAsync">Delay implementation, or null for <see cref="Task.Delay(TimeSpan, CancellationToken)" />.</param>
         public StreamPublisher(
             Func<PublishInput, Task> signalFunc,
             IPayloadConverter payloadConverter,
@@ -70,7 +72,8 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
             int maxBatchSize,
             TimeSpan maxRetryDuration,
             Func<long>? getTimestamp = null,
-            long? timestampFrequency = null)
+            long? timestampFrequency = null,
+            Func<TimeSpan, CancellationToken, Task>? delayAsync = null)
         {
             this.signalFunc = signalFunc;
             this.payloadConverter = payloadConverter;
@@ -80,7 +83,13 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
             this.maxRetryDuration = maxRetryDuration;
             this.getTimestamp = getTimestamp ?? Stopwatch.GetTimestamp;
             this.timestampFrequency = timestampFrequency ?? Stopwatch.Frequency;
+            this.delayAsync = delayAsync ?? Task.Delay;
         }
+
+        /// <summary>
+        /// Gets the current background task for tests.
+        /// </summary>
+        internal Task? BackgroundTask => backgroundTask;
 
         /// <summary>
         /// Converts and buffers a value, lazily starting the background flush loop. Triggers an
@@ -105,7 +114,15 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
                 }
             }
             var payload = value is Payload p ? p : payloadConverter.ToPayload(value);
-            var entry = new PublishEntry { Topic = topic, Data = PayloadWire.Encode(payload) };
+            var encoded = PayloadWire.Encode(payload);
+            if (PayloadWire.IsTooLarge(encoded, topic))
+            {
+                throw new ArgumentException(
+                    $"workflowstreams: published item exceeds the " +
+                    $"{WorkflowStreamConstants.MaxPollResponseBytes}-byte poll response limit",
+                    nameof(value));
+            }
+            var entry = new PublishEntry { Topic = topic, Data = encoded };
             lock (stateLock)
             {
                 if (closed)
@@ -255,6 +272,7 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
                 // The loop never throws; it exits once any in-flight flush finishes.
                 await toAwait.ConfigureAwait(false);
             }
+            backgroundCts.Dispose();
 
             // Final drain: a single DoFlushAsync processes either pending OR the buffer.
             while (true)
@@ -290,11 +308,19 @@ namespace Temporalio.Extensions.WorkflowStreams.Internal
                 {
                     wakeTask = wakeTcs.Task;
                 }
-                var delayTask = Task.Delay(batchInterval, backgroundCts.Token);
+                using var delayCts = CancellationTokenSource.CreateLinkedTokenSource(backgroundCts.Token);
+                var delayTask = delayAsync(batchInterval, delayCts.Token);
                 var completed = await Task.WhenAny(delayTask, wakeTask).ConfigureAwait(false);
-                if (completed == delayTask && delayTask.IsCanceled)
+                if (completed == delayTask)
                 {
-                    return;
+                    if (delayTask.IsCanceled)
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    delayCts.Cancel();
                 }
                 lock (stateLock)
                 {

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Temporalio.Client;
 using Temporalio.Extensions.WorkflowStreams;
+using Temporalio.Extensions.WorkflowStreams.Internal;
 using Temporalio.Worker;
 using Xunit;
 using Xunit.Abstractions;
@@ -150,6 +151,37 @@ public class ListenerSubscribeTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task PollRpcDeadline_RetriesAcceptedUpdate()
+    {
+        await ExecuteWorkerAsync<StreamHostWorkflow>(async worker =>
+        {
+            var handle = await StartHostWorkflowAsync(worker);
+            var listener = new RecordingListener();
+            var driver = new SubscriptionDriver(
+                Client,
+                handle.Id,
+                FastPoll(),
+                listener,
+                _ => { },
+                TimeSpan.FromMilliseconds(10));
+            driver.Start();
+
+            await handle.SignalAsync(
+                "PublishLocalAfterDelay",
+                new object?[] { "evt", "after-deadline", TimeSpan.FromMilliseconds(250) });
+            await AwaitItemsAsync(listener, 1);
+
+            Assert.Equal("after-deadline", WorkflowStreamTestUtils.Decode(listener.Items[0]));
+            Assert.Null(listener.Error);
+            driver.Close();
+            await driver.Completion.WaitAsync(Timeout);
+
+            await handle.SignalAsync("Finish", Array.Empty<object?>());
+            await handle.GetResultAsync();
+        });
+    }
+
+    [Fact]
     public async Task Listener_TruncationResetsOffset()
     {
         await ExecuteWorkerAsync<StreamHostWorkflow>(async worker =>
@@ -204,8 +236,7 @@ public class ListenerSubscribeTests : WorkflowEnvironmentTestBase
 
                 streamClient.Topic("evt").Publish("b", forceFlush: true);
                 await streamClient.FlushAsync();
-                // Bounded grace window to catch any delivery that would wrongly follow Dispose.
-                await Task.Delay(300);
+                await AssertMore.EqualEventuallyAsync(2, () => streamClient.GetOffsetAsync());
                 Assert.Single(listener.Items);
                 Assert.False(listener.CompletedTask.IsCompleted, "user-initiated dispose must not call OnCompleted");
                 Assert.Null(listener.Error);
@@ -235,7 +266,6 @@ public class ListenerSubscribeTests : WorkflowEnvironmentTestBase
                 {
                     await AwaitItemsAsync(listener, 1);
                     // The first item's task is pending, so the second must not be delivered yet.
-                    await Task.Delay(300);
                     Assert.Single(listener.Items);
 
                     gate.SetResult();
@@ -264,10 +294,12 @@ public class ListenerSubscribeTests : WorkflowEnvironmentTestBase
                 streamClient.Topic("evt").Publish("b");
                 await streamClient.FlushAsync();
 
-                streamClient.Subscribe(FastPoll(), listener);
+                var subscriptionHandle = streamClient.Subscribe(FastPoll(), listener);
                 var error = await listener.ErrorTask.WaitAsync(Timeout);
                 Assert.Same(boom, error);
-                await Task.Delay(300);
+                var completionFailure = await Assert.ThrowsAnyAsync<Exception>(
+                    () => subscriptionHandle.Completion.WaitAsync(Timeout));
+                Assert.Same(boom, completionFailure);
                 Assert.Single(listener.Items);
                 Assert.False(listener.CompletedTask.IsCompleted);
             }
@@ -302,7 +334,6 @@ public class ListenerSubscribeTests : WorkflowEnvironmentTestBase
                 var completionFailure = await Assert.ThrowsAnyAsync<Exception>(
                     () => subscriptionHandle.Completion.WaitAsync(Timeout));
                 Assert.Same(boom, completionFailure);
-                await Task.Delay(300);
                 Assert.Single(listener.Items);
             }
             await handle.SignalAsync("Finish", Array.Empty<object?>());

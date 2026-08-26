@@ -3,6 +3,8 @@ namespace Temporalio.Tests.Extensions.WorkflowStreams;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Temporalio.Converters;
 using Temporalio.Extensions.WorkflowStreams;
@@ -121,6 +123,20 @@ public class StreamPublisherTests
     }
 
     [Fact]
+    public async Task ForceFlush_CancelsSupersededDelay()
+    {
+        var signal = new RecordingSignal();
+        var delay = new ManualDelay();
+        var publisher = NewPublisher(signal, delayAsync: delay.DelayAsync);
+
+        publisher.Publish("t", "a", forceFlush: true);
+
+        await signal.SentTask.WaitAsync(TimeSpan.FromSeconds(10));
+        Assert.Equal(1, delay.CanceledCount);
+        await publisher.CloseAsync();
+    }
+
+    [Fact]
     public async Task FlushTimeout_AfterMaxRetryDuration()
     {
         var signal = new RecordingSignal { Failure = new InvalidOperationException("boom") };
@@ -149,6 +165,21 @@ public class StreamPublisherTests
         await publisher.FlushAsync();
         Assert.Equal(2, Assert.Single(signal.Recorded()).Sequence);
 
+        await publisher.CloseAsync();
+    }
+
+    [Fact]
+    public async Task Publish_RejectsItemLargerThanPollResponse()
+    {
+        var signal = new RecordingSignal();
+        var publisher = NewPublisher(signal);
+
+        Assert.Throws<ArgumentException>(() => publisher.Publish(
+            "events", new string('x', WorkflowStreamConstants.MaxPollResponseBytes), forceFlush: false));
+
+        publisher.Publish("events", "ok", forceFlush: false);
+        await publisher.FlushAsync();
+        Assert.Single(signal.Recorded());
         await publisher.CloseAsync();
     }
 
@@ -186,28 +217,32 @@ public class StreamPublisherTests
     public async Task FlushTimeout_InBackgroundLoop_DoesNotStopLaterPublishes()
     {
         var signal = new RecordingSignal { Failure = new InvalidOperationException("boom") };
+        var delay = new ManualDelay();
         long timestamp = 0;
         var publisher = NewPublisher(
             signal,
-            TimeSpan.FromMilliseconds(50),
+            TimeSpan.FromHours(1),
             maxRetry: TimeSpan.FromSeconds(1),
             getTimestamp: () => timestamp,
-            timestampFrequency: 1);
+            timestampFrequency: 1,
+            delayAsync: delay.DelayAsync);
 
         // The background loop picks this up, fails to send (transient "boom"), and keeps the
         // batch pending across retries.
         publisher.Publish("t", "a", forceFlush: false);
-        await Task.Delay(200);
+        await delay.AdvanceAsync();
+        await signal.AttemptedTask.WaitAsync(TimeSpan.FromSeconds(10));
 
         // Push past the max retry duration so the next background tick drops the batch with a
         // FlushTimeoutException, which stops the loop.
         timestamp = 2;
-        await Task.Delay(300);
+        await delay.AdvanceAsync();
+        await publisher.BackgroundTask!.WaitAsync(TimeSpan.FromSeconds(10));
 
         // A later publish must still reach the workflow on its own: the loop restarts rather
         // than leaving the publisher silently buffering until someone calls FlushAsync.
         signal.Failure = null;
-        publisher.Publish("t", "b", forceFlush: false);
+        publisher.Publish("t", "b", forceFlush: true);
         await signal.SentTask.WaitAsync(TimeSpan.FromSeconds(10));
 
         var input = Assert.Single(signal.Recorded());
@@ -225,7 +260,8 @@ public class StreamPublisherTests
         TimeSpan? maxRetry = null,
         IPayloadConverter? converter = null,
         Func<long>? getTimestamp = null,
-        long? timestampFrequency = null) =>
+        long? timestampFrequency = null,
+        Func<TimeSpan, CancellationToken, Task>? delayAsync = null) =>
         new(
             signal.Send,
             converter ?? Converter,
@@ -233,7 +269,8 @@ public class StreamPublisherTests
             maxBatchSize,
             maxRetry ?? WorkflowStreamConstants.DefaultMaxRetryDuration,
             getTimestamp,
-            timestampFrequency);
+            timestampFrequency,
+            delayAsync);
 
     private static string DecodeItem(PublishInput input, int index) =>
         Converter.ToValue<string>(PayloadWire.Decode(input.Items[index].Data!));
@@ -245,12 +282,18 @@ public class StreamPublisherTests
         private readonly TaskCompletionSource sent = new(
             TaskCreationOptions.RunContinuationsAsynchronously);
 
+        private readonly TaskCompletionSource attempted = new(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+
         public Exception? Failure { get; set; }
 
         public Task SentTask => sent.Task;
 
+        public Task AttemptedTask => attempted.Task;
+
         public Task Send(PublishInput input)
         {
+            attempted.TrySetResult();
             lock (signals)
             {
                 if (Failure != null)
@@ -268,6 +311,43 @@ public class StreamPublisherTests
             lock (signals)
             {
                 return new List<PublishInput>(signals);
+            }
+        }
+    }
+
+    private sealed class ManualDelay
+    {
+        private readonly Channel<TaskCompletionSource> delays =
+            Channel.CreateUnbounded<TaskCompletionSource>();
+
+        private int canceledCount;
+
+        public int CanceledCount => Volatile.Read(ref canceledCount);
+
+        public Task DelayAsync(TimeSpan _, CancellationToken cancellationToken)
+        {
+            var completion = new TaskCompletionSource(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            delays.Writer.TryWrite(completion);
+            return WaitAsync(completion, cancellationToken);
+        }
+
+        public async Task AdvanceAsync()
+        {
+            var completion = await delays.Reader.ReadAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(10));
+            completion.TrySetResult();
+        }
+
+        private async Task WaitAsync(
+            TaskCompletionSource completion, CancellationToken cancellationToken)
+        {
+            using (cancellationToken.Register(() =>
+                {
+                    Interlocked.Increment(ref canceledCount);
+                    completion.TrySetCanceled();
+                }))
+            {
+                await completion.Task;
             }
         }
     }

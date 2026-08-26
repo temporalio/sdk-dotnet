@@ -1,5 +1,6 @@
 namespace Temporalio.Tests.Extensions.WorkflowStreams;
 
+using System;
 using System.Threading.Tasks;
 using Temporalio.Extensions.WorkflowStreams;
 using Temporalio.Workflows;
@@ -43,6 +44,13 @@ public class StreamHostWorkflow
     {
         stream.Topic(topic).Publish(value);
         return Task.CompletedTask;
+    }
+
+    [WorkflowSignal]
+    public async Task PublishLocalAfterDelayAsync(string topic, string value, TimeSpan delay)
+    {
+        await Workflow.DelayAsync(delay);
+        stream.Topic(topic).Publish(value);
     }
 
     [WorkflowUpdate]

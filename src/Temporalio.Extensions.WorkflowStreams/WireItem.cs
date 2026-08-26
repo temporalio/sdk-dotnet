@@ -15,11 +15,17 @@ namespace Temporalio.Extensions.WorkflowStreams
     /// </remarks>
     public class WireItem
     {
+        private string topic = string.Empty;
+
         /// <summary>
-        /// Gets or sets the topic this item was published on. Null means no topic.
+        /// Gets or sets the topic this item was published on. Empty means no topic.
         /// </summary>
         [JsonPropertyName("topic")]
-        public string? Topic { get; set; }
+        public string Topic
+        {
+            get => topic;
+            set => topic = value ?? string.Empty;
+        }
 
         /// <summary>
         /// Gets or sets the base64-encoded, serialized

@@ -25,6 +25,15 @@ public class SubscribeTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public void Client_RejectsNullArguments()
+    {
+        Assert.Throws<ArgumentNullException>(() => new WorkflowStreamClient(null!, "workflow-id"));
+        Assert.Throws<ArgumentNullException>(() => new WorkflowStreamClient(Client, null!));
+        using var streamClient = new WorkflowStreamClient(Client, "workflow-id");
+        Assert.Throws<ArgumentNullException>(() => streamClient.Topic(null!));
+    }
+
+    [Fact]
     public async Task Subscribe_DeliversItemsAndAdvancesOffset()
     {
         await ExecuteWorkerAsync<StreamHostWorkflow>(async worker =>
@@ -90,6 +99,27 @@ public class SubscribeTests : WorkflowEnvironmentTestBase
                     }
                 }
                 Assert.Equal(2, seen);
+            }
+            await handle.SignalAsync("Finish", Array.Empty<object?>());
+            await handle.GetResultAsync();
+        });
+    }
+
+    [Fact]
+    public async Task TopicHandleSubscribe_EmptyTopic()
+    {
+        await ExecuteWorkerAsync<StreamHostWorkflow>(async worker =>
+        {
+            var handle = await StartHostWorkflowAsync(worker);
+            using (var streamClient = NewStreamClient(handle.Id))
+            {
+                streamClient.Topic(string.Empty).Publish("no-topic");
+                await streamClient.FlushAsync();
+
+                using var subscription = streamClient.Topic(string.Empty).Subscribe();
+                Assert.True(await subscription.MoveNextAsync());
+                Assert.Equal(string.Empty, subscription.Current.Topic);
+                Assert.Equal("no-topic", WorkflowStreamTestUtils.Decode(subscription.Current));
             }
             await handle.SignalAsync("Finish", Array.Empty<object?>());
             await handle.GetResultAsync();
@@ -242,7 +272,8 @@ public class SubscribeTests : WorkflowEnvironmentTestBase
                 var moveNext = enumerator.MoveNextAsync().AsTask();
                 await cancellation.CancelAsync();
 
-                Assert.False(await moveNext.WaitAsync(TimeSpan.FromSeconds(10)));
+                await Assert.ThrowsAnyAsync<OperationCanceledException>(
+                    () => moveNext.WaitAsync(TimeSpan.FromSeconds(10)));
             }
             await handle.SignalAsync("Finish", Array.Empty<object?>());
             await handle.GetResultAsync();
