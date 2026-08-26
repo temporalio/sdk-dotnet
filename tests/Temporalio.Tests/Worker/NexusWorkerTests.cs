@@ -1426,7 +1426,10 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc.InnerException);
         var exc3 = Assert.IsType<HandlerException>(exc2.InnerException);
         Assert.Equal(HandlerErrorType.NotImplemented, exc3.ErrorType);
-        Assert.Equal("Intentional failure", exc3.Message);
+        // Newer servers wrap a failed cancel handler in a cancellation-request HandlerException.
+        // The original handler error, including its message, is retained as the inner exception.
+        var handlerError = exc3.InnerException as HandlerException ?? exc3;
+        Assert.Equal("Intentional failure", handlerError.Message);
     }
 
     [Fact]

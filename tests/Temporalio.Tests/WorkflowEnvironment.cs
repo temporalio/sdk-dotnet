@@ -96,6 +96,7 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
                         // Enable standalone activities
                         "--dynamic-config-value", "frontend.activityAPIsEnabled=true",
                         "--dynamic-config-value", "activity.enableStandalone=true",
+                        "--dynamic-config-value", "activity.enableCallbacks=true",
                         "--dynamic-config-value", "history.enableChasm=true",
                         "--dynamic-config-value", "history.enableTransitionHistory=true",
                         "--dynamic-config-value", "activity.startDelayEnabled=true",
