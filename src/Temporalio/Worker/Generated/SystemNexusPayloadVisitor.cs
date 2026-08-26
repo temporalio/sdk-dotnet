@@ -46,7 +46,8 @@ namespace Temporalio.Worker
             if (!payload.Metadata.TryGetValue("messageType", out var messageType) ||
                 !EnvelopeVisitors.TryGetValue(messageType.ToStringUtf8(), out var visit))
             {
-                return false;
+                throw new InvalidOperationException(
+                    $"Unrecognized marked System Nexus envelope message type: {messageType?.ToStringUtf8() ?? "<missing>"}");
             }
 
             await visit(payload, visitPayload, visitPayloads, visitEnvelope).ConfigureAwait(false);

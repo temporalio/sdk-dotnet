@@ -170,6 +170,33 @@ public class WorkflowCodecHelperTests : TestBase
     }
 
     [Fact]
+    public async Task EncodeAsync_UnrecognizedMarkedSystemNexusEnvelope_FailsExplicitly()
+    {
+        var completion = new WorkflowActivationCompletion
+        {
+            Successful = new()
+            {
+                Commands =
+                {
+                    new WorkflowCommand
+                    {
+                        UpdateResponse = new()
+                        {
+                            Completed = CreateSystemEnvelope(new Google.Protobuf.WellKnownTypes.Empty()),
+                        },
+                    },
+                },
+            },
+        };
+
+        var err = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            WorkflowCodecHelper.EncodeAsync(CreateSimpleCodecContext(new MarkerPayloadCodec()), completion));
+
+        Assert.Contains("Unrecognized marked System Nexus envelope message type", err.Message);
+        Assert.Contains("google.protobuf.Empty", err.Message);
+    }
+
+    [Fact]
     public async Task DecodeAsync_SystemNexusEnvelopeInGenericPayloadField_DecodesNestedPayload()
     {
         var nestedPayload = new Payload { Data = ByteString.CopyFromUtf8("input") };

@@ -190,7 +190,8 @@ static void GeneratePayloadVisitor(
     builder.AppendLine("            if (!payload.Metadata.TryGetValue(\"messageType\", out var messageType) ||");
     builder.AppendLine("                !EnvelopeVisitors.TryGetValue(messageType.ToStringUtf8(), out var visit))");
     builder.AppendLine("            {");
-    builder.AppendLine("                return false;");
+    builder.AppendLine("                throw new InvalidOperationException(");
+    builder.AppendLine("                    $\"Unrecognized marked System Nexus envelope message type: {messageType?.ToStringUtf8() ?? \"<missing>\"}\");");
     builder.AppendLine("            }");
     builder.AppendLine();
     builder.AppendLine("            await visit(payload, visitPayload, visitPayloads, visitEnvelope).ConfigureAwait(false);");
