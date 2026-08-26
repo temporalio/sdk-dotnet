@@ -56,7 +56,7 @@ namespace Temporalio.Worker
             return true;
         }
 
-        private static bool IsSystemNexusEndpoint(string? endpoint) => endpoint == TemporalSystemEndpoint;
+        internal static bool IsSystemNexusEndpoint(string? endpoint) => endpoint == TemporalSystemEndpoint;
 
         private static async Task Visit_temporal_api_common_v1_Memo(
             global::Temporalio.Api.Common.V1.Memo value,
