@@ -21,6 +21,9 @@ to docs, or any other relevant information.
 
 ### Added
 
+- Experimental Temporal transfer type conversion now supports constructed generic models whose
+  attributes reference generic converter type definitions. Model type arguments close the converter
+  directly in declaration order, with matching generic arity and compatible constraints required.
 - Added `PayloadValidationError.CreateException`, which payload converters and codecs can use to
   report invalid Nexus operation input with structured details.
 
