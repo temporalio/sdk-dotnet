@@ -42,22 +42,29 @@ namespace Temporalio.Bridge.Api.ActivityResult {
             "c3VsdC5DYW5jZWxsYXRpb25IABI1CgdiYWNrb2ZmGAQgASgLMiIuY29yZXNk",
             "ay5hY3Rpdml0eV9yZXN1bHQuRG9CYWNrb2ZmSABCCAoGc3RhdHVzIjoKB1N1",
             "Y2Nlc3MSLwoGcmVzdWx0GAEgASgLMh8udGVtcG9yYWwuYXBpLmNvbW1vbi52",
-            "MS5QYXlsb2FkIjwKB0ZhaWx1cmUSMQoHZmFpbHVyZRgBIAEoCzIgLnRlbXBv",
-            "cmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUiQQoMQ2FuY2VsbGF0aW9uEjEK",
-            "B2ZhaWx1cmUYASABKAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5GYWls",
-            "dXJlIhMKEVdpbGxDb21wbGV0ZUFzeW5jIo0BCglEb0JhY2tvZmYSDwoHYXR0",
-            "ZW1wdBgBIAEoDRIzChBiYWNrb2ZmX2R1cmF0aW9uGAIgASgLMhkuZ29vZ2xl",
-            "LnByb3RvYnVmLkR1cmF0aW9uEjoKFm9yaWdpbmFsX3NjaGVkdWxlX3RpbWUY",
-            "AyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQjTqAjFUZW1wb3Jh",
-            "bGlvOjpJbnRlcm5hbDo6QnJpZGdlOjpBcGk6OkFjdGl2aXR5UmVzdWx0YgZw",
-            "cm90bzM="));
+            "MS5QYXlsb2FkIn0KB0ZhaWx1cmUSMQoHZmFpbHVyZRgBIAEoCzIgLnRlbXBv",
+            "cmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUSPwoFY2F1c2UYAiABKA4yMC5j",
+            "b3Jlc2RrLmFjdGl2aXR5X3Jlc3VsdC5BY3Rpdml0eVRhc2tGYWlsZWRDYXVz",
+            "ZSJBCgxDYW5jZWxsYXRpb24SMQoHZmFpbHVyZRgBIAEoCzIgLnRlbXBvcmFs",
+            "LmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUiEwoRV2lsbENvbXBsZXRlQXN5bmMi",
+            "jQEKCURvQmFja29mZhIPCgdhdHRlbXB0GAEgASgNEjMKEGJhY2tvZmZfZHVy",
+            "YXRpb24YAiABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SOgoWb3Jp",
+            "Z2luYWxfc2NoZWR1bGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5U",
+            "aW1lc3RhbXAq8wEKF0FjdGl2aXR5VGFza0ZhaWxlZENhdXNlEioKJkFDVElW",
+            "SVRZX1RBU0tfRkFJTEVEX0NBVVNFX1VOU1BFQ0lGSUVEEAASMQotQUNUSVZJ",
+            "VFlfVEFTS19GQUlMRURfQ0FVU0VfUEFZTE9BRFNfVE9PX0xBUkdFEAESNwoz",
+            "QUNUSVZJVFlfVEFTS19GQUlMRURfQ0FVU0VfRVhURVJOQUxfU1RPUkFHRV9G",
+            "QUlMVVJFEAISQAo8QUNUSVZJVFlfVEFTS19GQUlMRURfQ0FVU0VfQUNUSVZJ",
+            "VFlfV09SS0VSX1VOSEFORExFRF9GQUlMVVJFEANCNOoCMVRlbXBvcmFsaW86",
+            "OkludGVybmFsOjpCcmlkZ2U6OkFwaTo6QWN0aXZpdHlSZXN1bHRiBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityResult.ActivityExecutionResult), global::Temporalio.Bridge.Api.ActivityResult.ActivityExecutionResult.Parser, new[]{ "Completed", "Failed", "Cancelled", "WillCompleteAsync" }, new[]{ "Status" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityResult.ActivityResolution), global::Temporalio.Bridge.Api.ActivityResult.ActivityResolution.Parser, new[]{ "Completed", "Failed", "Cancelled", "Backoff" }, new[]{ "Status" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityResult.Success), global::Temporalio.Bridge.Api.ActivityResult.Success.Parser, new[]{ "Result" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityResult.Failure), global::Temporalio.Bridge.Api.ActivityResult.Failure.Parser, new[]{ "Failure_" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityResult.Failure), global::Temporalio.Bridge.Api.ActivityResult.Failure.Parser, new[]{ "Failure_", "Cause" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityResult.Cancellation), global::Temporalio.Bridge.Api.ActivityResult.Cancellation.Parser, new[]{ "Failure" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityResult.WillCompleteAsync), global::Temporalio.Bridge.Api.ActivityResult.WillCompleteAsync.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityResult.DoBackoff), global::Temporalio.Bridge.Api.ActivityResult.DoBackoff.Parser, new[]{ "Attempt", "BackoffDuration", "OriginalScheduleTime" }, null, null, null, null)
@@ -66,6 +73,37 @@ namespace Temporalio.Bridge.Api.ActivityResult {
     #endregion
 
   }
+  #region Enums
+  /// <summary>
+  ///
+  /// A well-known condition that caused an activity task to fail. Lang reports one alongside the
+  /// failure so core can categorize activity failures instead of treating them all alike; it becomes
+  /// the `failure_reason` metric label, so the set of values is deliberately small and bounded.
+  /// </summary>
+  internal enum ActivityTaskFailedCause {
+    [pbr::OriginalName("ACTIVITY_TASK_FAILED_CAUSE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// A payload-bearing field on a request the worker sent for this activity task exceeded the
+    /// per-field size limit configured on the server for the namespace.
+    /// Check the activity task failure message for more information.
+    /// </summary>
+    [pbr::OriginalName("ACTIVITY_TASK_FAILED_CAUSE_PAYLOADS_TOO_LARGE")] PayloadsTooLarge = 1,
+    /// <summary>
+    /// The worker failed to offload a payload to, or retrieve one from, external storage while
+    /// processing this activity task.
+    /// Check the activity task failure message for more information.
+    /// </summary>
+    [pbr::OriginalName("ACTIVITY_TASK_FAILED_CAUSE_EXTERNAL_STORAGE_FAILURE")] ExternalStorageFailure = 2,
+    /// <summary>
+    /// The default cause for an activity task failure reported by a worker; a more specific cause
+    /// takes precedence whenever the condition is recognized.
+    /// Check the activity task failure message for more information.
+    /// </summary>
+    [pbr::OriginalName("ACTIVITY_TASK_FAILED_CAUSE_ACTIVITY_WORKER_UNHANDLED_FAILURE")] ActivityWorkerUnhandledFailure = 3,
+  }
+
+  #endregion
+
   #region Messages
   /// <summary>
   /// Used to report activity completions to core
@@ -1095,6 +1133,7 @@ namespace Temporalio.Bridge.Api.ActivityResult {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public Failure(Failure other) : this() {
       failure_ = other.failure_ != null ? other.failure_.Clone() : null;
+      cause_ = other.cause_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1116,6 +1155,22 @@ namespace Temporalio.Bridge.Api.ActivityResult {
       }
     }
 
+    /// <summary>Field number for the "cause" field.</summary>
+    public const int CauseFieldNumber = 2;
+    private global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause cause_ = global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause.Unspecified;
+    /// <summary>
+    /// Only meaningful on ActivityExecutionResult (lang -> core); ignored on ActivityResolution,
+    /// which reuses this message.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause Cause {
+      get { return cause_; }
+      set {
+        cause_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1132,6 +1187,7 @@ namespace Temporalio.Bridge.Api.ActivityResult {
         return true;
       }
       if (!object.Equals(Failure_, other.Failure_)) return false;
+      if (Cause != other.Cause) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1140,6 +1196,7 @@ namespace Temporalio.Bridge.Api.ActivityResult {
     public override int GetHashCode() {
       int hash = 1;
       if (failure_ != null) hash ^= Failure_.GetHashCode();
+      if (Cause != global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause.Unspecified) hash ^= Cause.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1162,6 +1219,10 @@ namespace Temporalio.Bridge.Api.ActivityResult {
         output.WriteRawTag(10);
         output.WriteMessage(Failure_);
       }
+      if (Cause != global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause.Unspecified) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) Cause);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1176,6 +1237,10 @@ namespace Temporalio.Bridge.Api.ActivityResult {
         output.WriteRawTag(10);
         output.WriteMessage(Failure_);
       }
+      if (Cause != global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause.Unspecified) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) Cause);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1188,6 +1253,9 @@ namespace Temporalio.Bridge.Api.ActivityResult {
       int size = 0;
       if (failure_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Failure_);
+      }
+      if (Cause != global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Cause);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1206,6 +1274,9 @@ namespace Temporalio.Bridge.Api.ActivityResult {
           Failure_ = new global::Temporalio.Api.Failure.V1.Failure();
         }
         Failure_.MergeFrom(other.Failure_);
+      }
+      if (other.Cause != global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause.Unspecified) {
+        Cause = other.Cause;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1229,6 +1300,10 @@ namespace Temporalio.Bridge.Api.ActivityResult {
             input.ReadMessage(Failure_);
             break;
           }
+          case 16: {
+            Cause = (global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause) input.ReadEnum();
+            break;
+          }
         }
       }
     #endif
@@ -1249,6 +1324,10 @@ namespace Temporalio.Bridge.Api.ActivityResult {
               Failure_ = new global::Temporalio.Api.Failure.V1.Failure();
             }
             input.ReadMessage(Failure_);
+            break;
+          }
+          case 16: {
+            Cause = (global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause) input.ReadEnum();
             break;
           }
         }

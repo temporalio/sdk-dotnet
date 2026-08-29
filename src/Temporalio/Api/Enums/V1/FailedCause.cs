@@ -320,11 +320,11 @@ namespace Temporalio.Api.Enums.V1 {
   public enum ResourceExhaustedScope {
     [pbr::OriginalName("RESOURCE_EXHAUSTED_SCOPE_UNSPECIFIED")] Unspecified = 0,
     /// <summary>
-    /// Exhausted resource is a system-level resource.
+    /// Exhausted resource is a namespace-level resource.
     /// </summary>
     [pbr::OriginalName("RESOURCE_EXHAUSTED_SCOPE_NAMESPACE")] Namespace = 1,
     /// <summary>
-    /// Exhausted resource is a namespace-level resource.
+    /// Exhausted resource is a system-level resource.
     /// </summary>
     [pbr::OriginalName("RESOURCE_EXHAUSTED_SCOPE_SYSTEM")] System = 2,
   }

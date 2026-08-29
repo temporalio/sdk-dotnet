@@ -62,10 +62,6 @@ namespace Temporalio.Workflows
         /// </summary>
         public System.TimeSpan? TaskTimeout { get; init; }
         /// <summary>
-        /// Request ID used to deduplicate workflow start requests.
-        /// </summary>
-        public string? RequestId { get; init; }
-        /// <summary>
         /// Behavior when a closed workflow with the same ID exists. Default is allow-duplicate.
         /// </summary>
         public Temporalio.Api.Enums.V1.WorkflowIdReusePolicy? IdReusePolicy { get; init; }
@@ -102,6 +98,7 @@ namespace Temporalio.Workflows
         /// </summary>
         public System.TimeSpan? StartDelay { get; init; }
         public UserMetadata? UserMetadata { get; init; }
+        public IReadOnlyDictionary<string, object?>? Headers { get; init; }
 
         public Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest ToProto()
         {
@@ -130,10 +127,6 @@ namespace Temporalio.Workflows
             if (TaskTimeout is { } taskTimeout)
             {
                 proto.WorkflowTaskTimeout = taskTimeout.ToProto();
-            }
-            if (RequestId is { } requestId)
-            {
-                proto.RequestId = requestId;
             }
             if (IdReusePolicy is { } idReusePolicy)
             {
@@ -174,6 +167,10 @@ namespace Temporalio.Workflows
             if (UserMetadata is { } userMetadata)
             {
                 proto.UserMetadata = userMetadata.ToProto();
+            }
+            if (Headers is { } headers)
+            {
+                proto.Header = ProtoExtensions.ToHeaderProto(headers);
             }
             return proto;
         }
