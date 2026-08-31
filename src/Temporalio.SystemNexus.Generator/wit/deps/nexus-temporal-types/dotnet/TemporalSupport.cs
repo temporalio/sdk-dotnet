@@ -176,16 +176,6 @@ namespace Nexgen.Support
                 item => item.Key,
                 item => FromPayload(item.Value));
 
-        internal static ApiCommon.Header ToHeaderProto(this IReadOnlyDictionary<string, object?> value)
-        {
-            var header = new ApiCommon.Header();
-            foreach (var item in value)
-            {
-                header.Fields.Add(item.Key, ToPayload(item.Value));
-            }
-            return header;
-        }
-
         internal static IReadOnlyDictionary<string, object?> FromHeaderProto(ApiCommon.Header value) =>
             value.Fields.ToDictionary(
                 item => item.Key,
