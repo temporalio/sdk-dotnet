@@ -13,10 +13,11 @@ namespace Temporalio.Extensions.Gcp.CloudRun
     /// </summary>
     /// <remarks>
     /// Cloud Run runs a long-lived container, so unlike the AWS Lambda extension this is a metadata
-    /// helper rather than a worker wrapper. Fetch the metadata once at startup and apply the results
-    /// to your normal client and worker options, for example via
-    /// <see cref="TemporalClientConnectOptionsExtensions.ApplyGoogleCloudRunDefaultsAsync" /> and
-    /// <see cref="TemporalWorkerOptionsExtensions.ApplyGoogleCloudRunDefaults" />.
+    /// helper rather than a worker wrapper. Most callers should register a <see cref="CloudRunPlugin" />
+    /// on <see cref="Temporalio.Client.TemporalClientConnectOptions.Plugins" />, which fetches this
+    /// metadata once at connect time and applies the worker identity and deployment version
+    /// automatically. This type is exposed for advanced use, for example reading
+    /// <see cref="WorkerIdentity" /> or <see cref="ToWorkerDeploymentVersion" /> directly.
     /// WARNING: Google Cloud Run support is experimental.
     /// </remarks>
     public sealed class GoogleCloudRunMetadata
