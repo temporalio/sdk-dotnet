@@ -30,10 +30,10 @@ namespace Temporalio.Extensions.Gcp.CloudRun
     /// </list>
     /// The metadata fetch fails fast with an <see cref="InvalidOperationException" /> at connect time
     /// when the process is not running on a Cloud Run worker pool or service. Tests and advanced
-    /// users can bypass the real fetch with <see cref="CloudRunPluginOptions" />.
+    /// users can bypass the real fetch with <see cref="WorkerIdPluginOptions" />.
     /// WARNING: Google Cloud Run support is experimental.
     /// </remarks>
-    public class CloudRunPlugin : SimplePlugin
+    public class WorkerIdPlugin : SimplePlugin
     {
         private readonly Uri? metadataUri;
         private readonly TimeSpan? timeout;
@@ -41,23 +41,23 @@ namespace Temporalio.Extensions.Gcp.CloudRun
         private GoogleCloudRunMetadata? metadata;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CloudRunPlugin"/> class using the default
+        /// Initializes a new instance of the <see cref="WorkerIdPlugin"/> class using the default
         /// Cloud Run metadata server URI and timeout.
         /// </summary>
-        public CloudRunPlugin()
-            : this(new CloudRunPluginOptions())
+        public WorkerIdPlugin()
+            : this(new WorkerIdPluginOptions())
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CloudRunPlugin"/> class.
+        /// Initializes a new instance of the <see cref="WorkerIdPlugin"/> class.
         /// </summary>
         /// <param name="options">
         /// Plugin options, including optional pre-fetched metadata or metadata server URI and
         /// timeout overrides.
         /// </param>
-        public CloudRunPlugin(CloudRunPluginOptions options)
-            : base("Temporalio.Extensions.Gcp.CloudRun.CloudRunPlugin")
+        public WorkerIdPlugin(WorkerIdPluginOptions options)
+            : base("Temporalio.Extensions.Gcp.CloudRun.WorkerIdPlugin")
         {
             if (options == null)
             {
@@ -93,7 +93,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun
                     "Cloud Run metadata has not been fetched yet. Register this plugin on the " +
                     "client via TemporalClientConnectOptions.Plugins and connect with " +
                     "TemporalClient.ConnectAsync before creating a worker, or provide pre-fetched " +
-                    "metadata through CloudRunPluginOptions.Metadata.");
+                    "metadata through WorkerIdPluginOptions.Metadata.");
             }
 
             options.DeploymentOptions = new WorkerDeploymentOptions(

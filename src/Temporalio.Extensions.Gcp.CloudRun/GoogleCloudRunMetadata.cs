@@ -13,7 +13,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun
     /// </summary>
     /// <remarks>
     /// Cloud Run runs a long-lived container, so unlike the AWS Lambda extension this is a metadata
-    /// helper rather than a worker wrapper. Most callers should register a <see cref="CloudRunPlugin" />
+    /// helper rather than a worker wrapper. Most callers should register a <see cref="WorkerIdPlugin" />
     /// on <see cref="Temporalio.Client.TemporalClientConnectOptions.Plugins" />, which fetches this
     /// metadata once at connect time and applies the worker identity and deployment version
     /// automatically. This type is exposed for advanced use, for example reading

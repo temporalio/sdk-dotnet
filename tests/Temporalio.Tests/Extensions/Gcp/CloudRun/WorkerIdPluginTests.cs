@@ -11,7 +11,7 @@ using Xunit;
 // environment variables never run in parallel with each other or with the sibling extension tests
 // that set the same variables.
 [Collection(OpenTelemetryEnvironmentDefinition.Name)]
-public class CloudRunPluginTests
+public class WorkerIdPluginTests
 {
     private const string WorkerPoolEnvironmentVariable = "CLOUD_RUN_WORKER_POOL";
     private const string ServiceEnvironmentVariable = "K_SERVICE";
@@ -20,14 +20,14 @@ public class CloudRunPluginTests
 
     [Fact]
     public void Constructor_NullOptionsThrows() =>
-        Assert.Throws<ArgumentNullException>(() => new CloudRunPlugin(null!));
+        Assert.Throws<ArgumentNullException>(() => new WorkerIdPlugin(null!));
 
     [Fact]
     public async Task ConnectAsync_SetsIdentityWhenUnset()
     {
         using var server = new CloudRunMetadataServer(body: "instance-1");
         using var env = CloudRunEnvironment(revision: "revision-1");
-        var plugin = new CloudRunPlugin(new CloudRunPluginOptions
+        var plugin = new WorkerIdPlugin(new WorkerIdPluginOptions
         {
             MetadataUri = server.Uri,
             Timeout = TimeSpan.FromSeconds(5),
@@ -52,7 +52,7 @@ public class CloudRunPluginTests
     {
         using var server = new CloudRunMetadataServer(body: "instance-1");
         using var env = CloudRunEnvironment(revision: "revision-1");
-        var plugin = new CloudRunPlugin(new CloudRunPluginOptions
+        var plugin = new WorkerIdPlugin(new WorkerIdPluginOptions
         {
             MetadataUri = server.Uri,
             Timeout = TimeSpan.FromSeconds(5),
@@ -75,7 +75,7 @@ public class CloudRunPluginTests
         }
 
         // The server is disposed, so nothing is listening on that port anymore.
-        var plugin = new CloudRunPlugin(new CloudRunPluginOptions
+        var plugin = new WorkerIdPlugin(new WorkerIdPluginOptions
         {
             MetadataUri = uri,
             Timeout = TimeSpan.FromSeconds(5),
@@ -100,7 +100,7 @@ public class CloudRunPluginTests
     public void ConfigureWorker_SetsPinnedDeploymentOptions()
     {
         var metadata = new GoogleCloudRunMetadata("instance-1", "pool-name", "revision-1");
-        var plugin = new CloudRunPlugin(new CloudRunPluginOptions { Metadata = metadata });
+        var plugin = new WorkerIdPlugin(new WorkerIdPluginOptions { Metadata = metadata });
         var options = new TemporalWorkerOptions("task-queue");
 
         plugin.ConfigureWorker(options);
@@ -115,7 +115,7 @@ public class CloudRunPluginTests
     [Fact]
     public void ConfigureWorker_ThrowsWhenMetadataNotFetched()
     {
-        var plugin = new CloudRunPlugin(new CloudRunPluginOptions());
+        var plugin = new WorkerIdPlugin(new WorkerIdPluginOptions());
         var options = new TemporalWorkerOptions("task-queue");
 
         Assert.Throws<InvalidOperationException>(() => plugin.ConfigureWorker(options));
@@ -126,7 +126,7 @@ public class CloudRunPluginTests
     {
         using var server = new CloudRunMetadataServer(body: "instance-1");
         using var env = CloudRunEnvironment(revision: "revision-1");
-        var plugin = new CloudRunPlugin(new CloudRunPluginOptions
+        var plugin = new WorkerIdPlugin(new WorkerIdPluginOptions
         {
             MetadataUri = server.Uri,
             Timeout = TimeSpan.FromSeconds(5),

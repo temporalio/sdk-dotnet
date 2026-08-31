@@ -1,6 +1,6 @@
 # Google Cloud Run Worker Support
 
-This extension provides `CloudRunPlugin`, a Temporal client/worker plugin that derives a worker
+This extension provides `WorkerIdPlugin`, a Temporal client/worker plugin that derives a worker
 identity and a `WorkerDeploymentVersion` from Google Cloud Run instance metadata, for use with a
 normal long-lived worker on Cloud Run worker pools and services.
 
@@ -12,7 +12,7 @@ Add the `Temporalio.Extensions.Gcp.CloudRun` package from
 
 ## Quick Start
 
-Construct a `CloudRunPlugin`, register it on your client connect options via `Plugins`, then run a
+Construct a `WorkerIdPlugin`, register it on your client connect options via `Plugins`, then run a
 normal long-lived worker. Registering it once on the client is enough: the plugin sets the client
 identity at connect time and, because it is also a worker plugin, automatically pins the worker to
 the Cloud Run deployment version when the worker is created.
@@ -29,7 +29,7 @@ var connectOptions = new TemporalClientConnectOptions("my-namespace.a1b2c.tmprl.
     Namespace = "my-namespace",
     // Register the plugin once on the client. It reads the Cloud Run metadata at connect time and
     // propagates to workers created from the connected client.
-    Plugins = new[] { new CloudRunPlugin() },
+    Plugins = new[] { new WorkerIdPlugin() },
     // ... Temporal Cloud API key / mTLS credentials ...
 };
 
@@ -101,11 +101,11 @@ pool or service.
 
 ## Testing and advanced use
 
-`CloudRunPlugin` accepts a `CloudRunPluginOptions` for tests and advanced scenarios. Set
+`WorkerIdPlugin` accepts a `WorkerIdPluginOptions` for tests and advanced scenarios. Set
 `MetadataUri` / `Timeout` to point the fetch at a different endpoint, or set `Metadata` to a
 pre-fetched `GoogleCloudRunMetadata` to skip the metadata server entirely:
 
 ```csharp
 var metadata = await GoogleCloudRunMetadata.FetchAsync();
-var plugin = new CloudRunPlugin(new CloudRunPluginOptions { Metadata = metadata });
+var plugin = new WorkerIdPlugin(new WorkerIdPluginOptions { Metadata = metadata });
 ```
