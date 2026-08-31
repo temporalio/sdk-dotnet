@@ -21,9 +21,7 @@ namespace Temporalio.Worker
 
         internal delegate Task PayloadsVisitor(RepeatedField<Payload> payloads);
 
-        internal delegate Task EnvelopeVisitor(Payload payload);
-
-        internal static bool IsSystemNexusEndpoint(string? endpoint) => endpoint == TemporalSystemEndpoint;
+        internal static bool IsSystemEndpoint(string? endpoint) => endpoint == TemporalSystemEndpoint;
 
         internal static void MarkSystemPayload(Payload payload) =>
             payload.Metadata[SystemPayloadMetadataKey] = SystemPayloadMetadataValue;
@@ -32,8 +30,7 @@ namespace Temporalio.Worker
             Payload payload,
             Func<T, PayloadVisitor, PayloadsVisitor, Task> visitMessage,
             PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads,
-            EnvelopeVisitor? visitEnvelope)
+            PayloadsVisitor visitPayloads)
             where T : IMessage<T>, new()
         {
             BinaryProtoConverter.AssertProtoPayload(payload, typeof(T));
@@ -45,10 +42,6 @@ namespace Temporalio.Worker
             payload.Metadata["messageType"] = ByteString.CopyFromUtf8(message.Descriptor.FullName);
             MarkSystemPayload(payload);
             payload.Data = message.ToByteString();
-            if (visitEnvelope != null)
-            {
-                await visitEnvelope(payload).ConfigureAwait(false);
-            }
         }
 
         private static bool IsSystemPayload(Payload payload) =>

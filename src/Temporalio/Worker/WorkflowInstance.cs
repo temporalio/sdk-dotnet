@@ -2683,7 +2683,7 @@ namespace Temporalio.Worker
 
                 // TODO: Scope the generated System Nexus support converter context around this
                 // operation converter once the generated support file is ingested into the SDK.
-                var systemNexusPayloadConverter = SystemNexusPayloadVisitor.IsSystemNexusEndpoint(
+                var systemNexusPayloadConverter = SystemNexusPayloadVisitor.IsSystemEndpoint(
                     input.ClientOptions.Endpoint) ?
                     new SystemNexusPayloadConverter(
                         instance.payloadConverterNoContext,

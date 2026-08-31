@@ -164,8 +164,8 @@ static void GeneratePayloadVisitor(
     builder.AppendLine("    [GeneratedCode(\"Temporalio.SystemNexus.Generator\", null)]");
     builder.AppendLine("    internal static partial class SystemNexusPayloadVisitor");
     builder.AppendLine("    {");
-    builder.AppendLine("        private static readonly IReadOnlyDictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>> EnvelopeVisitors =");
-    builder.AppendLine("            new Dictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, EnvelopeVisitor?, Task>>");
+    builder.AppendLine("        private static readonly IReadOnlyDictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, Task>> EnvelopeVisitors =");
+    builder.AppendLine("            new Dictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, Task>>");
     builder.AppendLine("            {");
 
     foreach (var operation in operationMessages)
@@ -179,8 +179,7 @@ static void GeneratePayloadVisitor(
     builder.AppendLine("        internal static async Task<bool> TryVisitAsync(");
     builder.AppendLine("            Payload payload,");
     builder.AppendLine("            PayloadVisitor visitPayload,");
-    builder.AppendLine("            PayloadsVisitor visitPayloads,");
-    builder.AppendLine("            EnvelopeVisitor? visitEnvelope = null)");
+    builder.AppendLine("            PayloadsVisitor visitPayloads)");
     builder.AppendLine("        {");
     builder.AppendLine("            if (!IsSystemPayload(payload))");
     builder.AppendLine("            {");
@@ -194,7 +193,7 @@ static void GeneratePayloadVisitor(
     builder.AppendLine("                    $\"Unrecognized marked System Nexus envelope message type: {messageType?.ToStringUtf8() ?? \"<missing>\"}\");");
     builder.AppendLine("            }");
     builder.AppendLine();
-    builder.AppendLine("            await visit(payload, visitPayload, visitPayloads, visitEnvelope).ConfigureAwait(false);");
+    builder.AppendLine("            await visit(payload, visitPayload, visitPayloads).ConfigureAwait(false);");
     builder.AppendLine("            return true;");
     builder.AppendLine("        }");
     builder.AppendLine();
@@ -296,13 +295,12 @@ static void EmitEnvelopeVisitor(
         return;
     }
 
-    builder.AppendLine($"                [\"{message.FullName}\"] = (payload, visitPayload, visitPayloads, visitEnvelope) =>");
+    builder.AppendLine($"                [\"{message.FullName}\"] = (payload, visitPayload, visitPayloads) =>");
     builder.AppendLine($"                    VisitEnvelopeAsync<{message.CsharpType}>(");
     builder.AppendLine("                        payload,");
     builder.AppendLine($"                        {VisitMethodName(message)},");
     builder.AppendLine("                        visitPayload,");
-    builder.AppendLine("                        visitPayloads,");
-    builder.AppendLine("                        visitEnvelope),");
+    builder.AppendLine("                        visitPayloads),");
 }
 
 static void EmitVisitMethod(
