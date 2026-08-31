@@ -50,10 +50,6 @@ namespace Temporalio.Workflows
         /// </summary>
         public System.TimeSpan? TaskTimeout { get; set; }
         /// <summary>
-        /// Request ID used to deduplicate workflow start requests.
-        /// </summary>
-        public string? RequestId { get; set; }
-        /// <summary>
         /// Behavior when a closed workflow with the same ID exists. Default is allow-duplicate.
         /// </summary>
         public Temporalio.Api.Enums.V1.WorkflowIdReusePolicy? IdReusePolicy { get; set; }
@@ -97,6 +93,7 @@ namespace Temporalio.Workflows
         /// General fixed details for the workflow execution that may appear in UI and CLI. This can be in Temporal Markdown format and can span multiple lines. This value is fixed on the workflow execution and cannot be updated.
         /// </summary>
         public string? StaticDetails { get; set; }
+        public IReadOnlyDictionary<string, object?>? Headers { get; set; }
     }
 
     public static partial class Workflow
@@ -139,7 +136,6 @@ namespace Temporalio.Workflows
                 ExecutionTimeout = options.ExecutionTimeout,
                 RunTimeout = options.RunTimeout,
                 TaskTimeout = options.TaskTimeout,
-                RequestId = options.RequestId,
                 IdReusePolicy = options.IdReusePolicy,
                 IdConflictPolicy = options.IdConflictPolicy,
                 RetryPolicy = options.RetryPolicy,
@@ -150,6 +146,7 @@ namespace Temporalio.Workflows
                 VersioningOverride = options.VersioningOverride,
                 StartDelay = options.StartDelay,
                 UserMetadata = options.StaticSummary != null || options.StaticDetails != null ? new UserMetadata() { StaticSummary = options.StaticSummary, StaticDetails = options.StaticDetails } : null,
+                Headers = options.Headers,
             };
             return SignalWithStartWorkflowAsync(request);
         }
@@ -174,7 +171,6 @@ namespace Temporalio.Workflows
                 ExecutionTimeout = options.ExecutionTimeout,
                 RunTimeout = options.RunTimeout,
                 TaskTimeout = options.TaskTimeout,
-                RequestId = options.RequestId,
                 IdReusePolicy = options.IdReusePolicy,
                 IdConflictPolicy = options.IdConflictPolicy,
                 RetryPolicy = options.RetryPolicy,
@@ -185,6 +181,7 @@ namespace Temporalio.Workflows
                 VersioningOverride = options.VersioningOverride,
                 StartDelay = options.StartDelay,
                 UserMetadata = options.StaticSummary != null || options.StaticDetails != null ? new UserMetadata() { StaticSummary = options.StaticSummary, StaticDetails = options.StaticDetails } : null,
+                Headers = options.Headers,
             };
             return SignalWithStartWorkflowAsync(request);
         }
@@ -209,7 +206,6 @@ namespace Temporalio.Workflows
                 ExecutionTimeout = options.ExecutionTimeout,
                 RunTimeout = options.RunTimeout,
                 TaskTimeout = options.TaskTimeout,
-                RequestId = options.RequestId,
                 IdReusePolicy = options.IdReusePolicy,
                 IdConflictPolicy = options.IdConflictPolicy,
                 RetryPolicy = options.RetryPolicy,
@@ -220,6 +216,7 @@ namespace Temporalio.Workflows
                 VersioningOverride = options.VersioningOverride,
                 StartDelay = options.StartDelay,
                 UserMetadata = options.StaticSummary != null || options.StaticDetails != null ? new UserMetadata() { StaticSummary = options.StaticSummary, StaticDetails = options.StaticDetails } : null,
+                Headers = options.Headers,
             };
             return SignalWithStartWorkflowAsync(request);
         }
@@ -244,7 +241,6 @@ namespace Temporalio.Workflows
                 ExecutionTimeout = options.ExecutionTimeout,
                 RunTimeout = options.RunTimeout,
                 TaskTimeout = options.TaskTimeout,
-                RequestId = options.RequestId,
                 IdReusePolicy = options.IdReusePolicy,
                 IdConflictPolicy = options.IdConflictPolicy,
                 RetryPolicy = options.RetryPolicy,
@@ -255,6 +251,7 @@ namespace Temporalio.Workflows
                 VersioningOverride = options.VersioningOverride,
                 StartDelay = options.StartDelay,
                 UserMetadata = options.StaticSummary != null || options.StaticDetails != null ? new UserMetadata() { StaticSummary = options.StaticSummary, StaticDetails = options.StaticDetails } : null,
+                Headers = options.Headers,
             };
             return SignalWithStartWorkflowAsync(request);
         }

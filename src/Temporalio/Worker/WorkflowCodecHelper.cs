@@ -218,6 +218,15 @@ namespace Temporalio.Worker
             IPayloadCodec? codec;
             switch (cmd.VariantCase)
             {
+                case WorkflowCommand.VariantOneofCase.CancelWorkflowExecution:
+                    codec = context.CodecWorkflowContext;
+                    if (cmd.CancelWorkflowExecution.Details != null && codec != null)
+                    {
+                        await EncodeAsync(
+                            codec,
+                            cmd.CancelWorkflowExecution.Details.Payloads_).ConfigureAwait(false);
+                    }
+                    break;
                 case WorkflowCommand.VariantOneofCase.CompleteWorkflowExecution:
                     codec = context.CodecWorkflowContext;
                     if (cmd.CompleteWorkflowExecution.Result != null && codec != null)
@@ -387,6 +396,16 @@ namespace Temporalio.Worker
                 if (cmd.UserMetadata.Details != null)
                 {
                     await EncodeAsync(codec, cmd.UserMetadata.Details).ConfigureAwait(false);
+                }
+            }
+            if (codec != null)
+            {
+                foreach (var marker in cmd.EventGroupMarkers)
+                {
+                    if (marker.Label?.Label_ is { } markerLabel)
+                    {
+                        await EncodeAsync(codec, markerLabel).ConfigureAwait(false);
+                    }
                 }
             }
         }
