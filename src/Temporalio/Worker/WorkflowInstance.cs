@@ -32,7 +32,7 @@ namespace Temporalio.Worker
     /// <summary>
     /// Instance of a workflow execution.
     /// </summary>
-    internal class WorkflowInstance : TaskScheduler, IWorkflowInstance, IWorkflowContext, IWorkflowCodecHelperInstance
+    internal partial class WorkflowInstance : TaskScheduler, IWorkflowInstance, IWorkflowContext, IWorkflowCodecHelperInstance
     {
         private static readonly string[] Newlines = new[] { "\r", "\n", "\r\n" };
         private static readonly AsyncLocal<WorkflowUpdateInfo> CurrentUpdateInfoLocal = new();
@@ -2102,7 +2102,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Workflow outbound implementation.
         /// </summary>
-        internal class OutboundImpl : WorkflowOutboundInterceptor
+        internal partial class OutboundImpl : WorkflowOutboundInterceptor
         {
             private readonly WorkflowInstance instance;
 

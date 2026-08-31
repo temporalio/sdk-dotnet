@@ -7,7 +7,7 @@ namespace Temporalio.Worker.Interceptors
     /// <summary>
     /// Outbound interceptor to intercept workflow calls coming from workflows.
     /// </summary>
-    public abstract class WorkflowOutboundInterceptor
+    public abstract partial class WorkflowOutboundInterceptor
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowOutboundInterceptor"/> class.
