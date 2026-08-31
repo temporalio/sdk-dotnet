@@ -10,7 +10,6 @@ var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/crates/prot
 var apiProtoDir = Path.Join(protoDir, "api_upstream");
 var descriptorPath = Path.Join(generatorDir, "obj/SystemNexus/temporal_api.bin");
 var stagingOutputDir = Path.Join(generatorDir, "obj/SystemNexus/Generated");
-var temporaryNexusWitDir = Path.Join(generatorDir, "wit/temporary-nexus-input");
 var workflowsGeneratedDir = Path.Join(projectDir, "src/Temporalio/Workflows/Generated");
 var workerGeneratedDir = Path.Join(projectDir, "src/Temporalio/Worker/Generated");
 var obsoleteOutputDir = Path.Join(projectDir, "src/Temporalio/SystemNexus/Generated");
@@ -61,8 +60,8 @@ void GenerateNexusApi()
         {
             "dotnet",
             "--native-api",
-            Path.Join(temporaryNexusWitDir, "workflow-service.wit"),
-            Path.Join(temporaryNexusWitDir, "deps"),
+            Path.Join(apiProtoDir, "nexus/workflow-service.wit"),
+            Path.Join(apiProtoDir, "nexus/deps"),
             "--support-file",
             Path.Join(generatorDir, "wit/deps/nexus-temporal-types/dotnet/TemporalSupport.cs"),
             "--descriptors",
