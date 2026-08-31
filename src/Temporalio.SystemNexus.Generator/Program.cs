@@ -618,10 +618,7 @@ static int RunNexGen(IEnumerable<string> arguments, bool ignoreExitCode = false)
     {
         return RunProcess(value, arguments, ignoreExitCode);
     }
-    return RunProcess(
-        "mise",
-        arguments.Prepend("nexgen").Prepend("--").Prepend("exec"),
-        ignoreExitCode);
+    return RunProcess("nexgen", arguments, ignoreExitCode);
 }
 
 static string UniqueLocalName(MessageInfo message, FieldDescriptorProto field, string prefix) =>
