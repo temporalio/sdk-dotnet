@@ -63,6 +63,16 @@ namespace NexGen.Support
             return payloads;
         }
 
+        internal static ApiCommon.Header ToHeaderProto(this IReadOnlyDictionary<string, object?> value)
+        {
+            var header = new ApiCommon.Header();
+            foreach (var item in value)
+            {
+                header.Fields.Add(item.Key, ToPayload(item.Value));
+            }
+            return header;
+        }
+
         internal static Duration ToProto(this TimeSpan value) =>
             Duration.FromTimeSpan(value);
 
