@@ -157,10 +157,70 @@ public class PayloadConverterTests : TestBase
         Assert.Equal(value, converter.ToValue(payload, typeof(AnnotatedDerivedTransferTypeHookValue)));
     }
 
+    [Fact]
+    public void ToPayload_TransferTypeHooks_GenericConverter_Succeeds()
+    {
+        var converter = TemporalTransferTypePayloadConverter.Wrap(new DefaultPayloadConverter());
+        var stringValue = new GenericTransferTypeHookValue<string>("payload-value");
+        var intValue = new GenericTransferTypeHookValue<int>(1234);
+
+        var stringPayload = converter.ToPayload(stringValue);
+        var intPayload = converter.ToPayload(intValue);
+
+        Assert.Equal(
+            stringValue,
+            converter.ToValue(stringPayload, typeof(GenericTransferTypeHookValue<string>)));
+        Assert.Equal(
+            intValue,
+            converter.ToValue(intPayload, typeof(GenericTransferTypeHookValue<int>)));
+    }
+
+    [Fact]
+    public void ToPayload_TransferTypeHooks_OpenGenericConverterPreservesArgumentOrder_Succeeds()
+    {
+        var converter = TemporalTransferTypePayloadConverter.Wrap(new DefaultPayloadConverter());
+        var value = new OrderedGenericTransferTypeHookValue<string, int>("payload-value", 1234);
+
+        var payload = converter.ToPayload(value);
+
+        Assert.Equal(
+            value,
+            converter.ToValue(
+                payload,
+                typeof(OrderedGenericTransferTypeHookValue<string, int>)));
+    }
+
+    [Fact]
+    public void ToPayload_TransferTypeHooks_ClosedConverterOnGenericType_Succeeds()
+    {
+        var converter = TemporalTransferTypePayloadConverter.Wrap(new DefaultPayloadConverter());
+        var value = new ClosedConverterGenericTransferTypeHookValue<int>("payload-value");
+
+        var payload = converter.ToPayload(value);
+
+        Assert.Equal(
+            value,
+            converter.ToValue(
+                payload,
+                typeof(ClosedConverterGenericTransferTypeHookValue<int>)));
+    }
+
+    [Fact]
+    public void ToPayload_TransferTypeHooks_NestedOpenGenericConverter_Succeeds()
+    {
+        var converter = TemporalTransferTypePayloadConverter.Wrap(new DefaultPayloadConverter());
+        var value = new NestedGenericTransferTypeHookValue<int>(1234);
+
+        var payload = converter.ToPayload(value);
+
+        Assert.Equal(
+            value,
+            converter.ToValue(payload, typeof(NestedGenericTransferTypeHookValue<int>)));
+    }
+
     [Theory]
     [InlineData(typeof(NonAssignableConverterHookValue), "does not implement")]
     [InlineData(typeof(AbstractConverterHookValue), "abstract")]
-    [InlineData(typeof(OpenGenericConverterHookValue), "open generic")]
     [InlineData(typeof(ParameterConstructorConverterHookValue), "public parameterless constructor")]
     [InlineData(typeof(PrivateConstructorConverterHookValue), "public parameterless constructor")]
     public void ToPayload_TransferTypeHooks_InvalidConverterType_Fails(
@@ -173,6 +233,34 @@ public class PayloadConverterTests : TestBase
         var exception = Assert.Throws<InvalidOperationException>(() => converter.ToPayload(value));
 
         Assert.Contains(expectedMessage, exception.Message);
+    }
+
+    [Theory]
+    [InlineData(
+        typeof(OpenGenericConverterHookValue),
+        typeof(GenericTransferTypeHookValueConverter<>),
+        "not a closed constructed generic type")]
+    [InlineData(
+        typeof(GenericArityMismatchConverterHookValue<string, int>),
+        typeof(ThreeArgumentGenericTransferTypeHookValueConverter<,,>),
+        "different generic arities")]
+    [InlineData(
+        typeof(GenericConstraintConverterHookValue<string>),
+        typeof(StructGenericTransferTypeHookValueConverter<>),
+        "do not satisfy the converter constraints")]
+    public void ToPayload_TransferTypeHooks_InvalidGenericConverterType_Fails(
+        Type type,
+        Type declaredConverterType,
+        string expectedMessage)
+    {
+        var converter = TemporalTransferTypePayloadConverter.Wrap(new DefaultPayloadConverter());
+        var value = Activator.CreateInstance(type, "payload-value");
+
+        var exception = Assert.Throws<InvalidOperationException>(() => converter.ToPayload(value));
+
+        Assert.Contains(expectedMessage, exception.Message);
+        Assert.Contains(type.ToString(), exception.Message);
+        Assert.Contains(declaredConverterType.ToString(), exception.Message);
     }
 
     private static Payload AssertPayload(
@@ -306,11 +394,97 @@ public class PayloadConverterTests : TestBase
     }
 
     [TemporalTransferTypeConverter(typeof(GenericTransferTypeHookValueConverter<>))]
-    public sealed record OpenGenericConverterHookValue(string Value);
+    public sealed record GenericTransferTypeHookValue<T>(T Value);
 
     public class GenericTransferTypeHookValueConverter<T> : ITemporalTransferTypeConverter
     {
+        public Type TransferType => typeof(T);
+
+        public object? ToTransferType(object? value) =>
+            ((GenericTransferTypeHookValue<T>)value!).Value;
+
+        public object? FromTransferType(object? transferType) =>
+            new GenericTransferTypeHookValue<T>((T)transferType!);
+    }
+
+    [TemporalTransferTypeConverter(typeof(OrderedGenericTransferTypeHookValueConverter<,>))]
+    public sealed record OrderedGenericTransferTypeHookValue<TFirst, TSecond>(
+        TFirst First,
+        TSecond Second);
+
+    public class OrderedGenericTransferTypeHookValueConverter<TFirst, TSecond> :
+        ITemporalTransferTypeConverter
+    {
         public Type TransferType => typeof(string);
+
+        public object? ToTransferType(object? value)
+        {
+            var genericValue = (OrderedGenericTransferTypeHookValue<TFirst, TSecond>)value!;
+            return $"{genericValue.First}|{genericValue.Second}";
+        }
+
+        public object? FromTransferType(object? transferType)
+        {
+            var values = ((string)transferType!).Split('|');
+            return new OrderedGenericTransferTypeHookValue<TFirst, TSecond>(
+                (TFirst)Convert.ChangeType(values[0], typeof(TFirst)),
+                (TSecond)Convert.ChangeType(values[1], typeof(TSecond)));
+        }
+    }
+
+    [TemporalTransferTypeConverter(typeof(ClosedGenericTransferTypeHookValueConverter))]
+    public sealed record ClosedConverterGenericTransferTypeHookValue<T>(string Value);
+
+    public class ClosedGenericTransferTypeHookValueConverter : ITemporalTransferTypeConverter
+    {
+        public Type TransferType => typeof(string);
+
+        public object? ToTransferType(object? value) =>
+            ((ClosedConverterGenericTransferTypeHookValue<int>)value!).Value;
+
+        public object? FromTransferType(object? transferType) =>
+            new ClosedConverterGenericTransferTypeHookValue<int>((string)transferType!);
+    }
+
+    [TemporalTransferTypeConverter(typeof(NestedGenericTransferTypeHookValue<>.Converter))]
+    public sealed record NestedGenericTransferTypeHookValue<T>(T Value)
+    {
+        public class Converter : ITemporalTransferTypeConverter
+        {
+            public Type TransferType => typeof(T);
+
+            public object? ToTransferType(object? value) =>
+                ((NestedGenericTransferTypeHookValue<T>)value!).Value;
+
+            public object? FromTransferType(object? transferType) =>
+                new NestedGenericTransferTypeHookValue<T>((T)transferType!);
+        }
+    }
+
+    [TemporalTransferTypeConverter(typeof(GenericTransferTypeHookValueConverter<>))]
+    public sealed record OpenGenericConverterHookValue(string Value);
+
+    [TemporalTransferTypeConverter(typeof(ThreeArgumentGenericTransferTypeHookValueConverter<,,>))]
+    public sealed record GenericArityMismatchConverterHookValue<TFirst, TSecond>(TFirst Value);
+
+    public class ThreeArgumentGenericTransferTypeHookValueConverter<TFirst, TSecond, TThird> :
+        ITemporalTransferTypeConverter
+    {
+        public Type TransferType => typeof(TFirst);
+
+        public object? ToTransferType(object? value) => throw new NotImplementedException();
+
+        public object? FromTransferType(object? transferType) => throw new NotImplementedException();
+    }
+
+    [TemporalTransferTypeConverter(typeof(StructGenericTransferTypeHookValueConverter<>))]
+    public sealed record GenericConstraintConverterHookValue<T>(T Value);
+
+    public class StructGenericTransferTypeHookValueConverter<T> :
+        ITemporalTransferTypeConverter
+        where T : struct
+    {
+        public Type TransferType => typeof(T);
 
         public object? ToTransferType(object? value) => throw new NotImplementedException();
 

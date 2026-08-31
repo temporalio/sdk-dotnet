@@ -83,43 +83,74 @@ namespace Temporalio.Converters
                 return null;
             }
 
-            if (!typeof(ITemporalTransferTypeConverter).IsAssignableFrom(attr.ConverterType))
+            var converterType = attr.ConverterType;
+            if (converterType.ContainsGenericParameters)
+            {
+                if (!type.IsGenericType || type.ContainsGenericParameters)
+                {
+                    throw new InvalidOperationException(
+                        $"Type {type} declares open generic Temporal transfer type converter type " +
+                        $"{attr.ConverterType}, but the marked type is not a closed constructed generic type.");
+                }
+                if (!converterType.IsGenericTypeDefinition)
+                {
+                    throw new InvalidOperationException(
+                        $"Type {type} declares open generic Temporal transfer type converter type " +
+                        $"{attr.ConverterType}, which cannot be closed because it is not a generic type definition.");
+                }
+
+                var typeArguments = type.GetGenericArguments();
+                if (converterType.GetGenericArguments().Length != typeArguments.Length)
+                {
+                    throw new InvalidOperationException(
+                        $"Type {type} and its open generic Temporal transfer type converter type " +
+                        $"{attr.ConverterType} have different generic arities.");
+                }
+
+                try
+                {
+                    converterType = converterType.MakeGenericType(typeArguments);
+                }
+                catch (ArgumentException e)
+                {
+                    throw new InvalidOperationException(
+                        $"Type {type} cannot close Temporal transfer type converter type " +
+                        $"{attr.ConverterType} because its generic arguments do not satisfy the converter constraints.",
+                        e);
+                }
+            }
+
+            if (!typeof(ITemporalTransferTypeConverter).IsAssignableFrom(converterType))
             {
                 throw new InvalidOperationException(
                     $"Type {type} has a Temporal transfer type converter type " +
-                    $"{attr.ConverterType} that does not implement {nameof(ITemporalTransferTypeConverter)}.");
+                    $"{converterType} that does not implement {nameof(ITemporalTransferTypeConverter)}.");
             }
-            if (attr.ConverterType.IsAbstract)
+            if (converterType.IsAbstract)
             {
                 throw new InvalidOperationException(
                     $"Type {type} has an abstract Temporal transfer type converter type " +
-                    $"{attr.ConverterType}.");
+                    $"{converterType}.");
             }
-            if (attr.ConverterType.ContainsGenericParameters)
-            {
-                throw new InvalidOperationException(
-                    $"Type {type} has an open generic Temporal transfer type converter type " +
-                    $"{attr.ConverterType}.");
-            }
-            if (!attr.ConverterType.IsValueType &&
-                attr.ConverterType.GetConstructor(Type.EmptyTypes) == null)
+            if (!converterType.IsValueType &&
+                converterType.GetConstructor(Type.EmptyTypes) == null)
             {
                 throw new InvalidOperationException(
                     $"Type {type} has a Temporal transfer type converter type " +
-                    $"{attr.ConverterType} without a public parameterless constructor.");
+                    $"{converterType} without a public parameterless constructor.");
             }
 
-            if (Activator.CreateInstance(attr.ConverterType) is not ITemporalTransferTypeConverter converter)
+            if (Activator.CreateInstance(converterType) is not ITemporalTransferTypeConverter converter)
             {
                 throw new InvalidOperationException(
                     $"Type {type} has a Temporal transfer type converter type " +
-                    $"{attr.ConverterType} that could not be instantiated.");
+                    $"{converterType} that could not be instantiated.");
             }
             if (converter.TransferType == null)
             {
                 throw new InvalidOperationException(
                     $"Type {type} has a Temporal transfer type converter type " +
-                    $"{attr.ConverterType} with a null transfer type.");
+                    $"{converterType} with a null transfer type.");
             }
 
             return converter;
