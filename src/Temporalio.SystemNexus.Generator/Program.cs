@@ -60,6 +60,7 @@ void GenerateNexusApi()
         {
             "dotnet",
             "--native-api",
+            "--system-nexus",
             Path.Join(apiProtoDir, "nexus/workflow-service.wit"),
             Path.Join(apiProtoDir, "nexus/deps"),
             "--support-file",
@@ -85,6 +86,7 @@ void PostProcessGeneratedNexusApi()
     WriteWorkflowGeneratedFile("Operations.cs");
     WriteWorkflowGeneratedFile("Services.cs");
     WriteWorkflowGeneratedFile(Path.Join("Support", "TemporalSupport.cs"), "TemporalSupport.cs");
+    WriteWorkerGeneratedFile("SystemNexusWorkflowOutboundInterceptor.cs");
 }
 
 void WriteWorkflowGeneratedFile(string stagingRelativePath, string? outputFileName = null)
@@ -102,6 +104,14 @@ void WriteWorkflowGeneratedFile(string stagingRelativePath, string? outputFileNa
     contents = contents.Replace("namespace Nexgen.Support", "namespace Temporalio.Workflows");
     contents = contents.Replace("Nexgen.Support.", string.Empty);
     File.WriteAllText(destinationPath, contents);
+}
+
+void WriteWorkerGeneratedFile(string stagingRelativePath)
+{
+    File.Copy(
+        Path.Join(stagingOutputDir, stagingRelativePath),
+        Path.Join(workerGeneratedDir, Path.GetFileName(stagingRelativePath)),
+        overwrite: true);
 }
 
 static void RecreateDirectory(string path)
