@@ -37,8 +37,6 @@ to docs, or any other relevant information.
 - Workflow task completions larger than the gRPC request size limit are now paginated
   automatically when the namespace supports it. Paginated workflow task completions require
   Temporal Server 1.32.0 or later.
-- Fixed workflow-side `SignalWithStartWorkflowAsync` to participate in outbound workflow
-  interception, propagate tracing headers, and apply the target workflow serialization context.
 
 ### Changed
 
