@@ -29,8 +29,8 @@ namespace Temporalio.Client
                 activityType: rawInfo.ActivityType?.Name ?? string.Empty,
                 closeTime: rawInfo.CloseTime?.ToDateTime(),
                 executionDuration: rawInfo.ExecutionDuration?.ToTimeSpan(),
-                scheduledTime: rawInfo.ScheduleTime?.ToDateTime() ?? default,
-                stateTransitionCount: rawInfo.StateTransitionCount,
+                executionTime: rawInfo.ExecutionTime?.ToDateTime(),
+                scheduleTime: rawInfo.ScheduleTime?.ToDateTime() ?? default,
                 status: rawInfo.Status,
                 taskQueue: rawInfo.TaskQueue,
                 searchAttributesFactory: () => rawInfo.SearchAttributes == null ?
@@ -49,8 +49,8 @@ namespace Temporalio.Client
         /// <param name="activityType">Activity type name.</param>
         /// <param name="closeTime">Close time.</param>
         /// <param name="executionDuration">Execution duration.</param>
-        /// <param name="scheduledTime">Scheduled time.</param>
-        /// <param name="stateTransitionCount">State transition count.</param>
+        /// <param name="executionTime">Execution time.</param>
+        /// <param name="scheduleTime">Schedule time.</param>
         /// <param name="status">Activity status.</param>
         /// <param name="taskQueue">Task queue.</param>
         /// <param name="searchAttributesFactory">Factory for lazy search attribute creation.</param>
@@ -61,8 +61,8 @@ namespace Temporalio.Client
             string activityType,
             DateTime? closeTime,
             TimeSpan? executionDuration,
-            DateTime scheduledTime,
-            long stateTransitionCount,
+            DateTime? executionTime,
+            DateTime scheduleTime,
             ActivityExecutionStatus status,
             string taskQueue,
             Func<SearchAttributeCollection> searchAttributesFactory)
@@ -73,8 +73,8 @@ namespace Temporalio.Client
             ActivityType = activityType;
             CloseTime = closeTime;
             ExecutionDuration = executionDuration;
-            ScheduledTime = scheduledTime;
-            StateTransitionCount = stateTransitionCount;
+            ExecutionTime = executionTime;
+            ScheduleTime = scheduleTime;
             Status = status;
             TaskQueue = taskQueue;
             searchAttributes = new(searchAttributesFactory, LazyThreadSafetyMode.PublicationOnly);
@@ -83,52 +83,53 @@ namespace Temporalio.Client
         /// <summary>
         /// Gets the activity ID.
         /// </summary>
-        public string ActivityId { get; private init; }
+        public string ActivityId { get; }
 
         /// <summary>
         /// Gets the activity run ID.
         /// </summary>
-        public string? ActivityRunId { get; private init; }
+        public string? ActivityRunId { get; }
 
         /// <summary>
         /// Gets the activity type name.
         /// </summary>
-        public string ActivityType { get; private init; }
+        public string ActivityType { get; }
 
         /// <summary>
         /// Gets when the activity was closed if in a terminal state.
         /// </summary>
-        public DateTime? CloseTime { get; private init; }
+        public DateTime? CloseTime { get; }
 
         /// <summary>
         /// Gets the total execution duration if the activity is closed.
         /// </summary>
-        public TimeSpan? ExecutionDuration { get; private init; }
+        public TimeSpan? ExecutionDuration { get; }
+
+        /// <summary>
+        /// Gets the time at which the first activity task is made available for dispatch,
+        /// computed as schedule time + start delay.
+        /// </summary>
+        public DateTime? ExecutionTime { get; }
 
         /// <summary>
         /// Gets the namespace.
         /// </summary>
-        public string Namespace { get; private init; }
+        public string Namespace { get; }
 
         /// <summary>
         /// Gets when the activity was originally scheduled.
         /// </summary>
-        public DateTime ScheduledTime { get; private init; }
-
-        /// <summary>
-        /// Gets the number of state transitions.
-        /// </summary>
-        public long StateTransitionCount { get; private init; }
+        public DateTime ScheduleTime { get; }
 
         /// <summary>
         /// Gets the status of the activity.
         /// </summary>
-        public ActivityExecutionStatus Status { get; private init; }
+        public ActivityExecutionStatus Status { get; }
 
         /// <summary>
         /// Gets the task queue for the activity.
         /// </summary>
-        public string TaskQueue { get; private init; }
+        public string TaskQueue { get; }
 
         /// <summary>
         /// Gets the search attributes on the activity.
@@ -139,6 +140,7 @@ namespace Temporalio.Client
         /// <summary>
         /// Gets the raw proto list info, or null if this was created from a describe call.
         /// </summary>
-        internal ActivityExecutionListInfo? RawInfo { get; private init; }
+        /// <seealso cref="ActivityExecutionDescription.RawInfo"/>
+        internal ActivityExecutionListInfo? RawInfo { get; }
     }
 }

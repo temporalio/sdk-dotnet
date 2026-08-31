@@ -21,6 +21,9 @@ to docs, or any other relevant information.
 
 ### :boom: Breaking Changes
 
+- Changes to experimental `ActivityExecutionDescription` class and related classes:
+  - `StaticSummary` and `ScheduledTime` were renamed to `Summary` and `ScheduleTime` respectively.
+  - `LongPollToken` and `StateTransitionCount` were removed.
 - Removed the experimental `SignalWithStartWorkflowOptions.RequestId`. Request IDs for
   workflow-side signal-with-start are now assigned internally and are no longer user-settable.
 
@@ -29,6 +32,9 @@ to docs, or any other relevant information.
 - Added operation-specific outbound workflow interceptors for Temporal System Nexus operations.
   `SignalWithStartWorkflowAsync` can now be intercepted before the existing
   `ScheduleSystemNexusOperationAsync` hook.
+- New options in `ActivityDescribeOptions` that can be used to retrieve data associated with
+  activity execution, such as input and result.
+- More properties in `ActivityDescribeOptions`.
 - Experimental Temporal transfer type conversion now supports constructed generic models whose
   attributes reference generic converter type definitions. Model type arguments close the converter
   directly in declaration order, with matching generic arity and compatible constraints required.
