@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Temporal SDK .NET Google Cloud Run Worker Extension</Description>
+    <Description>Temporal SDK .NET Google Cloud Run Worker Identity Extension</Description>
     <IncludeSymbols>true</IncludeSymbols>
     <LangVersion>9.0</LangVersion>
     <PackageReadmeFile>README.md</PackageReadmeFile>

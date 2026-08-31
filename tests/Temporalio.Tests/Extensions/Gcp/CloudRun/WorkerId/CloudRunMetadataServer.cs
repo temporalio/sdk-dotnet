@@ -1,4 +1,4 @@
-namespace Temporalio.Tests.Extensions.Gcp.CloudRun;
+namespace Temporalio.Tests.Extensions.Gcp.CloudRun.WorkerId;
 
 using System.Net;
 using System.Net.Sockets;

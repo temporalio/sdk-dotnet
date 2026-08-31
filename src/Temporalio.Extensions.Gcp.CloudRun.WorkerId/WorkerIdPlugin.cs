@@ -5,7 +5,7 @@ using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Worker;
 
-namespace Temporalio.Extensions.Gcp.CloudRun
+namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
 {
     /// <summary>
     /// Temporal client and worker plugin that derives the worker identity and the worker deployment
@@ -57,7 +57,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun
         /// timeout overrides.
         /// </param>
         public WorkerIdPlugin(WorkerIdPluginOptions options)
-            : base("Temporalio.Extensions.Gcp.CloudRun.WorkerIdPlugin")
+            : base("Temporalio.Extensions.Gcp.CloudRun.WorkerId.WorkerIdPlugin")
         {
             if (options == null)
             {

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Temporalio.Common;
 
-namespace Temporalio.Extensions.Gcp.CloudRun
+namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
 {
     /// <summary>
     /// Reads Google Cloud Run instance metadata to derive a Temporal worker identity and a

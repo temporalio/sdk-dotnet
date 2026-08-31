@@ -1,7 +1,7 @@
-namespace Temporalio.Tests.Extensions.Gcp.CloudRun;
+namespace Temporalio.Tests.Extensions.Gcp.CloudRun.WorkerId;
 
 using Temporalio.Common;
-using Temporalio.Extensions.Gcp.CloudRun;
+using Temporalio.Extensions.Gcp.CloudRun.WorkerId;
 using Temporalio.Tests.Extensions.OpenTelemetry;
 using Xunit;
 

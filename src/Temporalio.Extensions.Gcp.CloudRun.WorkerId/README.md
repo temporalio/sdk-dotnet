@@ -4,11 +4,11 @@ This extension provides `WorkerIdPlugin`, a Temporal client/worker plugin that d
 identity and a `WorkerDeploymentVersion` from Google Cloud Run instance metadata, for use with a
 normal long-lived worker on Cloud Run worker pools and services.
 
-Add the `Temporalio.Extensions.Gcp.CloudRun` package from
-[NuGet](https://www.nuget.org/packages/Temporalio.Extensions.Gcp.CloudRun). For example, using the
-`dotnet` CLI:
+Add the `Temporalio.Extensions.Gcp.CloudRun.WorkerId` package from
+[NuGet](https://www.nuget.org/packages/Temporalio.Extensions.Gcp.CloudRun.WorkerId). For example,
+using the `dotnet` CLI:
 
-    dotnet add package Temporalio.Extensions.Gcp.CloudRun
+    dotnet add package Temporalio.Extensions.Gcp.CloudRun.WorkerId
 
 ## Quick Start
 
@@ -21,7 +21,7 @@ the Cloud Run deployment version when the worker is created.
 using System;
 using System.Threading;
 using Temporalio.Client;
-using Temporalio.Extensions.Gcp.CloudRun;
+using Temporalio.Extensions.Gcp.CloudRun.WorkerId;
 using Temporalio.Worker;
 
 var connectOptions = new TemporalClientConnectOptions("my-namespace.a1b2c.tmprl.cloud:7233")

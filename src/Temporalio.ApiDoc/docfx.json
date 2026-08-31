@@ -9,6 +9,7 @@
             "Temporalio.Extensions.Aws.Lambda.OpenTelemetry/*.csproj",
             "Temporalio.Extensions.DiagnosticSource/*.csproj",
             "Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/*.csproj",
+            "Temporalio.Extensions.Gcp.CloudRun.WorkerId/*.csproj",
             "Temporalio.Extensions.Hosting/*.csproj",
             "Temporalio.Extensions.OpenTelemetry/*.csproj"
           ],

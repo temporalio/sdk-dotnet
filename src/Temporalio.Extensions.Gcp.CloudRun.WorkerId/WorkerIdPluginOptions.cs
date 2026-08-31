@@ -1,6 +1,6 @@
 using System;
 
-namespace Temporalio.Extensions.Gcp.CloudRun
+namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
 {
     /// <summary>
     /// Options for <see cref="WorkerIdPlugin" />.
