@@ -241,8 +241,8 @@ public class PayloadConverterTests : TestBase
         typeof(GenericTransferTypeHookValueConverter<>),
         "not a closed constructed generic type")]
     [InlineData(
-        typeof(GenericArityMismatchConverterHookValue<string>),
-        typeof(OrderedGenericTransferTypeHookValueConverter<,>),
+        typeof(GenericArityMismatchConverterHookValue<string, int>),
+        typeof(ThreeArgumentGenericTransferTypeHookValueConverter<,,>),
         "different generic arities")]
     [InlineData(
         typeof(GenericConstraintConverterHookValue<string>),
@@ -464,8 +464,18 @@ public class PayloadConverterTests : TestBase
     [TemporalTransferTypeConverter(typeof(GenericTransferTypeHookValueConverter<>))]
     public sealed record OpenGenericConverterHookValue(string Value);
 
-    [TemporalTransferTypeConverter(typeof(OrderedGenericTransferTypeHookValueConverter<,>))]
-    public sealed record GenericArityMismatchConverterHookValue<T>(T Value);
+    [TemporalTransferTypeConverter(typeof(ThreeArgumentGenericTransferTypeHookValueConverter<,,>))]
+    public sealed record GenericArityMismatchConverterHookValue<TFirst, TSecond>(TFirst Value);
+
+    public class ThreeArgumentGenericTransferTypeHookValueConverter<TFirst, TSecond, TThird> :
+        ITemporalTransferTypeConverter
+    {
+        public Type TransferType => typeof(TFirst);
+
+        public object? ToTransferType(object? value) => throw new NotImplementedException();
+
+        public object? FromTransferType(object? transferType) => throw new NotImplementedException();
+    }
 
     [TemporalTransferTypeConverter(typeof(StructGenericTransferTypeHookValueConverter<>))]
     public sealed record GenericConstraintConverterHookValue<T>(T Value);

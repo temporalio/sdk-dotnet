@@ -111,12 +111,12 @@ namespace Temporalio.Converters
                 {
                     converterType = converterType.MakeGenericType(typeArguments);
                 }
-                catch (ArgumentException err)
+                catch (ArgumentException e)
                 {
                     throw new InvalidOperationException(
                         $"Type {type} cannot close Temporal transfer type converter type " +
                         $"{attr.ConverterType} because its generic arguments do not satisfy the converter constraints.",
-                        err);
+                        e);
                 }
             }
 
@@ -130,12 +130,6 @@ namespace Temporalio.Converters
             {
                 throw new InvalidOperationException(
                     $"Type {type} has an abstract Temporal transfer type converter type " +
-                    $"{converterType}.");
-            }
-            if (converterType.ContainsGenericParameters)
-            {
-                throw new InvalidOperationException(
-                    $"Type {type} has an open generic Temporal transfer type converter type " +
                     $"{converterType}.");
             }
             if (!converterType.IsValueType &&
