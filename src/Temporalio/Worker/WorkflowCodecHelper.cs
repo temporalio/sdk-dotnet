@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Google.Protobuf;
@@ -125,20 +126,9 @@ namespace Temporalio.Worker
                         }
                         if (job.ResolveNexusOperation.Result.Completed != null)
                         {
-                            var operationInfo = context.Instance?.GetPendingNexusOperationInfo(
-                                job.ResolveNexusOperation.Seq);
-                            if (operationInfo == null ||
-                                !await SystemNexusPayloadVisitor.TryVisitOutputAsync(
-                                    operationInfo.Endpoint,
-                                    job.ResolveNexusOperation.Result.Completed,
-                                    payload => DecodeAsync(nexusCodec, payload),
-                                    payloads => DecodeAsync(nexusCodec, payloads)).
-                                    ConfigureAwait(false))
-                            {
-                                await DecodeAsync(
-                                    nexusCodec, job.ResolveNexusOperation.Result.Completed).
-                                    ConfigureAwait(false);
-                            }
+                            await DecodeAsync(
+                                nexusCodec, job.ResolveNexusOperation.Result.Completed).
+                                ConfigureAwait(false);
                         }
                         else if (job.ResolveNexusOperation.Result.Failed != null)
                         {
@@ -347,16 +337,7 @@ namespace Temporalio.Worker
                     codec = context.CodecNoContext;
                     if (cmd.ScheduleNexusOperation.Input != null && codec != null)
                     {
-                        if (!await SystemNexusPayloadVisitor.TryVisitInputAsync(
-                                cmd.ScheduleNexusOperation.Endpoint,
-                                cmd.ScheduleNexusOperation.Input,
-                                payload => EncodeAsync(codec, payload),
-                                payloads => EncodeAsync(codec, payloads)).
-                            ConfigureAwait(false))
-                        {
-                            await EncodeAsync(
-                                codec, cmd.ScheduleNexusOperation.Input).ConfigureAwait(false);
-                        }
+                        await EncodeAsync(codec, cmd.ScheduleNexusOperation.Input).ConfigureAwait(false);
                     }
                     break;
                 case WorkflowCommand.VariantOneofCase.StartChildWorkflowExecution:
@@ -429,15 +410,43 @@ namespace Temporalio.Worker
             {
                 return;
             }
-            // We have to convert to list here just in case they are based on the underlying list
-            // and we clear it out (which can happen with Linq selectors)
-            var newPayloads = (await codec.EncodeAsync(payloads).ConfigureAwait(false)).ToList();
+            var newPayloads = new List<Payload>();
+            var codecPayloads = new List<Payload>();
+            foreach (var payload in payloads)
+            {
+                if (!await SystemNexusPayloadVisitor.TryVisitAsync(
+                        payload,
+                        payload => EncodeAsync(codec, payload),
+                        nestedPayloads => EncodeAsync(codec, nestedPayloads)).ConfigureAwait(false))
+                {
+                    codecPayloads.Add(payload);
+                    continue;
+                }
+
+                if (codecPayloads.Count > 0)
+                {
+                    newPayloads.AddRange(await codec.EncodeAsync(codecPayloads).ConfigureAwait(false));
+                    codecPayloads.Clear();
+                }
+                newPayloads.Add(payload);
+            }
+            if (codecPayloads.Count > 0)
+            {
+                newPayloads.AddRange(await codec.EncodeAsync(codecPayloads).ConfigureAwait(false));
+            }
             payloads.Clear();
             payloads.AddRange(newPayloads);
         }
 
         private static async Task EncodeAsync(IPayloadCodec codec, Payload payload)
         {
+            if (await SystemNexusPayloadVisitor.TryVisitAsync(
+                    payload,
+                    nestedPayload => EncodeAsync(codec, nestedPayload),
+                    nestedPayloads => EncodeAsync(codec, nestedPayloads)).ConfigureAwait(false))
+            {
+                return;
+            }
             // We are gonna require a single result here. It is important that we do Single() call
             // before clearing out payload to merge with since underlying enumerable may be lazy.
             // If the returned payload is literally the same object as the one sent to the codec,
@@ -538,15 +547,43 @@ namespace Temporalio.Worker
             {
                 return;
             }
-            // We have to convert to list here just in case they are based on the underlying list
-            // and we clear it out (which can happen with Linq selectors)
-            var newPayloads = (await codec.DecodeAsync(payloads).ConfigureAwait(false)).ToList();
+            var newPayloads = new List<Payload>();
+            var codecPayloads = new List<Payload>();
+            foreach (var payload in payloads)
+            {
+                if (!await SystemNexusPayloadVisitor.TryVisitAsync(
+                        payload,
+                        payload => DecodeAsync(codec, payload),
+                        nestedPayloads => DecodeAsync(codec, nestedPayloads)).ConfigureAwait(false))
+                {
+                    codecPayloads.Add(payload);
+                    continue;
+                }
+
+                if (codecPayloads.Count > 0)
+                {
+                    newPayloads.AddRange(await codec.DecodeAsync(codecPayloads).ConfigureAwait(false));
+                    codecPayloads.Clear();
+                }
+                newPayloads.Add(payload);
+            }
+            if (codecPayloads.Count > 0)
+            {
+                newPayloads.AddRange(await codec.DecodeAsync(codecPayloads).ConfigureAwait(false));
+            }
             payloads.Clear();
             payloads.AddRange(newPayloads);
         }
 
         private static async Task DecodeAsync(IPayloadCodec codec, Payload payload)
         {
+            if (await SystemNexusPayloadVisitor.TryVisitAsync(
+                    payload,
+                    nestedPayload => DecodeAsync(codec, nestedPayload),
+                    nestedPayloads => DecodeAsync(codec, nestedPayloads)).ConfigureAwait(false))
+            {
+                return;
+            }
             // We are gonna require a single result here.
             // Similarly with encode, we leave the payload alone if it's exactly the same object as the original.
             var decoded = await codec.DecodeAsync(new Payload[] { payload }).ConfigureAwait(false);

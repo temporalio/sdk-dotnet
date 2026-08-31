@@ -11,34 +11,26 @@ namespace Temporalio.Worker
 {
     internal static partial class SystemNexusPayloadVisitor
     {
+        private const string TemporalSystemEndpoint = "__temporal_system";
+
+        private const string SystemPayloadMetadataKey = "__temporal_system_payload";
+
+        private static readonly ByteString SystemPayloadMetadataValue = ByteString.CopyFromUtf8("true");
+
         internal delegate Task PayloadVisitor(Payload payload);
 
         internal delegate Task PayloadsVisitor(RepeatedField<Payload> payloads);
 
-        internal delegate Task EnvelopeVisitor(Payload payload);
+        internal static bool IsSystemEndpoint(string? endpoint) => endpoint == TemporalSystemEndpoint;
 
-        internal static Task<bool> TryVisitInputAsync(
-            string? endpoint,
-            Payload payload,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads,
-            EnvelopeVisitor? visitEnvelope = null) =>
-            TryVisitAsync(endpoint, payload, visitPayload, visitPayloads, visitEnvelope);
-
-        internal static Task<bool> TryVisitOutputAsync(
-            string? endpoint,
-            Payload payload,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads,
-            EnvelopeVisitor? visitEnvelope = null) =>
-            TryVisitAsync(endpoint, payload, visitPayload, visitPayloads, visitEnvelope);
+        internal static void MarkSystemPayload(Payload payload) =>
+            payload.Metadata[SystemPayloadMetadataKey] = SystemPayloadMetadataValue;
 
         private static async Task VisitEnvelopeAsync<T>(
             Payload payload,
             Func<T, PayloadVisitor, PayloadsVisitor, Task> visitMessage,
             PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads,
-            EnvelopeVisitor? visitEnvelope)
+            PayloadsVisitor visitPayloads)
             where T : IMessage<T>, new()
         {
             BinaryProtoConverter.AssertProtoPayload(payload, typeof(T));
@@ -48,11 +40,12 @@ namespace Temporalio.Worker
             payload.Metadata.Clear();
             payload.Metadata["encoding"] = ByteString.CopyFromUtf8("binary/protobuf");
             payload.Metadata["messageType"] = ByteString.CopyFromUtf8(message.Descriptor.FullName);
+            MarkSystemPayload(payload);
             payload.Data = message.ToByteString();
-            if (visitEnvelope != null)
-            {
-                await visitEnvelope(payload).ConfigureAwait(false);
-            }
         }
+
+        private static bool IsSystemPayload(Payload payload) =>
+            payload.Metadata.TryGetValue(SystemPayloadMetadataKey, out var value) &&
+            value.Equals(SystemPayloadMetadataValue);
     }
 }

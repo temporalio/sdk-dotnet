@@ -899,13 +899,6 @@ namespace Temporalio.Worker
         }
 
         /// <inheritdoc/>
-        public IWorkflowCodecHelperInstance.NexusOperationInfo? GetPendingNexusOperationInfo(uint seq)
-        {
-            nexusOperationsPending.TryGetValue(seq, out var pending);
-            return pending == null ? null : new(pending.Endpoint);
-        }
-
-        /// <inheritdoc/>
         protected override IEnumerable<Task>? GetScheduledTasks() => scheduledTasks;
 
         /// <inheritdoc/>
@@ -2690,7 +2683,7 @@ namespace Temporalio.Worker
 
                 // TODO: Scope the generated System Nexus support converter context around this
                 // operation converter once the generated support file is ingested into the SDK.
-                var systemNexusPayloadConverter = SystemNexusPayloadVisitor.IsSystemNexusEndpoint(
+                var systemNexusPayloadConverter = SystemNexusPayloadVisitor.IsSystemEndpoint(
                     input.ClientOptions.Endpoint) ?
                     new SystemNexusPayloadConverter(
                         instance.payloadConverterNoContext,
@@ -2737,7 +2730,6 @@ namespace Temporalio.Worker
 
                 var handleSource = new TaskCompletionSource<NexusWorkflowOperationHandle<TResult>>();
                 var pending = new PendingNexusOperationInfo(
-                    Endpoint: input.ClientOptions.Endpoint,
                     StartCompletionSource: new(),
                     ResultCompletionSource: new());
                 instance.nexusOperationsPending[seq] = pending;
@@ -3212,7 +3204,6 @@ namespace Temporalio.Worker
             TaskCompletionSource<ResolveRequestCancelExternalWorkflow> CompletionSource);
 
         private record PendingNexusOperationInfo(
-            string? Endpoint,
             TaskCompletionSource<ResolveNexusOperationStart> StartCompletionSource,
             TaskCompletionSource<NexusOperationResult> ResultCompletionSource);
 
