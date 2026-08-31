@@ -16,6 +16,9 @@ using Xunit.Abstractions;
 /// nothing to history, so the handler simply queries and returns the result; there is no operation
 /// token and no completion callback.
 /// </summary>
+[CloudTestExclusion(
+    CloudTestExclusionReason.NeedsCloudAdaptation,
+    "Requires Cloud Nexus endpoint setup and cleanup.")]
 public class NexusQueryOperationTests : WorkflowEnvironmentTestBase
 {
     public NexusQueryOperationTests(ITestOutputHelper output, WorkflowEnvironment env)
