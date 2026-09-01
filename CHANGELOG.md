@@ -26,6 +26,9 @@ to docs, or any other relevant information.
 
 ### Added
 
+- Added operation-specific outbound workflow interceptors for Temporal System Nexus operations.
+  `SignalWithStartWorkflowAsync` can now be intercepted before the existing
+  `ScheduleSystemNexusOperationAsync` hook.
 - Experimental Temporal transfer type conversion now supports constructed generic models whose
   attributes reference generic converter type definitions. Model type arguments close the converter
   directly in declaration order, with matching generic arity and compatible constraints required.
