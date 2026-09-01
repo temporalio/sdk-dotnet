@@ -19,12 +19,6 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
-### Added                   — new features
-- Support Workflow Queries as Nexus operations. A query issued from inside a Nexus operation handler
-  now propagates the link the server returns for the workflow that processed it, so the caller's
-  Nexus operation event points back at the queried workflow. Requires a server that populates
-  `QueryWorkflowResponse.link`; older servers leave it unset and nothing is propagated.
-
 ### :boom: Breaking Changes
 
 - Removed the experimental `SignalWithStartWorkflowOptions.RequestId`. Request IDs for
@@ -43,23 +37,12 @@ to docs, or any other relevant information.
 - Workflow task completions larger than the gRPC request size limit are now paginated
   automatically when the namespace supports it. Paginated workflow task completions require
   Temporal Server 1.32.0 or later.
-- 
-### Changed                 — changes in existing functionality
-- Support Workflow Queries as Nexus operations. A query issued from inside a Nexus operation handler
-  now propagates the link the server returns for the workflow that processed it, so the caller's
-  Nexus operation event points back at the queried workflow. Requires a server that populates
-  `QueryWorkflowResponse.link` and understands the `Link.Workflow` variant, added in server
-  1.32.0-162.0 (temporalio/temporal#11274); older servers leave it unset and nothing is propagated.
 
 ### Changed
 
-- Support Workflow Queries as Nexus operations. A query issued from inside a Nexus operation handler
-  now propagates the link the server returns for the workflow that processed it, so the caller's
-  Nexus operation event points back at the queried workflow. 
-- Added `PayloadValidationError.CreateException`, which payload converters and codecs can use to
-  report invalid Nexus operation input with structured details.
-- 
-### Changed
+- A workflow query issued from inside a Nexus operation handler now propagates the link the server
+  returns for the workflow that processed it, so the caller's Nexus operation event points back at
+  the queried workflow. 
 - A `common.v1.Link.Workflow` now serializes to the workflow path
   `temporal:///namespaces/{ns}/workflows/{wid}/{rid}` with the optional `reason` as a query param,
   rather than reusing the workflow-event path with a `/history` suffix and dropping `reason`. The
