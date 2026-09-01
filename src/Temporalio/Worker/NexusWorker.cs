@@ -169,11 +169,14 @@ namespace Temporalio.Worker
             // Create context
             RemoveInvalidHeaders(task.Request.Header);
             var startOp = task.Request.StartOperation;
+            var requestId = string.IsNullOrEmpty(startOp.RequestId)
+                ? Guid.NewGuid().ToString()
+                : startOp.RequestId;
             var context = new OperationStartContext(
                 Service: startOp.Service,
                 Operation: startOp.Operation,
                 CancellationToken: running.CancellationTokenSource.Token,
-                RequestId: startOp.RequestId)
+                RequestId: requestId)
             {
                 Headers = task.Request.Header.Count == 0 ? null :
                     new Dictionary<string, string>(task.Request.Header, StringComparer.OrdinalIgnoreCase),
