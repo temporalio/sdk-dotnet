@@ -169,6 +169,11 @@ namespace Temporalio.Worker
             // Create context
             RemoveInvalidHeaders(task.Request.Header);
             var startOp = task.Request.StartOperation;
+            if (string.IsNullOrEmpty(startOp.RequestId))
+            {
+                throw new HandlerException(
+                    HandlerErrorType.Internal, "Nexus start-operation task is missing a request ID");
+            }
             var context = new OperationStartContext(
                 Service: startOp.Service,
                 Operation: startOp.Operation,
