@@ -73,6 +73,15 @@ namespace Temporalio.Workflows
         public TimeSpan? LocalRetryThreshold { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the local activity's serialized arguments are
+        /// recorded in the local activity marker. Default is false.
+        /// </summary>
+        /// <remarks>
+        /// Enabling this makes the arguments visible in workflow history and increases its size.
+        /// </remarks>
+        public bool IncludeArgumentsInMarker { get; set; }
+
+        /// <summary>
         /// Gets or sets a single-line fixed summary for this activity that may appear in UI/CLI.
         /// This can be in single-line Temporal markdown format.
         /// </summary>

@@ -37,6 +37,9 @@ to docs, or any other relevant information.
 - Workflow task completions larger than the gRPC request size limit are now paginated
   automatically when the namespace supports it. Paginated workflow task completions require
   Temporal Server 1.32.0 or later.
+- Added `LocalActivityOptions.IncludeArgumentsInMarker` to record a local activity's serialized
+  arguments in its local activity marker, making them visible in workflow history. Defaults to
+  false.
 
 ### Changed
 
