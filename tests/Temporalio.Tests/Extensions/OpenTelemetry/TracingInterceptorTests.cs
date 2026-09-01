@@ -692,6 +692,9 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresLocalServer,
+        "Requires local dynamic configuration to enable signal with start from a workflow.")]
     public async Task TracingInterceptor_SystemNexusSignalWithStart_PropagatesHeaders()
     {
         var activities = await WithTracingWorkerAsync(
