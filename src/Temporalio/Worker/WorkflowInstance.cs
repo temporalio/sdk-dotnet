@@ -3105,8 +3105,7 @@ namespace Temporalio.Worker
             public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 string operationName, object? arg, NexusWorkflowOperationOptions? options = null) =>
                 SystemNexusPayloadVisitor.IsSystemEndpoint(Options.Endpoint) ?
-                WorkflowOutboundInterceptor.StartSystemNexusOperationAsync<TResult>(
-                    instance.outbound.Value, Service, operationName, arg) :
+                instance.StartSystemNexusOperationAsync<TResult>(Service, operationName, arg) :
                 instance.outbound.Value.ScheduleNexusOperationAsync<TResult>(new(
                     Service: Service,
                     ClientOptions: Options,
@@ -3134,8 +3133,7 @@ namespace Temporalio.Worker
             public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 string operationName, object? arg, NexusWorkflowOperationOptions? options = null) =>
                 SystemNexusPayloadVisitor.IsSystemEndpoint(Options.Endpoint) ?
-                WorkflowOutboundInterceptor.StartSystemNexusOperationAsync<TResult>(
-                    instance.outbound.Value, Service, operationName, arg) :
+                instance.StartSystemNexusOperationAsync<TResult>(Service, operationName, arg) :
                 instance.outbound.Value.ScheduleNexusOperationAsync<TResult>(new(
                     Service: Service,
                     ClientOptions: Options,
