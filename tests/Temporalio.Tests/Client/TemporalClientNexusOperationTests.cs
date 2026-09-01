@@ -1,7 +1,10 @@
 namespace Temporalio.Tests.Client;
 
+using System.Collections.Concurrent;
+using System.Threading;
 using NexusRpc;
 using NexusRpc.Handlers;
+using Temporalio.Activities;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Client.Interceptors;
@@ -139,6 +142,255 @@ public class TemporalClientNexusOperationTests : WorkflowEnvironmentTestBase
         public IOperationHandler<string, NoValue> NoResult() =>
             OperationHandler.Sync<string, NoValue>(
                 (Func<OperationStartContext, string, NoValue>)((ctx, input) => default!));
+    }
+
+    [Activity]
+    public static Task<string> EchoActivityAsync(string input) => Task.FromResult($"echo:{input}");
+
+    [NexusServiceHandler(typeof(ITestService))]
+    public class RawActivityStartEchoHandler
+    {
+        [NexusOperationHandler]
+        public IOperationHandler<string, string> Echo() =>
+            OperationHandler.Sync<string, string>(async (ctx, input) =>
+            {
+                var client = NexusOperationExecutionContext.Current.TemporalClient;
+                var taskQueue = NexusOperationExecutionContext.Current.Info.TaskQueue;
+                var first = await client.StartActivityAsync<string>(
+                    () => EchoActivityAsync($"{input}-a"),
+                    new()
+                    {
+                        Id = $"act-a-{Guid.NewGuid()}",
+                        TaskQueue = taskQueue,
+                        ScheduleToCloseTimeout = TimeSpan.FromMinutes(1),
+                    });
+                var second = await client.StartActivityAsync<string>(
+                    () => EchoActivityAsync($"{input}-b"),
+                    new()
+                    {
+                        Id = $"act-b-{Guid.NewGuid()}",
+                        TaskQueue = taskQueue,
+                        ScheduleToCloseTimeout = TimeSpan.FromMinutes(1),
+                    });
+                return $"{first.Id}|{second.Id}|{await first.GetResultAsync()}|" +
+                    $"{await second.GetResultAsync()}";
+            });
+
+        [NexusOperationHandler]
+        public IOperationHandler<string, NoValue> NoResult() =>
+            OperationHandler.Sync<string, NoValue>(
+                (Func<OperationStartContext, string, NoValue>)((ctx, input) => default!));
+    }
+
+    [Workflow]
+    public class NexusCallerWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync(string endpoint, string input) =>
+            await Workflow.CreateNexusWorkflowClient<ITestService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.Echo(input));
+    }
+
+    [NexusServiceHandler(typeof(ITestService))]
+    public class RawActivityStartConflictPolicyEchoHandler
+    {
+        [NexusOperationHandler]
+        public IOperationHandler<string, string> Echo() =>
+            OperationHandler.Sync<string, string>(async (ctx, input) =>
+            {
+                var client = NexusOperationExecutionContext.Current.TemporalClient;
+                await client.StartActivityAsync(
+                    () => WaitForeverActivityAsync(),
+                    new()
+                    {
+                        Id = input,
+                        TaskQueue = NexusOperationExecutionContext.Current.Info.TaskQueue,
+                        ScheduleToCloseTimeout = TimeSpan.FromMinutes(2),
+                        IdConflictPolicy = ActivityIdConflictPolicy.UseExisting,
+                    });
+                return "attached";
+            });
+
+        [NexusOperationHandler]
+        public IOperationHandler<string, NoValue> NoResult() =>
+            OperationHandler.Sync<string, NoValue>(
+                (Func<OperationStartContext, string, NoValue>)((ctx, input) => default!));
+    }
+
+    [NexusServiceHandler(typeof(ITestService))]
+    public class RawActivityStartRedeliveryHandler
+    {
+        private int invocationCount;
+
+        [NexusOperationHandler]
+        public IOperationHandler<string, string> Echo() =>
+            OperationHandler.Sync<string, string>(async (ctx, input) =>
+            {
+                var attempt = Interlocked.Increment(ref invocationCount);
+                var client = NexusOperationExecutionContext.Current.TemporalClient;
+                var handle = await client.StartActivityAsync<string>(
+                    () => CountingEchoActivityAsync(input),
+                    new()
+                    {
+                        Id = $"act-{input}",
+                        TaskQueue = NexusOperationExecutionContext.Current.Info.TaskQueue,
+                        ScheduleToCloseTimeout = TimeSpan.FromMinutes(2),
+                    });
+                var result = await handle.GetResultAsync();
+                if (attempt == 1)
+                {
+                    // Forces a real server-driven redelivery of this StartOperation task.
+                    throw new InvalidOperationException("Simulated failure to force redelivery");
+                }
+                return result;
+            });
+
+        [NexusOperationHandler]
+        public IOperationHandler<string, NoValue> NoResult() =>
+            OperationHandler.Sync<string, NoValue>(
+                (Func<OperationStartContext, string, NoValue>)((ctx, input) => default!));
+    }
+
+    [Fact]
+    public async Task StartActivityAsync_RawActivityStartFromSyncHandler_TwoActivitiesBothSucceed()
+    {
+        await RunRawActivityStartTwoActivitiesAsync();
+    }
+
+    [Fact]
+    public async Task StartActivityAsync_RawActivityStartFromSyncHandler_ActivitiesCarryInboundLink()
+    {
+        var (activityIds, callerWorkflowId) = await RunRawActivityStartTwoActivitiesAsync();
+        foreach (var activityId in activityIds)
+        {
+            var desc = await Client.GetActivityHandle(activityId).DescribeAsync();
+            var link = Assert.Single(desc.RawDescription.Info.Links);
+            Assert.Equal(callerWorkflowId, link.WorkflowEvent.WorkflowId);
+            Assert.Equal(
+                Api.Enums.V1.EventType.NexusOperationScheduled,
+                link.WorkflowEvent.EventRef.EventType);
+        }
+    }
+
+    [Fact]
+    public async Task StartActivityAsync_RawActivityStartUseExistingWithoutInboundLinks_Succeeds()
+    {
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var activityId = $"act-{Guid.NewGuid()}";
+        var workerOptions = new TemporalWorkerOptions(taskQueue).
+            AddNexusService(new RawActivityStartConflictPolicyEchoHandler()).
+            AddActivity(WaitForeverActivityAsync);
+        var endpointName = $"nexus-endpoint-{taskQueue}";
+        await Env.TestEnv.CreateNexusEndpointAsync(endpointName, taskQueue);
+
+        using var worker = new TemporalWorker(Client, workerOptions);
+        await worker.ExecuteAsync(async () =>
+        {
+            var existingHandle = await Client.StartActivityAsync(
+                () => WaitForeverActivityAsync(),
+                new()
+                {
+                    Id = activityId,
+                    TaskQueue = taskQueue,
+                    ScheduleToCloseTimeout = TimeSpan.FromMinutes(2),
+                    HeartbeatTimeout = TimeSpan.FromSeconds(10),
+                });
+
+            var nexusClient = Client.CreateNexusClient<ITestService>(endpointName);
+            var result = await nexusClient.ExecuteNexusOperationAsync<string>(
+                svc => svc.Echo(activityId),
+                new($"op-{Guid.NewGuid()}") { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+            Assert.Equal("attached", result);
+
+            await existingHandle.CancelAsync();
+        });
+    }
+
+    [Fact]
+    public async Task StartActivityAsync_RawActivityStartFromSyncHandler_DedupsAcrossRedelivery()
+    {
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var activityKey = $"redelivery-{Guid.NewGuid()}";
+        var workerOptions = new TemporalWorkerOptions(taskQueue).
+            AddNexusService(new RawActivityStartRedeliveryHandler()).
+            AddActivity(CountingEchoActivityAsync);
+        var endpointName = $"nexus-endpoint-{taskQueue}";
+        await Env.TestEnv.CreateNexusEndpointAsync(endpointName, taskQueue);
+
+        using var worker = new TemporalWorker(Client, workerOptions);
+        await worker.ExecuteAsync(async () =>
+        {
+            var nexusClient = Client.CreateNexusClient<ITestService>(endpointName);
+            var result = await nexusClient.ExecuteNexusOperationAsync<string>(
+                svc => svc.Echo(activityKey),
+                new($"op-{Guid.NewGuid()}")
+                {
+                    ScheduleToCloseTimeout = TimeSpan.FromMinutes(3),
+                    Rpc = new() { Timeout = TimeSpan.FromMinutes(3) },
+                });
+            Assert.Equal($"echo:{activityKey}", result);
+        });
+
+        Assert.Equal(1, ActivityRunCounts.GetValueOrDefault(activityKey));
+    }
+
+    [Fact]
+    public async Task StartActivityAsync_RawActivityStartFromSyncHandler_UserInterceptorStillRuns()
+    {
+        var interceptor = new ActivityStartCapturingInterceptor();
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.Interceptors = new IClientInterceptor[] { interceptor };
+        var interceptedClient = new TemporalClient(Client.Connection, newOptions);
+
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var workerOptions = new TemporalWorkerOptions(taskQueue).
+            AddNexusService(new RawActivityStartEchoHandler()).
+            AddActivity(EchoActivityAsync).
+            AddWorkflow<NexusCallerWorkflow>();
+        var endpointName = $"nexus-endpoint-{taskQueue}";
+        await Env.TestEnv.CreateNexusEndpointAsync(endpointName, taskQueue);
+
+        using var worker = new TemporalWorker(interceptedClient, workerOptions);
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await interceptedClient.StartWorkflowAsync(
+                (NexusCallerWorkflow wf) => wf.RunAsync(endpointName, "hello"),
+                new($"caller-{Guid.NewGuid()}", taskQueue));
+            var parts = (await handle.GetResultAsync()).Split('|');
+            Assert.Equal("echo:hello-a|echo:hello-b", $"{parts[2]}|{parts[3]}");
+        });
+
+        Assert.Equal(2, interceptor.ActivityIds.Count);
+    }
+
+    [Fact]
+    public async Task StartActivityAsync_RawActivityStartFromSyncHandler_DoesNotReplayClientPlugins()
+    {
+        var plugin = new CountingClientPlugin();
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.Plugins = new ITemporalClientPlugin[] { plugin };
+        var pluginClient = new TemporalClient(Client.Connection, newOptions);
+        Assert.Equal(1, plugin.ConfigureClientCallCount);
+
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var workerOptions = new TemporalWorkerOptions(taskQueue).
+            AddNexusService(new RawActivityStartEchoHandler()).
+            AddActivity(EchoActivityAsync).
+            AddWorkflow<NexusCallerWorkflow>();
+        var endpointName = $"nexus-endpoint-{taskQueue}";
+        await Env.TestEnv.CreateNexusEndpointAsync(endpointName, taskQueue);
+
+        using var worker = new TemporalWorker(pluginClient, workerOptions);
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await pluginClient.StartWorkflowAsync(
+                (NexusCallerWorkflow wf) => wf.RunAsync(endpointName, "hello"),
+                new($"caller-{Guid.NewGuid()}", taskQueue));
+            var parts = (await handle.GetResultAsync()).Split('|');
+            Assert.Equal("echo:hello-a|echo:hello-b", $"{parts[2]}|{parts[3]}");
+        });
+
+        Assert.Equal(1, plugin.ConfigureClientCallCount);
     }
 
     [Fact]
@@ -606,6 +858,92 @@ public class TemporalClientNexusOperationTests : WorkflowEnvironmentTestBase
             Events.Add(new("TerminateNexusOperation", input));
             return base.TerminateNexusOperationAsync(input);
         }
+    }
+
+    internal class ActivityStartCapturingInterceptor : IClientInterceptor
+    {
+        public List<string> ActivityIds { get; } = new();
+
+        public ClientOutboundInterceptor InterceptClient(ClientOutboundInterceptor next) =>
+            new ActivityStartCapturingOutboundInterceptor(next, ActivityIds);
+    }
+
+    internal class ActivityStartCapturingOutboundInterceptor : ClientOutboundInterceptor
+    {
+        public ActivityStartCapturingOutboundInterceptor(
+            ClientOutboundInterceptor next, List<string> activityIds)
+            : base(next)
+        {
+            ActivityIds = activityIds;
+        }
+
+        public List<string> ActivityIds { get; private init; }
+
+        public override Task<ActivityHandle<TResult>> StartActivityAsync<TResult>(
+            StartActivityInput input)
+        {
+            ActivityIds.Add(input.Options.Id!);
+            return base.StartActivityAsync<TResult>(input);
+        }
+    }
+
+    internal class CountingClientPlugin : ITemporalClientPlugin
+    {
+        public int ConfigureClientCallCount { get; private set; }
+
+        public string Name => "CountingClientPlugin";
+
+        public void ConfigureClient(TemporalClientOptions options) => ConfigureClientCallCount++;
+
+        public Task<TemporalConnection> ConnectAsync(
+            TemporalClientConnectOptions options,
+            Func<TemporalClientConnectOptions, Task<TemporalConnection>> continuation) =>
+            continuation(options);
+    }
+
+    [Activity]
+    private static async Task WaitForeverActivityAsync()
+    {
+        var ctx = ActivityExecutionContext.Current;
+        while (!ctx.CancellationToken.IsCancellationRequested)
+        {
+            ctx.Heartbeat();
+            await Task.Delay(TimeSpan.FromMilliseconds(200), ctx.CancellationToken);
+        }
+    }
+
+    private static readonly ConcurrentDictionary<string, int> ActivityRunCounts = new();
+
+    [Activity]
+    private static Task<string> CountingEchoActivityAsync(string input)
+    {
+        ActivityRunCounts.AddOrUpdate(input, 1, (_, count) => count + 1);
+        return Task.FromResult($"echo:{input}");
+    }
+
+    private async Task<(string[] ActivityIds, string CallerWorkflowId)>
+        RunRawActivityStartTwoActivitiesAsync()
+    {
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var callerWorkflowId = $"caller-{Guid.NewGuid()}";
+        var workerOptions = new TemporalWorkerOptions(taskQueue).
+            AddNexusService(new RawActivityStartEchoHandler()).
+            AddActivity(EchoActivityAsync).
+            AddWorkflow<NexusCallerWorkflow>();
+        var endpointName = $"nexus-endpoint-{taskQueue}";
+        await Env.TestEnv.CreateNexusEndpointAsync(endpointName, taskQueue);
+
+        using var worker = new TemporalWorker(Client, workerOptions);
+        return await worker.ExecuteAsync(async () =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (NexusCallerWorkflow wf) => wf.RunAsync(endpointName, "hello"),
+                new(callerWorkflowId, taskQueue));
+            var result = await handle.GetResultAsync();
+            var parts = result.Split('|');
+            Assert.Equal("echo:hello-a|echo:hello-b", $"{parts[2]}|{parts[3]}");
+            return (new[] { parts[0], parts[1] }, callerWorkflowId);
+        });
     }
 
     private async Task ExecuteWorkflowBackedAsync<THandler>(
