@@ -57,6 +57,9 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresLocalServer,
+        "Requires local dynamic configuration to enable signal with start from a workflow.")]
     public async Task ExecuteWorkflowAsync_SignalWithStart_UsesTargetSerializationContext()
     {
         var encodings = ((DefaultPayloadConverter)DataConverter.Default.PayloadConverter).EncodingConverters;
@@ -94,6 +97,9 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresLocalServer,
+        "Requires local dynamic configuration to enable signal with start from a workflow.")]
     public async Task ExecuteWorkflowAsync_SignalWithStart_DoesNotUseNormalNexusInterceptor()
     {
         var interceptor = new NormalNexusOperationInterceptor();
