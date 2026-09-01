@@ -13,6 +13,22 @@ namespace Temporalio.Worker.Interceptors
 [GeneratedCode("nexgen", null)]
 public partial class WorkflowOutboundInterceptor
 {
+    internal static Task<NexusWorkflowOperationHandle<TResult>> StartSystemNexusOperationAsync<TResult>(
+        WorkflowOutboundInterceptor interceptor,
+        string service,
+        string operationName,
+        object? arg)
+    {
+        if (service == "temporal.api.workflowservice.v1.WorkflowService" &&
+            operationName == "SignalWithStartWorkflowExecution" &&
+            arg is SignalWithStartWorkflowRequest request)
+        {
+            var handle = interceptor.SignalWithStartWorkflowAsync(request);
+            return (Task<NexusWorkflowOperationHandle<TResult>>)(object)handle;
+        }
+        throw new System.ArgumentException($"Unsupported System Nexus operation: {service}/{operationName}");
+    }
+
     /// <summary>
     /// Intercept the SignalWithStartWorkflow operation.
     /// </summary>
@@ -44,4 +60,3 @@ internal partial class WorkflowInstance
     }
 }
 }
-

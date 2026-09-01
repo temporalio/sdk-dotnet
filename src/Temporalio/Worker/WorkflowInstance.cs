@@ -2683,11 +2683,10 @@ namespace Temporalio.Worker
 
                 ISerializationContext? serializationContext = null;
                 if (SystemNexusPayloadVisitor.IsSystemEndpoint(input.ClientOptions.Endpoint) &&
-                    input.Arg is { } arg &&
                     NexgenOperationRegistry.Operations.TryGetValue(
                         (input.Service, input.OperationName), out var operationInfo))
                 {
-                    serializationContext = operationInfo.SerializationContext?.Invoke(arg);
+                    serializationContext = operationInfo.SerializationContext?.Invoke(input.Arg!);
                 }
 
                 var payloadConverter = instance.payloadConverterNoContext;
@@ -2811,17 +2810,6 @@ namespace Temporalio.Worker
                 });
                 return handleSource.Task;
             }
-
-            /// <inheritdoc/>
-            public override Task<NexusWorkflowOperationHandle<TResult>> ScheduleSystemNexusOperationAsync<TResult>(
-                ScheduleSystemNexusOperationInput input) =>
-                ScheduleNexusOperationAsync<TResult>(new(
-                    Service: input.Service,
-                    ClientOptions: new(SystemNexusPayloadVisitor.TemporalSystemEndpoint),
-                    OperationName: input.Operation.Name,
-                    Arg: input.Arg,
-                    Options: new(),
-                    Headers: null));
 
             private Task SignalExternalWorkflowInternalAsync(
                 ISerializationContext.Workflow serializationContext,
@@ -3117,8 +3105,8 @@ namespace Temporalio.Worker
             public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 string operationName, object? arg, NexusWorkflowOperationOptions? options = null) =>
                 SystemNexusPayloadVisitor.IsSystemEndpoint(Options.Endpoint) ?
-                instance.outbound.Value.ScheduleSystemNexusOperationAsync<TResult>(
-                    new(Service, new(operationName, arg?.GetType() ?? typeof(object), typeof(TResult)), arg)) :
+                WorkflowOutboundInterceptor.StartSystemNexusOperationAsync<TResult>(
+                    instance.outbound.Value, Service, operationName, arg) :
                 instance.outbound.Value.ScheduleNexusOperationAsync<TResult>(new(
                     Service: Service,
                     ClientOptions: Options,
@@ -3146,8 +3134,8 @@ namespace Temporalio.Worker
             public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 string operationName, object? arg, NexusWorkflowOperationOptions? options = null) =>
                 SystemNexusPayloadVisitor.IsSystemEndpoint(Options.Endpoint) ?
-                instance.outbound.Value.ScheduleSystemNexusOperationAsync<TResult>(
-                    new(Service, ServiceDefinition.Operations[operationName], arg)) :
+                WorkflowOutboundInterceptor.StartSystemNexusOperationAsync<TResult>(
+                    instance.outbound.Value, Service, operationName, arg) :
                 instance.outbound.Value.ScheduleNexusOperationAsync<TResult>(new(
                     Service: Service,
                     ClientOptions: Options,
