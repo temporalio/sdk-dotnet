@@ -83,7 +83,7 @@ void PostProcessGeneratedNexusApi()
 
     WriteWorkflowGeneratedFile("Models.cs");
     WriteWorkflowGeneratedFile("Operations.cs");
-    WriteWorkflowGeneratedFile("Services.cs", "Service.cs");
+    WriteWorkflowGeneratedFile("Services.cs");
     WriteWorkflowGeneratedFile(Path.Join("Support", "TemporalSupport.cs"), "TemporalSupport.cs");
 }
 

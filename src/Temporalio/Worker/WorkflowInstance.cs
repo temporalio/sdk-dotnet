@@ -2683,10 +2683,11 @@ namespace Temporalio.Worker
 
                 ISerializationContext? serializationContext = null;
                 if (SystemNexusPayloadVisitor.IsSystemEndpoint(input.ClientOptions.Endpoint) &&
+                    input.Arg is { } arg &&
                     NexgenOperationRegistry.Operations.TryGetValue(
                         (input.Service, input.OperationName), out var operationInfo))
                 {
-                    serializationContext = operationInfo.SerializationContext?.Invoke(input.Arg!);
+                    serializationContext = operationInfo.SerializationContext?.Invoke(arg);
                 }
 
                 var payloadConverter = instance.payloadConverterNoContext;
@@ -2813,7 +2814,7 @@ namespace Temporalio.Worker
 
             /// <inheritdoc/>
             public override Task<NexusWorkflowOperationHandle<TResult>> ScheduleSystemNexusOperationAsync<TResult>(
-                ScheduleSystemNexusOperationInput<TResult> input) =>
+                ScheduleSystemNexusOperationInput input) =>
                 ScheduleNexusOperationAsync<TResult>(new(
                     Service: input.Service,
                     ClientOptions: new(SystemNexusPayloadVisitor.TemporalSystemEndpoint),

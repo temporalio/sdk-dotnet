@@ -710,7 +710,10 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 AddWorkflow<SignalWithStartHeaderCallerWorkflow>().
                 AddWorkflow<SignalWithStartHeaderTargetWorkflow>());
 
-        Assert.Contains(activities, activity => activity.OperationName == "SignalWithStartWorkflow");
+        Assert.Contains(
+            activities,
+            activity => activity.OperationName ==
+                "SignalWithStartWorkflow:SignalWithStartHeaderTargetWorkflow");
     }
 
     [Fact]

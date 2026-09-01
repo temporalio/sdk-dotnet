@@ -262,6 +262,12 @@ namespace Temporalio.Extensions.OpenTelemetry
             activity?.AddException(exception);
         }
 
+        // TODO: Replace reflection once https://github.com/temporalio/nexgen/pull/170 makes the
+        // generated System Nexus request model public.
+        private static string? SystemNexusWorkflowType(object? request) =>
+            request?.GetType().GetProperty("Workflow", BindingFlags.Instance | BindingFlags.Public)?.
+                GetValue(request) as string;
+
         private bool TryAddSystemNexusPayloadHeaders(object? request, PropagationContext context)
         {
             if (request == null)
@@ -773,10 +779,11 @@ namespace Temporalio.Extensions.OpenTelemetry
             }
 
             public override Task<NexusWorkflowOperationHandle<TResult>> ScheduleSystemNexusOperationAsync<TResult>(
-                ScheduleSystemNexusOperationInput<TResult> input)
+                ScheduleSystemNexusOperationInput input)
             {
-                var name = input.Operation.Name == "SignalWithStartWorkflowExecution" ?
-                    "SignalWithStartWorkflow" :
+                var name = input.Operation.Name == "SignalWithStartWorkflowExecution" &&
+                    SystemNexusWorkflowType(input.Arg) is { } workflowType ?
+                    $"SignalWithStartWorkflow:{workflowType}" :
                     $"StartSystemNexusOperation:{input.Service}/{input.Operation.Name}";
                 using (WorkflowsSource.TrackWorkflowDiagnosticActivity(name: name, kind: ActivityKind.Client))
                 {
