@@ -443,6 +443,76 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         Assert.IsType<ApplicationFailureException>(actErr.InnerException);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ExecuteActivityAsync_WorkerShutdown_DrainsCompletion(
+        bool heartbeatAndFail)
+    {
+        const string FailureMessage = "Intentional failure after worker shutdown";
+        const string Result = "completed after worker shutdown";
+        using var workerStoppingSource = new CancellationTokenSource();
+        var activityReached = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+
+        [Activity]
+        async Task<string> CompleteAfterShutdownAsync()
+        {
+            var context = ActivityExecutionContext.Current;
+            if (heartbeatAndFail)
+            {
+                context.Heartbeat("final heartbeat");
+            }
+            activityReached.SetResult();
+
+            var shutdownReached = new TaskCompletionSource(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            using var registration = context.WorkerShutdownToken.Register(
+                shutdownReached.SetResult);
+            await shutdownReached.Task;
+
+            if (heartbeatAndFail)
+            {
+                throw new ApplicationFailureException(FailureMessage, nonRetryable: true);
+            }
+            return Result;
+        }
+
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue).AddActivity(CompleteAfterShutdownAsync));
+        var workerTask = worker.ExecuteAsync(workerStoppingSource.Token);
+        var handle = await Client.StartActivityAsync(
+            ActivityDefinition.Create(CompleteAfterShutdownAsync).Name!,
+            Array.Empty<object?>(),
+            new($"activity-{Guid.NewGuid()}", taskQueue)
+            {
+                HeartbeatTimeout = TimeSpan.FromSeconds(30),
+                ScheduleToCloseTimeout = TimeSpan.FromMinutes(1),
+            });
+
+        await activityReached.Task.WaitAsync(TimeSpan.FromSeconds(20));
+        await workerStoppingSource.CancelAsync();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => workerTask.WaitAsync(TimeSpan.FromSeconds(20)));
+
+        if (heartbeatAndFail)
+        {
+            var err = await Assert.ThrowsAsync<ActivityFailedException>(
+                () => handle.GetResultAsync().WaitAsync(TimeSpan.FromSeconds(20)));
+            var appErr = Assert.IsType<ApplicationFailureException>(err.InnerException);
+            Assert.Equal(FailureMessage, appErr.Message);
+            Assert.True(appErr.NonRetryable);
+        }
+        else
+        {
+            Assert.Equal(
+                Result,
+                await handle.GetResultAsync<string>().WaitAsync(TimeSpan.FromSeconds(20)));
+        }
+    }
+
     [Fact]
     public async Task ExecuteActivityAsync_ThrowsOperationCanceled_ReportsFailure()
     {
