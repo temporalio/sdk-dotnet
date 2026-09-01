@@ -48,12 +48,13 @@ namespace Temporalio.Worker
 
         internal partial class OutboundImpl
         {
-            public override Task<NexusWorkflowOperationHandle<SignalWithStartWorkflowResponse>> SignalWithStartWorkflowAsync(SignalWithStartWorkflowRequest request) => ScheduleNexusOperationAsync<SignalWithStartWorkflowResponse>(new(
+            public override Task<NexusWorkflowOperationHandle<SignalWithStartWorkflowResponse>> SignalWithStartWorkflowAsync(SignalWithStartWorkflowRequest request) => instance.outbound.Value.ScheduleSystemNexusOperationAsync<SignalWithStartWorkflowResponse>(new(
                 Service: "temporal.api.workflowservice.v1.WorkflowService",
-                ClientOptions: new("__temporal_system"),
-                OperationName: "SignalWithStartWorkflowExecution",
+                Operation: new(
+                    "SignalWithStartWorkflowExecution",
+                    typeof(SignalWithStartWorkflowRequest),
+                    typeof(SignalWithStartWorkflowResponse)),
                 Arg: request,
-                Options: new(),
                 Headers: null));
 
         }

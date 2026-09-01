@@ -2811,6 +2811,17 @@ namespace Temporalio.Worker
                 return handleSource.Task;
             }
 
+            /// <inheritdoc/>
+            public override Task<NexusWorkflowOperationHandle<TResult>> ScheduleSystemNexusOperationAsync<TResult>(
+                ScheduleSystemNexusOperationInput<TResult> input) =>
+                ScheduleNexusOperationAsync<TResult>(new(
+                    Service: input.Service,
+                    ClientOptions: new(SystemNexusPayloadVisitor.TemporalSystemEndpoint),
+                    OperationName: input.Operation.Name,
+                    Arg: input.Arg,
+                    Options: new(),
+                    Headers: input.Headers));
+
             private Task SignalExternalWorkflowInternalAsync(
                 ISerializationContext.Workflow serializationContext,
                 IPayloadConverter payloadConverter,
