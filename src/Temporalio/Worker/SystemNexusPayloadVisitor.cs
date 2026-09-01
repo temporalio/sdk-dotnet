@@ -11,7 +11,7 @@ namespace Temporalio.Worker
 {
     internal static partial class SystemNexusPayloadVisitor
     {
-        private const string TemporalSystemEndpoint = "__temporal_system";
+        internal const string TemporalSystemEndpoint = "__temporal_system";
 
         private const string SystemPayloadMetadataKey = "__temporal_system_payload";
 

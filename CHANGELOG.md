@@ -50,6 +50,8 @@ to docs, or any other relevant information.
 
 ### Fixed
 
+- Fixed workflow-side `SignalWithStartWorkflowAsync` to participate in outbound workflow
+  interception, propagate tracing headers, and apply the target workflow serialization context.
 - Worker shutdown now drains activity completions that are still flushing their result to the
   server before finishing. Previously such a completion — typically one whose final heartbeat RPC
   was still in flight — could be permanently stranded by shutdown, so the activity's result was

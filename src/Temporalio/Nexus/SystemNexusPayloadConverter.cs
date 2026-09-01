@@ -2,6 +2,7 @@ using System;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
 using Temporalio.Worker;
+using Temporalio.Workflows;
 
 namespace Temporalio.Nexus
 {
@@ -18,27 +19,26 @@ namespace Temporalio.Nexus
             TemporalTransferTypePayloadConverter.Wrap(
                 new DefaultPayloadConverter(new BinaryProtoConverter()));
 
-        // These will scope the generated System Nexus converter context once the generated
-        // support file is ingested into the SDK.
-        private readonly IPayloadConverter userPayloadConverter;
-        private readonly IFailureConverter userFailureConverter;
+        private readonly IFailureConverter failureConverter;
+        private readonly IPayloadConverter payloadConverter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SystemNexusPayloadConverter"/> class.
         /// </summary>
-        /// <param name="userPayloadConverter">The application's payload converter.</param>
-        /// <param name="userFailureConverter">The application's failure converter.</param>
+        /// <param name="payloadConverter">Payload converter for the envelope's embedded payloads.</param>
+        /// <param name="failureConverter">Failure converter for the envelope's embedded failures.</param>
         internal SystemNexusPayloadConverter(
-            IPayloadConverter userPayloadConverter,
-            IFailureConverter userFailureConverter)
+            IPayloadConverter payloadConverter,
+            IFailureConverter failureConverter)
         {
-            this.userPayloadConverter = userPayloadConverter;
-            this.userFailureConverter = userFailureConverter;
+            this.payloadConverter = payloadConverter;
+            this.failureConverter = failureConverter;
         }
 
         /// <inheritdoc />
         public Payload ToPayload(object? value)
         {
+            using var context = SystemNexusConverterContext.Push(payloadConverter, failureConverter);
             var payload = OuterPayloadConverter.ToPayload(value);
             SystemNexusPayloadVisitor.MarkSystemPayload(payload);
             return payload;
@@ -47,8 +47,7 @@ namespace Temporalio.Nexus
         /// <inheritdoc />
         public object? ToValue(Payload payload, Type type)
         {
-            // TODO: Scope userPayloadConverter and userFailureConverter in the generated System
-            // Nexus support converter context once that support file is ingested into the SDK.
+            using var context = SystemNexusConverterContext.Push(payloadConverter, failureConverter);
             return OuterPayloadConverter.ToValue(payload, type);
         }
     }

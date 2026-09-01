@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using NexusRpc.Handlers;
 using OpenTelemetry;
@@ -259,6 +260,35 @@ namespace Temporalio.Extensions.OpenTelemetry
                 activity?.SetStatus(ActivityStatusCode.Error, exception.Message);
             }
             activity?.AddException(exception);
+        }
+
+        // TODO: Replace reflection once https://github.com/temporalio/nexgen/pull/170 makes the
+        // generated System Nexus request model public.
+        private static string? SystemNexusWorkflowType(object? request) =>
+            request?.GetType().GetProperty("Workflow", BindingFlags.Instance | BindingFlags.Public)?.
+                GetValue(request) as string;
+
+        private bool TryAddSystemNexusPayloadHeaders(object? request, PropagationContext context)
+        {
+            if (request == null)
+            {
+                return false;
+            }
+            var headersProperty = request.GetType().GetProperty(
+                "Headers", BindingFlags.Instance | BindingFlags.Public);
+            if (headersProperty?.CanWrite != true ||
+                headersProperty.PropertyType != typeof(IReadOnlyDictionary<string, object?>))
+            {
+                return false;
+            }
+            var headers = headersProperty.GetValue(request) as IReadOnlyDictionary<string, object?>;
+            var payloadHeaders = headers == null ? new Dictionary<string, object?>() :
+                headers.ToDictionary(item => item.Key, item => item.Value);
+            var carrier = new Dictionary<string, string>();
+            Options.Propagator.Inject(context, carrier, (d, k, v) => d[k] = v);
+            payloadHeaders[Options.HeaderKey] = carrier;
+            headersProperty.SetValue(request, payloadHeaders);
+            return true;
         }
 
         private sealed class ClientOutbound : ClientOutboundInterceptor
@@ -746,6 +776,22 @@ namespace Temporalio.Extensions.OpenTelemetry
                     input.Headers, $"StartNexusOperation:{input.Service}/{input.OperationName}");
                 input = input with { Headers = headers };
                 return base.ScheduleNexusOperationAsync<TResult>(input);
+            }
+
+            public override Task<NexusWorkflowOperationHandle<TResult>> ScheduleSystemNexusOperationAsync<TResult>(
+                ScheduleSystemNexusOperationInput input)
+            {
+                var name = input.Operation.Name == "SignalWithStartWorkflowExecution" &&
+                    SystemNexusWorkflowType(input.Arg) is { } workflowType ?
+                    $"SignalWithStartWorkflow:{workflowType}" :
+                    $"StartSystemNexusOperation:{input.Service}/{input.Operation.Name}";
+                using (WorkflowsSource.TrackWorkflowDiagnosticActivity(name: name, kind: ActivityKind.Client))
+                {
+                    root.TryAddSystemNexusPayloadHeaders(
+                        input.Arg,
+                        new(WorkflowDiagnosticActivity.Current?.Context ?? default, Baggage.Current));
+                    return base.ScheduleSystemNexusOperationAsync<TResult>(input);
+                }
             }
 
             private IDictionary<string, Payload> StartWorkflowActivityOnHeaders(
