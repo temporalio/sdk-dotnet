@@ -10,52 +10,52 @@ using Temporalio.Workflows;
 namespace Temporalio.Worker.Interceptors
 {
 
-[GeneratedCode("nexgen", null)]
-public partial class WorkflowOutboundInterceptor
-{
-    /// <summary>
-    /// Intercept the SignalWithStartWorkflow operation.
-    /// </summary>
-    /// <param name="request">Request for the operation.</param>
-    /// <returns>Operation handle.</returns>
     [GeneratedCode("nexgen", null)]
-    public virtual Task<NexusWorkflowOperationHandle<SignalWithStartWorkflowResponse>> SignalWithStartWorkflowAsync(SignalWithStartWorkflowRequest request) => Next.SignalWithStartWorkflowAsync(request);
+    public partial class WorkflowOutboundInterceptor
+    {
+        /// <summary>
+        /// Intercept the SignalWithStartWorkflow operation.
+        /// </summary>
+        /// <param name="request">Request for the operation.</param>
+        /// <returns>Operation handle.</returns>
+        [GeneratedCode("nexgen", null)]
+        public virtual Task<NexusWorkflowOperationHandle<SignalWithStartWorkflowResponse>> SignalWithStartWorkflowAsync(SignalWithStartWorkflowRequest request) => Next.SignalWithStartWorkflowAsync(request);
 
-}
+    }
 
 }
 
 namespace Temporalio.Worker
 {
 
-[GeneratedCode("nexgen", null)]
-internal partial class WorkflowInstance
-{
-    private Task<NexusWorkflowOperationHandle<TResult>> StartSystemNexusOperationAsync<TResult>(
-        string service,
-        string operationName,
-        object? arg)
+    [GeneratedCode("nexgen", null)]
+    internal partial class WorkflowInstance
     {
-        if (service == "temporal.api.workflowservice.v1.WorkflowService" &&
-            operationName == "SignalWithStartWorkflowExecution" &&
-            arg is SignalWithStartWorkflowRequest request)
+        private Task<NexusWorkflowOperationHandle<TResult>> StartSystemNexusOperationAsync<TResult>(
+            string service,
+            string operationName,
+            object? arg)
         {
-            var handle = outbound.Value.SignalWithStartWorkflowAsync(request);
-            return (Task<NexusWorkflowOperationHandle<TResult>>)(object)handle;
+            if (service == "temporal.api.workflowservice.v1.WorkflowService" &&
+                operationName == "SignalWithStartWorkflowExecution" &&
+                arg is SignalWithStartWorkflowRequest request)
+            {
+                var handle = outbound.Value.SignalWithStartWorkflowAsync(request);
+                return (Task<NexusWorkflowOperationHandle<TResult>>)(object)handle;
+            }
+            throw new System.ArgumentException($"Unsupported System Nexus operation: {service}/{operationName}");
         }
-        throw new System.ArgumentException($"Unsupported System Nexus operation: {service}/{operationName}");
-    }
 
-    internal partial class OutboundImpl
-    {
-        public override Task<NexusWorkflowOperationHandle<SignalWithStartWorkflowResponse>> SignalWithStartWorkflowAsync(SignalWithStartWorkflowRequest request) => ScheduleNexusOperationAsync<SignalWithStartWorkflowResponse>(new(
-            Service: "temporal.api.workflowservice.v1.WorkflowService",
-            ClientOptions: new("__temporal_system"),
-            OperationName: "SignalWithStartWorkflowExecution",
-            Arg: request,
-            Options: new(),
-            Headers: null));
+        internal partial class OutboundImpl
+        {
+            public override Task<NexusWorkflowOperationHandle<SignalWithStartWorkflowResponse>> SignalWithStartWorkflowAsync(SignalWithStartWorkflowRequest request) => ScheduleNexusOperationAsync<SignalWithStartWorkflowResponse>(new(
+                Service: "temporal.api.workflowservice.v1.WorkflowService",
+                ClientOptions: new("__temporal_system"),
+                OperationName: "SignalWithStartWorkflowExecution",
+                Arg: request,
+                Options: new(),
+                Headers: null));
 
+        }
     }
-}
 }
