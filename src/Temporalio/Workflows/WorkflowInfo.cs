@@ -21,7 +21,9 @@ namespace Temporalio.Workflows
     /// <param name="Priority">The Priority of this workflow.</param>
     /// <param name="RetryPolicy">Retry policy for the workflow.</param>
     /// <param name="Root">Root information for the workflow. This is nil in pre-1.27.0 server
-    /// versions or if there is no root (i.e. the root is itself).</param>
+    /// versions or if there is no root (i.e. the root is itself). Its namespace is not retained
+    /// and may differ from this workflow's namespace for cross-namespace child workflows. Track it
+    /// separately if needed.</param>
     /// <param name="RunId">Run ID for the workflow.</param>
     /// <param name="RunTimeout">Run timeout for the workflow.</param>
     /// <param name="StartTime">Time when the first workflow task started.</param>
@@ -85,7 +87,9 @@ namespace Temporalio.Workflows
             string WorkflowId);
 
         /// <summary>
-        /// Information about a parent of a workflow.
+        /// Information about the root of a workflow. Its namespace is not retained and may differ
+        /// from the current workflow's namespace for cross-namespace child workflows. Track it
+        /// separately if needed.
         /// </summary>
         /// <param name="RunId">Run ID for the root.</param>
         /// <param name="WorkflowId">Workflow ID for the root.</param>
