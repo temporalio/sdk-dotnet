@@ -79,6 +79,9 @@ to docs, or any other relevant information.
   begin polling.
 - Ephemeral server processes (such as those started by `WorkflowEnvironment.StartLocalAsync`) no
   longer leak when the server fails to start.
+- An activity started using the ambient `TemporalClient` directly from inside a synchronous Nexus
+  operation handler now inherits the handler's request ID and inbound links, same as the guarded
+  start already gets.
 
 ## [1.18.0] - 2026-08-13
 

@@ -14,6 +14,7 @@ using Temporalio.Api.Nexus.V1;
 using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Bridge.Api.Nexus;
 using Temporalio.Client;
+using Temporalio.Client.Interceptors;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Temporalio.Nexus;
@@ -46,6 +47,7 @@ namespace Temporalio.Worker
         private readonly ILogger logger;
         private readonly Handler handler;
         private readonly ConcurrentDictionary<ByteString, RunningTask> runningTasks = new();
+        private readonly Lazy<ITemporalClient?> nexusExecutionClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NexusWorker"/> class.
@@ -67,6 +69,13 @@ namespace Temporalio.Worker
                 worker.Options.NexusServices,
                 new NexusPayloadSerializer(worker.Client.Options.DataConverter),
                 middleware);
+
+            nexusExecutionClient = new(() =>
+            {
+                var client = worker.Client as ITemporalClient;
+                return client is TemporalClient temporalClient ?
+                    WrapWithNexusActivityStartInterceptor(temporalClient) : client;
+            });
         }
 
         /// <summary>
@@ -138,6 +147,27 @@ namespace Temporalio.Worker
             // compatibility reasons. Remove when https://github.com/temporalio/sdk-rust/issues/993
             // is available in Core.
             headers.Remove("Request-Timeout");
+        }
+
+        /// <summary>
+        /// Create a client sharing <paramref name="orig"/>'s connection with
+        /// <see cref="NexusActivityStartInterceptor"/> added to its interceptor chain.
+        /// </summary>
+        /// <param name="orig">Client to wrap.</param>
+        /// <returns>New client with the interceptor applied.</returns>
+        private static TemporalClient WrapWithNexusActivityStartInterceptor(TemporalClient orig)
+        {
+            var newOptions = (TemporalClientOptions)orig.Options.Clone();
+            // orig.Options already reflects each plugin's ConfigureClient call, do not apply them a second time.
+            newOptions.Plugins = null;
+            var newInterceptors = new List<IClientInterceptor>();
+            if (newOptions.Interceptors != null)
+            {
+                newInterceptors.AddRange(newOptions.Interceptors);
+            }
+            newInterceptors.Add(new NexusActivityStartClientInterceptor());
+            newOptions.Interceptors = newInterceptors;
+            return new TemporalClient(orig.Connection, newOptions);
         }
 
         private async Task HandlePollTaskAsync(RunningTask running, PollNexusTaskQueueResponse task, DateTime? requestDeadline, string endpoint)
@@ -375,7 +405,7 @@ namespace Temporalio.Worker
                 info: new(worker.Client.Options.Namespace, worker.Options.TaskQueue!, endpoint),
                 logger: worker.LoggerFactory.CreateLogger($"Temporalio.Nexus:{handlerContext.Operation}"),
                 runtimeMetricMeter: worker.MetricMeter,
-                temporalClient: worker.Client as ITemporalClient);
+                temporalClient: nexusExecutionClient.Value);
 
         private HandlerException ConvertToHandlerException(Exception exc)
         {
@@ -423,6 +453,12 @@ namespace Temporalio.Worker
             {
                 return new(HandlerErrorType.Internal, "Internal handler error", exc);
             }
+        }
+
+        private sealed class NexusActivityStartClientInterceptor : IClientInterceptor
+        {
+            public ClientOutboundInterceptor InterceptClient(ClientOutboundInterceptor next) =>
+                new NexusActivityStartInterceptor(next);
         }
 
         private class RunningTask
