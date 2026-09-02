@@ -3,6 +3,7 @@
 bin/
 obj/
 /src/Temporalio/Bridge/target
+/tests/Temporalio.Tests/CloudTestResults
 /tests/Temporalio.Tests/TestResults
 /tests/golangworker/golangworker
 /.vs
@@ -10,7 +11,7 @@ obj/
 /.idea
 /.zed
 /.omc
-Temporalio.sln.DotSettings.user
+Temporalio.slnx.DotSettings.user
 
 # C# Dev Kit language service cache (https://aka.ms/lscache)
 *.lscache

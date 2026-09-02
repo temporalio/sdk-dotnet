@@ -15,14 +15,6 @@ namespace Temporalio.Worker
     /// </summary>
     internal class NexusPayloadSerializer : ISerializer
     {
-        /// <summary>
-        /// Error type of an <see cref="ApplicationFailureException"/> reserved for payload
-        /// validation failures raised by a data converter. A non-retryable failure of this type
-        /// means the input itself is invalid, so it is reported as a bad request rather than a
-        /// handler failure.
-        /// </summary>
-        private const string PayloadValidationErrorType = "PayloadValidationError";
-
         private readonly DataConverter dataConverter;
 
         /// <summary>
@@ -78,7 +70,7 @@ namespace Temporalio.Worker
                     }
                     payload = decoded.First();
                 }
-                catch (Exception e) when (IsPayloadValidationFailure(e))
+                catch (Exception e) when (PayloadValidationError.IsException(e))
                 {
                     throw new HandlerException(
                         HandlerErrorType.BadRequest,
@@ -107,7 +99,7 @@ namespace Temporalio.Worker
             {
                 result = dataConverter.PayloadConverter.ToValue(payload, type);
             }
-            catch (Exception e) when (IsPayloadValidationFailure(e))
+            catch (Exception e) when (PayloadValidationError.IsException(e))
             {
                 throw new HandlerException(
                     HandlerErrorType.BadRequest,
@@ -134,16 +126,5 @@ namespace Temporalio.Worker
             }
             return result;
         }
-
-        /// <summary>
-        /// Whether the given exception reports that the payload itself is invalid, i.e. it is a
-        /// non-retryable application failure with the reserved payload validation error type.
-        /// </summary>
-        /// <param name="e">Exception to check.</param>
-        /// <returns>True if the exception reports an invalid payload.</returns>
-        private static bool IsPayloadValidationFailure(Exception e) =>
-            e is ApplicationFailureException appExc &&
-            appExc.NonRetryable &&
-            appExc.ErrorType == PayloadValidationErrorType;
     }
 }

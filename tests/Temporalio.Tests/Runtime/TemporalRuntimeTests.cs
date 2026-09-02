@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Temporalio.Bridge;
-using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Runtime;
 using Temporalio.Worker;
@@ -24,24 +23,14 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
     {
         // Create two clients in separate runtimes with Prometheus endpoints and make calls on them
         var promAddr1 = $"127.0.0.1:{TestUtils.FreePort()}";
-        var client1 = await TemporalClient.ConnectAsync(
-            new()
-            {
-                TargetHost = Client.Connection.Options.TargetHost,
-                Namespace = Client.Options.Namespace,
-                Runtime = new(
-                    new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr1) } } }),
-            });
+        var runtime1 = new TemporalRuntime(
+            new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr1) } } });
+        var client1 = await ConnectClientWithRuntimeAsync(runtime1);
         await client1.WorkflowService.GetSystemInfoAsync(new());
         var promAddr2 = $"127.0.0.1:{TestUtils.FreePort()}";
-        var client2 = await TemporalClient.ConnectAsync(
-            new()
-            {
-                TargetHost = Client.Connection.Options.TargetHost,
-                Namespace = Client.Options.Namespace,
-                Runtime = new(
-                    new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr2) } } }),
-            });
+        var runtime2 = new TemporalRuntime(
+            new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr2) } } });
+        var client2 = await ConnectClientWithRuntimeAsync(runtime2);
         await client2.WorkflowService.GetSystemInfoAsync(new());
 
         // Check that Prometheus on each runtime is reporting metrics
@@ -218,12 +207,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
             });
 
             // Connect client with different runtime
-            var client = await TemporalClient.ConnectAsync(new()
-            {
-                TargetHost = Client.Connection.Options.TargetHost,
-                Namespace = Client.Options.Namespace,
-                Runtime = runtime,
-            });
+            var client = await ConnectClientWithRuntimeAsync(runtime);
 
             // Start failing workflow and wait for log
             var workerOpts = new TemporalWorkerOptions($"ts-{Guid.NewGuid()}").
@@ -280,29 +264,24 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
     {
         // Prom metrics with custom histogram buckets
         var promAddr = $"127.0.0.1:{TestUtils.FreePort()}";
-        var client = await TemporalClient.ConnectAsync(
-            new()
+        var runtime = new TemporalRuntime(new()
+        {
+            Telemetry = new()
             {
-                TargetHost = Client.Connection.Options.TargetHost,
-                Namespace = Client.Options.Namespace,
-                Runtime = new(new()
+                Metrics = new()
                 {
-                    Telemetry = new()
+                    Prometheus = new(promAddr)
                     {
-                        Metrics = new()
+                        HistogramBucketOverrides = new Dictionary<string, IReadOnlyCollection<double>>
                         {
-                            Prometheus = new(promAddr)
-                            {
-                                HistogramBucketOverrides = new Dictionary<string, IReadOnlyCollection<double>>
-                                {
-                                    ["temporal_request_latency"] = new[] { 123.4, 567.89 },
-                                    ["custom_histogram"] = new[] { 5d, 6, 7 },
-                                },
-                            },
+                            ["temporal_request_latency"] = new[] { 123.4, 567.89 },
+                            ["custom_histogram"] = new[] { 5d, 6, 7 },
                         },
                     },
-                }),
-            });
+                },
+            },
+        });
+        var client = await ConnectClientWithRuntimeAsync(runtime);
 
         // Generate metrics
         await client.WorkflowService.GetSystemInfoAsync(new());

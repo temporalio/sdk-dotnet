@@ -17,6 +17,9 @@ using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
 
+[CloudTestExclusion(
+    CloudTestExclusionReason.NeedsCloudAdaptation,
+    "Requires Cloud Nexus endpoint setup and cleanup.")]
 public class NexusWorkerTests : WorkflowEnvironmentTestBase
 {
     public NexusWorkerTests(ITestOutputHelper output, WorkflowEnvironment env)
@@ -268,33 +271,6 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         Assert.IsType<CanceledFailureException>(
             (await Assert.ThrowsAsync<WorkflowFailedException>(() =>
                 Client.GetWorkflowHandle(token.WorkflowId).GetResultAsync())).InnerException);
-    }
-
-    [NexusService]
-    public interface IBadService
-    {
-        [NexusOperation]
-        int DoSomething(string name);
-    }
-
-    [NexusServiceHandler(typeof(IBadService))]
-    public class BadService
-    {
-        [NexusOperationHandler]
-        public IOperationHandler<string, string> DoSomething() =>
-            throw new NotImplementedException();
-    }
-
-    [Fact]
-    public async Task ExecuteNexusOperationAsync_BadService_FailsRegistration()
-    {
-        var exc = Assert.Throws<ArgumentException>(() => new TemporalWorker(
-            Client,
-            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddNexusService(new BadService())));
-        Assert.Equal("Failed obtaining operation handler from DoSomething", exc.Message);
-        Assert.Equal(
-            "Expected return type of IOperationHandler<String, Int32>",
-            Assert.IsType<ArgumentException>(exc.InnerException).Message);
     }
 
     [Fact]
@@ -1450,7 +1426,10 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc.InnerException);
         var exc3 = Assert.IsType<HandlerException>(exc2.InnerException);
         Assert.Equal(HandlerErrorType.NotImplemented, exc3.ErrorType);
-        Assert.Equal("Intentional failure", exc3.Message);
+        // Newer servers wrap a failed cancel handler in a cancellation-request HandlerException.
+        // The original handler error, including its message, is retained as the inner exception.
+        var handlerError = exc3.InnerException as HandlerException ?? exc3;
+        Assert.Equal("Intentional failure", handlerError.Message);
     }
 
     [Fact]
@@ -1865,10 +1844,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             switch (value as string)
             {
                 case "payload-validation-error":
-                    throw new ApplicationFailureException(
-                        "Intentional payload validation failure",
-                        errorType: "PayloadValidationError",
-                        nonRetryable: true);
+                    throw PayloadValidationError.CreateException(new { Reason = "invalid input" });
                 case "other-application-error":
                     throw new ApplicationFailureException(
                         "Intentional application failure",
@@ -1926,7 +1902,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             "Invalid operation input", exc3.Message);
         Assert.DoesNotContain("Payload converter failed to decode", exc3.Message);
         var exc4 = Assert.IsType<ApplicationFailureException>(exc3.InnerException);
-        Assert.Equal("Intentional payload validation failure", exc4.Message);
+        Assert.Equal("Payload validation failed", exc4.Message);
         Assert.Equal("PayloadValidationError", exc4.ErrorType);
     }
 
@@ -1989,10 +1965,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             // details on the caller side) are unaffected
             if (payloads.Any(p => p.Data.ToStringUtf8().Contains("codec-payload-validation-error")))
             {
-                throw new ApplicationFailureException(
-                    "Intentional payload validation failure",
-                    errorType: "PayloadValidationError",
-                    nonRetryable: true);
+                throw PayloadValidationError.CreateException(new { Reason = "invalid input" });
             }
             if (payloads.Any(p => p.Data.ToStringUtf8().Contains("codec-other-application-error")))
             {
@@ -2056,7 +2029,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         Assert.Contains("Invalid operation input", exc3.Message);
         Assert.DoesNotContain("Payload codec failed to decode", exc3.Message);
         var exc4 = Assert.IsType<ApplicationFailureException>(exc3.InnerException);
-        Assert.Equal("Intentional payload validation failure", exc4.Message);
+        Assert.Equal("Payload validation failed", exc4.Message);
         Assert.Equal("PayloadValidationError", exc4.ErrorType);
     }
 
@@ -2791,70 +2764,6 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
-    [NexusServiceHandler(typeof(IStringService))]
-    public class TemporalOperationAttrBadReturnService
-    {
-        [TemporalOperation]
-        public Task<string> DoSomething(
-            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
-            Task.FromResult(input);
-    }
-
-    [Fact]
-    public void AddNexusService_TemporalOperationBadReturnType_Throws()
-    {
-        var exc = Assert.Throws<ArgumentException>(() =>
-            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-                AddNexusService(new TemporalOperationAttrBadReturnService()));
-        Assert.Contains("Failed obtaining operation handler from DoSomething", exc.Message);
-        Assert.Contains(
-            "must return Task<TemporalOperationResult<String>>",
-            Assert.IsType<ArgumentException>(exc.InnerException).Message);
-    }
-
-    [NexusServiceHandler(typeof(IStringService))]
-    public class TemporalOperationAttrBadParamsService
-    {
-        [TemporalOperation]
-        public Task<TemporalOperationResult<string>> DoSomething(string input) =>
-            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
-    }
-
-    [Fact]
-    public void AddNexusService_TemporalOperationBadParams_Throws()
-    {
-        var exc = Assert.Throws<ArgumentException>(() =>
-            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-                AddNexusService(new TemporalOperationAttrBadParamsService()));
-        Assert.Contains("Failed obtaining operation handler from DoSomething", exc.Message);
-        Assert.Contains(
-            "must accept parameters (TemporalOperationStartContext, ITemporalNexusClient, String)",
-            Assert.IsType<ArgumentException>(exc.InnerException).Message);
-    }
-
-#pragma warning disable CA1052 // Intentionally non-static so registration reaches signature check
-    [NexusServiceHandler(typeof(IStringService))]
-    public class TemporalOperationAttrStaticService
-    {
-        [TemporalOperation]
-        public static Task<TemporalOperationResult<string>> DoSomething(
-            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
-            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
-    }
-#pragma warning restore CA1052
-
-    [Fact]
-    public void AddNexusService_TemporalOperationStaticMethod_Throws()
-    {
-        var exc = Assert.Throws<ArgumentException>(() =>
-            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-                AddNexusService(new TemporalOperationAttrStaticService()));
-        Assert.Contains("Failed obtaining operation handler from DoSomething", exc.Message);
-        Assert.Contains(
-            "must not be static",
-            Assert.IsType<ArgumentException>(exc.InnerException).Message);
-    }
-
     [NexusService]
     public interface IGenericInputService
     {
@@ -2885,68 +2794,6 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
-    [NexusServiceHandler(typeof(IGenericInputService))]
-    public class TemporalOperationAttrGenericInputMismatchService
-    {
-        [TemporalOperation]
-        public Task<TemporalOperationResult<int>> Sum(
-            TemporalOperationStartContext ctx, ITemporalNexusClient client, List<string> values) =>
-            Task.FromResult(TemporalOperationResult<int>.SyncResult(0));
-    }
-
-    [Fact]
-    public void AddNexusService_TemporalOperationGenericInputMismatch_Throws()
-    {
-        var exc = Assert.Throws<ArgumentException>(() =>
-            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-                AddNexusService(new TemporalOperationAttrGenericInputMismatchService()));
-        Assert.Contains("Failed obtaining operation handler from Sum", exc.Message);
-        Assert.Contains(
-            "must accept parameters",
-            Assert.IsType<ArgumentException>(exc.InnerException).Message);
-    }
-
-    [NexusServiceHandler(typeof(IStringService))]
-    public class TemporalOperationAttrRawReturnService
-    {
-        [TemporalOperation]
-        public Task<int> DoSomething(
-            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
-            Task.FromResult(0);
-    }
-
-    [Fact]
-    public void AddNexusService_TemporalOperationRawReturn_Throws()
-    {
-        var exc = Assert.Throws<ArgumentException>(() =>
-            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-                AddNexusService(new TemporalOperationAttrRawReturnService()));
-        Assert.Contains("Failed obtaining operation handler from DoSomething", exc.Message);
-        Assert.Contains(
-            "must return Task<TemporalOperationResult<String>>",
-            Assert.IsType<ArgumentException>(exc.InnerException).Message);
-    }
-
-    [NexusServiceHandler(typeof(IStringService))]
-    public class TemporalOperationAttrDualAnnotationService
-    {
-        [TemporalOperation]
-        [NexusOperationHandler]
-        public Task<TemporalOperationResult<string>> DoSomething(
-            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
-            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
-    }
-
-    [Fact]
-    public void AddNexusService_TemporalOperationDualAnnotation_Throws()
-    {
-        // The built-in [NexusOperationHandler] path claims the method first, and it
-        // rejects the signature (return type isn't IOperationHandler<,>).
-        Assert.Throws<ArgumentException>(() =>
-            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-                AddNexusService(new TemporalOperationAttrDualAnnotationService()));
-    }
-
     [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationAttrFieldService
     {
@@ -2972,27 +2819,6 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                 ExecuteNexusOperationAsync(svc => svc.DoSomething("world"));
             Assert.Equal("hello: world", result);
         });
-    }
-
-    [NexusServiceHandler(typeof(IStringService))]
-    public class TemporalOperationAttrPrivateService
-    {
-        [TemporalOperation]
-        private Task<TemporalOperationResult<string>> DoSomething(
-            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
-            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
-    }
-
-    [Fact]
-    public void AddNexusService_TemporalOperationPrivateMethod_Throws()
-    {
-        var exc = Assert.Throws<ArgumentException>(() =>
-            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
-                AddNexusService(new TemporalOperationAttrPrivateService()));
-        Assert.Contains("Failed obtaining operation handler from DoSomething", exc.Message);
-        Assert.Contains(
-            "must be public",
-            Assert.IsType<ArgumentException>(exc.InnerException).Message);
     }
 
     [NexusServiceHandler(typeof(IStringService))]

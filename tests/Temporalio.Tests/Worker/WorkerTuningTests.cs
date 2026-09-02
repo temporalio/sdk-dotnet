@@ -283,6 +283,9 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
     }
 
     [Fact(Timeout = 10000)]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Requires Cloud Nexus endpoint setup and cleanup.")]
     public async Task CanRunWith_CustomSlotSupplier_WithNexus()
     {
         var mySlotSupplier = new MySlotSupplier();

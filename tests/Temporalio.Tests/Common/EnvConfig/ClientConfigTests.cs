@@ -65,6 +65,7 @@ client_key_data = ""client-key-data""
             {
                 Profile = "default",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             Assert.Equal("default-address", profile.Address);
@@ -85,6 +86,7 @@ client_key_data = ""client-key-data""
             {
                 Profile = "custom",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             Assert.Equal("custom-address", profile.Address);
@@ -108,6 +110,7 @@ client_key_data = ""client-key-data""
             {
                 Profile = "default",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             Assert.Equal("default-address", profile.Address);
@@ -126,6 +129,7 @@ client_key_data = ""client-key-data""
             {
                 Profile = "custom",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             Assert.Equal("custom-address", profile.Address);
@@ -430,6 +434,7 @@ address = ""other-address""
             {
                 Profile = null,
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Null(profile.Address);
             Assert.Null(profile.Namespace);
@@ -452,6 +457,7 @@ api_key = ""my-api-key""
             {
                 Profile = "default",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             Assert.Equal("my-api-key", profile.ApiKey);
@@ -475,6 +481,7 @@ api_key = ""my-api-key""
             {
                 Profile = "tls_disabled",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.NotNull(profileDisabled.Tls);
             Assert.True(profileDisabled.Tls.Disabled);
@@ -488,6 +495,7 @@ api_key = ""my-api-key""
             {
                 Profile = "tls_with_certs",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.NotNull(profileCerts.Tls);
             Assert.Equal("custom-server", profileCerts.Tls.ServerName);
@@ -528,6 +536,7 @@ client_key_path = ""{keyPath.Replace('\\', '/')}""
                 {
                     Profile = "default",
                     ConfigSource = source,
+                    OverrideEnvVars = new Dictionary<string, string>(),
                 });
 
                 Assert.NotNull(profile.Tls);
@@ -641,6 +650,7 @@ client_key_data = ""client-key-data""
             {
                 Profile = "default",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             Assert.NotNull(profile.Tls);
@@ -840,6 +850,7 @@ server_name = ""should-be-ignored""
             var options1 = ClientEnvConfig.LoadClientConnectOptions(new ClientEnvConfig.ProfileLoadOptions
             {
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Equal("default-address", options1.TargetHost);
             Assert.Equal("default-namespace", options1.Namespace);
@@ -880,6 +891,7 @@ authorization = ""Bearer test-token""
             var defaultOptions = ClientEnvConfig.LoadClientConnectOptions(new ClientEnvConfig.ProfileLoadOptions
             {
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Equal("localhost:7233", defaultOptions.TargetHost);
             Assert.Equal("integration-test", defaultOptions.Namespace);
@@ -891,6 +903,7 @@ authorization = ""Bearer test-token""
             {
                 Profile = "integration",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Equal("integration.example.com:7233", integrationOptions.TargetHost);
             Assert.Equal("integration-namespace", integrationOptions.Namespace);
@@ -916,6 +929,7 @@ namespace = ""development""
             {
                 Profile = "development",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             // Validate profile configuration
@@ -954,6 +968,7 @@ server_name = ""production.temporal.cloud""
             {
                 Profile = "production",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
 
             // Validate profile configuration
@@ -1054,6 +1069,7 @@ environment = ""production""
             var config = ClientEnvConfig.Load(new ClientEnvConfig.ConfigLoadOptions
             {
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Equal(3, config.Profiles.Count);
 
@@ -1062,6 +1078,7 @@ environment = ""production""
             {
                 Profile = "development",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Equal("localhost:7233", devOptions.TargetHost);
             Assert.Equal("dev", devOptions.Namespace);
@@ -1073,6 +1090,7 @@ environment = ""production""
             {
                 Profile = "staging",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Equal("staging.temporal.io:7233", stagingOptions.TargetHost);
             Assert.Equal("staging", stagingOptions.Namespace);
@@ -1084,6 +1102,7 @@ environment = ""production""
             {
                 Profile = "production",
                 ConfigSource = source,
+                OverrideEnvVars = new Dictionary<string, string>(),
             });
             Assert.Equal("production.temporal.cloud:7233", prodOptions.TargetHost);
             Assert.Equal("production", prodOptions.Namespace);

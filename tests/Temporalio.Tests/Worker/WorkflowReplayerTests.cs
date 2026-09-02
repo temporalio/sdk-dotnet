@@ -3,6 +3,7 @@ namespace Temporalio.Tests.Worker;
 using Temporalio.Activities;
 using Temporalio.Common;
 using Temporalio.Exceptions;
+using Temporalio.Tests.Converters;
 using Temporalio.Worker;
 using Temporalio.Workflows;
 using Xunit;
@@ -68,6 +69,34 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
 
         [WorkflowQuery]
         public bool Waiting() => waiting;
+    }
+
+    [Workflow]
+    public class TransferTypeWorkflow
+    {
+        [WorkflowRun]
+        public Task<string> Run(PayloadConverterTests.TransferTypeHookValue value) =>
+            Task.FromResult(value.Value);
+    }
+
+    [Fact]
+    public async Task ReplayWorkflowAsync_TransferTypeConvertibleInput_Succeeds()
+    {
+        using var worker = new TemporalWorker(
+            Env.Client, new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddWorkflow<TransferTypeWorkflow>());
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await Env.Client.StartWorkflowAsync(
+                (TransferTypeWorkflow wf) => wf.Run(new("transfer-type-value")),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            Assert.Equal("transfer-type-value", await handle.GetResultAsync());
+
+            var result = await new WorkflowReplayer(
+                new WorkflowReplayerOptions().AddWorkflow<TransferTypeWorkflow>()).
+                    ReplayWorkflowAsync(await handle.FetchHistoryAsync());
+            Assert.Null(result.ReplayFailure);
+        });
     }
 
     [Fact]

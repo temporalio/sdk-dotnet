@@ -201,6 +201,9 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Requires custom search attributes that the Cloud harness does not provision.")]
     public async Task StartWorkflowAsync_SearchAttributesAndMemo_AreSetProperly()
     {
         await EnsureSearchAttributesPresentAsync();
@@ -242,6 +245,9 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Relies on completed workflows becoming immediately visible.")]
     public async Task ListWorkflowsAsync_RunWithHistoryFetch_IsAccurate()
     {
         // Run 5 workflows. Use the same workflow ID over and over to make sure we don't clash with
@@ -329,6 +335,9 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Relies on completed workflows becoming immediately visible.")]
     public async Task ListWorkflowsAsync_ManualPaging_IsAccurate()
     {
         var workflowId = $"workflow-{Guid.NewGuid()}";

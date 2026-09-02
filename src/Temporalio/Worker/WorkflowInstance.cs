@@ -22,6 +22,7 @@ using Temporalio.Bridge.Api.WorkflowCompletion;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
+using Temporalio.Nexus;
 using Temporalio.Runtime;
 using Temporalio.Worker.Interceptors;
 using Temporalio.Workflows;
@@ -31,7 +32,7 @@ namespace Temporalio.Worker
     /// <summary>
     /// Instance of a workflow execution.
     /// </summary>
-    internal class WorkflowInstance : TaskScheduler, IWorkflowInstance, IWorkflowContext, IWorkflowCodecHelperInstance
+    internal partial class WorkflowInstance : TaskScheduler, IWorkflowInstance, IWorkflowContext, IWorkflowCodecHelperInstance
     {
         private static readonly string[] Newlines = new[] { "\r", "\n", "\r\n" };
         private static readonly AsyncLocal<WorkflowUpdateInfo> CurrentUpdateInfoLocal = new();
@@ -895,13 +896,6 @@ namespace Temporalio.Worker
         {
             externalSignalsPending.TryGetValue(seq, out var pending);
             return pending?.SerializationContext;
-        }
-
-        /// <inheritdoc/>
-        public IWorkflowCodecHelperInstance.NexusOperationInfo? GetPendingNexusOperationInfo(uint seq)
-        {
-            nexusOperationsPending.TryGetValue(seq, out var pending);
-            return pending == null ? null : new(pending.Endpoint);
         }
 
         /// <inheritdoc/>
@@ -2108,7 +2102,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Workflow outbound implementation.
         /// </summary>
-        internal class OutboundImpl : WorkflowOutboundInterceptor
+        internal partial class OutboundImpl : WorkflowOutboundInterceptor
         {
             private readonly WorkflowInstance instance;
 
@@ -2687,16 +2681,37 @@ namespace Temporalio.Worker
                         new CanceledFailureException("Nexus operation cancelled before scheduled"));
                 }
 
-                // TODO(cretz): Support Nexus serialization context
+                ISerializationContext? serializationContext = null;
+                if (SystemNexusPayloadVisitor.IsSystemEndpoint(input.ClientOptions.Endpoint) &&
+                    input.Arg is { } arg &&
+                    NexgenOperationRegistry.Operations.TryGetValue(
+                        (input.Service, input.OperationName), out var operationInfo))
+                {
+                    serializationContext = operationInfo.SerializationContext?.Invoke(arg);
+                }
+
                 var payloadConverter = instance.payloadConverterNoContext;
+                var failureConverter = instance.failureConverterNoContext;
+                if (serializationContext != null)
+                {
+                    if (payloadConverter is IWithSerializationContext<IPayloadConverter> payloadWithContext)
+                    {
+                        payloadConverter = payloadWithContext.WithSerializationContext(serializationContext);
+                    }
+                    if (failureConverter is IWithSerializationContext<IFailureConverter> failureWithContext)
+                    {
+                        failureConverter = failureWithContext.WithSerializationContext(serializationContext);
+                    }
+                }
+
+                var systemNexusPayloadConverter = SystemNexusPayloadVisitor.IsSystemEndpoint(
+                    input.ClientOptions.Endpoint) ?
+                    new SystemNexusPayloadConverter(payloadConverter, failureConverter) : null;
+                var operationPayloadConverter =
+                    systemNexusPayloadConverter ?? payloadConverter;
 
                 var seq = ++instance.nexusOperationCounter;
-                var inputPayload = SystemNexusPayloadVisitor.TryToInputPayload(
-                    input.ClientOptions.Endpoint,
-                    input.Arg,
-                    out var systemNexusInputPayload) ?
-                    systemNexusInputPayload :
-                    payloadConverter.ToPayload(input.Arg);
+                var inputPayload = operationPayloadConverter.ToPayload(input.Arg);
                 var cmd = new ScheduleNexusOperation()
                 {
                     Seq = seq,
@@ -2725,13 +2740,15 @@ namespace Temporalio.Worker
                 var workflowCommand = new WorkflowCommand() { ScheduleNexusOperation = cmd };
                 if (input.Options.Summary is { } summary)
                 {
-                    workflowCommand.UserMetadata = new() { Summary = payloadConverter.ToPayload(summary) };
+                    workflowCommand.UserMetadata = new()
+                    {
+                        Summary = instance.payloadConverterNoContext.ToPayload(summary),
+                    };
                 }
                 instance.AddCommand(workflowCommand);
 
                 var handleSource = new TaskCompletionSource<NexusWorkflowOperationHandle<TResult>>();
                 var pending = new PendingNexusOperationInfo(
-                    Endpoint: input.ClientOptions.Endpoint,
                     StartCompletionSource: new(),
                     ResultCompletionSource: new());
                 instance.nexusOperationsPending[seq] = pending;
@@ -2761,17 +2778,14 @@ namespace Temporalio.Worker
                             // If there is a start sync fail, we have to fail the handle task and
                             // there's nothing more we can do here
                             var handle = new NexusWorkflowOperationHandleImpl<TResult>(
-                                payloadConverter,
-                                // TODO(cretz): Support Nexus serialization context, ideally not
-                                // creating failure converter with context until actually needed
-                                instance.failureConverterNoContext,
+                                operationPayloadConverter,
+                                failureConverter,
                                 startRes.HasOperationToken ? startRes.OperationToken : null);
                             if (startRes.Failed is { } syncStartFail)
                             {
-                                // TODO(cretz): Support Nexus serialization context
                                 handleSource.SetException(
-                                    instance.failureConverterNoContext.ToException(
-                                        syncStartFail, payloadConverter));
+                                    failureConverter.ToException(
+                                        syncStartFail, operationPayloadConverter));
                                 return;
                             }
 
@@ -2797,6 +2811,17 @@ namespace Temporalio.Worker
                 });
                 return handleSource.Task;
             }
+
+            /// <inheritdoc/>
+            public override Task<NexusWorkflowOperationHandle<TResult>> ScheduleSystemNexusOperationAsync<TResult>(
+                ScheduleSystemNexusOperationInput input) =>
+                ScheduleNexusOperationAsync<TResult>(new(
+                    Service: input.Service,
+                    ClientOptions: new(SystemNexusPayloadVisitor.TemporalSystemEndpoint),
+                    OperationName: input.Operation.Name,
+                    Arg: input.Arg,
+                    Options: new(),
+                    Headers: null));
 
             private Task SignalExternalWorkflowInternalAsync(
                 ISerializationContext.Workflow serializationContext,
@@ -3091,6 +3116,9 @@ namespace Temporalio.Worker
 
             public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 string operationName, object? arg, NexusWorkflowOperationOptions? options = null) =>
+                SystemNexusPayloadVisitor.IsSystemEndpoint(Options.Endpoint) ?
+                instance.outbound.Value.ScheduleSystemNexusOperationAsync<TResult>(
+                    new(Service, new(operationName, arg?.GetType() ?? typeof(object), typeof(TResult)), arg)) :
                 instance.outbound.Value.ScheduleNexusOperationAsync<TResult>(new(
                     Service: Service,
                     ClientOptions: Options,
@@ -3117,6 +3145,9 @@ namespace Temporalio.Worker
 
             public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 string operationName, object? arg, NexusWorkflowOperationOptions? options = null) =>
+                SystemNexusPayloadVisitor.IsSystemEndpoint(Options.Endpoint) ?
+                instance.outbound.Value.ScheduleSystemNexusOperationAsync<TResult>(
+                    new(Service, ServiceDefinition.Operations[operationName], arg)) :
                 instance.outbound.Value.ScheduleNexusOperationAsync<TResult>(new(
                     Service: Service,
                     ClientOptions: Options,
@@ -3206,7 +3237,6 @@ namespace Temporalio.Worker
             TaskCompletionSource<ResolveRequestCancelExternalWorkflow> CompletionSource);
 
         private record PendingNexusOperationInfo(
-            string? Endpoint,
             TaskCompletionSource<ResolveNexusOperationStart> StartCompletionSource,
             TaskCompletionSource<NexusOperationResult> ResultCompletionSource);
 

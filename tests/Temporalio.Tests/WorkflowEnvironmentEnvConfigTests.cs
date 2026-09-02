@@ -3,6 +3,9 @@ namespace Temporalio.Tests;
 using Temporalio.Common.EnvConfig;
 using Xunit;
 
+[CloudTestExclusion(
+    CloudTestExclusionReason.RequiresLocalServer,
+    "Starts a local source server to verify environment-config client options.")]
 public class WorkflowEnvironmentEnvConfigTests
 {
     [Fact]

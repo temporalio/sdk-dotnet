@@ -19,6 +19,11 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### :boom: Breaking Changes
+
+- Removed the experimental `SignalWithStartWorkflowOptions.RequestId`. Request IDs for
+  workflow-side signal-with-start are now assigned internally and are no longer user-settable.
+
 ### Added
 
 - Added the experimental `Temporalio.Extensions.Gcp.CloudRun.WorkerId` package for long-lived
@@ -31,6 +36,17 @@ to docs, or any other relevant information.
   `CLOUD_RUN_WORKER_POOL`/`CLOUD_RUN_REVISION` or `K_SERVICE`/`K_REVISION` environment variables and
   the instance id from the metadata server) to derive the worker identity and
   `WorkerDeploymentVersion`, and can be used directly for advanced scenarios.
+- Experimental Temporal transfer type conversion now supports constructed generic models whose
+  attributes reference generic converter type definitions. Model type arguments close the converter
+  directly in declaration order, with matching generic arity and compatible constraints required.
+- Added `PayloadValidationError.CreateException`, which payload converters and codecs can use to
+  report invalid Nexus operation input with structured details.
+- The `temporal_activity_execution_failed` and `temporal_local_activity_execution_failed` worker
+  metrics now carry a `failure_reason` attribute. Each metric is now split into one time series per
+  reason, which may affect existing dashboards.
+- Workflow task completions larger than the gRPC request size limit are now paginated
+  automatically when the namespace supports it. Paginated workflow task completions require
+  Temporal Server 1.32.0 or later.
 
 ### Changed
 
@@ -41,6 +57,38 @@ to docs, or any other relevant information.
   exception is reported as `Invalid operation input`, which is distinct from the `failed to decode
   Nexus operation input` message used when decoding itself fails. Application failures of any other
   error type, and retryable `PayloadValidationError` failures, keep their existing behavior.
+
+### Fixed
+
+- Fixed workflow-side `SignalWithStartWorkflowAsync` to participate in outbound workflow
+  interception, propagate tracing headers, and apply the target workflow serialization context.
+- Worker shutdown now drains activity completions that are still flushing their result to the
+  server before finishing. Previously such a completion — typically one whose final heartbeat RPC
+  was still in flight — could be permanently stranded by shutdown, so the activity's result was
+  never reported and the server had to time the attempt out before retrying it.
+- Workers with a small workflow cache no longer briefly stop accepting new workflows. Sticky
+  workflow-task pollers could consume every workflow-cache permit and starve the non-sticky poller,
+  so the worker would stop picking up new workflows until a poll timed out (up to ~60s).
+- Nexus tasks are now timed out locally even when the server sends a `request-timeout` header that
+  falls outside the Nexus duration grammar, such as a negative value for a task whose deadline has
+  already elapsed, a sub-millisecond unit, or a multi-unit value like `1m30s`. Previously such a
+  header was ignored entirely, so the handler was never told the task had timed out, and a task
+  left unanswered could block worker shutdown indefinitely.
+- Update-with-start calls now use the long-poll timeout instead of the normal RPC timeout, avoiding
+  premature failures while waiting for an update to reach its requested stage.
+- An activity failure caused by oversized final heartbeat details is now counted in the
+  `temporal_activity_execution_failed` metric as `failure_reason="PayloadsTooLarge"`. Previously it
+  was counted under the reason for the failure the activity itself reported, and was not counted at
+  all when that failure was benign, even though a payload-limit failure was reported instead.
+- Setting `PrometheusOptions.HasCounterTotalSuffix` now actually appends `_total` to counter metric
+  names in the Prometheus exporter output.
+- Workers now warn when autoscaling task polling encounters errors continuously for one minute.
+  Repeated warnings use exponential backoff up to 15-minute intervals and stop after polling
+  recovers.
+- Workers no longer send worker heartbeats or appear in centralized heartbeat reports before they
+  begin polling.
+- Ephemeral server processes (such as those started by `WorkflowEnvironment.StartLocalAsync`) no
+  longer leak when the server fails to start.
 
 ## [1.18.0] - 2026-08-13
 
