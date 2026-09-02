@@ -37,20 +37,12 @@ to docs, or any other relevant information.
 - Workflow task completions larger than the gRPC request size limit are now paginated
   automatically when the namespace supports it. Paginated workflow task completions require
   Temporal Server 1.32.0 or later.
+- A Nexus operation handler that queries a workflow now attaches a link to the queried
+  workflow execution on the caller's Nexus operation event. Requires Temporal Server
+  1.32 or later.
 
 ### Changed
 
-- A workflow query issued from inside a Nexus operation handler now propagates the link the server
-  returns for the workflow that processed it, so the caller's Nexus operation event points back at
-  the queried workflow. 
-- A `common.v1.Link.Workflow` now serializes to the workflow path
-  `temporal:///namespaces/{ns}/workflows/{wid}/{rid}` with the optional `reason` as a query param,
-  rather than reusing the workflow-event path with a `/history` suffix and dropping `reason`. The
-  previous form was indistinguishable from a workflow-event link except by its type, and did not
-  match the other SDKs. Inbound workflow links are now parsed as well, and a link with a trailing
-  path segment is rejected.
-- A Nexus operation backed by a workflow query now fails when the query fails or is rejected, rather
-  than being retried until the operation times out.
 - A non-retryable `ApplicationFailureException` with error type `PayloadValidationError` thrown by a
   payload codec or payload converter while decoding Nexus operation input is now reported as a
   non-retryable `BadRequest` handler exception (with the application failure as its cause) instead of
@@ -88,6 +80,12 @@ to docs, or any other relevant information.
   begin polling.
 - Ephemeral server processes (such as those started by `WorkflowEnvironment.StartLocalAsync`) no
   longer leak when the server fails to start.
+- Nexus links that point at a workflow execution rather than a specific history event were serialized
+  in a form the server could not parse, so they were silently dropped from the caller's Nexus
+  operation event. They now use the form `temporal:///namespaces/{ns}/workflows/{wid}/{rid}` and
+  carry the optional `reason`.
+- A Nexus operation backed by a workflow query now fails when the query fails or is
+  rejected, rather than being retried until the operation times out.
 
 ## [1.18.0] - 2026-08-13
 
