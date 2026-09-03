@@ -26,6 +26,7 @@ to docs, or any other relevant information.
 
 ### Added
 
+- New `ActivityHandle` methods: `Pause`, `Unpause`, `UpdateOptions` and `RestoreOriginalOptions`.
 - Added operation-specific outbound workflow interceptors for Temporal System Nexus operations.
   `SignalWithStartWorkflowAsync` can now be intercepted before the existing
   `ScheduleSystemNexusOperationAsync` hook.

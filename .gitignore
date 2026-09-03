@@ -12,6 +12,7 @@ obj/
 /.zed
 /.omc
 Temporalio.slnx.DotSettings.user
+Temporalio.sln.DotSettings.user
 
 # C# Dev Kit language service cache (https://aka.ms/lscache)
 *.lscache

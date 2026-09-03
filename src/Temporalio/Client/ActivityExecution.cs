@@ -28,7 +28,7 @@ namespace Temporalio.Client
                 activityRunId: string.IsNullOrEmpty(rawInfo.RunId) ? null : rawInfo.RunId,
                 activityType: rawInfo.ActivityType?.Name ?? string.Empty,
                 closeTime: rawInfo.CloseTime?.ToDateTime(),
-                executionDuration: rawInfo.ExecutionDuration?.ToTimeSpan(),
+                executionDuration: rawInfo.ExecutionDuration?.ToNonZeroTimeSpan(),
                 scheduledTime: rawInfo.ScheduleTime?.ToDateTime() ?? default,
                 stateTransitionCount: rawInfo.StateTransitionCount,
                 status: rawInfo.Status,

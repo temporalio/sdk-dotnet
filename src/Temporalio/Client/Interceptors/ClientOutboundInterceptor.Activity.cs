@@ -95,5 +95,41 @@ namespace Temporalio.Client.Interceptors
         public virtual Task<ActivityListPage> ListActivitiesPaginatedAsync(
             ListActivitiesPaginatedInput input) =>
             Next.ListActivitiesPaginatedAsync(input);
+
+        /// <summary>
+        /// Intercept pause activity calls.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Task for pause request completion.</returns>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        public virtual Task PauseActivityAsync(PauseActivityInput input) =>
+            Next.PauseActivityAsync(input);
+
+        /// <summary>
+        /// Intercept unpause activity calls.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Task for unpause request completion.</returns>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        public virtual Task UnpauseActivityAsync(UnpauseActivityInput input) =>
+            Next.UnpauseActivityAsync(input);
+
+        /// <summary>
+        /// Intercept update activity options calls.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>New activity options.</returns>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        public virtual Task<ActivityOptionsUpdate> UpdateActivityOptionsAsync(UpdateActivityOptionsInput input) =>
+            Next.UpdateActivityOptionsAsync(input);
+
+        /// <summary>
+        /// Intercept restore original activity options calls.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Task for termination completion.</returns>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        public virtual Task<ActivityOptionsUpdate> RestoreOriginalActivityOptionsAsync(RestoreOriginalActivityOptionsInput input) =>
+            Next.RestoreOriginalActivityOptionsAsync(input);
     }
 }
