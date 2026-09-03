@@ -2813,7 +2813,7 @@ namespace Temporalio.Worker
 
             /// <inheritdoc/>
             public override Task<NexusWorkflowOperationHandle<TResult>> ScheduleSystemNexusOperationAsync<TResult>(
-                ScheduleSystemNexusOperationInput<TResult> input) =>
+                ScheduleSystemNexusOperationInput input) =>
                 ScheduleNexusOperationAsync<TResult>(new(
                     Service: input.Service,
                     ClientOptions: new(SystemNexusPayloadVisitor.TemporalSystemEndpoint),
