@@ -31,6 +31,13 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecutionDescription.#ctor(Temporalio.Api.WorkflowService.V1.DescribeActivityExecutionResponse,System.String,Temporalio.Converters.DataConverter)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Temporalio.Client.ActivityExecutionDescription.get_LongPollToken</Target>
     <Left>lib/net462/Temporalio.dll</Left>
     <Right>lib/net462/Temporalio.dll</Right>
@@ -101,6 +108,13 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecutionDescription.#ctor(Temporalio.Api.WorkflowService.V1.DescribeActivityExecutionResponse,System.String,Temporalio.Converters.DataConverter)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Temporalio.Client.ActivityExecutionDescription.get_LongPollToken</Target>
     <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
     <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
@@ -165,6 +179,13 @@
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Temporalio.Client.ActivityExecution.get_StateTransitionCount</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecutionDescription.#ctor(Temporalio.Api.WorkflowService.V1.DescribeActivityExecutionResponse,System.String,Temporalio.Converters.DataConverter)</Target>
     <Left>lib/netstandard2.0/Temporalio.dll</Left>
     <Right>lib/netstandard2.0/Temporalio.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
