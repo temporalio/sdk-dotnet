@@ -43,6 +43,9 @@ to docs, or any other relevant information.
 - A Nexus operation handler that queries a workflow now attaches a link to the queried
   workflow execution on the caller's Nexus operation event. Requires Temporal Server
   1.32 or later.
+- Added `LocalActivityOptions.IncludeArgumentsInMarker` to record a local activity's serialized
+  arguments in its local activity marker, making them visible in workflow history. Defaults to
+  false.
 
 ### Changed
 
