@@ -118,6 +118,6 @@ namespace Temporalio.Worker.Interceptors
         /// <param name="input">System operation details.</param>
         /// <returns>Operation handle.</returns>
         public virtual Task<NexusWorkflowOperationHandle<TResult>> ScheduleSystemNexusOperationAsync<TResult>(
-            ScheduleSystemNexusOperationInput input) => Next.ScheduleSystemNexusOperationAsync<TResult>(input);
+            ScheduleSystemNexusOperationInput<TResult> input) => Next.ScheduleSystemNexusOperationAsync<TResult>(input);
     }
 }

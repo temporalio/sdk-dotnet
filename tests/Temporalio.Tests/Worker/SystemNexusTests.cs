@@ -334,7 +334,7 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
             }
 
             public override Task<NexusWorkflowOperationHandle<TResult>> ScheduleSystemNexusOperationAsync<TResult>(
-                ScheduleSystemNexusOperationInput input)
+                ScheduleSystemNexusOperationInput<TResult> input)
             {
                 root.ScheduleSystemNexusOperationCount++;
                 return base.ScheduleSystemNexusOperationAsync<TResult>(input);
