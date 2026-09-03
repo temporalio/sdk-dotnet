@@ -768,7 +768,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                 SignalWithStartWorkflowRequest request)
             {
                 using (WorkflowsSource.TrackWorkflowDiagnosticActivity(
-                    name: "SignalWithStartWorkflow",
+                    name: $"SignalWithStartWorkflow:{request.Workflow}",
                     kind: ActivityKind.Client))
                 {
                     var headers = root.HeadersFromContext(
