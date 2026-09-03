@@ -18,6 +18,7 @@ namespace Temporalio.Client
     /// <remarks>WARNING: Standalone activities are experimental.</remarks>
     public class ActivityExecutionDescription : ActivityExecution
     {
+        private readonly ActivityDescribeOptions requestOptions;
         private readonly DataConverter dataConverter;
         private readonly Lazy<Task<(string? Summary, string? Details)>> userMetadata;
         private readonly Lazy<Task<Exception?>> lastFailure;
@@ -26,11 +27,13 @@ namespace Temporalio.Client
         /// <summary>
         /// Initializes a new instance of the <see cref="ActivityExecutionDescription"/> class.
         /// </summary>
+        /// <param name="requestOptions">Options used to make the request.</param>
         /// <param name="resp">Raw proto response.</param>
         /// <param name="clientNamespace">Client namespace.</param>
         /// <param name="dataConverter">Data converter.</param>
         /// <remarks>WARNING: This constructor may be mutated in backwards incompatible ways.</remarks>
         protected internal ActivityExecutionDescription(
+            ActivityDescribeOptions? requestOptions,
             DescribeActivityExecutionResponse resp,
             string clientNamespace,
             DataConverter dataConverter)
@@ -49,8 +52,9 @@ namespace Temporalio.Client
                     SearchAttributeCollection.Empty :
                     SearchAttributeCollection.FromProto(resp.Info.SearchAttributes))
         {
-            RawResponse = resp;
+            this.requestOptions = requestOptions ?? new();
             this.dataConverter = dataConverter;
+            RawResponse = resp;
             var info = resp.Info;
             Attempt = info.Attempt;
             CanceledReason = string.IsNullOrEmpty(info.CanceledReason) ? null : info.CanceledReason;
@@ -73,8 +77,8 @@ namespace Temporalio.Client
             TotalHeartbeatCount = info.TotalHeartbeatCount;
 #pragma warning disable VSTHRD011 // This should not be able to deadlock
             userMetadata = new(() => dataConverter.FromUserMetadataAsync(info.UserMetadata));
-            lastFailure = new(async () => info.LastFailure == null ? null : await dataConverter.ToExceptionAsync(info.LastFailure).ConfigureAwait(false));
-            outcomeFailure = new(async () => resp.Outcome?.Failure == null ? null : await dataConverter.ToExceptionAsync(resp.Outcome.Failure).ConfigureAwait(false));
+            lastFailure = new(async () => info.LastFailure == null ? null : await dataConverter.ToExceptionAsync(info.LastFailure.Clone()).ConfigureAwait(false));
+            outcomeFailure = new(async () => resp.Outcome?.Failure == null ? null : await dataConverter.ToExceptionAsync(resp.Outcome.Failure.Clone()).ConfigureAwait(false));
 #pragma warning restore VSTHRD011
         }
 
@@ -105,33 +109,34 @@ namespace Temporalio.Client
         /// Always false if <see cref="ActivityDescribeOptions.IncludeHeartbeatDetails"/> was false.
         /// <para>Heartbeat details payloads can be accessed via <c>RawInfo.HeartbeatDetails.Payloads_</c>.</para>
         /// </remarks>
-        public bool HasHeartbeatDetails => RawInfo.HeartbeatDetails?.Payloads_?.Count > 0;
+        public bool HasHeartbeatDetails => requestOptions.IncludeHeartbeatDetails && RawInfo.HeartbeatDetails?.Payloads_?.Count > 0;
 
         /// <summary>
-        /// Gets a value indicating whether input is available.
+        /// Gets a value indicating whether the activity input is available.
         /// </summary>
         /// <remarks>
         /// Always false if <see cref="ActivityDescribeOptions.IncludeInput"/> was false.
         /// <para>Input payloads can be accessed via <see cref="RawInput"/>.</para>
         /// </remarks>
-        public bool HasInput => RawInput?.Count > 0;
+        public bool HasInput => requestOptions.IncludeInput && RawInput?.Count > 0;
 
         /// <summary>
         /// Gets a value indicating whether the last failure is available.
         /// </summary>
-        /// Always false if <see cref="ActivityDescribeOptions.IncludeLastFailure"/> was false.
+        /// <remarks>Always false if <see cref="ActivityDescribeOptions.IncludeLastFailure"/> was false.</remarks>
         /// <seealso cref="GetLastFailureAsync"/>
-        public bool HasLastFailure => RawInfo.LastFailure != null;
+        public bool HasLastFailure => requestOptions.IncludeLastFailure && RawInfo.LastFailure != null;
 
         /// <summary>
-        /// Gets a value indicating whether the last failure is available.
+        /// Gets a value indicating whether the activity result is available.
         /// </summary>
         /// <remarks>
-        /// Activity outcome failure is only available if the activity has closed with a failure.
+        /// Activity result is only available if the activity has completed successfully.
         /// <para>Always false if <see cref="ActivityDescribeOptions.IncludeOutcome"/> was false.</para>
         /// </remarks>
-        /// <seealso cref="GetOutcomeFailureAsync"/>
-        public bool HasResult => RawOutcome?.Result?.Payloads_.Count == 1; // 0 means missing, more than 1 is invalid
+        /// <seealso cref="GetResultAsync"/>
+        /// <seealso cref="HasOutcomeFailure"/>
+        public bool HasResult => requestOptions.IncludeOutcome && RawOutcome?.Result?.Payloads_.Count == 1; // 0 means missing, more than 1 is invalid
 
         /// <summary>
         /// Gets a value indicating whether the outcome failure is available.
@@ -141,7 +146,8 @@ namespace Temporalio.Client
         /// <para>Always false if <see cref="ActivityDescribeOptions.IncludeOutcome"/> was false.</para>
         /// </remarks>
         /// <seealso cref="GetOutcomeFailureAsync"/>
-        public bool HasOutcomeFailure => RawOutcome?.Failure != null;
+        /// <seealso cref="HasResult"/>
+        public bool HasOutcomeFailure => requestOptions.IncludeOutcome && RawOutcome?.Failure != null;
 
         /// <summary>
         /// Gets the heartbeat timeout.
@@ -262,38 +268,52 @@ namespace Temporalio.Client
         /// <summary>
         /// Gets the failure from the last failed attempt, or null if not available.
         /// </summary>
-        /// <remarks>Always false if <see cref="ActivityDescribeOptions.IncludeLastFailure"/> was false.</remarks>
         /// <returns>Last failure, or null if not available.</returns>
+        /// <exception cref="InvalidOperationException">If <see cref="ActivityDescribeOptions.IncludeLastFailure"/> was false.</exception>
         /// <seealso cref="HasLastFailure"/>
-        public async Task<Exception?> GetLastFailureAsync() =>
-            await lastFailure.Value.ConfigureAwait(false);
+        public async Task<Exception?> GetLastFailureAsync()
+        {
+            if (!requestOptions.IncludeLastFailure)
+            {
+                throw new InvalidOperationException("ActivityDescribeOptions.IncludeLastFailure must be set to true.");
+            }
+            return await lastFailure.Value.ConfigureAwait(false);
+        }
 
         /// <summary>
         /// Gets the failure of the activity execution, or null if not available.
         /// </summary>
-        /// <remarks>
-        /// Activity outcome failure is only available if the activity has closed with a failure.
-        /// <para>Always false if <see cref="ActivityDescribeOptions.IncludeOutcome"/> was false.</para>
-        /// </remarks>
         /// <returns>Activity outcome failure, or null if not available.</returns>
+        /// <exception cref="InvalidOperationException">If <see cref="ActivityDescribeOptions.IncludeLastFailure"/> was false.</exception>
+        /// <remarks>Activity outcome failure is only available if the activity has closed with a failure.</remarks>
+        /// <seealso cref="GetResultAsync"/>
         /// <seealso cref="HasOutcomeFailure"/>
-        public async Task<Exception?> GetOutcomeFailureAsync() =>
-            await outcomeFailure.Value.ConfigureAwait(false);
+        public async Task<Exception?> GetOutcomeFailureAsync()
+        {
+            if (!requestOptions.IncludeOutcome)
+            {
+                throw new InvalidOperationException("ActivityDescribeOptions.IncludeOutcome must be set to true.");
+            }
+            return await outcomeFailure.Value.ConfigureAwait(false);
+        }
 #pragma warning restore VSTHRD003
 
         /// <summary>
         /// Gets the result of the activity execution.
         /// </summary>
         /// <typeparam name="T">Type to convert the result into.</typeparam>
-        /// <exception cref="InvalidOperationException">If result is not available. See <see cref="HasResult"/>.</exception>
-        /// <remarks>
-        /// Activity result is only available if the activity has completed successfully.
-        /// <para>Always false if <see cref="ActivityDescribeOptions.IncludeOutcome"/> was false.</para>
-        /// </remarks>
         /// <returns>Activity result.</returns>
+        /// <exception cref="InvalidOperationException">If result is not available. See <see cref="HasResult"/>.</exception>
+        /// <exception cref="InvalidOperationException">If <see cref="ActivityDescribeOptions.IncludeOutcome"/> was false.</exception>
+        /// <remarks>Activity result is only available if the activity has completed successfully.</remarks>
+        /// <seealso cref="GetOutcomeFailureAsync"/>
         /// <seealso cref="HasResult"/>
         public async Task<T> GetResultAsync<T>()
         {
+            if (!requestOptions.IncludeOutcome)
+            {
+                throw new InvalidOperationException("ActivityDescribeOptions.IncludeOutcome must be set to true.");
+            }
             if (!HasResult)
             {
                 throw new InvalidOperationException("Result unavailable.");

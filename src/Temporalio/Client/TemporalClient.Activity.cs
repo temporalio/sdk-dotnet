@@ -228,7 +228,7 @@ namespace Temporalio.Client
                         IncludeLastFailure = input.Options?.IncludeLastFailure ?? false,
                     },
                     DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
-                return new(resp, Client.Options.Namespace, Client.Options.DataConverter);
+                return new((ActivityDescribeOptions?)input.Options?.Clone(), resp, Client.Options.Namespace, Client.Options.DataConverter);
             }
 
             /// <inheritdoc />
