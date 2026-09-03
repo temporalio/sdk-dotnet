@@ -2683,10 +2683,11 @@ namespace Temporalio.Worker
 
                 ISerializationContext? serializationContext = null;
                 if (SystemNexusPayloadVisitor.IsSystemEndpoint(input.ClientOptions.Endpoint) &&
+                    input.Arg is { } arg &&
                     NexgenOperationRegistry.Operations.TryGetValue(
                         (input.Service, input.OperationName), out var operationInfo))
                 {
-                    serializationContext = operationInfo.SerializationContext?.Invoke(input.Arg!);
+                    serializationContext = operationInfo.SerializationContext?.Invoke(arg);
                 }
 
                 var payloadConverter = instance.payloadConverterNoContext;
