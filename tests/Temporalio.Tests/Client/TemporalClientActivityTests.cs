@@ -1,3 +1,5 @@
+using Temporalio.Converters;
+
 #pragma warning disable xUnit1013 // We want public static methods as activities
 namespace Temporalio.Tests.Client;
 
@@ -37,6 +39,18 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
             await Task.Delay(100, ctx.CancellationToken);
         }
         ctx.CancellationToken.ThrowIfCancellationRequested();
+    }
+
+    [Activity]
+    public static Task<string> FailHeartbeatSucceed(string input)
+    {
+        var ctx = ActivityExecutionContext.Current;
+        ctx.Heartbeat("heartbeat details");
+        if (ActivityExecutionContext.Current.Info.Attempt == 1)
+        {
+            throw new ApplicationFailureException("first attempt failure");
+        }
+        return Task.FromResult("result");
     }
 
     [Fact]
@@ -173,10 +187,10 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
 
             var desc = await handle.DescribeAsync();
             Assert.Equal(ActivityExecutionStatus.Completed, desc.Status);
-            Assert.True(desc.ScheduledTime > DateTime.MinValue);
+            Assert.True(desc.ScheduleTime > DateTime.MinValue);
             Assert.NotNull(desc.LastStartedTime);
             Assert.True(
-                desc.LastStartedTime.Value - desc.ScheduledTime >= startDelay - TimeSpan.FromMilliseconds(500));
+                desc.LastStartedTime.Value - desc.ScheduleTime >= startDelay - TimeSpan.FromMilliseconds(500));
         });
     }
 
@@ -224,7 +238,7 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
                 Assert.Equal(activityId, desc.ActivityId);
                 Assert.Equal("WaitForCancel", desc.ActivityType);
                 Assert.Equal(taskQueue, desc.TaskQueue);
-                Assert.True(desc.ScheduledTime > DateTime.MinValue);
+                Assert.True(desc.ScheduleTime > DateTime.MinValue);
                 Assert.Equal(1, desc.Attempt);
                 Assert.NotNull(desc.ScheduleToCloseTimeout);
                 Assert.NotNull(desc.StartToCloseTimeout);
@@ -252,14 +266,97 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
                 new($"act-{Guid.NewGuid()}", taskQueue)
                 {
                     ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
-                    StaticSummary = "Test summary",
+                    Summary = "Test summary",
                     StaticDetails = "Test details\nLine 2",
                 });
             await handle.GetResultAsync();
 
             var desc = await handle.DescribeAsync();
-            Assert.Equal("Test summary", await desc.GetStaticSummaryAsync());
+            Assert.Equal("Test summary", await desc.GetSummaryAsync());
             Assert.Equal("Test details\nLine 2", await desc.GetStaticDetailsAsync());
+        });
+    }
+
+    [Fact]
+    public async Task DescribeAsync_NoPayloads()
+    {
+        await ExecuteActivityWorkerAsync(FailHeartbeatSucceed, async taskQueue =>
+        {
+            var handle = await Client.StartActivityAsync(
+                () => FailHeartbeatSucceed("input"),
+                new($"act-{Guid.NewGuid()}", taskQueue)
+                {
+                    ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
+                });
+            await handle.GetResultAsync();
+
+            var desc = await handle.DescribeAsync();
+            Assert.False(desc.HasInput);
+            Assert.False(desc.HasResult);
+            Assert.False(desc.HasOutcomeFailure);
+            Assert.False(desc.HasHeartbeatDetails);
+            Assert.False(desc.HasLastFailure);
+            Assert.Null(desc.RawInput?.FirstOrDefault());
+            await Assert.ThrowsAsync<InvalidOperationException>(desc.GetResultAsync<string>);
+            await Assert.ThrowsAsync<InvalidOperationException>(desc.GetOutcomeFailureAsync);
+            Assert.Null(desc.RawInfo.HeartbeatDetails?.Payloads_?.FirstOrDefault());
+            await Assert.ThrowsAsync<InvalidOperationException>(desc.GetLastFailureAsync);
+        });
+    }
+
+    [Fact]
+    public async Task DescribeAsync_IncludePayloads_Success()
+    {
+        await ExecuteActivityWorkerAsync(FailHeartbeatSucceed, async taskQueue =>
+        {
+            var handle = await Client.StartActivityAsync(
+                () => FailHeartbeatSucceed("input"),
+                new($"act-{Guid.NewGuid()}", taskQueue)
+                {
+                    ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
+                });
+            await handle.GetResultAsync();
+
+            var desc = await handle.DescribeAsync(new() { IncludeInput = true, IncludeOutcome = true, IncludeHeartbeatDetails = true, IncludeLastFailure = true });
+            Assert.True(desc.HasInput);
+            Assert.True(desc.HasResult);
+            Assert.False(desc.HasOutcomeFailure);
+            Assert.True(desc.HasHeartbeatDetails);
+            Assert.True(desc.HasLastFailure);
+            Assert.Equal("input", await Client.Options.DataConverter.ToSingleValueAsync<string>(desc.RawInput!));
+            Assert.Equal("result", await desc.GetResultAsync<string>());
+            Assert.Null(await desc.GetOutcomeFailureAsync());
+            Assert.Equal("heartbeat details", await Client.Options.DataConverter.ToSingleValueAsync<string>(desc.RawInfo.HeartbeatDetails.Payloads_));
+            Assert.Equal("first attempt failure", ((ApplicationFailureException)(await desc.GetLastFailureAsync())!).Message);
+        });
+    }
+
+    [Fact]
+    public async Task DescribeAsync_IncludePayloads_Failure()
+    {
+        await ExecuteActivityWorkerAsync(FailHeartbeatSucceed, async taskQueue =>
+        {
+            var handle = await Client.StartActivityAsync(
+                () => FailHeartbeatSucceed("input"),
+                new($"act-{Guid.NewGuid()}", taskQueue)
+                {
+                    ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
+                    RetryPolicy = new() { MaximumAttempts = 1 },
+                });
+            await Assert.ThrowsAsync<ActivityFailedException>(() => handle.GetResultAsync());
+
+            var desc = await handle.DescribeAsync(new() { IncludeInput = true, IncludeOutcome = true, IncludeHeartbeatDetails = true, IncludeLastFailure = true });
+            Assert.True(desc.HasInput);
+            Assert.False(desc.HasResult);
+            Assert.True(desc.HasOutcomeFailure);
+            Assert.True(desc.HasHeartbeatDetails);
+            Assert.True(desc.HasLastFailure);
+            Assert.Equal("input", await Client.Options.DataConverter.ToSingleValueAsync<string>(desc.RawInput!));
+            await Assert.ThrowsAsync<InvalidOperationException>(desc.GetResultAsync<string>);
+            Assert.IsType<ApplicationFailureException>(await desc.GetLastFailureAsync());
+            Assert.Equal("first attempt failure", ((ApplicationFailureException)(await desc.GetOutcomeFailureAsync())!).Message);
+            Assert.Equal("heartbeat details", await Client.Options.DataConverter.ToSingleValueAsync<string>(desc.RawInfo.HeartbeatDetails.Payloads_));
+            Assert.Equal("first attempt failure", ((ApplicationFailureException)(await desc.GetLastFailureAsync())!).Message);
         });
     }
 

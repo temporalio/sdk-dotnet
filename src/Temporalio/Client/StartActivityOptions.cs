@@ -89,8 +89,7 @@ namespace Temporalio.Client
         /// Gets or sets a single-line fixed summary for this activity execution that may appear in
         /// UI/CLI. This can be in single-line Temporal markdown format.
         /// </summary>
-        /// <remarks>WARNING: This setting is experimental.</remarks>
-        public string? StaticSummary { get; set; }
+        public string? Summary { get; set; }
 
         /// <summary>
         /// Gets or sets general fixed details for this activity execution that may appear in

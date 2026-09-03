@@ -3,6 +3,69 @@
 <Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityDescribeOptions.get_LongPollToken</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityDescribeOptions.set_LongPollToken(System.Byte[])</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecution.get_ScheduledTime</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecution.get_StateTransitionCount</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecutionDescription.#ctor(Temporalio.Api.WorkflowService.V1.DescribeActivityExecutionResponse,System.String,Temporalio.Converters.DataConverter)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecutionDescription.get_LongPollToken</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecutionDescription.GetStaticSummaryAsync</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.StartActivityOptions.get_StaticSummary</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.StartActivityOptions.set_StaticSummary(System.String)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Temporalio.Workflows.SignalWithStartWorkflowOptions.get_RequestId</Target>
     <Left>lib/net462/Temporalio.dll</Left>
     <Right>lib/net462/Temporalio.dll</Right>
@@ -17,6 +80,69 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityDescribeOptions.get_LongPollToken</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityDescribeOptions.set_LongPollToken(System.Byte[])</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecution.get_ScheduledTime</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecution.get_StateTransitionCount</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecutionDescription.#ctor(Temporalio.Api.WorkflowService.V1.DescribeActivityExecutionResponse,System.String,Temporalio.Converters.DataConverter)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecutionDescription.get_LongPollToken</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecutionDescription.GetStaticSummaryAsync</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.StartActivityOptions.get_StaticSummary</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.StartActivityOptions.set_StaticSummary(System.String)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Temporalio.Workflows.SignalWithStartWorkflowOptions.get_RequestId</Target>
     <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
     <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
@@ -27,6 +153,69 @@
     <Target>M:Temporalio.Workflows.SignalWithStartWorkflowOptions.set_RequestId(System.String)</Target>
     <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
     <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityDescribeOptions.get_LongPollToken</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityDescribeOptions.set_LongPollToken(System.Byte[])</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecution.get_ScheduledTime</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecution.get_StateTransitionCount</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecutionDescription.#ctor(Temporalio.Api.WorkflowService.V1.DescribeActivityExecutionResponse,System.String,Temporalio.Converters.DataConverter)</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecutionDescription.get_LongPollToken</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.ActivityExecutionDescription.GetStaticSummaryAsync</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.StartActivityOptions.get_StaticSummary</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Client.StartActivityOptions.set_StaticSummary(System.String)</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
   <Suppression>
