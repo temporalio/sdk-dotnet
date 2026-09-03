@@ -8,31 +8,28 @@ var projectDir = Path.GetFullPath(Path.Join(currFile, "../../../"));
 var generatorDir = Path.Join(projectDir, "src/Temporalio.SystemNexus.Generator");
 var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/crates/protos/protos");
 var apiProtoDir = Path.Join(protoDir, "api_upstream");
-var nexusWitDir = Path.Join(apiProtoDir, "nexus");
 var descriptorPath = Path.Join(generatorDir, "obj/SystemNexus/temporal_api.bin");
 var stagingOutputDir = Path.Join(generatorDir, "obj/SystemNexus/Generated");
 var workflowsGeneratedDir = Path.Join(projectDir, "src/Temporalio/Workflows/Generated");
 var workerGeneratedDir = Path.Join(projectDir, "src/Temporalio/Worker/Generated");
 var obsoleteOutputDir = Path.Join(projectDir, "src/Temporalio/SystemNexus/Generated");
-var operationsPath = Path.Join(workflowsGeneratedDir, "Operations.cs");
 
 EnsureNexGen();
 BuildDescriptor();
 GenerateNexusApi();
 PostProcessGeneratedNexusApi();
-GeneratePayloadVisitor(operationsPath, descriptorPath, workerGeneratedDir);
+GeneratePayloadVisitor(descriptorPath, workerGeneratedDir);
 return 0;
 
 void EnsureNexGen()
 {
-    var nexGenCommand = NexGenCommand();
     var helpArgs = new[] { "help" };
-    if (RunProcess(nexGenCommand, helpArgs, ignoreExitCode: true) == 0)
+    if (RunNexGen(helpArgs, ignoreExitCode: true) == 0)
     {
         return;
     }
 
-    throw new InvalidOperationException($"Unable to run nex-gen command {nexGenCommand}");
+    throw new InvalidOperationException("Unable to run nexgen");
 }
 
 void BuildDescriptor()
@@ -46,7 +43,7 @@ void BuildDescriptor()
             "-I=" + protoDir,
             "--include_imports",
             "--descriptor_set_out=" + descriptorPath,
-            Path.Join(apiProtoDir, "temporal/api/workflowservice/v1/request_response.proto"),
+            Path.Join(apiProtoDir, "temporal/api/workflowservice/v1/service.proto"),
         });
 }
 
@@ -58,17 +55,14 @@ void GenerateNexusApi()
     }
 
     Directory.CreateDirectory(stagingOutputDir);
-    RunProcess(
-        NexGenCommand(),
+    RunNexGen(
         new[]
         {
-            "generate",
-            "--lang",
             "dotnet",
-            "--input",
-            Path.Join(nexusWitDir, "workflow-service.wit"),
-            "--input",
-            Path.Join(nexusWitDir, "deps"),
+            "--native-api",
+            "--system-nexus",
+            Path.Join(apiProtoDir, "nexus/workflow-service.wit"),
+            Path.Join(apiProtoDir, "nexus/deps"),
             "--support-file",
             Path.Join(generatorDir, "wit/deps/nexus-temporal-types/dotnet/TemporalSupport.cs"),
             "--descriptors",
@@ -90,8 +84,9 @@ void PostProcessGeneratedNexusApi()
 
     WriteWorkflowGeneratedFile("Models.cs");
     WriteWorkflowGeneratedFile("Operations.cs");
-    WriteWorkflowGeneratedFile("Service.cs");
+    WriteWorkflowGeneratedFile("Services.cs");
     WriteWorkflowGeneratedFile(Path.Join("Support", "TemporalSupport.cs"), "TemporalSupport.cs");
+    WriteWorkerGeneratedFile("SystemNexusWorkflowOutboundInterceptor.cs");
 }
 
 void WriteWorkflowGeneratedFile(string stagingRelativePath, string? outputFileName = null)
@@ -103,12 +98,20 @@ void WriteWorkflowGeneratedFile(string stagingRelativePath, string? outputFileNa
     var contents = File.ReadAllText(sourcePath);
     contents = Regex.Replace(
         contents,
-        @"^using (NexGen\.Support|Temporalio\.Workflows);\r?\n",
+        @"^using (Nexgen\.Support|Temporalio\.Workflows);\r?\n",
         string.Empty,
         RegexOptions.Multiline);
-    contents = contents.Replace("namespace NexGen.Support", "namespace Temporalio.Workflows");
-    contents = contents.Replace("NexGen.Support.", string.Empty);
+    contents = contents.Replace("namespace Nexgen.Support", "namespace Temporalio.Workflows");
+    contents = contents.Replace("Nexgen.Support.", string.Empty);
     File.WriteAllText(destinationPath, contents);
+}
+
+void WriteWorkerGeneratedFile(string stagingRelativePath)
+{
+    File.Copy(
+        Path.Join(stagingOutputDir, stagingRelativePath),
+        Path.Join(workerGeneratedDir, Path.GetFileName(stagingRelativePath)),
+        overwrite: true);
 }
 
 static void RecreateDirectory(string path)
@@ -122,28 +125,11 @@ static void RecreateDirectory(string path)
 }
 
 static void GeneratePayloadVisitor(
-    string operationsPath,
     string descriptorPath,
     string outputDir)
 {
-    var generatedDir = Path.GetDirectoryName(operationsPath) ??
-        throw new InvalidOperationException($"No directory for {operationsPath}");
-    var servicePath = Path.Combine(generatedDir, "Service.cs");
-    var source = File.ReadAllText(servicePath);
-    var operations = ParseOperations(source);
-    if (operations.Count == 0)
-    {
-        throw new InvalidOperationException($"No generated operations found in {servicePath}");
-    }
-
     var messages = LoadMessages(descriptorPath);
-    var messagesByCsharpType = messages.Values.ToDictionary(
-        message => NormalizeTypeName(message.CsharpType),
-        message => message);
-    var operationMessages = operations.Select(operation =>
-        new OperationMessages(
-            GetMessage(messagesByCsharpType, operation.InputType),
-            GetMessage(messagesByCsharpType, operation.OutputType))).ToList();
+    var operationMessages = LoadWorkflowServiceOperationMessages(descriptorPath, messages);
     var containsPayloadMemo = new Dictionary<string, bool>();
     var emittedVisitors = new HashSet<string>();
     var emittedMethods = new HashSet<string>();
@@ -152,6 +138,7 @@ static void GeneratePayloadVisitor(
     builder.AppendLine("// <auto-generated />");
     builder.AppendLine("// Generated by Temporalio.SystemNexus.Generator. DO NOT EDIT!");
     builder.AppendLine("#nullable enable");
+    builder.AppendLine("#pragma warning disable CS0612");
     builder.AppendLine();
     builder.AppendLine("using System;");
     builder.AppendLine("using System.CodeDom.Compiler;");
@@ -170,8 +157,8 @@ static void GeneratePayloadVisitor(
 
     foreach (var operation in operationMessages)
     {
-        EmitEnvelopeVisitor(builder, operation.Input, emittedVisitors);
-        EmitEnvelopeVisitor(builder, operation.Output, emittedVisitors);
+        EmitEnvelopeVisitor(builder, operation.Input, messages, containsPayloadMemo, emittedVisitors);
+        EmitEnvelopeVisitor(builder, operation.Output, messages, containsPayloadMemo, emittedVisitors);
     }
 
     builder.AppendLine("            };");
@@ -209,32 +196,6 @@ static void GeneratePayloadVisitor(
     File.WriteAllText(Path.Combine(outputDir, "SystemNexusPayloadVisitor.cs"), builder.ToString());
 }
 
-static List<OperationInfo> ParseOperations(string serviceSource)
-{
-    var operations = new List<OperationInfo>();
-    var serviceMatches = Regex.Matches(
-        serviceSource,
-        @"\[NexusService\(""[^""]+""\)\]\s+internal\s+interface\s+\w+\s*\{(?<body>.*?)^\s*\}",
-        RegexOptions.Multiline | RegexOptions.Singleline,
-        TimeSpan.FromSeconds(5));
-    foreach (Match serviceMatch in serviceMatches)
-    {
-        var operationMatches = Regex.Matches(
-            serviceMatch.Groups["body"].Value,
-            @"\[NexusOperation\(""[^""]+""\)\]\s+(?<output>[A-Za-z0-9_.:]+)\s+\w+\((?<input>[A-Za-z0-9_.:]+)\s+\w+\);",
-            RegexOptions.Multiline,
-            TimeSpan.FromSeconds(5));
-        foreach (Match operationMatch in operationMatches)
-        {
-            operations.Add(new OperationInfo(
-                NormalizeTypeName(operationMatch.Groups["input"].Value),
-                NormalizeTypeName(operationMatch.Groups["output"].Value)));
-        }
-    }
-
-    return operations;
-}
-
 static IReadOnlyDictionary<string, MessageInfo> LoadMessages(string descriptorPath)
 {
     var descriptorSet = FileDescriptorSet.Parser.ParseFrom(File.ReadAllBytes(descriptorPath));
@@ -256,6 +217,28 @@ static IReadOnlyDictionary<string, MessageInfo> LoadMessages(string descriptorPa
     return messages;
 }
 
+static IReadOnlyList<OperationMessages> LoadWorkflowServiceOperationMessages(
+    string descriptorPath,
+    IReadOnlyDictionary<string, MessageInfo> messages)
+{
+    var descriptorSet = FileDescriptorSet.Parser.ParseFrom(File.ReadAllBytes(descriptorPath));
+    var workflowService = descriptorSet.File
+        .Where(file => file.Package == "temporal.api.workflowservice.v1")
+        .SelectMany(file => file.Service)
+        .SingleOrDefault(service => service.Name == "WorkflowService") ??
+        throw new InvalidOperationException("No WorkflowService descriptor found");
+    var operationMessages = workflowService.Method.Select(method => new OperationMessages(
+        GetMessage(messages, method.InputType),
+        GetMessage(messages, method.OutputType)))
+        .ToList();
+    if (operationMessages.Count == 0)
+    {
+        throw new InvalidOperationException("No WorkflowService methods found");
+    }
+
+    return operationMessages;
+}
+
 static void AddMessage(
     Dictionary<string, MessageInfo> messages,
     string protoPrefix,
@@ -274,12 +257,12 @@ static void AddMessage(
 }
 
 static MessageInfo GetMessage(
-    IReadOnlyDictionary<string, MessageInfo> messagesByCsharpType,
-    string csharpType)
+    IReadOnlyDictionary<string, MessageInfo> messages,
+    string protoTypeName)
 {
-    if (!messagesByCsharpType.TryGetValue(NormalizeTypeName(csharpType), out var message))
+    if (!TryGetMessage(protoTypeName, messages, out var message))
     {
-        throw new InvalidOperationException($"No protobuf message descriptor found for {csharpType}");
+        throw new InvalidOperationException($"No protobuf message descriptor found for {protoTypeName}");
     }
 
     return message;
@@ -288,9 +271,12 @@ static MessageInfo GetMessage(
 static void EmitEnvelopeVisitor(
     StringBuilder builder,
     MessageInfo message,
+    IReadOnlyDictionary<string, MessageInfo> messages,
+    Dictionary<string, bool> containsPayloadMemo,
     HashSet<string> emittedVisitors)
 {
-    if (!emittedVisitors.Add(message.FullName))
+    if (!ContainsPayload(message, messages, containsPayloadMemo) ||
+        !emittedVisitors.Add(message.FullName))
     {
         return;
     }
@@ -310,7 +296,8 @@ static void EmitVisitMethod(
     Dictionary<string, bool> containsPayloadMemo,
     HashSet<string> emittedMethods)
 {
-    if (!emittedMethods.Add(message.FullName))
+    if (!ContainsPayload(message, messages, containsPayloadMemo) ||
+        !emittedMethods.Add(message.FullName))
     {
         return;
     }
@@ -634,16 +621,17 @@ static int RunProcess(string fileName, IEnumerable<string> arguments, bool ignor
     return process.ExitCode;
 }
 
-static string NexGenCommand() =>
-    Environment.GetEnvironmentVariable("NEX_GEN_BIN") is { Length: > 0 } value ? value : "nex-gen";
+static int RunNexGen(IEnumerable<string> arguments, bool ignoreExitCode = false)
+{
+    if (Environment.GetEnvironmentVariable("NEXGEN_BIN") is { Length: > 0 } value)
+    {
+        return RunProcess(value, arguments, ignoreExitCode);
+    }
+    return RunProcess("nexgen", arguments, ignoreExitCode);
+}
 
 static string UniqueLocalName(MessageInfo message, FieldDescriptorProto field, string prefix) =>
     $"{prefix}_{Regex.Replace(message.FullName, @"[^A-Za-z0-9_]", "_")}_{field.Number}";
-
-static string NormalizeTypeName(string typeName) =>
-    typeName.StartsWith("global::", StringComparison.Ordinal) ? typeName["global::".Length..] : typeName;
-
-internal sealed record OperationInfo(string InputType, string OutputType);
 
 internal sealed record OperationMessages(MessageInfo Input, MessageInfo Output);
 

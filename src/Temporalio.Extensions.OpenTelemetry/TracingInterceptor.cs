@@ -118,6 +118,22 @@ namespace Temporalio.Extensions.OpenTelemetry
         }
 
         /// <summary>
+        /// Serialize an OTel context to System Nexus headers.
+        /// </summary>
+        /// <param name="headers">Headers to copy and update if present.</param>
+        /// <param name="ctx">OTel context.</param>
+        /// <returns>Created/updated headers.</returns>
+        protected virtual IReadOnlyDictionary<string, object?> HeadersFromContext(
+            IReadOnlyDictionary<string, object?>? headers, PropagationContext ctx)
+        {
+            var result = headers?.ToDictionary(item => item.Key, item => item.Value) ?? new();
+            var carrier = new Dictionary<string, string>();
+            Options.Propagator.Inject(ctx, carrier, (d, k, v) => d[k] = v);
+            result[Options.HeaderKey] = carrier;
+            return result;
+        }
+
+        /// <summary>
         /// Deserialize Temporal headers to OTel context.
         /// </summary>
         /// <param name="headers">Headers to deserialize from.</param>
@@ -746,6 +762,21 @@ namespace Temporalio.Extensions.OpenTelemetry
                     input.Headers, $"StartNexusOperation:{input.Service}/{input.OperationName}");
                 input = input with { Headers = headers };
                 return base.ScheduleNexusOperationAsync<TResult>(input);
+            }
+
+            public override Task<NexusWorkflowOperationHandle<SignalWithStartWorkflowResponse>> SignalWithStartWorkflowAsync(
+                SignalWithStartWorkflowRequest request)
+            {
+                using (WorkflowsSource.TrackWorkflowDiagnosticActivity(
+                    name: $"SignalWithStartWorkflow:{request.Workflow}",
+                    kind: ActivityKind.Client))
+                {
+                    var headers = root.HeadersFromContext(
+                        request.Headers,
+                        new(WorkflowDiagnosticActivity.Current?.Context ?? default, Baggage.Current));
+                    request = request with { Headers = headers };
+                    return base.SignalWithStartWorkflowAsync(request);
+                }
             }
 
             private IDictionary<string, Payload> StartWorkflowActivityOnHeaders(

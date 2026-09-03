@@ -437,6 +437,8 @@ namespace Temporalio.Client
                     throw new WorkflowQueryFailedException(e.Message);
                 }
 
+                CaptureNexusResponseLink(resp.Link);
+
                 // Throw rejection if rejected
                 if (resp.QueryRejected != null)
                 {
