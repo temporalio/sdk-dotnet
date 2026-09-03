@@ -32,7 +32,7 @@ namespace Temporalio.Client
                 activityRunId: string.IsNullOrEmpty(rawDescription.Info.RunId) ? null : rawDescription.Info.RunId,
                 activityType: rawDescription.Info.ActivityType?.Name ?? string.Empty,
                 closeTime: rawDescription.Info.CloseTime?.ToDateTime(),
-                executionDuration: rawDescription.Info.ExecutionDuration?.ToTimeSpan(),
+                executionDuration: rawDescription.Info.ExecutionDuration?.ToNonZeroTimeSpan(),
                 scheduledTime: rawDescription.Info.ScheduleTime?.ToDateTime() ?? default,
                 stateTransitionCount: rawDescription.Info.StateTransitionCount,
                 status: rawDescription.Info.Status,
@@ -45,9 +45,9 @@ namespace Temporalio.Client
             var info = rawDescription.Info;
             Attempt = info.Attempt;
             CanceledReason = string.IsNullOrEmpty(info.CanceledReason) ? null : info.CanceledReason;
-            CurrentRetryInterval = info.CurrentRetryInterval?.ToTimeSpan();
+            CurrentRetryInterval = info.CurrentRetryInterval?.ToNonZeroTimeSpan();
             ExpirationTime = info.ExpirationTime?.ToDateTime();
-            HeartbeatTimeout = info.HeartbeatTimeout?.ToTimeSpan();
+            HeartbeatTimeout = info.HeartbeatTimeout?.ToNonZeroTimeSpan();
             LastAttemptCompleteTime = info.LastAttemptCompleteTime?.ToDateTime();
             LastHeartbeatTime = info.LastHeartbeatTime?.ToDateTime();
             LastStartedTime = info.LastStartedTime?.ToDateTime();
@@ -56,9 +56,9 @@ namespace Temporalio.Client
             NextAttemptScheduleTime = info.NextAttemptScheduleTime?.ToDateTime();
             RetryPolicy = info.RetryPolicy == null ? null : Common.RetryPolicy.FromProto(info.RetryPolicy);
             RunState = info.RunState;
-            ScheduleToCloseTimeout = info.ScheduleToCloseTimeout?.ToTimeSpan();
-            ScheduleToStartTimeout = info.ScheduleToStartTimeout?.ToTimeSpan();
-            StartToCloseTimeout = info.StartToCloseTimeout?.ToTimeSpan();
+            ScheduleToCloseTimeout = info.ScheduleToCloseTimeout?.ToNonZeroTimeSpan();
+            ScheduleToStartTimeout = info.ScheduleToStartTimeout?.ToNonZeroTimeSpan();
+            StartToCloseTimeout = info.StartToCloseTimeout?.ToNonZeroTimeSpan();
 #pragma warning disable VSTHRD011 // This should not be able to deadlock
             userMetadata = new(() => dataConverter.FromUserMetadataAsync(info.UserMetadata));
 #pragma warning restore VSTHRD011

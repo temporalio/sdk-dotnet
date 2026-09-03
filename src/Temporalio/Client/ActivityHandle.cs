@@ -138,6 +138,65 @@ namespace Temporalio.Client
                 Id: Id,
                 RunId: RunId,
                 Options: options));
+
+        /// <summary>
+        /// Request this activity to be paused.
+        /// </summary>
+        /// <param name="options">Pause options.</param>
+        /// <returns>
+        /// Pause request task. On completion, the server has accepted the pause request, but the current attempt may
+        /// still continue running.
+        /// </returns>
+        /// <exception cref="RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        public virtual Task PauseAsync(ActivityPauseOptions? options = null) =>
+            Client.OutboundInterceptor.PauseActivityAsync(new(
+                Id: Id,
+                RunId: RunId,
+                Options: options));
+
+        /// <summary>
+        /// Request this activity to be unpaused.
+        /// </summary>
+        /// <param name="options">Unpause options.</param>
+        /// <returns>Unpause completed task.</returns>
+        /// <exception cref="RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        public virtual Task UnpauseAsync(ActivityUnpauseOptions? options = null) =>
+            Client.OutboundInterceptor.UnpauseActivityAsync(new(
+                Id: Id,
+                RunId: RunId,
+                Options: options));
+
+        /// <summary>
+        /// Update options of this activity.
+        /// </summary>
+        /// <param name="options">Activity options to update.</param>
+        /// <param name="rpcOptions">RPC options.</param>
+        /// <returns>Current activity options after the update was applied.</returns>
+        /// <exception cref="RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        /// <seealso cref="RestoreOriginalOptionsAsync"/>
+        public virtual Task<ActivityOptionsUpdate> UpdateOptionsAsync(ActivityOptionsUpdate options, RpcOptions? rpcOptions = null) =>
+            Client.OutboundInterceptor.UpdateActivityOptionsAsync(new(
+                Id: Id,
+                RunId: RunId,
+                Options: options,
+                RpcOptions: rpcOptions));
+
+        /// <summary>
+        /// Restore original options of this activity.
+        /// </summary>
+        /// <param name="rpcOptions">RPC options.</param>
+        /// <returns>Current activity options after they were restored.</returns>
+        /// <exception cref="RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        /// <seealso cref="UpdateOptionsAsync"/>
+        public virtual Task<ActivityOptionsUpdate> RestoreOriginalOptionsAsync(RpcOptions? rpcOptions = null) =>
+            Client.OutboundInterceptor.RestoreOriginalActivityOptionsAsync(new(
+                Id: Id,
+                RunId: RunId,
+                RpcOptions: rpcOptions));
     }
 
     /// <summary>
