@@ -2350,7 +2350,7 @@ namespace Temporalio.Worker
                             Arguments = { payloadConverter.ToPayloads(input.Args) },
                             RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                             CancellationType = (Bridge.Api.WorkflowCommands.ActivityCancellationType)input.Options.CancellationType,
-                            IncludeArgumentsIntoMarker = input.Options.IncludeArgumentsInMarker,
+                            IncludeArgumentsInMarker = input.Options.IncludeArgumentsInMarker,
                         };
                         if (input.Headers is IDictionary<string, Payload> headers)
                         {
