@@ -485,6 +485,12 @@
           "Temporalio.Extensions.OpenTelemetry": "[1.18.0, )"
         }
       },
+      "temporalio.extensions.gcp.cloudrun.workerid": {
+        "type": "Project",
+        "dependencies": {
+          "Temporalio": "[1.18.0, )"
+        }
+      },
       "temporalio.extensions.hosting": {
         "type": "Project",
         "dependencies": {
