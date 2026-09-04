@@ -26,6 +26,9 @@ to docs, or any other relevant information.
 
 ### Added
 
+- Added the experimental `Temporalio.Extensions.WorkflowStreams` package for durable, batched,
+  offset-based publish/subscribe streams hosted by workflows, interoperable with other Temporal
+  SDK Workflow Streams implementations.
 - Added operation-specific outbound workflow interceptors for Temporal System Nexus operations.
   `SignalWithStartWorkflowAsync` can now be intercepted before the existing
   `ScheduleSystemNexusOperationAsync` hook.

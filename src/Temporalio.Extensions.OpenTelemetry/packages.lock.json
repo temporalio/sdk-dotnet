@@ -45,14 +45,6 @@
           "System.Runtime.CompilerServices.Unsafe": "6.1.2"
         }
       },
-      "Microsoft.Bcl.AsyncInterfaces": {
-        "type": "Transitive",
-        "resolved": "9.0.4",
-        "contentHash": "9VGI5kxIvrNG2mqLQZnUR6y/3fcnygD8eNpHR+CqfbnIXvea6nehnYknDKQTxZVPMpzpNca+7DxLBmpdB3q0Bw==",
-        "dependencies": {
-          "System.Threading.Tasks.Extensions": "4.5.4"
-        }
-      },
       "Microsoft.NETFramework.ReferenceAssemblies.net462": {
         "type": "Transitive",
         "resolved": "1.0.3",
@@ -140,6 +132,15 @@
           "System.Memory": "4.5.3"
         }
       },
+      "Microsoft.Bcl.AsyncInterfaces": {
+        "type": "CentralTransitive",
+        "requested": "[9.0.4, )",
+        "resolved": "9.0.4",
+        "contentHash": "9VGI5kxIvrNG2mqLQZnUR6y/3fcnygD8eNpHR+CqfbnIXvea6nehnYknDKQTxZVPMpzpNca+7DxLBmpdB3q0Bw==",
+        "dependencies": {
+          "System.Threading.Tasks.Extensions": "4.5.4"
+        }
+      },
       "Microsoft.Bcl.HashCode": {
         "type": "CentralTransitive",
         "requested": "[6.0.0, )",
@@ -223,14 +224,6 @@
           "System.Runtime.CompilerServices.Unsafe": "6.1.2"
         }
       },
-      "Microsoft.Bcl.AsyncInterfaces": {
-        "type": "Transitive",
-        "resolved": "9.0.4",
-        "contentHash": "9VGI5kxIvrNG2mqLQZnUR6y/3fcnygD8eNpHR+CqfbnIXvea6nehnYknDKQTxZVPMpzpNca+7DxLBmpdB3q0Bw==",
-        "dependencies": {
-          "System.Threading.Tasks.Extensions": "4.5.4"
-        }
-      },
       "Microsoft.NETCore.Platforms": {
         "type": "Transitive",
         "resolved": "1.1.0",
@@ -312,6 +305,15 @@
         "dependencies": {
           "System.Memory": "4.5.3",
           "System.Runtime.CompilerServices.Unsafe": "4.5.2"
+        }
+      },
+      "Microsoft.Bcl.AsyncInterfaces": {
+        "type": "CentralTransitive",
+        "requested": "[9.0.4, )",
+        "resolved": "9.0.4",
+        "contentHash": "9VGI5kxIvrNG2mqLQZnUR6y/3fcnygD8eNpHR+CqfbnIXvea6nehnYknDKQTxZVPMpzpNca+7DxLBmpdB3q0Bw==",
+        "dependencies": {
+          "System.Threading.Tasks.Extensions": "4.5.4"
         }
       },
       "Microsoft.Bcl.HashCode": {

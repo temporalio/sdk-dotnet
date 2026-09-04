@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Temporalio.Runtime;
@@ -12,13 +11,6 @@ namespace Temporalio.Workflows
     /// </summary>
     public class WorkflowQueryDefinition
     {
-        private static readonly string[] ReservedQueryHandlerPrefixes =
-        {
-            TemporalRuntime.ReservedNamePrefix,
-            "__stack_trace",
-            "__enhanced_stack_trace",
-        };
-
         private static readonly ConcurrentDictionary<MethodInfo, WorkflowQueryDefinition> MethodDefinitions = new();
         private static readonly ConcurrentDictionary<PropertyInfo, WorkflowQueryDefinition> PropertyDefinitions = new();
 
@@ -26,10 +18,21 @@ namespace Temporalio.Workflows
         {
             if (name != null)
             {
-                var reservedQ = ReservedQueryHandlerPrefixes.FirstOrDefault(p => name.StartsWith(p));
-                if (!string.IsNullOrEmpty(reservedQ))
+                if (name.StartsWith("__stack_trace"))
                 {
-                    throw new ArgumentException($"Query handler name {name} cannot start with {reservedQ}");
+                    throw new ArgumentException(
+                        $"Query handler name {name} cannot start with __stack_trace");
+                }
+                if (name.StartsWith("__enhanced_stack_trace"))
+                {
+                    throw new ArgumentException(
+                        $"Query handler name {name} cannot start with __enhanced_stack_trace");
+                }
+                if (name.StartsWith(TemporalRuntime.ReservedNamePrefix) &&
+                    name != TemporalRuntime.WorkflowStreamOffsetQueryName)
+                {
+                    throw new ArgumentException(
+                        $"Query handler name {name} cannot start with {TemporalRuntime.ReservedNamePrefix}");
                 }
             }
             Name = name;
