@@ -7,6 +7,7 @@
     <Project Path="src/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry.csproj" />
     <Project Path="src/Temporalio.Extensions.Hosting/Temporalio.Extensions.Hosting.csproj" />
     <Project Path="src/Temporalio.Extensions.OpenTelemetry/Temporalio.Extensions.OpenTelemetry.csproj" />
+    <Project Path="src/Temporalio.Extensions.WorkflowStreams/Temporalio.Extensions.WorkflowStreams.csproj" />
     <Project Path="src/Temporalio.SystemNexus.Generator/Temporalio.SystemNexus.Generator.csproj" />
     <Project Path="src/Temporalio/Temporalio.csproj" />
   </Folder>

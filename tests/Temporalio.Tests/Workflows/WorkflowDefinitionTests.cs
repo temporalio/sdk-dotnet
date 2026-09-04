@@ -247,6 +247,24 @@ public class WorkflowDefinitionTests
     }
 
     [Fact]
+    public void WorkflowStream_Handler_Names_Are_Allowlisted_By_Kind()
+    {
+        var definition = AssertGood<Good.WorkflowStreamHandlerNames>();
+        Assert.Contains("__temporal_workflow_stream_publish", definition.Signals.Keys);
+        Assert.Contains("__temporal_workflow_stream_poll", definition.Updates.Keys);
+        Assert.Contains("__temporal_workflow_stream_offset", definition.Queries.Keys);
+
+        AssertBad<Bad.MismatchedWorkflowStreamHandlerNames>(
+            "Signal handler name __temporal_workflow_stream_poll cannot start with __temporal");
+        AssertBad<Bad.MismatchedWorkflowStreamHandlerNames>(
+            "Update handler name __temporal_workflow_stream_publish cannot start with __temporal");
+        AssertBad<Bad.MismatchedWorkflowStreamHandlerNames>(
+            "Query handler name __temporal_workflow_stream_publish cannot start with __temporal");
+        AssertBad<Bad.MismatchedWorkflowStreamHandlerNames>(
+            "Query handler name __temporal_workflow_stream_offset_extra cannot start with __temporal");
+    }
+
+    [Fact]
     public void NoDynamicOptionsOnNonDynamicWorkflow() =>
         AssertBad<Bad.DynamicOptionsOnNonDynamicWorkflow>("can only be used in dynamic workflows");
 
@@ -575,6 +593,25 @@ public class WorkflowDefinitionTests
         }
 
         [Workflow]
+        public class MismatchedWorkflowStreamHandlerNames
+        {
+            [WorkflowRun]
+            public Task RunAsync() => Task.CompletedTask;
+
+            [WorkflowSignal("__temporal_workflow_stream_poll")]
+            public Task PollSignalAsync() => Task.CompletedTask;
+
+            [WorkflowUpdate("__temporal_workflow_stream_publish")]
+            public Task PublishUpdateAsync() => Task.CompletedTask;
+
+            [WorkflowQuery("__temporal_workflow_stream_publish")]
+            public long PublishQuery() => 0;
+
+            [WorkflowQuery("__temporal_workflow_stream_offset_extra")]
+            public long SuffixedOffsetQuery() => 0;
+        }
+
+        [Workflow]
         public class DynamicOptionsOnNonDynamicWorkflow
         {
             [WorkflowRun]
@@ -609,6 +646,22 @@ public class WorkflowDefinitionTests
 
     public static class Good
     {
+        [Workflow]
+        public class WorkflowStreamHandlerNames
+        {
+            [WorkflowRun]
+            public Task RunAsync() => Task.CompletedTask;
+
+            [WorkflowSignal("__temporal_workflow_stream_publish")]
+            public Task PublishAsync() => Task.CompletedTask;
+
+            [WorkflowUpdate("__temporal_workflow_stream_poll")]
+            public Task PollAsync() => Task.CompletedTask;
+
+            [WorkflowQuery("__temporal_workflow_stream_offset")]
+            public long Offset() => 0;
+        }
+
         [Workflow]
         public interface IWf1
         {

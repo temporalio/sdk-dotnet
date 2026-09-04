@@ -22,6 +22,8 @@ Extensions:
   Client dependency injection, activity dependency injection, and worker generic host support
 * [Temporalio.Extensions.OpenTelemetry](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.OpenTelemetry) -
   OpenTelemetry tracing support
+* [Temporalio.Extensions.WorkflowStreams](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.WorkflowStreams) -
+  experimental durable, offset-based workflow publish/subscribe streams
 
 ---
 
