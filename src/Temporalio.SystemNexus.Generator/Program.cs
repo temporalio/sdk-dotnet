@@ -8,6 +8,7 @@ var projectDir = Path.GetFullPath(Path.Join(currFile, "../../../"));
 var generatorDir = Path.Join(projectDir, "src/Temporalio.SystemNexus.Generator");
 var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/crates/protos/protos");
 var apiProtoDir = Path.Join(protoDir, "api_upstream");
+var workflowServiceWitPath = Path.Join(apiProtoDir, "nexus/workflow-service.wit");
 var descriptorPath = Path.Join(generatorDir, "obj/SystemNexus/temporal_api.bin");
 var stagingOutputDir = Path.Join(generatorDir, "obj/SystemNexus/Generated");
 var workflowsGeneratedDir = Path.Join(projectDir, "src/Temporalio/Workflows/Generated");
@@ -18,7 +19,7 @@ EnsureNexGen();
 BuildDescriptor();
 GenerateNexusApi();
 PostProcessGeneratedNexusApi();
-GeneratePayloadVisitor(descriptorPath, workerGeneratedDir);
+GeneratePayloadVisitor(descriptorPath, workflowServiceWitPath, workerGeneratedDir);
 return 0;
 
 void EnsureNexGen()
@@ -126,10 +127,12 @@ static void RecreateDirectory(string path)
 
 static void GeneratePayloadVisitor(
     string descriptorPath,
+    string witPath,
     string outputDir)
 {
     var messages = LoadMessages(descriptorPath);
     var operationMessages = LoadWorkflowServiceOperationMessages(descriptorPath, messages);
+    var systemNexusMessages = LoadSystemNexusMessages(witPath, messages);
     var containsPayloadMemo = new Dictionary<string, bool>();
     var emittedVisitors = new HashSet<string>();
     var emittedMethods = new HashSet<string>();
@@ -160,8 +163,19 @@ static void GeneratePayloadVisitor(
         EmitEnvelopeVisitor(builder, operation.Input, messages, containsPayloadMemo, emittedVisitors);
         EmitEnvelopeVisitor(builder, operation.Output, messages, containsPayloadMemo, emittedVisitors);
     }
+    foreach (var message in systemNexusMessages.Where(message =>
+        !ContainsPayload(message, messages, containsPayloadMemo)))
+    {
+        EmitEnvelopeVisitor(
+            builder, message, messages, containsPayloadMemo, emittedVisitors, force: true);
+    }
 
     builder.AppendLine("            };");
+    builder.AppendLine();
+    builder.AppendLine("        private static Task VisitNoPayloadEnvelopeAsync<T>(");
+    builder.AppendLine("            T value,");
+    builder.AppendLine("            PayloadVisitor visitPayload,");
+    builder.AppendLine("            PayloadsVisitor visitPayloads) => Task.CompletedTask;");
     builder.AppendLine();
     builder.AppendLine("        internal static async Task<bool> TryVisitAsync(");
     builder.AppendLine("            Payload payload,");
@@ -189,7 +203,6 @@ static void GeneratePayloadVisitor(
         EmitVisitMethod(builder, operation.Input, messages, containsPayloadMemo, emittedMethods);
         EmitVisitMethod(builder, operation.Output, messages, containsPayloadMemo, emittedMethods);
     }
-
     builder.AppendLine("    }");
     builder.AppendLine("}");
 
@@ -239,6 +252,14 @@ static IReadOnlyList<OperationMessages> LoadWorkflowServiceOperationMessages(
     return operationMessages;
 }
 
+static IReadOnlyList<MessageInfo> LoadSystemNexusMessages(
+    string witPath,
+    IReadOnlyDictionary<string, MessageInfo> messages) =>
+    Regex.Matches(File.ReadAllText(witPath), "@nexus\\.proto\\s+\\\"(?<message>[^\\\"]+)\\\"")
+        .Select(match => GetMessage(messages, match.Groups["message"].Value))
+        .DistinctBy(message => message.FullName)
+        .ToList();
+
 static void AddMessage(
     Dictionary<string, MessageInfo> messages,
     string protoPrefix,
@@ -273,18 +294,22 @@ static void EmitEnvelopeVisitor(
     MessageInfo message,
     IReadOnlyDictionary<string, MessageInfo> messages,
     Dictionary<string, bool> containsPayloadMemo,
-    HashSet<string> emittedVisitors)
+    HashSet<string> emittedVisitors,
+    bool force = false)
 {
-    if (!ContainsPayload(message, messages, containsPayloadMemo) ||
+    if ((!force && !ContainsPayload(message, messages, containsPayloadMemo)) ||
         !emittedVisitors.Add(message.FullName))
     {
         return;
     }
 
+    var visitMethod = ContainsPayload(message, messages, containsPayloadMemo) ?
+        VisitMethodName(message) :
+        "VisitNoPayloadEnvelopeAsync";
     builder.AppendLine($"                [\"{message.FullName}\"] = (payload, visitPayload, visitPayloads) =>");
     builder.AppendLine($"                    VisitEnvelopeAsync<{message.CsharpType}>(");
     builder.AppendLine("                        payload,");
-    builder.AppendLine($"                        {VisitMethodName(message)},");
+    builder.AppendLine($"                        {visitMethod},");
     builder.AppendLine("                        visitPayload,");
     builder.AppendLine("                        visitPayloads),");
 }
@@ -633,6 +658,6 @@ static int RunNexGen(IEnumerable<string> arguments, bool ignoreExitCode = false)
 static string UniqueLocalName(MessageInfo message, FieldDescriptorProto field, string prefix) =>
     $"{prefix}_{Regex.Replace(message.FullName, @"[^A-Za-z0-9_]", "_")}_{field.Number}";
 
-internal sealed record OperationMessages(MessageInfo Input, MessageInfo Output);
 
 internal sealed record MessageInfo(string FullName, string CsharpType, DescriptorProto Descriptor);
+internal sealed record OperationMessages(MessageInfo Input, MessageInfo Output);
