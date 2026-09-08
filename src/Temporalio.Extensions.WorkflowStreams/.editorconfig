@@ -1,0 +1,13 @@
+[*.workflow.cs]
+
+# The protocol's established public name intentionally describes a stream.
+dotnet_diagnostic.CA1711.severity = none
+
+# Workflow continuations must remain on Temporal's deterministic task scheduler.
+dotnet_diagnostic.CA2007.severity = none
+
+# Workflow tasks intentionally use the current deterministic scheduler.
+dotnet_diagnostic.CA2008.severity = none
+
+# Workflow continuations intentionally use the current deterministic scheduler.
+dotnet_diagnostic.VSTHRD105.severity = none

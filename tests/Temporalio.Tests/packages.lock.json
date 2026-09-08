@@ -499,6 +499,13 @@
           "Temporalio": "[1.18.0, )"
         }
       },
+      "temporalio.extensions.workflowstreams": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.Bcl.AsyncInterfaces": "[9.0.4, )",
+          "Temporalio": "[1.18.0, )"
+        }
+      },
       "Amazon.Lambda.Core": {
         "type": "CentralTransitive",
         "requested": "[3.1.0, )",
@@ -510,6 +517,12 @@
         "requested": "[3.26.1, )",
         "resolved": "3.26.1",
         "contentHash": "CHZX8zXqhF/fdUtd+AYzew8T2HFkAoe5c7lbGxZY/qryAlQXckDvM5BfOJjXlMS7kyICqQTMszj4w1bX5uBJ/w=="
+      },
+      "Microsoft.Bcl.AsyncInterfaces": {
+        "type": "CentralTransitive",
+        "requested": "[9.0.4, )",
+        "resolved": "9.0.4",
+        "contentHash": "9VGI5kxIvrNG2mqLQZnUR6y/3fcnygD8eNpHR+CqfbnIXvea6nehnYknDKQTxZVPMpzpNca+7DxLBmpdB3q0Bw=="
       },
       "Microsoft.Extensions.Logging": {
         "type": "CentralTransitive",

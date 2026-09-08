@@ -170,6 +170,8 @@ jobs:
             src/Temporalio.Extensions.Hosting/bin/Release/*.snupkg
             src/Temporalio.Extensions.OpenTelemetry/bin/Release/*.nupkg
             src/Temporalio.Extensions.OpenTelemetry/bin/Release/*.snupkg
+            src/Temporalio.Extensions.WorkflowStreams/bin/Release/*.nupkg
+            src/Temporalio.Extensions.WorkflowStreams/bin/Release/*.snupkg
 
   run-smoke-test:
     needs:

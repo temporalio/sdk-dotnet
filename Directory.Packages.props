@@ -6,6 +6,7 @@
     <PackageVersion Include="Amazon.Lambda.Core" Version="3.1.0" />
     <PackageVersion Include="Google.Protobuf" Version="3.26.1" />
     <PackageVersion Include="MartinCostello.Logging.XUnit" Version="0.7.1" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.9" />
