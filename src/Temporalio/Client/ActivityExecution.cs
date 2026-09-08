@@ -17,27 +17,27 @@ namespace Temporalio.Client
         /// <summary>
         /// Initializes a new instance of the <see cref="ActivityExecution"/> class from list info.
         /// </summary>
-        /// <param name="rawInfo">Raw proto list info.</param>
+        /// <param name="rawListInfo">Raw proto list info.</param>
         /// <param name="clientNamespace">Client namespace.</param>
         /// <remarks>WARNING: This constructor may be mutated in backwards incompatible ways.</remarks>
         protected internal ActivityExecution(
-            ActivityExecutionListInfo rawInfo, string clientNamespace)
+            ActivityExecutionListInfo rawListInfo, string clientNamespace)
             : this(
                 clientNamespace: clientNamespace,
-                activityId: rawInfo.ActivityId,
-                activityRunId: string.IsNullOrEmpty(rawInfo.RunId) ? null : rawInfo.RunId,
-                activityType: rawInfo.ActivityType?.Name ?? string.Empty,
-                closeTime: rawInfo.CloseTime?.ToDateTime(),
-                executionDuration: rawInfo.ExecutionDuration?.ToTimeSpan(),
-                executionTime: rawInfo.ExecutionTime?.ToDateTime(),
-                scheduleTime: rawInfo.ScheduleTime?.ToDateTime() ?? default,
-                status: rawInfo.Status,
-                taskQueue: rawInfo.TaskQueue,
-                searchAttributesFactory: () => rawInfo.SearchAttributes == null ?
+                activityId: rawListInfo.ActivityId,
+                activityRunId: string.IsNullOrEmpty(rawListInfo.RunId) ? null : rawListInfo.RunId,
+                activityType: rawListInfo.ActivityType?.Name ?? string.Empty,
+                closeTime: rawListInfo.CloseTime?.ToDateTime(),
+                executionDuration: rawListInfo.ExecutionDuration?.ToTimeSpan(),
+                executionTime: rawListInfo.ExecutionTime?.ToDateTime(),
+                scheduleTime: rawListInfo.ScheduleTime?.ToDateTime() ?? default,
+                status: rawListInfo.Status,
+                taskQueue: rawListInfo.TaskQueue,
+                searchAttributesFactory: () => rawListInfo.SearchAttributes == null ?
                     SearchAttributeCollection.Empty :
-                    SearchAttributeCollection.FromProto(rawInfo.SearchAttributes))
+                    SearchAttributeCollection.FromProto(rawListInfo.SearchAttributes))
         {
-            RawInfo = rawInfo;
+            RawListInfo = rawListInfo;
         }
 
         /// <summary>
@@ -141,6 +141,6 @@ namespace Temporalio.Client
         /// Gets the raw proto list info, or null if this was created from a describe call.
         /// </summary>
         /// <seealso cref="ActivityExecutionDescription.RawInfo"/>
-        internal ActivityExecutionListInfo? RawInfo { get; }
+        public ActivityExecutionListInfo? RawListInfo { get; }
     }
 }

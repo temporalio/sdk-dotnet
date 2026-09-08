@@ -298,9 +298,9 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
             Assert.False(desc.HasLastFailure);
             Assert.Null(desc.RawInput?.FirstOrDefault());
             await Assert.ThrowsAsync<InvalidOperationException>(desc.GetResultAsync<string>);
-            await Assert.ThrowsAsync<InvalidOperationException>(desc.GetOutcomeFailureAsync);
+            Assert.Null(await desc.GetOutcomeFailureAsync());
             Assert.Null(desc.RawInfo.HeartbeatDetails?.Payloads_?.FirstOrDefault());
-            await Assert.ThrowsAsync<InvalidOperationException>(desc.GetLastFailureAsync);
+            Assert.Null(await desc.GetLastFailureAsync());
         });
     }
 
