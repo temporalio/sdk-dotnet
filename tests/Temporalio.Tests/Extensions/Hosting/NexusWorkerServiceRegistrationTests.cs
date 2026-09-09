@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NexusRpc.Handlers;
 using Temporalio.Extensions.Hosting;
+using Temporalio.Nexus;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -29,6 +30,29 @@ public class NexusWorkerServiceRegistrationTests : WorkflowEnvironmentTestBase
         [NexusOperationHandler]
         public IOperationHandler<string, int> NotAnOperation() =>
             throw new NotImplementedException();
+    }
+
+    [NexusServiceHandler(typeof(NexusWorkerServiceTests.ITestNexusService))]
+    public class AsyncTemporalOperationNexusService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<int>> IncrementAsync(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<int>.SyncResult(1));
+    }
+
+    [Fact]
+    public async Task NexusWorkerService_TemporalOperationAsyncSuffix_Registers()
+    {
+        var builder = Host.CreateApplicationBuilder();
+        builder.Services.
+            AddSingleton(Client).
+            AddHostedTemporalWorker($"tq-{Guid.NewGuid()}").
+            AddScopedNexusService<AsyncTemporalOperationNexusService>();
+        using var host = builder.Build();
+
+        await host.StartAsync();
+        await host.StopAsync();
     }
 
     // The hosting/DI registration path must reject a [NexusOperationHandler] method that maps to no

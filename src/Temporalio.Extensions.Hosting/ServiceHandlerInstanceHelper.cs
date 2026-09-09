@@ -45,7 +45,9 @@ namespace Temporalio.Extensions.Hosting
             foreach (var method in methods)
             {
                 var opDef = serviceDef.Operations.Values
-                    .FirstOrDefault(o => o.MethodInfo?.Name == method.Name);
+                    .FirstOrDefault(o => o.MethodInfo?.Name == method.Name) ??
+                    serviceDef.Operations.Values.FirstOrDefault(o => o.MethodInfo != null &&
+                    o.MethodInfo.Name + "Async" == method.Name);
                 if (opDef == null)
                 {
                     // A built-in [NexusOperationHandler] method that maps to no operation is an

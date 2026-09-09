@@ -57,6 +57,26 @@ public class NexusWorkerRegistrationTests
     }
 
     [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    public class TemporalOperationAttrAsyncSuffixService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomethingAsync(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+    }
+
+    [Fact]
+    public void AddNexusService_TemporalOperationAsyncSuffix_Succeeds()
+    {
+        var options = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new TemporalOperationAttrAsyncSuffixService());
+
+        Assert.Equal(
+            "DoSomething",
+            Assert.Single(Assert.Single(options.NexusServices).OperationHandlers).Key);
+    }
+
+    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
     public class TemporalOperationAttrBadParamsService
     {
         [TemporalOperation]

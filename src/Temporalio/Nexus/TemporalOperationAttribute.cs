@@ -27,7 +27,7 @@ namespace Temporalio.Nexus
     /// public class TransferServiceImpl
     /// {
     ///     [TemporalOperation]
-    ///     public Task&lt;TemporalOperationResult&lt;TransferResult&gt;&gt; DoSomething(
+    ///     public Task&lt;TemporalOperationResult&lt;TransferResult&gt;&gt; DoSomethingAsync(
     ///         TemporalOperationStartContext ctx, ITemporalNexusClient client, TransferInput input) =&gt;
     ///         client.StartWorkflowAsync(
     ///             (TransferWorkflow wf) =&gt; wf.RunAsync(input),
