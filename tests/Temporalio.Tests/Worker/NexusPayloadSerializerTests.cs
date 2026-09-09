@@ -9,15 +9,132 @@ using NexusRpc.Handlers;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
+using Temporalio.Nexus;
 using Temporalio.Worker;
+using Temporalio.Workflows;
 using Xunit;
 
 /// <summary>
-/// Server-independent unit tests for how <see cref="NexusPayloadSerializer"/> translates data
-/// converter failures into Nexus handler errors.
+/// Server-independent unit tests for Nexus payload decoding and converter failure translation.
 /// </summary>
 public class NexusPayloadSerializerTests
 {
+    [Fact]
+    public async Task DeserializeAsync_SystemPayload_UsesSystemConverter()
+    {
+        var dataConverter = DataConverter.Default;
+        var request = new SignalWithStartWorkflowRequest(
+            workflow: "test-workflow",
+            id: "target-workflow-id",
+            taskQueue: "target-task-queue",
+            signal: "test-signal",
+            @namespace: "target-namespace")
+        {
+            Args = new object?[] { "workflow-input" },
+        };
+        var payload = new SystemNexusPayloadConverter(
+            dataConverter.PayloadConverter, dataConverter.FailureConverter).ToPayload(request);
+        Assert.True(SystemNexusPayloadVisitor.IsSystemPayload(payload));
+
+        var result = Assert.IsType<SignalWithStartWorkflowRequest>(
+            await new NexusPayloadSerializer(dataConverter).DeserializeAsync(
+                new(payload.ToByteArray()), typeof(SignalWithStartWorkflowRequest)));
+
+        Assert.Equal("workflow-input", Assert.Single(result.Args!)?.ToString());
+    }
+
+    [Fact]
+    public async Task DeserializeAsync_SystemPayload_AppliesTransferTypeConverter()
+    {
+        var transferValue = new WorkflowType { Name = "test-value" };
+        Assert.True(new BinaryProtoConverter().TryToPayload(transferValue, out var payload));
+        SystemNexusPayloadVisitor.MarkSystemPayload(payload!);
+
+        var result = Assert.IsType<TestSystemRequest>(
+            await new NexusPayloadSerializer(DataConverter.Default).DeserializeAsync(
+                new(payload!.ToByteArray()), typeof(TestSystemRequest)));
+
+        Assert.Equal(new TestSystemRequest("test-value"), result);
+    }
+
+    [TemporalTransferTypeConverter(typeof(TestSystemRequestConverter))]
+    public sealed record TestSystemRequest(string Value);
+
+    public sealed class TestSystemRequestConverter : ITemporalTransferTypeConverter
+    {
+        public Type TransferType => typeof(WorkflowType);
+
+        public object ToTransferType(object? value) =>
+            new WorkflowType { Name = ((TestSystemRequest)value!).Value };
+
+        public object FromTransferType(object? transferType) =>
+            new TestSystemRequest(((WorkflowType)transferType!).Name);
+    }
+
+    [Fact]
+    public async Task DeserializeAsync_SystemPayloadWithCodec_DecodesNestedPayloads()
+    {
+        var codec = new ReplacingPayloadCodec();
+        var dataConverter = DataConverter.Default with { PayloadCodec = codec };
+        var request = new SignalWithStartWorkflowRequest(
+            workflow: "test-workflow",
+            id: "target-workflow-id",
+            taskQueue: "target-task-queue",
+            signal: "test-signal",
+            @namespace: "target-namespace")
+        {
+            Args = new object?[] { "workflow-input" },
+        };
+        var payload = new SystemNexusPayloadConverter(
+            dataConverter.PayloadConverter, dataConverter.FailureConverter).ToPayload(request);
+
+        var result = Assert.IsType<SignalWithStartWorkflowRequest>(
+            await new NexusPayloadSerializer(dataConverter).DeserializeAsync(
+                new(payload.ToByteArray()), typeof(SignalWithStartWorkflowRequest)));
+
+        Assert.Equal(1, codec.DecodeCount);
+        Assert.Equal(0, codec.EncodeCount);
+        Assert.Equal("decoded-input", Assert.Single(result.Args!)?.ToString());
+    }
+
+    private class ReplacingPayloadCodec : IPayloadCodec
+    {
+        public int DecodeCount { get; private set; }
+
+        public int EncodeCount { get; private set; }
+
+        public Task<IReadOnlyCollection<Payload>> EncodeAsync(
+            IReadOnlyCollection<Payload> payloads)
+        {
+            EncodeCount++;
+            return Task.FromResult(payloads);
+        }
+
+        public Task<IReadOnlyCollection<Payload>> DecodeAsync(
+            IReadOnlyCollection<Payload> payloads)
+        {
+            Assert.All(payloads, payload =>
+                Assert.False(SystemNexusPayloadVisitor.IsSystemPayload(payload)));
+            DecodeCount++;
+            return Task.FromResult<IReadOnlyCollection<Payload>>(new[]
+            {
+                DataConverter.Default.PayloadConverter.ToPayload("decoded-input"),
+            });
+        }
+    }
+
+    [Fact]
+    public async Task DeserializeAsync_UnmarkedPayload_UsesUserConverter()
+    {
+        var payload = DataConverter.Default.PayloadConverter.ToPayload("ordinary-input");
+        Assert.False(SystemNexusPayloadVisitor.IsSystemPayload(payload));
+
+        var result = await new NexusPayloadSerializer(DataConverter.Default).DeserializeAsync(
+            new(payload.ToByteArray()), typeof(string));
+
+        Assert.Equal("ordinary-input", result);
+    }
+
     [Fact]
     public async Task DeserializeAsync_ConverterPayloadValidationFailure_BecomesBadRequest()
     {

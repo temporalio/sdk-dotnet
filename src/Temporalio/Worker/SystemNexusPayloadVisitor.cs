@@ -26,6 +26,10 @@ namespace Temporalio.Worker
         internal static void MarkSystemPayload(Payload payload) =>
             payload.Metadata[SystemPayloadMetadataKey] = SystemPayloadMetadataValue;
 
+        internal static bool IsSystemPayload(Payload payload) =>
+            payload.Metadata.TryGetValue(SystemPayloadMetadataKey, out var value) &&
+            value.Equals(SystemPayloadMetadataValue);
+
         private static async Task VisitEnvelopeAsync<T>(
             Payload payload,
             Func<T, PayloadVisitor, PayloadsVisitor, Task> visitMessage,
@@ -43,9 +47,5 @@ namespace Temporalio.Worker
             MarkSystemPayload(payload);
             payload.Data = message.ToByteString();
         }
-
-        private static bool IsSystemPayload(Payload payload) =>
-            payload.Metadata.TryGetValue(SystemPayloadMetadataKey, out var value) &&
-            value.Equals(SystemPayloadMetadataValue);
     }
 }
