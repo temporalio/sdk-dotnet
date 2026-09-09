@@ -1590,6 +1590,81 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             $"Expected at least 2 decode calls (confirming retry), got {codec.DecodeCallCount}");
     }
 
+    private class RejectSystemEnvelopeCodec : IPayloadCodec
+    {
+        private readonly Converters.Base64PayloadCodec inner = new();
+
+        public Task<IReadOnlyCollection<Payload>> EncodeAsync(
+            IReadOnlyCollection<Payload> payloads)
+        {
+            Assert.All(payloads, payload =>
+                Assert.False(SystemNexusPayloadVisitor.IsSystemPayload(payload)));
+            return inner.EncodeAsync(payloads);
+        }
+
+        public Task<IReadOnlyCollection<Payload>> DecodeAsync(
+            IReadOnlyCollection<Payload> payloads)
+        {
+            Assert.All(payloads, payload =>
+                Assert.False(SystemNexusPayloadVisitor.IsSystemPayload(payload)));
+            return inner.DecodeAsync(payloads);
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_SystemPayloadWithCodec_DecodesNestedPayloads()
+    {
+        const string service = "system-payload-service";
+        const string operation = "decode";
+        var clientOptions = (TemporalClientOptions)Client.Options.Clone();
+        clientOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadCodec = new RejectSystemEnvelopeCodec(),
+        };
+        var codecClient = new TemporalClient(Client.Connection, clientOptions);
+        var systemPayload = new SystemNexusPayloadConverter(
+            DataConverter.Default.PayloadConverter,
+            DataConverter.Default.FailureConverter).ToPayload(
+                new SignalWithStartWorkflowRequest(
+                    workflow: "test-workflow",
+                    id: "target-workflow-id",
+                    taskQueue: "target-task-queue",
+                    signal: "test-signal",
+                    @namespace: "target-namespace")
+                {
+                    Args = new object?[] { "workflow-input" },
+                });
+
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}");
+        workerOptions.NexusServices.Add(new ServiceHandlerInstance(
+            new ServiceDefinition(
+                service,
+                new Dictionary<string, OperationDefinition>
+                {
+                    [operation] = new(
+                        operation,
+                        typeof(SignalWithStartWorkflowRequest),
+                        typeof(string)),
+                }),
+            new Dictionary<string, IOperationHandler<object?, object?>>
+            {
+                [operation] = OperationHandler.Sync<object?, object?>((context, input) =>
+                {
+                    var request = Assert.IsType<SignalWithStartWorkflowRequest>(input);
+                    return Assert.Single(request.Args!)?.ToString();
+                }),
+            }));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        await RunInWorkflowAsync(
+            workerOptions,
+            () => Workflow.CreateNexusWorkflowClient(service, endpoint).
+                ExecuteNexusOperationAsync<string>(operation, new RawValue(systemPayload.Clone())),
+            checkResultFunc: async handle =>
+                Assert.Equal("workflow-input", await handle.GetResultAsync()),
+            client: codecClient);
+    }
+
     [NexusService]
     public interface INoArgService
     {
@@ -2912,8 +2987,10 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         Func<Task<TResult>> inWorkflowFunc,
         Func<WorkflowHandle<CustomFuncWorkflow, TResult>, Task>? beforeGetResultFunc = null,
         Func<WorkflowHandle<CustomFuncWorkflow, TResult>, Task>? checkResultFunc = null,
-        string? callerWorkflowId = null)
+        string? callerWorkflowId = null,
+        TemporalClient? client = null)
     {
+        client ??= (TemporalClient)Client;
         workerOptions = (TemporalWorkerOptions)workerOptions.Clone();
         // We want xUnit assertions to fail the workflow
         workerOptions.Interceptors = (workerOptions.Interceptors ?? Array.Empty<IWorkerInterceptor>()).
@@ -2922,14 +2999,14 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             typeof(CustomFuncWorkflow),
             null,
             _args => new CustomFuncWorkflow(async () => await inWorkflowFunc())));
-        using var worker = new TemporalWorker(Client, workerOptions);
+        using var worker = new TemporalWorker(client, workerOptions);
         return await worker.ExecuteAsync(async () =>
         {
-            var untypedHandle = await Client.StartWorkflowAsync(
+            var untypedHandle = await client.StartWorkflowAsync(
                 (CustomFuncWorkflow wf) => wf.RunAsync(),
                 new(callerWorkflowId ?? $"wf-{Guid.NewGuid()}", workerOptions.TaskQueue!));
             var handle = new WorkflowHandle<CustomFuncWorkflow, TResult>(
-                Client: Client,
+                Client: client,
                 Id: untypedHandle.Id,
                 RunId: untypedHandle.RunId,
                 ResultRunId: untypedHandle.ResultRunId,
