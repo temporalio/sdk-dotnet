@@ -40,7 +40,16 @@ namespace Temporalio.Common
         /// <returns>A new <see cref="WorkerDeploymentVersion"/> instance.</returns>
         internal static WorkerDeploymentVersion FromBridge(
             Temporalio.Bridge.Api.Common.WorkerDeploymentVersion bridgeVersion) =>
-        new(bridgeVersion.DeploymentName, bridgeVersion.BuildId);
+            new(bridgeVersion.DeploymentName, bridgeVersion.BuildId);
+
+        /// <summary>
+        /// Returns a new <see cref="WorkerDeploymentVersion"/> instance from a proto version.
+        /// </summary>
+        /// <param name="protoVersion">The proto version to convert.</param>
+        /// <returns>A new <see cref="WorkerDeploymentVersion"/> instance.</returns>
+        internal static WorkerDeploymentVersion FromProto(
+            Temporalio.Api.Deployment.V1.WorkerDeploymentVersion protoVersion) =>
+            new(protoVersion.DeploymentName, protoVersion.BuildId);
 
         /// <summary>
         /// Converts this version to a proto.
