@@ -1,6 +1,6 @@
 name: Setup
 description: >
-  Common build setup: Rust toolchain, Rust cache for the sdk-core workspace, .NET
+  Common build setup: Rust toolchain, Rust cache for the bridge workspace, .NET
   from global.json, the mise version pinned by min_version in mise.toml, the tools
   mise.toml declares, and PROTOC. Callers that install their own tooling (a build
   container, say) can set install to 'false' and read the version output.
@@ -29,6 +29,8 @@ outputs:
 runs:
   using: composite
   steps:
+    # The channel here only sets rustup's default. The bridge builds with the channel pinned in
+    # src/Temporalio/Bridge/rust-toolchain.toml, which rustup installs on demand.
     - name: Install Rust
       if: ${{ inputs.install != 'false' }}
       uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
@@ -39,7 +41,7 @@ runs:
       if: ${{ inputs.install != 'false' }}
       uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
       with:
-        workspaces: src/Temporalio/Bridge/sdk-core
+        workspaces: src/Temporalio/Bridge
         key: ${{ inputs.rust-cache-key }}
         cache-bin: false # https://github.com/Swatinem/rust-cache/issues/341
 

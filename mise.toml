@@ -12,6 +12,17 @@ protoc = "23.4"
 description = "Regenerate src/Temporalio/CompatibilitySuppressions.xml, then review the diff"
 run = "dotnet pack -c Debug /p:GenerateCompatibilitySuppressionFile=true"
 
+[tasks."bridge:check-sync"]
+description = "Confirm Bridge/Cargo.toml still mirrors sdk-core's workspace tables"
+run = "sh src/Temporalio/Bridge/check-sync.sh"
+
+[tasks."bridge:relock"]
+description = "Refresh Bridge/Cargo.lock, after re-mirroring what an sdk-core bump changed"
+dir = "src/Temporalio/Bridge"
+# cargo fetch advances the lockfile only as far as the manifests require, leaving every still-valid
+# pin alone.
+run = "cargo fetch"
+
 [tasks.docs]
 description = "Build the API documentation"
 depends = ["tools:restore"]

@@ -1,5 +1,26 @@
 version: 2
 updates:
+  # Routine bumps are ignored so the ~500-crate graph moves only when we choose: on an sdk-core bump
+  # via `mise run bridge:relock`, or for a security advisory, which update-types ignores do not
+  # suppress. Workflow determinism rides on some of these pins, so a silent patch bump is a
+  # correctness risk.
+  #
+  # lockfile-only keeps a bot out of Bridge/Cargo.toml, whose workspace tables are mirrored from the
+  # sdk-core submodule and would break `mise run bridge:check-sync` if edited here.
+  - package-ecosystem: "cargo"
+    directory: "/src/Temporalio/Bridge"
+    versioning-strategy: lockfile-only
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 14
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+
   - package-ecosystem: "github-actions"
     # "/" only covers .github/workflows. The composite actions under
     # .github/actions pin `uses:` refs of their own, so they need their own
