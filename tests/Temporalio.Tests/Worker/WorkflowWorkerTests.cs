@@ -6980,6 +6980,60 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public class LocalActivityMarkerArgumentsWorkflow
+    {
+        [Activity]
+        public static string Echo(string value) => value;
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            // Enabled: arguments are recorded in the marker
+            await Workflow.ExecuteLocalActivityAsync(
+                () => Echo("with-args"),
+                new()
+                {
+                    StartToCloseTimeout = TimeSpan.FromSeconds(30),
+                    IncludeArgumentsInMarker = true,
+                });
+
+            // Default: arguments are not recorded
+            await Workflow.ExecuteLocalActivityAsync(
+                () => Echo("without-args"),
+                new() { StartToCloseTimeout = TimeSpan.FromSeconds(30) });
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_LocalActivityIncludeArgumentsInMarker_OnlyRecordsWhenEnabled()
+    {
+        await ExecuteWorkerAsync<LocalActivityMarkerArgumentsWorkflow>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (LocalActivityMarkerArgumentsWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await handle.GetResultAsync();
+
+                var markers = (await handle.FetchHistoryAsync()).Events.
+                    Where(evt => evt.MarkerRecordedEventAttributes?.MarkerName == "core_local_activity").
+                    Select(evt => evt.MarkerRecordedEventAttributes).
+                    ToList();
+                Assert.Equal(2, markers.Count);
+
+                // The opted-in local activity records its serialized arguments under "input"
+                Assert.True(markers[0].Details.ContainsKey("input"));
+                Assert.Equal(
+                    "\"with-args\"",
+                    markers[0].Details["input"].Payloads_.Single().Data.ToStringUtf8());
+
+                // The default local activity records no arguments at all
+                Assert.False(markers[1].Details.ContainsKey("input"));
+            },
+            new TemporalWorkerOptions().AddAllActivities<LocalActivityMarkerArgumentsWorkflow>(null));
+    }
+
+    [Workflow]
     public class WorkflowMetadataWorkflow
     {
         [WorkflowRun]

@@ -387,6 +387,26 @@ namespace Temporalio.Worker
             {
                 return new(HandlerErrorType.BadRequest, "Workflow failed", exc);
             }
+            else if (exc is WorkflowQueryFailedException)
+            {
+                // The query handler faulted rather than the request being bad, and it will fault the
+                // same way on every attempt, so Internal must be marked non-retryable explicitly.
+                return new(
+                    HandlerErrorType.Internal,
+                    "Workflow query failed",
+                    exc,
+                    HandlerErrorRetryBehavior.NonRetryable);
+            }
+            else if (exc is WorkflowQueryRejectedException)
+            {
+                // Rejection follows from the queried workflow's status, so as above this is not a
+                // caller error and retrying cannot change the outcome.
+                return new(
+                    HandlerErrorType.Internal,
+                    "Workflow query rejected",
+                    exc,
+                    HandlerErrorRetryBehavior.NonRetryable);
+            }
             else if (exc is ApplicationFailureException appExc && appExc.NonRetryable)
             {
                 return new(

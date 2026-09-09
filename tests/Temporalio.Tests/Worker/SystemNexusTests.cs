@@ -117,6 +117,7 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
                 await handle.GetResultAsync();
                 Assert.Equal(0, interceptor.ScheduleNexusOperationCount);
                 Assert.Equal(2, interceptor.ScheduleSystemNexusOperationCount);
+                Assert.Equal(2, interceptor.SignalWithStartWorkflowCount);
             },
             workerOptions,
             Client);
@@ -302,6 +303,8 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
 
         internal int ScheduleSystemNexusOperationCount { get; private set; }
 
+        internal int SignalWithStartWorkflowCount { get; private set; }
+
         public WorkflowInboundInterceptor InterceptWorkflow(WorkflowInboundInterceptor nextInterceptor) =>
             new Inbound(this, nextInterceptor);
 
@@ -335,6 +338,13 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
             {
                 root.ScheduleSystemNexusOperationCount++;
                 return base.ScheduleSystemNexusOperationAsync<TResult>(input);
+            }
+
+            public override Task<NexusWorkflowOperationHandle<SignalWithStartWorkflowResponse>> SignalWithStartWorkflowAsync(
+                SignalWithStartWorkflowRequest request)
+            {
+                root.SignalWithStartWorkflowCount++;
+                return base.SignalWithStartWorkflowAsync(request);
             }
         }
     }

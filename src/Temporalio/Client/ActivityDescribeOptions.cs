@@ -9,10 +9,32 @@ namespace Temporalio.Client
     public class ActivityDescribeOptions : ICloneable
     {
         /// <summary>
-        /// Gets or sets a long-poll token from a previous describe response. When set, the
-        /// describe call will long-poll for state changes.
+        /// Gets or sets a value indicating whether to include input in the response if available.
         /// </summary>
-        public byte[]? LongPollToken { get; set; }
+        /// <seealso cref="ActivityExecutionDescription.HasInput"/>
+        public bool IncludeInput { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to include outcome in the response if available.
+        /// </summary>
+        /// <seealso cref="ActivityExecutionDescription.HasResult"/>
+        /// <seealso cref="ActivityExecutionDescription.HasOutcomeFailure"/>
+        /// <seealso cref="ActivityExecutionDescription.GetResultAsync"/>
+        /// <seealso cref="ActivityExecutionDescription.GetOutcomeFailureAsync"/>
+        public bool IncludeOutcome { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to include heartbeat details in the response if available.
+        /// </summary>
+        /// <seealso cref="ActivityExecutionDescription.HasHeartbeatDetails"/>
+        public bool IncludeHeartbeatDetails { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to include last failure in the response if available.
+        /// </summary>
+        /// <seealso cref="ActivityExecutionDescription.HasLastFailure"/>
+        /// <seealso cref="ActivityExecutionDescription.GetLastFailureAsync"/>
+        public bool IncludeLastFailure { get; set; }
 
         /// <summary>
         /// Gets or sets RPC options for describing the activity.

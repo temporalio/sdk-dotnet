@@ -21,6 +21,13 @@ to docs, or any other relevant information.
 
 ### :boom: Breaking Changes
 
+- Renamed and removed several experimental methods and properties in Standalone Activities APIs:
+  - `StartActivityOptions.StaticSummary` renamed to `Summary`.
+  - `ActivityExecutionDescription.GetStaticSummaryAsync` renamed to `GetSummaryAsync`.
+  - `ActivityExecution.ScheduledTime` renamed to `ScheduleTime`.
+  - Removed `ActivityExecution.StateTransitionCount`.
+  - Removed `ActivityExecutionDescription.LongPollToken`.
+  - Removed `ActivityDescribeOptions.LongPollToken`.
 - Removed the experimental `SignalWithStartWorkflowOptions.RequestId`. Request IDs for
   workflow-side signal-with-start are now assigned internally and are no longer user-settable.
 
@@ -34,6 +41,15 @@ to docs, or any other relevant information.
   `CLOUD_RUN_WORKER_POOL`/`CLOUD_RUN_REVISION` or `K_SERVICE`/`K_REVISION` environment variables and
   the instance id from the metadata server) to derive the worker identity, and can be used directly
   for advanced scenarios.
+- New options in `ActivityDescribeOptions` that can be used to retrieve data associated with
+  activity execution, such as input and result.
+- New properties and methods in `ActivityExecution` and `ActivityExecutionDescription`:
+  `ExecutionTime`, `LastDeploymentVersion`, `Priority`, `RetryPolicy`, `StartDelay`,
+  `TotalHeartbeatCount`, `GetLastFailureAsync`, `GetOutcomeFailureAsync`, `GetResultAsync`,
+  and access to raw Proto objects from the response.
+- Added operation-specific outbound workflow interceptors for Temporal System Nexus operations.
+  `SignalWithStartWorkflowAsync` can now be intercepted before the existing
+  `ScheduleSystemNexusOperationAsync` hook.
 - Experimental Temporal transfer type conversion now supports constructed generic models whose
   attributes reference generic converter type definitions. Model type arguments close the converter
   directly in declaration order, with matching generic arity and compatible constraints required.
@@ -45,6 +61,12 @@ to docs, or any other relevant information.
 - Workflow task completions larger than the gRPC request size limit are now paginated
   automatically when the namespace supports it. Paginated workflow task completions require
   Temporal Server 1.32.0 or later.
+- A Nexus operation handler that queries a workflow now attaches a link to the queried
+  workflow execution on the caller's Nexus operation event. Requires Temporal Server
+  1.32 or later.
+- Added `LocalActivityOptions.IncludeArgumentsInMarker` to record a local activity's serialized
+  arguments in its local activity marker, making them visible in workflow history. Defaults to
+  false.
 
 ### Changed
 
@@ -87,6 +109,12 @@ to docs, or any other relevant information.
   begin polling.
 - Ephemeral server processes (such as those started by `WorkflowEnvironment.StartLocalAsync`) no
   longer leak when the server fails to start.
+- Nexus links that point at a workflow execution rather than a specific history event were serialized
+  in a form the server could not parse, so they were silently dropped from the caller's Nexus
+  operation event. They now use the form `temporal:///namespaces/{ns}/workflows/{wid}/{rid}` and
+  carry the optional `reason`.
+- A Nexus operation backed by a workflow query now fails when the query fails or is
+  rejected, rather than being retried until the operation times out.
 
 ## [1.18.0] - 2026-08-13
 
