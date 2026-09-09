@@ -70,8 +70,8 @@ you already build, and it sets the client identity for you.
 At connect time the plugin's client hook fetches the Cloud Run metadata once and caches it. The
 metadata is three values gathered by `GoogleCloudRunMetadata.FetchAsync`:
 
-* `Name` (the Temporal deployment name) from the `CLOUD_RUN_WORKER_POOL` environment variable, then
-  the `K_SERVICE` environment variable.
+* `Name` — the Cloud Run worker pool name (from the `CLOUD_RUN_WORKER_POOL` environment variable),
+  or the service name (from `K_SERVICE`).
 * `Revision` from the `CLOUD_RUN_REVISION` environment variable, then the `K_REVISION` environment
   variable.
 * `InstanceId` from the Cloud Run metadata server
@@ -81,7 +81,7 @@ metadata is three values gathered by `GoogleCloudRunMetadata.FetchAsync`:
 
 Cloud Run worker pools receive the `CLOUD_RUN_*` variables (and no `K_*` variables), while Cloud Run
 services receive the `K_*` variables. The metadata server is available on both, so resolving the
-name and revision in that order covers both deployment types. Worker pools are the primary target.
+name and revision in that order covers both worker pools and services. Worker pools are the primary target.
 
 From those values the client hook sets `TemporalConnectionOptions.Identity` to `WorkerIdentity`,
 which is `{InstanceId}@{Revision}`, falling back to `{InstanceId}@{Name}` when the revision is empty,
