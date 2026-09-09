@@ -1,8 +1,8 @@
 # Google Cloud Run Worker Support
 
 This extension provides `WorkerIdPlugin`, a Temporal client/worker plugin that derives a worker
-identity and a `WorkerDeploymentVersion` from Google Cloud Run instance metadata, for use with a
-normal long-lived worker on Cloud Run worker pools and services.
+identity from Google Cloud Run instance metadata, for use with a normal long-lived worker on Cloud
+Run worker pools and services.
 
 Add the `Temporalio.Extensions.Gcp.CloudRun.WorkerId` package from
 [NuGet](https://www.nuget.org/packages/Temporalio.Extensions.Gcp.CloudRun.WorkerId). For example,
@@ -14,8 +14,7 @@ using the `dotnet` CLI:
 
 Construct a `WorkerIdPlugin`, register it on your client connect options via `Plugins`, then run a
 normal long-lived worker. Registering it once on the client is enough: the plugin sets the client
-identity at connect time and, because it is also a worker plugin, automatically pins the worker to
-the Cloud Run deployment version when the worker is created.
+identity at connect time, and workers created from that client inherit it.
 
 ```csharp
 using System;
@@ -60,13 +59,13 @@ catch (OperationCanceledException)
 ```
 
 If you need the raw values instead, call `GoogleCloudRunMetadata.FetchAsync()` directly and read
-`WorkerIdentity` / `ToWorkerDeploymentVersion()` yourself.
+`WorkerIdentity` yourself.
 
 ## How it works
 
 Unlike AWS Lambda, Cloud Run runs a long-lived container with no per-invocation handler to wrap, so
 this is a metadata-driven plugin rather than a worker wrapper. You register the plugin on the client
-you already build, and it configures the client and worker options for you.
+you already build, and it sets the client identity for you.
 
 At connect time the plugin's client hook fetches the Cloud Run metadata once and caches it. The
 metadata is three values gathered by `GoogleCloudRunMetadata.FetchAsync`:
@@ -84,16 +83,11 @@ Cloud Run worker pools receive the `CLOUD_RUN_*` variables (and no `K_*` variabl
 services receive the `K_*` variables. The metadata server is available on both, so resolving the
 name and revision in that order covers both deployment types. Worker pools are the primary target.
 
-From those values:
-
-* The client hook sets `TemporalConnectionOptions.Identity` to `WorkerIdentity`, which is
-  `{InstanceId}@{Revision}`, falling back to `{InstanceId}@{Name}` when the revision is empty, or
-  just `{InstanceId}` when both are empty. It only sets the identity when one is not already
-  configured, so an explicitly configured identity wins.
-* The worker hook sets `TemporalWorkerOptions.DeploymentOptions` to the `WorkerDeploymentVersion`
-  whose deployment name is the Cloud Run name and whose build id is the Cloud Run revision, with
-  `useWorkerVersioning: true` and a `VersioningBehavior.Pinned` default (a per-workflow behavior
-  takes precedence). Each Cloud Run revision therefore maps to a worker deployment version.
+From those values the client hook sets `TemporalConnectionOptions.Identity` to `WorkerIdentity`,
+which is `{InstanceId}@{Revision}`, falling back to `{InstanceId}@{Name}` when the revision is empty,
+or just `{InstanceId}` when both are empty. It only sets the identity when one is not already
+configured, so an explicitly configured identity wins. Workers created from the connected client
+inherit that identity.
 
 If the metadata server cannot be reached, the plugin fails fast at connect time with a clear
 `InvalidOperationException`, which usually means the process is not running on a Cloud Run worker

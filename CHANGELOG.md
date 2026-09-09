@@ -28,14 +28,12 @@ to docs, or any other relevant information.
 
 - Added the experimental `Temporalio.Extensions.Gcp.CloudRun.WorkerId` package for long-lived
   Temporal workers on Google Cloud Run worker pools and services. Register a single `WorkerIdPlugin`
-  on your client's `Plugins`; because it implements both the client and worker plugin interfaces it
-  propagates to workers automatically, setting the worker identity from the Cloud Run instance
-  (unless one is already configured) and enabling Worker Versioning with a `PINNED` deployment
-  version derived from the Cloud Run revision (a per-workflow behavior still wins). The underlying
-  `GoogleCloudRunMetadata` helper reads Cloud Run instance metadata (the
+  on your client's `Plugins`; it sets the worker identity from the Cloud Run instance at connect
+  time (unless one is already configured), and workers created from that client inherit it. The
+  underlying `GoogleCloudRunMetadata` helper reads Cloud Run instance metadata (the
   `CLOUD_RUN_WORKER_POOL`/`CLOUD_RUN_REVISION` or `K_SERVICE`/`K_REVISION` environment variables and
-  the instance id from the metadata server) to derive the worker identity and
-  `WorkerDeploymentVersion`, and can be used directly for advanced scenarios.
+  the instance id from the metadata server) to derive the worker identity, and can be used directly
+  for advanced scenarios.
 - Experimental Temporal transfer type conversion now supports constructed generic models whose
   attributes reference generic converter type definitions. Model type arguments close the converter
   directly in declaration order, with matching generic arity and compatible constraints required.

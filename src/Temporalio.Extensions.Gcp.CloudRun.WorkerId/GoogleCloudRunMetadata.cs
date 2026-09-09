@@ -2,22 +2,19 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Temporalio.Common;
 
 namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
 {
     /// <summary>
-    /// Reads Google Cloud Run instance metadata to derive a Temporal worker identity and a
-    /// <see cref="WorkerDeploymentVersion" /> for a long-lived worker, on both Cloud Run worker
-    /// pools and services.
+    /// Reads Google Cloud Run instance metadata to derive a Temporal worker identity for a
+    /// long-lived worker, on both Cloud Run worker pools and services.
     /// </summary>
     /// <remarks>
     /// Cloud Run runs a long-lived container, so unlike the AWS Lambda extension this is a metadata
     /// helper rather than a worker wrapper. Most callers should register a <see cref="WorkerIdPlugin" />
     /// on <see cref="Temporalio.Client.TemporalClientConnectOptions.Plugins" />, which fetches this
-    /// metadata once at connect time and applies the worker identity and deployment version
-    /// automatically. This type is exposed for advanced use, for example reading
-    /// <see cref="WorkerIdentity" /> or <see cref="ToWorkerDeploymentVersion" /> directly.
+    /// metadata once at connect time and applies the worker identity automatically. This type is
+    /// exposed for advanced use, for example reading <see cref="WorkerIdentity" /> directly.
     /// WARNING: Google Cloud Run support is experimental.
     /// </remarks>
     public sealed class GoogleCloudRunMetadata
@@ -150,29 +147,6 @@ namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
             }
 
             return new GoogleCloudRunMetadata(instanceId, name, revision);
-        }
-
-        /// <summary>
-        /// Build a <see cref="WorkerDeploymentVersion" /> from the Cloud Run name and revision.
-        /// </summary>
-        /// <returns>
-        /// A version whose deployment name is the Cloud Run worker pool or service name and whose
-        /// build id is the Cloud Run revision.
-        /// </returns>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when the name or revision is empty, which usually means the process is not running
-        /// on a Google Cloud Run worker pool or service.
-        /// </exception>
-        public WorkerDeploymentVersion ToWorkerDeploymentVersion()
-        {
-            if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Revision))
-            {
-                throw new InvalidOperationException(
-                    "Cannot build a WorkerDeploymentVersion without both a Cloud Run name and " +
-                    "revision. This process may not be running on a Google Cloud Run worker pool " +
-                    "or service.");
-            }
-            return new WorkerDeploymentVersion(Name, Revision);
         }
 
         /// <summary>

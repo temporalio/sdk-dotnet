@@ -1,10 +1,8 @@
 namespace Temporalio.Tests.Extensions.Gcp.CloudRun.WorkerId;
 
 using Temporalio.Client;
-using Temporalio.Common;
 using Temporalio.Extensions.Gcp.CloudRun.WorkerId;
 using Temporalio.Tests.Extensions.OpenTelemetry;
-using Temporalio.Worker;
 using Xunit;
 
 // Reuse the OpenTelemetry environment collection so tests that mutate the shared Cloud Run
@@ -97,32 +95,7 @@ public class WorkerIdPluginTests
     }
 
     [Fact]
-    public void ConfigureWorker_SetsPinnedDeploymentOptions()
-    {
-        var metadata = new GoogleCloudRunMetadata("instance-1", "pool-name", "revision-1");
-        var plugin = new WorkerIdPlugin(new WorkerIdPluginOptions { Metadata = metadata });
-        var options = new TemporalWorkerOptions("task-queue");
-
-        plugin.ConfigureWorker(options);
-
-        var deployment = options.DeploymentOptions;
-        Assert.NotNull(deployment);
-        Assert.Equal(new WorkerDeploymentVersion("pool-name", "revision-1"), deployment!.Version);
-        Assert.True(deployment.UseWorkerVersioning);
-        Assert.Equal(VersioningBehavior.Pinned, deployment.DefaultVersioningBehavior);
-    }
-
-    [Fact]
-    public void ConfigureWorker_ThrowsWhenMetadataNotFetched()
-    {
-        var plugin = new WorkerIdPlugin(new WorkerIdPluginOptions());
-        var options = new TemporalWorkerOptions("task-queue");
-
-        Assert.Throws<InvalidOperationException>(() => plugin.ConfigureWorker(options));
-    }
-
-    [Fact]
-    public async Task ConnectThenConfigureWorker_UsesCachedMetadata()
+    public async Task ConnectAsync_CachesMetadataAcrossConnects()
     {
         using var server = new CloudRunMetadataServer(body: "instance-1");
         using var env = CloudRunEnvironment(revision: "revision-1");
@@ -132,21 +105,18 @@ public class WorkerIdPluginTests
             Timeout = TimeSpan.FromSeconds(5),
         });
 
-        var connectOptions = new TemporalClientConnectOptions();
+        var firstOptions = new TemporalClientConnectOptions();
         await plugin.ConnectAsync(
-            connectOptions, _ => Task.FromResult<TemporalConnection>(null!));
-        Assert.Equal("instance-1@revision-1", connectOptions.Identity);
+            firstOptions, _ => Task.FromResult<TemporalConnection>(null!));
+        Assert.Equal("instance-1@revision-1", firstOptions.Identity);
 
-        // The worker hook reuses the metadata cached at connect time (a single fetch), with no
-        // second request to the metadata server.
-        var workerOptions = new TemporalWorkerOptions("task-queue");
-        plugin.ConfigureWorker(workerOptions);
+        // A second connect reuses the metadata cached at the first connect (a single fetch), with
+        // no second request to the metadata server.
+        var secondOptions = new TemporalClientConnectOptions();
+        await plugin.ConnectAsync(
+            secondOptions, _ => Task.FromResult<TemporalConnection>(null!));
+        Assert.Equal("instance-1@revision-1", secondOptions.Identity);
 
-        var deployment = workerOptions.DeploymentOptions;
-        Assert.NotNull(deployment);
-        Assert.Equal(new WorkerDeploymentVersion("pool-name", "revision-1"), deployment!.Version);
-        Assert.True(deployment.UseWorkerVersioning);
-        Assert.Equal(VersioningBehavior.Pinned, deployment.DefaultVersioningBehavior);
         Assert.Single(server.Requests);
     }
 

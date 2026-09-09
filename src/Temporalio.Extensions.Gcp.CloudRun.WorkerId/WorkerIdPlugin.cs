@@ -3,34 +3,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using Temporalio.Client;
 using Temporalio.Common;
-using Temporalio.Worker;
 
 namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
 {
     /// <summary>
-    /// Temporal client and worker plugin that derives the worker identity and the worker deployment
-    /// version from Google Cloud Run instance metadata, on both Cloud Run worker pools and services.
+    /// Temporal client and worker plugin that derives the worker identity from Google Cloud Run
+    /// instance metadata, on both Cloud Run worker pools and services.
     /// </summary>
     /// <remarks>
-    /// Register a single instance on <see cref="TemporalClientConnectOptions.Plugins" />. Because
-    /// the plugin implements both the client and worker plugin interfaces, it propagates to workers
-    /// created from the connected client automatically:
-    /// <list type="bullet">
-    /// <item><description>
-    /// At connect time it fetches the Cloud Run metadata once (caching it) and, unless an identity
-    /// was already configured, sets
-    /// <see cref="Temporalio.Client.TemporalConnectionOptions.Identity" /> to the Cloud Run worker
-    /// identity, so an explicitly configured identity always wins.
-    /// </description></item>
-    /// <item><description>
-    /// When a worker is created it sets <see cref="TemporalWorkerOptions.DeploymentOptions" /> to the
-    /// Cloud Run worker deployment version with worker versioning enabled and a
-    /// <see cref="VersioningBehavior.Pinned" /> default (a per-workflow behavior still wins).
-    /// </description></item>
-    /// </list>
+    /// Register a single instance on <see cref="TemporalClientConnectOptions.Plugins" />. At connect
+    /// time it fetches the Cloud Run metadata once (caching it) and, unless an identity was already
+    /// configured, sets <see cref="Temporalio.Client.TemporalConnectionOptions.Identity" /> to the
+    /// Cloud Run worker identity, so an explicitly configured identity always wins. Workers created
+    /// from the connected client inherit that identity.
+    /// <para>
     /// The metadata fetch fails fast with an <see cref="InvalidOperationException" /> at connect time
     /// when the process is not running on a Cloud Run worker pool or service. Tests and advanced
     /// users can bypass the real fetch with <see cref="WorkerIdPluginOptions" />.
+    /// </para>
     /// WARNING: Google Cloud Run support is experimental.
     /// </remarks>
     public class WorkerIdPlugin : SimplePlugin
@@ -79,29 +69,6 @@ namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
                 options.Identity = resolved.WorkerIdentity;
             }
             return await continuation(options).ConfigureAwait(false);
-        }
-
-        /// <inheritdoc />
-        public override void ConfigureWorker(TemporalWorkerOptions options)
-        {
-            base.ConfigureWorker(options);
-
-            GoogleCloudRunMetadata resolved;
-            lock (metadataLock)
-            {
-                resolved = metadata ?? throw new InvalidOperationException(
-                    "Cloud Run metadata has not been fetched yet. Register this plugin on the " +
-                    "client via TemporalClientConnectOptions.Plugins and connect with " +
-                    "TemporalClient.ConnectAsync before creating a worker, or provide pre-fetched " +
-                    "metadata through WorkerIdPluginOptions.Metadata.");
-            }
-
-            options.DeploymentOptions = new WorkerDeploymentOptions(
-                resolved.ToWorkerDeploymentVersion(),
-                useWorkerVersioning: true)
-            {
-                DefaultVersioningBehavior = VersioningBehavior.Pinned,
-            };
         }
 
         /// <summary>
