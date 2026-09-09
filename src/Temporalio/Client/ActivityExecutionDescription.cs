@@ -282,23 +282,26 @@ namespace Temporalio.Client
 #pragma warning restore VSTHRD003
 
         /// <summary>
-        /// Gets the result of the activity execution.
+        /// Gets the result of the activity execution, or null if not available.
         /// </summary>
         /// <typeparam name="T">Type to convert the result into.</typeparam>
-        /// <returns>Activity result.</returns>
-        /// <exception cref="InvalidOperationException">If result is not available. See <see cref="HasResult"/>.</exception>
-        /// <exception cref="InvalidOperationException">If <see cref="ActivityDescribeOptions.IncludeOutcome"/> was false.</exception>
+        /// <returns>Activity result, or null if not available.</returns>
         /// <remarks>
         /// Activity result is only available if the activity has completed successfully.
         /// <para>Always null if <see cref="ActivityDescribeOptions.IncludeOutcome"/> was false.</para>
+        /// <para>
+        /// If <typeparamref name="T"/> is a non-nullable value type, an unavailable result is indistinguishable from
+        /// a converted one. Use a nullable type argument (<c>GetResultAsync&lt;int?&gt;()</c>) or check
+        /// <see cref="HasResult"/> to disambiguate.
+        /// </para>
         /// </remarks>
         /// <seealso cref="GetOutcomeFailureAsync"/>
         /// <seealso cref="HasResult"/>
-        public async Task<T> GetResultAsync<T>()
+        public async Task<T?> GetResultAsync<T>()
         {
             if (!HasResult)
             {
-                throw new InvalidOperationException("Result unavailable.");
+                return default;
             }
             return await dataConverter.ToSingleValueAsync<T>(RawOutcome!.Result.Payloads_).ConfigureAwait(false);
         }
