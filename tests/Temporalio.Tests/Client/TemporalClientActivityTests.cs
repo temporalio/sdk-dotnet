@@ -297,7 +297,7 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
             Assert.False(desc.HasHeartbeatDetails);
             Assert.False(desc.HasLastFailure);
             Assert.Null(desc.RawInput?.FirstOrDefault());
-            await Assert.ThrowsAsync<InvalidOperationException>(desc.GetResultAsync<string>);
+            Assert.Null(await desc.GetResultAsync<string>());
             Assert.Null(await desc.GetOutcomeFailureAsync());
             Assert.Null(desc.RawInfo.HeartbeatDetails?.Payloads_?.FirstOrDefault());
             Assert.Null(await desc.GetLastFailureAsync());
@@ -352,7 +352,7 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
             Assert.True(desc.HasHeartbeatDetails);
             Assert.True(desc.HasLastFailure);
             Assert.Equal("input", await Client.Options.DataConverter.ToSingleValueAsync<string>(desc.RawInput!));
-            await Assert.ThrowsAsync<InvalidOperationException>(desc.GetResultAsync<string>);
+            Assert.Null(await desc.GetResultAsync<string>());
             Assert.IsType<ApplicationFailureException>(await desc.GetLastFailureAsync());
             Assert.Equal("first attempt failure", ((ApplicationFailureException)(await desc.GetOutcomeFailureAsync())!).Message);
             Assert.Equal("heartbeat details", await Client.Options.DataConverter.ToSingleValueAsync<string>(desc.RawInfo.HeartbeatDetails.Payloads_));
