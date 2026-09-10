@@ -179,7 +179,6 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
                 () => SimpleActivityAsync("delayed"),
                 new($"act-{Guid.NewGuid()}", taskQueue)
                 {
-                    // ScheduleToCloseTimeout = TimeSpan.FromSeconds(36),
                     StartToCloseTimeout = TimeSpan.FromSeconds(5),
                     StartDelay = startDelay,
                 });
@@ -662,7 +661,7 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
 
         try
         {
-            await handle.UpdateOptionsAsync(new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(10) });
+            await handle.UpdateOptionsAsync(new() { Updates = new[] { ActivityOptionsUpdate.ScheduleToCloseTimeout.ValueSet(TimeSpan.FromMinutes(10)) } });
 
             await AssertMore.EventuallyAsync(async () =>
             {
@@ -766,14 +765,17 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
         {
             var firstUpdateResult = await handle.UpdateOptionsAsync(new()
             {
-                TaskQueue = updatedTaskQueue,
-                ScheduleToCloseTimeout = firstUpdateTimeSpan,
-                ScheduleToStartTimeout = firstUpdateTimeSpan,
-                StartToCloseTimeout = firstUpdateTimeSpan,
-                HeartbeatTimeout = firstUpdateTimeSpan,
-                Priority = new(fairnessKey: "first update"),
-                RetryPolicy = new() { InitialInterval = firstUpdateTimeSpan },
-                StartDelay = firstUpdateTimeSpan,
+                Updates = new[]
+                {
+                    ActivityOptionsUpdate.TaskQueue.ValueSet(updatedTaskQueue),
+                    ActivityOptionsUpdate.ScheduleToCloseTimeout.ValueSet(firstUpdateTimeSpan),
+                    ActivityOptionsUpdate.ScheduleToStartTimeout.ValueSet(firstUpdateTimeSpan),
+                    ActivityOptionsUpdate.StartToCloseTimeout.ValueSet(firstUpdateTimeSpan),
+                    ActivityOptionsUpdate.HeartbeatTimeout.ValueSet(firstUpdateTimeSpan),
+                    ActivityOptionsUpdate.Priority.ValueSet(new(fairnessKey: "first update")),
+                    ActivityOptionsUpdate.RetryPolicy.ValueSet(new() { InitialInterval = firstUpdateTimeSpan }),
+                    ActivityOptionsUpdate.StartDelay.ValueSet(firstUpdateTimeSpan),
+                },
             });
             Assert.Equal(updatedTaskQueue, firstUpdateResult.TaskQueue);
             Assert.Equal(firstUpdateTimeSpan, firstUpdateResult.ScheduleToCloseTimeout);
@@ -792,32 +794,30 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
                 Assert.Equal(firstUpdateTimeSpan, desc.ScheduleToStartTimeout);
                 Assert.Equal(firstUpdateTimeSpan, desc.StartToCloseTimeout);
                 Assert.Equal(firstUpdateTimeSpan, desc.HeartbeatTimeout);
-                // Assert.Equal("updated", desc.Priority?.FairnessKey); // TODO: Uncomment when property added
+                Assert.Equal("updated", desc.Priority?.FairnessKey);
                 Assert.Equal(firstUpdateTimeSpan, desc.RetryPolicy?.InitialInterval);
-                // Assert.Equal(firstUpdateTimeSpan, desc.StartDelay); // TODO: Uncomment when property added
+                Assert.Equal(firstUpdateTimeSpan, desc.StartDelay);
             });
 
-            ActivityOptionsUpdate secondUpdate = new();
-            // Task queue implicitly null
-            secondUpdate.ScheduleToCloseTimeout = secondUpdateTimeSpan;
-            secondUpdate.ScheduleToStartTimeout = null;
-            secondUpdate.StartToCloseTimeout = secondUpdateTimeSpan;
-            secondUpdate.StartToCloseTimeout = null; // should not update
-            secondUpdate.ClearHeartbeatTimeout = true;
-            secondUpdate.Priority = new(fairnessKey: "second update");
-            secondUpdate.ClearPriority = true;
-            secondUpdate.ClearPriority = false; // should not update
-            secondUpdate.RetryPolicy = new() { MaximumInterval = secondUpdateTimeSpan }; // should reset InitialInterval
-            secondUpdate.ClearStartDelay = true;
-            secondUpdate.StartDelay = secondUpdateTimeSpan; // should update
-
-            var secondUpdateResult = await handle.UpdateOptionsAsync(secondUpdate);
+            var secondUpdateResult = await handle.UpdateOptionsAsync(new()
+            {
+                Updates = new[]
+                {
+                    ActivityOptionsUpdate.ScheduleToCloseTimeout.ValueUnset(),
+                    ActivityOptionsUpdate.StartToCloseTimeout.ValueSet(secondUpdateTimeSpan),
+                    ActivityOptionsUpdate.Priority.ValueSet(new(fairnessKey: "second update")),
+                    ActivityOptionsUpdate.RetryPolicy.ValueSet(new() { MaximumInterval = secondUpdateTimeSpan }), // should reset InitialInterval
+                    ActivityOptionsUpdate.StartDelay.ValueSet(secondUpdateTimeSpan),
+                },
+            });
             Assert.Equal(updatedTaskQueue, secondUpdateResult.TaskQueue);
-            Assert.Equal(secondUpdateTimeSpan, secondUpdateResult.ScheduleToCloseTimeout);
+            // Server is inconsistent between zero and null for unset durations
+            Assert.True(secondUpdateResult.ScheduleToCloseTimeout is null || secondUpdateResult.ScheduleToCloseTimeout == TimeSpan.Zero);
             Assert.Equal(firstUpdateTimeSpan, secondUpdateResult.ScheduleToStartTimeout);
-            Assert.Equal(firstUpdateTimeSpan, secondUpdateResult.StartToCloseTimeout);
-            Assert.Null(secondUpdateResult.HeartbeatTimeout);
+            Assert.Equal(secondUpdateTimeSpan, secondUpdateResult.StartToCloseTimeout);
+            Assert.Equal(firstUpdateTimeSpan, secondUpdateResult.HeartbeatTimeout);
             Assert.Equal("first update", secondUpdateResult.Priority?.FairnessKey);
+            // Server sets a theoretically unknowable default value to missing retry policy fields
             Assert.NotEqual(firstUpdateTimeSpan, secondUpdateResult.RetryPolicy?.InitialInterval);
             Assert.Equal(secondUpdateTimeSpan, secondUpdateResult.RetryPolicy?.MaximumInterval);
             Assert.Equal(secondUpdateTimeSpan, secondUpdateResult.StartDelay);
@@ -929,13 +929,13 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
             return base.UnpauseActivityAsync(input);
         }
 
-        public override Task<ActivityOptionsUpdate> UpdateActivityOptionsAsync(UpdateActivityOptionsInput input)
+        public override Task<ActivityUpdateOptionsResult> UpdateActivityOptionsAsync(UpdateActivityOptionsInput input)
         {
             Events.Add(new("UpdateActivityOptions", input));
             return base.UpdateActivityOptionsAsync(input);
         }
 
-        public override Task<ActivityOptionsUpdate> RestoreOriginalActivityOptionsAsync(RestoreOriginalActivityOptionsInput input)
+        public override Task<ActivityUpdateOptionsResult> RestoreOriginalActivityOptionsAsync(RestoreOriginalActivityOptionsInput input)
         {
             Events.Add(new("RestoreOriginalActivityOptions", input));
             return base.RestoreOriginalActivityOptionsAsync(input);

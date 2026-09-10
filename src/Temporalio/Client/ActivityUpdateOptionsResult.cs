@@ -25,7 +25,7 @@ namespace Temporalio.Client
             {
                 RetryPolicy = RetryPolicy.FromProto(rp);
             }
-            Priority = new Priority(proto?.Priority!);
+            Priority = new Priority(proto?.Priority);
             StartDelay = proto?.StartDelay?.ToTimeSpan();
         }
 

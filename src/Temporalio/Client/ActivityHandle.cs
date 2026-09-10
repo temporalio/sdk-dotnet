@@ -196,7 +196,7 @@ namespace Temporalio.Client
         /// <exception cref="RpcException">Server-side error.</exception>
         /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         /// <seealso cref="UpdateOptionsAsync"/>
-        public virtual Task<ActivityOptionsUpdate> RestoreOriginalOptionsAsync(ActivityRestoreOriginalOptionsOptions? options = null) =>
+        public virtual Task<ActivityUpdateOptionsResult> RestoreOriginalOptionsAsync(ActivityRestoreOriginalOptionsOptions? options = null) =>
             Client.OutboundInterceptor.RestoreOriginalActivityOptionsAsync(new(
                 Id: Id,
                 RunId: RunId,
