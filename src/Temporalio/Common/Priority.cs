@@ -33,7 +33,7 @@ namespace Temporalio.Common
         /// Initializes a new instance of the <see cref="Priority"/> class from a proto.
         /// </summary>
         /// <param name="priority">The proto to initialize from.</param>
-        internal Priority(Temporalio.Api.Common.V1.Priority priority)
+        internal Priority(Temporalio.Api.Common.V1.Priority? priority)
             : this(
                 priority?.PriorityKey != 0 ? priority?.PriorityKey : null,
                 !string.IsNullOrEmpty(priority?.FairnessKey) ? priority?.FairnessKey : null,

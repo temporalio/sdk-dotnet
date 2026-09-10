@@ -21,6 +21,13 @@ to docs, or any other relevant information.
 
 ### :boom: Breaking Changes
 
+- Renamed and removed several experimental methods and properties in Standalone Activities APIs:
+  - `StartActivityOptions.StaticSummary` renamed to `Summary`.
+  - `ActivityExecutionDescription.GetStaticSummaryAsync` renamed to `GetSummaryAsync`.
+  - `ActivityExecution.ScheduledTime` renamed to `ScheduleTime`.
+  - Removed `ActivityExecution.StateTransitionCount`.
+  - Removed `ActivityExecutionDescription.LongPollToken`.
+  - Removed `ActivityDescribeOptions.LongPollToken`.
 - Removed the experimental `SignalWithStartWorkflowOptions.RequestId`. Request IDs for
   workflow-side signal-with-start are now assigned internally and are no longer user-settable.
 
@@ -28,6 +35,12 @@ to docs, or any other relevant information.
 
 - Nexus workers now decode marked Temporal System Nexus operation inputs with the System Nexus converter.
 - NexusPayloadSerializer now preserves marked System Nexus envelopes while applying payload codecs only to their embedded user payloads.
+- New options in `ActivityDescribeOptions` that can be used to retrieve data associated with
+  activity execution, such as input and result.
+- New properties and methods in `ActivityExecution` and `ActivityExecutionDescription`:
+  `ExecutionTime`, `LastDeploymentVersion`, `Priority`, `RetryPolicy`, `StartDelay`,
+  `TotalHeartbeatCount`, `GetLastFailureAsync`, `GetOutcomeFailureAsync`, `GetResultAsync`,
+  and access to raw Proto objects from the response.
 - Added operation-specific outbound workflow interceptors for Temporal System Nexus operations.
   `SignalWithStartWorkflowAsync` can now be intercepted before the existing
   `ScheduleSystemNexusOperationAsync` hook.
