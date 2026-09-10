@@ -6,7 +6,6 @@ namespace Temporalio.Client
     /// <summary>
     /// Options for <see cref="ITemporalClient.ListActivitiesAsync" />.
     /// </summary>
-    /// <remarks>WARNING: Standalone activities are experimental.</remarks>
     public class ActivityListOptions : ICloneable
     {
         /// <summary>

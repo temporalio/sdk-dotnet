@@ -5,7 +5,6 @@ namespace Temporalio.Exceptions
     /// <summary>
     /// Exception thrown when a standalone activity has failed while waiting for the result.
     /// </summary>
-    /// <remarks>WARNING: Standalone activities are experimental.</remarks>
     public class ActivityFailedException : TemporalException
     {
         /// <summary>

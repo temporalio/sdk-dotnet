@@ -9,6 +9,5 @@ namespace Temporalio.Client
     /// <param name="NextPageToken">
     /// Token to pass to retrieve the next page. Null if there are no more pages.
     /// </param>
-    /// <remarks>WARNING: Standalone activities are experimental.</remarks>
     public record ActivityListPage(IReadOnlyCollection<ActivityExecution> Activities, byte[]? NextPageToken);
 }
