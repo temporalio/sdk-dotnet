@@ -100,6 +100,86 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
     [CloudTestExclusion(
         CloudTestExclusionReason.RequiresLocalServer,
         "Requires local dynamic configuration to enable signal with start from a workflow.")]
+    public async Task ExecuteWorkflowAsync_SignalWithStart_CodecUsesTargetSerializationContext()
+    {
+        var codec = new RecordingContextPayloadCodec();
+        var clientOptions = (TemporalClientOptions)Client.Options.Clone();
+        clientOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadCodec = codec,
+        };
+        var client = new TemporalClient(Client.Connection, clientOptions);
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddWorkflow<SystemNexusContextTargetWorkflow>();
+
+        await ExecuteWorkerAsync<SystemNexusContextCallerWorkflow>(
+            async worker =>
+            {
+                var targetId = $"workflow-{Guid.NewGuid()}";
+                var handle = await client.StartWorkflowAsync(
+                    (SystemNexusContextCallerWorkflow workflow) =>
+                        workflow.RunAsync(targetId, worker.Options.TaskQueue!),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                var context = await codec.Context.WaitAsync(TimeSpan.FromSeconds(5));
+                Assert.NotNull(context);
+                Assert.True(context.Workflow);
+                Assert.Equal(targetId, context.WorkflowId);
+                await handle.GetResultAsync();
+            },
+            workerOptions,
+            client);
+    }
+
+    [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresLocalServer,
+        "Requires local dynamic configuration to enable signal with start from a workflow.")]
+    public async Task ExecuteWorkflowAsync_SignalWithStart_ReplayRehydratesCodecSerializationContext()
+    {
+        var clientOptions = (TemporalClientOptions)Client.Options.Clone();
+        clientOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadCodec = new RecordingContextPayloadCodec(),
+        };
+        var client = new TemporalClient(Client.Connection, clientOptions);
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddWorkflow<SystemNexusContextTargetWorkflow>();
+
+        await ExecuteWorkerAsync<SystemNexusContextCallerWorkflow>(
+            async worker =>
+            {
+                var targetId = $"workflow-{Guid.NewGuid()}";
+                var handle = await client.StartWorkflowAsync(
+                    (SystemNexusContextCallerWorkflow workflow) =>
+                        workflow.RunAsync(targetId, worker.Options.TaskQueue!),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await handle.GetResultAsync();
+
+                var replayCodec = new RecordingContextPayloadCodec();
+                var replayOptions = new WorkflowReplayerOptions
+                {
+                    DataConverter = DataConverter.Default with { PayloadCodec = replayCodec },
+                }.AddWorkflow<SystemNexusContextCallerWorkflow>();
+                var replayTaskCount = 0;
+                replayOptions.WorkflowTaskStarting += (_, _) => replayTaskCount++;
+                var replay = await new WorkflowReplayer(replayOptions).ReplayWorkflowAsync(
+                    await handle.FetchHistoryAsync());
+
+                Assert.Null(replay.ReplayFailure);
+                Assert.True(replayTaskCount >= 2);
+                var context = await replayCodec.Context.WaitAsync(TimeSpan.FromSeconds(5));
+                Assert.NotNull(context);
+                Assert.True(context.Workflow);
+                Assert.Equal(targetId, context.WorkflowId);
+            },
+            workerOptions,
+            client);
+    }
+
+    [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresLocalServer,
+        "Requires local dynamic configuration to enable signal with start from a workflow.")]
     public async Task ExecuteWorkflowAsync_SignalWithStart_DoesNotUseNormalNexusInterceptor()
     {
         var interceptor = new NormalNexusOperationInterceptor();
@@ -295,6 +375,50 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
             }
             return base.TryToPayload(value, out payload);
         }
+    }
+
+    private sealed class RecordingContextPayloadCodec : IPayloadCodec,
+        IWithSerializationContext<IPayloadCodec>
+    {
+        private readonly WorkflowWorkerTests.ContextInfo? context;
+
+        internal RecordingContextPayloadCodec()
+            : this(new())
+        {
+        }
+
+        private RecordingContextPayloadCodec(
+            TaskCompletionSource<WorkflowWorkerTests.ContextInfo?> contextSource,
+            WorkflowWorkerTests.ContextInfo? context = null)
+        {
+            Context = contextSource.Task;
+            this.context = context;
+            ContextSource = contextSource;
+        }
+
+        internal Task<WorkflowWorkerTests.ContextInfo?> Context { get; }
+
+        private TaskCompletionSource<WorkflowWorkerTests.ContextInfo?> ContextSource { get; }
+
+        public Task<IReadOnlyCollection<Temporalio.Api.Common.V1.Payload>> EncodeAsync(
+            IReadOnlyCollection<Temporalio.Api.Common.V1.Payload> payloads)
+        {
+            if (payloads.Any(payload => payload.Data.ToStringUtf8().Contains(
+                "context-workflow", StringComparison.Ordinal)))
+            {
+                ContextSource.TrySetResult(context);
+            }
+            return Task.FromResult(payloads);
+        }
+
+        public Task<IReadOnlyCollection<Temporalio.Api.Common.V1.Payload>> DecodeAsync(
+            IReadOnlyCollection<Temporalio.Api.Common.V1.Payload> payloads) =>
+            Task.FromResult(payloads);
+
+        public IPayloadCodec WithSerializationContext(ISerializationContext context) =>
+            new RecordingContextPayloadCodec(
+                ContextSource,
+                WorkflowWorkerTests.ContextInfo.Create(context));
     }
 
     private sealed class NormalNexusOperationInterceptor : IWorkerInterceptor

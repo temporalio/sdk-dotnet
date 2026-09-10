@@ -413,7 +413,18 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.SignalWithStartWorkflowExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse>(
+                        payload,
+                        VisitNoPayloadEnvelopeAsync,
+                        visitPayload,
+                        visitPayloads),
             };
+
+        private static Task VisitNoPayloadEnvelopeAsync<T>(
+            T value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads) => Task.CompletedTask;
 
         internal static async Task<bool> TryVisitAsync(
             Payload payload,

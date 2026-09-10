@@ -118,8 +118,13 @@ namespace Temporalio.Worker
                         }
                         break;
                     case WorkflowActivationJob.VariantOneofCase.ResolveNexusOperation:
-                        // TODO(cretz): Support Nexus serialization context
                         var nexusCodec = context.CodecNoContext;
+                        if (nexusCodec is IWithSerializationContext<IPayloadCodec> withNexus &&
+                            context.Instance?.GetPendingNexusOperationSerializationContext(
+                                job.ResolveNexusOperation.Seq) is { } nexusContext)
+                        {
+                            nexusCodec = withNexus.WithSerializationContext(nexusContext);
+                        }
                         if (nexusCodec == null)
                         {
                             break;
@@ -150,11 +155,16 @@ namespace Temporalio.Worker
                         }
                         break;
                     case WorkflowActivationJob.VariantOneofCase.ResolveNexusOperationStart:
-                        // TODO(cretz): Support Nexus serialization context
-                        if (job.ResolveNexusOperationStart.Failed != null
-                            && context.CodecNoContext != null)
+                        var nexusStartCodec = context.CodecNoContext;
+                        if (nexusStartCodec is IWithSerializationContext<IPayloadCodec> withNexusStart &&
+                            context.Instance?.GetPendingNexusOperationSerializationContext(
+                                job.ResolveNexusOperationStart.Seq) is { } nexusStartContext)
                         {
-                            await context.CodecNoContext.DecodeFailureAsync(
+                            nexusStartCodec = withNexusStart.WithSerializationContext(nexusStartContext);
+                        }
+                        if (job.ResolveNexusOperationStart.Failed != null && nexusStartCodec != null)
+                        {
+                            await nexusStartCodec.DecodeFailureAsync(
                                 job.ResolveNexusOperationStart.Failed).
                                 ConfigureAwait(false);
                         }
@@ -342,8 +352,13 @@ namespace Temporalio.Worker
                     }
                     break;
                 case WorkflowCommand.VariantOneofCase.ScheduleNexusOperation:
-                    // TODO(cretz): Support Nexus serialization context
                     codec = context.CodecNoContext;
+                    if (codec is IWithSerializationContext<IPayloadCodec> withNexus &&
+                        context.Instance?.GetPendingNexusOperationSerializationContext(
+                            cmd.ScheduleNexusOperation.Seq) is { } nexusContext)
+                    {
+                        codec = withNexus.WithSerializationContext(nexusContext);
+                    }
                     if (cmd.ScheduleNexusOperation.Input != null && codec != null)
                     {
                         await EncodeAsync(codec, cmd.ScheduleNexusOperation.Input).ConfigureAwait(false);
