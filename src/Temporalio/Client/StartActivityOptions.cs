@@ -9,7 +9,6 @@ namespace Temporalio.Client
     /// Options for starting a standalone activity. <see cref="Id" /> and <see cref="TaskQueue" />
     /// are required.
     /// </summary>
-    /// <remarks>WARNING: Standalone activities are experimental.</remarks>
     public class StartActivityOptions : ICloneable
     {
         /// <summary>
