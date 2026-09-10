@@ -249,7 +249,7 @@
         "dependencies": {
           "OpenTelemetry.Api": "[1.15.3, )",
           "System.Diagnostics.DiagnosticSource": "[10.0.0, )",
-          "Temporalio": "[1.18.0, )"
+          "Temporalio": "[1.19.0, )"
         }
       },
       "Google.Protobuf": {
