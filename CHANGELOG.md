@@ -33,6 +33,14 @@ to docs, or any other relevant information.
 
 ### Added
 
+- Added the experimental `Temporalio.Extensions.Gcp.CloudRun.WorkerId` package for long-lived
+  Temporal workers on Google Cloud Run worker pools and services. Register a single `WorkerIdPlugin`
+  on your client's `Plugins`; it sets the worker identity from the Cloud Run instance at connect
+  time (unless one is already configured), and workers created from that client inherit it. The
+  underlying `GoogleCloudRunMetadata` helper reads Cloud Run instance metadata (the
+  `CLOUD_RUN_WORKER_POOL`/`CLOUD_RUN_REVISION` or `K_SERVICE`/`K_REVISION` environment variables and
+  the instance id from the metadata server) to derive the worker identity, and can be used directly
+  for advanced scenarios.
 - New options in `ActivityDescribeOptions` that can be used to retrieve data associated with
   activity execution, such as input and result.
 - New properties and methods in `ActivityExecution` and `ActivityExecutionDescription`:

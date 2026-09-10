@@ -5,6 +5,7 @@
     <Project Path="src/Temporalio.Extensions.Aws.Lambda/Temporalio.Extensions.Aws.Lambda.csproj" />
     <Project Path="src/Temporalio.Extensions.DiagnosticSource/Temporalio.Extensions.DiagnosticSource.csproj" />
     <Project Path="src/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry.csproj" />
+    <Project Path="src/Temporalio.Extensions.Gcp.CloudRun.WorkerId/Temporalio.Extensions.Gcp.CloudRun.WorkerId.csproj" />
     <Project Path="src/Temporalio.Extensions.Hosting/Temporalio.Extensions.Hosting.csproj" />
     <Project Path="src/Temporalio.Extensions.OpenTelemetry/Temporalio.Extensions.OpenTelemetry.csproj" />
     <Project Path="src/Temporalio.SystemNexus.Generator/Temporalio.SystemNexus.Generator.csproj" />
