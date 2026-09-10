@@ -340,26 +340,43 @@ namespace Temporalio.Client
             }
 
             /// <inheritdoc />
-            public override async Task<ActivityOptionsUpdate> UpdateActivityOptionsAsync(
+            public override async Task<ActivityUpdateOptionsResult> UpdateActivityOptionsAsync(
                 UpdateActivityOptionsInput input)
             {
-                var resp = await Client.Connection.WorkflowService.UpdateActivityExecutionOptionsAsync(
-                    new()
+                if (input.Options.Updates is not { Count: > 0 })
+                {
+                    throw new ArgumentException("Updates list is empty", nameof(input));
+                }
+
+                UpdateActivityExecutionOptionsRequest req = new()
+                {
+                    Namespace = Client.Options.Namespace,
+                    ActivityId = input.Id,
+                    RunId = input.RunId ?? string.Empty,
+                    Identity = Client.Connection.Options.Identity,
+                    RequestId = Guid.NewGuid().ToString(),
+                };
+
+                foreach (var update in input.Options.Updates)
+                {
+                    if (req.UpdateMask.Paths.Contains(update.Key.Path))
                     {
-                        Namespace = Client.Options.Namespace,
-                        ActivityId = input.Id,
-                        RunId = input.RunId ?? string.Empty,
-                        Identity = Client.Connection.Options.Identity,
-                        RequestId = Guid.NewGuid().ToString(),
-                        ActivityOptions = input.Options.ToProto(),
-                        UpdateMask = input.Options.UpdateMask(),
-                    },
-                    DefaultRetryOptions(input.RpcOptions)).ConfigureAwait(false);
-                return ActivityOptionsUpdate.FromProto(resp.ActivityOptions);
+                        throw new ArgumentException($"Duplicate activity options update key `{update.Key}`", nameof(input));
+                    }
+                    req.UpdateMask.Paths.Add(update.Key.Path);
+                    if (update.HasValue)
+                    {
+                        update.Apply(req.ActivityOptions);
+                    }
+                }
+
+                var resp = await Client.Connection.WorkflowService.UpdateActivityExecutionOptionsAsync(
+                    req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
+                return new ActivityUpdateOptionsResult(resp.ActivityOptions);
             }
 
             /// <inheritdoc />
-            public override async Task<ActivityOptionsUpdate> RestoreOriginalActivityOptionsAsync(RestoreOriginalActivityOptionsInput input)
+            public override async Task<ActivityUpdateOptionsResult> RestoreOriginalActivityOptionsAsync(RestoreOriginalActivityOptionsInput input)
             {
                 var resp = await Client.Connection.WorkflowService.UpdateActivityExecutionOptionsAsync(
                     new()
@@ -371,8 +388,8 @@ namespace Temporalio.Client
                         RequestId = Guid.NewGuid().ToString(),
                         RestoreOriginal = true,
                     },
-                    DefaultRetryOptions(input.RpcOptions)).ConfigureAwait(false);
-                return ActivityOptionsUpdate.FromProto(resp.ActivityOptions);
+                    DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
+                return new ActivityUpdateOptionsResult(resp.ActivityOptions);
             }
 
 #if NETCOREAPP3_0_OR_GREATER

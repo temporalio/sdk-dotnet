@@ -120,7 +120,7 @@ namespace Temporalio.Client.Interceptors
         /// <param name="input">Input details of the call.</param>
         /// <returns>New activity options.</returns>
         /// <remarks>WARNING: Standalone activities are experimental.</remarks>
-        public virtual Task<ActivityOptionsUpdate> UpdateActivityOptionsAsync(UpdateActivityOptionsInput input) =>
+        public virtual Task<ActivityUpdateOptionsResult> UpdateActivityOptionsAsync(UpdateActivityOptionsInput input) =>
             Next.UpdateActivityOptionsAsync(input);
 
         /// <summary>
@@ -129,7 +129,8 @@ namespace Temporalio.Client.Interceptors
         /// <param name="input">Input details of the call.</param>
         /// <returns>Task for termination completion.</returns>
         /// <remarks>WARNING: Standalone activities are experimental.</remarks>
-        public virtual Task<ActivityOptionsUpdate> RestoreOriginalActivityOptionsAsync(RestoreOriginalActivityOptionsInput input) =>
+        public virtual Task<ActivityUpdateOptionsResult> RestoreOriginalActivityOptionsAsync(
+            RestoreOriginalActivityOptionsInput input) =>
             Next.RestoreOriginalActivityOptionsAsync(input);
     }
 }

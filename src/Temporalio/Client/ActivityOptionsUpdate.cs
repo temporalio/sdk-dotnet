@@ -1,410 +1,196 @@
+#pragma warning disable SA1402 // We allow same-named types in the same file
+
 using System;
-using System.Collections.Generic;
 using Google.Protobuf.WellKnownTypes;
-using Temporalio.Api.Activity.V1;
 using Temporalio.Common;
 
 namespace Temporalio.Client
 {
     /// <summary>
-    /// Activity execution options that can be changed after activity is started.
+    /// Represents an individual change to one activity option - either setting it to a value or unsetting (clearing)
+    /// it. Instances are created by calling the <see cref="OptionKey{T}.ValueSet">ValueSet</see> or
+    /// <see cref="OptionKey{T}.ValueUnset">ValueUnset</see> method of the corresponding option key.
+    /// All keys are static properties of this class.
     /// </summary>
-    /// <remarks>
-    /// Used as both the argument and the return value of <see cref="ActivityHandle.UpdateOptionsAsync"/>.
-    /// When used as an argument, only options that are set to non-null values are updated.
-    /// Options with null values are left unchanged unless they are explicitly marked to be cleared.
-    ///
-    /// WARNING: Standalone activities are experimental.
-    /// </remarks>
-    public class ActivityOptionsUpdate : ICloneable
+    /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+    /// <seealso cref="ActivityHandle.UpdateOptionsAsync"/>
+    public class ActivityOptionsUpdate
     {
-        private const string PathTaskQueue = "task_queue.name";
-        private const string PathScheduleToCloseTimeout = "schedule_to_close_timeout";
-        private const string PathScheduleToStartTimeout = "schedule_to_start_timeout";
-        private const string PathStartToCloseTimeout = "start_to_close_timeout";
-        private const string PathHeartbeatTimeout = "heartbeat_timeout";
-        private const string PathRetryPolicy = "retry_policy";
-        private const string PathPriority = "priority";
-        private const string PathStartDelay = "start_delay";
-
-        private string? taskQueue;
-        private TimeSpan? scheduleToCloseTimeout;
-        private TimeSpan? scheduleToStartTimeout;
-        private TimeSpan? startToCloseTimeout;
-        private TimeSpan? heartbeatTimeout;
-        private RetryPolicy? retryPolicy;
-        private Priority? priority;
-        private TimeSpan? startDelay;
-
-        private HashSet<string> paths = new();
+        private object? value;
+        private Action<Api.Activity.V1.ActivityOptions> apply;
 
         /// <summary>
-        /// Gets or sets the task queue to run the activity on.
+        /// Initializes a new instance of the <see cref="ActivityOptionsUpdate"/> class.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <param name="hasValue">True if update is a set, false if update is an unset.</param>
+        /// <param name="value">Value to set.</param>
+        /// <param name="apply">Function that sets the value in Proto options.</param>
+        private ActivityOptionsUpdate(OptionKey key, bool hasValue, object? value, Action<Api.Activity.V1.ActivityOptions> apply)
+        {
+            Key = key;
+            HasValue = hasValue;
+            this.value = value;
+            this.apply = apply;
+        }
+
+        /// <summary>
+        /// Gets the key for setting task queue. Cannot be unset.
+        /// </summary>
+        /// <seealso cref="StartActivityOptions.TaskQueue"/>
+        public static OptionKey<string> TaskQueue { get; } = new(
+            "task_queue.name", (o, v) => o.TaskQueue = new() { Name = v });
+
+        /// <summary>
+        /// Gets the key for setting schedule-to-close timeout.
+        /// </summary>
+        /// <seealso cref="StartActivityOptions.ScheduleToCloseTimeout"/>
+        public static OptionKey<TimeSpan> ScheduleToCloseTimeout { get; } = new(
+            "schedule_to_close_timeout",
+            (o, v) => o.ScheduleToCloseTimeout = Duration.FromTimeSpan(v));
+
+        /// <summary>
+        /// Gets the key for setting schedule-to-start timeout.
+        /// </summary>
+        /// <seealso cref="StartActivityOptions.ScheduleToStartTimeout"/>
+        public static OptionKey<TimeSpan> ScheduleToStartTimeout { get; } = new(
+            "schedule_to_start_timeout",
+            (o, v) => o.ScheduleToStartTimeout = Duration.FromTimeSpan(v));
+
+        /// <summary>
+        /// Gets the key for setting start-to-close timeout.
+        /// </summary>
+        /// <seealso cref="StartActivityOptions.StartToCloseTimeout"/>
+        public static OptionKey<TimeSpan> StartToCloseTimeout { get; } = new(
+            "start_to_close_timeout",
+            (o, v) => o.StartToCloseTimeout = Duration.FromTimeSpan(v));
+
+        /// <summary>
+        /// Gets the key for setting heartbeat timeout.
+        /// </summary>
+        /// <seealso cref="StartActivityOptions.HeartbeatTimeout"/>
+        public static OptionKey<TimeSpan> HeartbeatTimeout { get; } = new(
+            "heartbeat_timeout",
+            (o, v) => o.HeartbeatTimeout = Duration.FromTimeSpan(v));
+
+        /// <summary>
+        /// Gets the key for setting retry policy.
         /// </summary>
         /// <remarks>
-        /// Setting this property to null indicates it should not be updated.
-        /// Task queue is required and cannot be cleared.
+        /// If value is set for this key, it will replace the entire policy, and properties with zero value will be
+        /// given default values by the server.
         /// </remarks>
-        public string? TaskQueue
-        {
-            get => taskQueue;
-            set => SetRef(PathTaskQueue, out taskQueue, value);
-        }
+        /// <seealso cref="StartActivityOptions.RetryPolicy"/>
+        public static OptionKey<RetryPolicy> RetryPolicy { get; } = new(
+            "retry_policy",
+            (o, v) => o.RetryPolicy = v.ToProto());
 
         /// <summary>
-        /// Gets or sets the total time the activity is allowed to run including retries.
+        /// Gets the key for setting priority.
         /// </summary>
         /// <remarks>
-        /// Setting this property to null indicates it should not be updated (<see cref="ClearScheduleToCloseTimeout"/> is set to false).
-        /// To clear the current value, set <see cref="ClearScheduleToCloseTimeout"/> to true.
+        /// If value is set for this key, it will replace the entire priority object, and any unset properties will be
+        /// updated to null.
         /// </remarks>
-        public TimeSpan? ScheduleToCloseTimeout
+        /// <seealso cref="StartActivityOptions.Priority"/>
+        public static OptionKey<Priority> Priority { get; } = new(
+            "priority",
+            (o, v) => o.Priority = v.ToProto());
+
+        /// <summary>
+        /// Gets the key for setting start delay.
+        /// </summary>
+        /// <seealso cref="StartActivityOptions.StartDelay"/>
+        public static OptionKey<TimeSpan> StartDelay { get; } = new(
+            "start_delay",
+            (o, v) => o.StartDelay = Duration.FromTimeSpan(v));
+
+        /// <summary>
+        /// Gets the option key of this update object. Every key is a static property of this class.
+        /// </summary>
+        public OptionKey Key { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this updates sets or unsets the associated option.
+        /// True if sets, false if unsets.
+        /// </summary>
+        public bool HasValue { get; }
+
+        /// <summary>
+        /// Gets the value this update will set the associated option to.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// If this update is an unset (<see cref="HasValue"/> is false).
+        /// </exception>
+        public object Value => HasValue ? value! : throw new InvalidOperationException("No value");
+
+        /// <summary>
+        /// Applies the update to the given options object.
+        /// </summary>
+        /// <param name="options">Proto options.</param>
+        internal void Apply(Api.Activity.V1.ActivityOptions options) => apply(options);
+
+        /// <summary>
+        /// Non-generic base class for <see cref="OptionKey{T}"/>. All keys are static properties of
+        /// <see cref="ActivityOptionsUpdate"/>.
+        /// </summary>
+        /// <seealso cref="OptionKey{T}"/>
+        /// <seealso cref="ActivityOptionsUpdate"/>
+        public class OptionKey
         {
-            get => scheduleToCloseTimeout;
-            set => SetVal(PathScheduleToCloseTimeout, out scheduleToCloseTimeout, value);
+            /// <summary>
+            /// Initializes a new instance of the <see cref="OptionKey"/> class.
+            /// </summary>
+            /// <param name="path">Protobuf field mask path.</param>
+            private protected OptionKey(string path)
+            {
+                Path = path;
+            }
+
+            /// <summary>
+            /// Gets the Protobuf field mask path.
+            /// </summary>
+            internal string Path { get; }
+
+            /// <inheritdoc/>
+            public override string ToString() => Path;
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether <see cref="ScheduleToCloseTimeout"/> should be cleared.
+        /// Option key for activity options update operation. All keys are static properties of
+        /// <see cref="ActivityOptionsUpdate"/>.
         /// </summary>
-        /// <remarks>
-        /// Setting <see cref="ScheduleToCloseTimeout"/> to any value, including null, sets this property to false.
-        /// Setting this property to true sets <see cref="ScheduleToCloseTimeout"/> to null.
-        /// </remarks>
-        public bool ClearScheduleToCloseTimeout
+        /// <typeparam name="T">Value type of the associated option.</typeparam>
+        /// <seealso cref="ActivityOptionsUpdate"/>
+        public class OptionKey<T> : OptionKey
         {
-            get => scheduleToCloseTimeout == null && paths.Contains(PathScheduleToCloseTimeout);
-            set => SetClearVal(PathScheduleToCloseTimeout, ref scheduleToCloseTimeout, value);
-        }
+            private readonly Action<Api.Activity.V1.ActivityOptions, T> apply;
 
-        /// <summary>
-        /// Gets or sets the maximum time the activity can wait in the task queue before being picked up by a worker.
-        /// This timeout is non-retryable.
-        /// </summary>
-        /// <remarks>
-        /// Setting this property to null indicates it should not be updated (<see cref="ClearScheduleToStartTimeout"/> is set to false).
-        /// To clear the current value, set <see cref="ClearScheduleToStartTimeout"/> to true.
-        /// </remarks>
-        public TimeSpan? ScheduleToStartTimeout
-        {
-            get => scheduleToStartTimeout;
-            set => SetVal(PathScheduleToStartTimeout, out scheduleToStartTimeout, value);
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether <see cref="ScheduleToStartTimeout"/> should be cleared.
-        /// </summary>
-        /// <remarks>
-        /// Setting <see cref="ScheduleToStartTimeout"/> to any value, including null, sets this property to false.
-        /// Setting this property to true sets <see cref="ScheduleToStartTimeout"/> to null.
-        /// </remarks>
-        public bool ClearScheduleToStartTimeout
-        {
-            get => scheduleToStartTimeout == null && paths.Contains(PathScheduleToStartTimeout);
-            set => SetClearVal(PathScheduleToStartTimeout, ref scheduleToStartTimeout, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the maximum time for a single execution attempt. This timeout is retryable.
-        /// </summary>
-        /// <remarks>
-        /// Setting this property to null indicates it should not be updated (<see cref="ClearStartToCloseTimeout"/> is set to false).
-        /// To clear the current value, set <see cref="ClearStartToCloseTimeout"/> to true.
-        /// </remarks>
-        public TimeSpan? StartToCloseTimeout
-        {
-            get => startToCloseTimeout;
-            set => SetVal(PathStartToCloseTimeout, out startToCloseTimeout, value);
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether <see cref="StartToCloseTimeout"/> should be cleared.
-        /// </summary>
-        /// <remarks>
-        /// Setting <see cref="StartToCloseTimeout"/> to any value, including null, sets this property to false.
-        /// Setting this property to true sets <see cref="StartToCloseTimeout"/> to null.
-        /// </remarks>
-        public bool ClearStartToCloseTimeout
-        {
-            get => startToCloseTimeout == null && paths.Contains(PathStartToCloseTimeout);
-            set => SetClearVal(PathStartToCloseTimeout, ref startToCloseTimeout, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the maximum time between successful heartbeats.
-        /// </summary>
-        /// <remarks>
-        /// Setting this property to null indicates it should not be updated (<see cref="ClearHeartbeatTimeout"/> is set to false).
-        /// To clear the current value, set <see cref="ClearHeartbeatTimeout"/> to true.
-        /// </remarks>
-        public TimeSpan? HeartbeatTimeout
-        {
-            get => heartbeatTimeout;
-            set => SetVal(PathHeartbeatTimeout, out heartbeatTimeout, value);
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether <see cref="HeartbeatTimeout"/> should be cleared.
-        /// </summary>
-        /// <remarks>
-        /// Setting <see cref="HeartbeatTimeout"/> to any value, including null, sets this property to false.
-        /// Setting this property to true sets <see cref="HeartbeatTimeout"/> to null.
-        /// </remarks>
-        public bool ClearHeartbeatTimeout
-        {
-            get => heartbeatTimeout == null && paths.Contains(PathHeartbeatTimeout);
-            set => SetClearVal(PathHeartbeatTimeout, ref heartbeatTimeout, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the retry policy for the activity. If unset, uses server default.
-        /// </summary>
-        /// <remarks>
-        /// Setting this property to null indicates it should not be updated (<see cref="ClearRetryPolicy"/> is set to false).
-        /// To clear the current value, set <see cref="ClearRetryPolicy"/> to true.
-        /// </remarks>
-        public RetryPolicy? RetryPolicy
-        {
-            get => retryPolicy;
-            set => SetRef(PathRetryPolicy, out retryPolicy, value);
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether <see cref="RetryPolicy"/> should be cleared.
-        /// </summary>
-        /// <remarks>
-        /// Setting <see cref="RetryPolicy"/> to any value, including null, sets this property to false.
-        /// Setting this property to true sets <see cref="RetryPolicy"/> to null.
-        /// </remarks>
-        public bool ClearRetryPolicy
-        {
-            get => retryPolicy == null && paths.Contains(PathRetryPolicy);
-            set => SetClearRef(PathRetryPolicy, ref retryPolicy, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the priority to use when starting this activity.
-        /// </summary>
-        /// <remarks>
-        /// Setting this property to null indicates it should not be updated (<see cref="ClearPriority"/> is set to false).
-        /// To clear the current value, set <see cref="ClearPriority"/> to true.
-        /// </remarks>
-        public Priority? Priority
-        {
-            get => priority;
-            set => SetRef(PathPriority, out priority, value);
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether <see cref="Priority"/> should be cleared.
-        /// </summary>
-        /// <remarks>
-        /// Setting <see cref="Priority"/> to any value, including null, sets this property to false.
-        /// Setting this property to true sets <see cref="Priority"/> to null.
-        /// </remarks>
-        public bool ClearPriority
-        {
-            get => priority == null && paths.Contains(PathPriority);
-            set => SetClearRef(PathPriority, ref priority, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the time to wait before dispatching the first activity task. This delay is not applied to retry attempts.
-        /// </summary>
-        /// <remarks>
-        /// Setting this property to null indicates it should not be updated (<see cref="ClearStartDelay"/> is set to false).
-        /// To clear the current value, set <see cref="ClearStartDelay"/> to true.
-        /// </remarks>
-        public TimeSpan? StartDelay
-        {
-            get => startDelay;
-            set => SetVal(PathStartDelay, out startDelay, value);
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether <see cref="StartDelay"/> should be cleared.
-        /// </summary>
-        /// <remarks>
-        /// Setting <see cref="StartDelay"/> to any value, including null, sets this property to false.
-        /// Setting this property to true sets <see cref="StartDelay"/> to null.
-        /// </remarks>
-        public bool ClearStartDelay
-        {
-            get => startDelay == null && paths.Contains(PathStartDelay);
-            set => SetClearVal(PathStartDelay, ref startDelay, value);
-        }
-
-        /// <summary>
-        /// Create a shallow copy of these options.
-        /// </summary>
-        /// <returns>A shallow copy of these options.</returns>
-        public virtual object Clone()
-        {
-            var copy = (ActivityOptionsUpdate)MemberwiseClone();
-            copy.paths = new HashSet<string>(paths);
-            return copy;
-        }
-
-        /// <summary>
-        /// Convert protobuf options to this type.
-        /// </summary>
-        /// <param name="proto">Protobuf options.</param>
-        /// <returns>New options instance.</returns>
-        internal static ActivityOptionsUpdate FromProto(ActivityOptions? proto)
-        {
-            ActivityOptionsUpdate options = new();
-
-            if (proto != null)
+            /// <summary>
+            /// Initializes a new instance of the <see cref="OptionKey{T}"/> class.
+            /// </summary>
+            /// <param name="path">Protobuf field mask path.</param>
+            /// <param name="apply">Function that sets the provided value in the Protobuf options object.</param>
+            internal OptionKey(string path, Action<Api.Activity.V1.ActivityOptions, T> apply)
+                : base(path)
             {
-                // Using property setters to keep paths in sync. Manually checking for null to save on Remove calls.
-                if (!string.IsNullOrEmpty(proto.TaskQueue?.Name))
-                {
-                    options.TaskQueue = proto.TaskQueue!.Name;
-                }
-                if (proto.ScheduleToCloseTimeout?.ToNonZeroTimeSpan() is { } s2c)
-                {
-                    options.ScheduleToCloseTimeout = s2c;
-                }
-                if (proto.ScheduleToStartTimeout?.ToNonZeroTimeSpan() is { } s2st)
-                {
-                    options.ScheduleToStartTimeout = s2st;
-                }
-                if (proto.StartToCloseTimeout?.ToNonZeroTimeSpan() is { } st2c)
-                {
-                    options.StartToCloseTimeout = st2c;
-                }
-                if (proto.HeartbeatTimeout?.ToNonZeroTimeSpan() is { } ht)
-                {
-                    options.HeartbeatTimeout = ht;
-                }
-                if (proto.RetryPolicy != null)
-                {
-                    options.RetryPolicy = RetryPolicy.FromProto(proto.RetryPolicy);
-                }
-                if (proto.Priority != null)
-                {
-                    options.Priority = new Priority(proto.Priority);
-                }
-                if (proto.StartDelay?.ToNonZeroTimeSpan() is { } sd)
-                {
-                    options.StartDelay = sd;
-                }
+                this.apply = apply;
             }
 
-            return options;
-        }
+            /// <summary>
+            /// Creates an update object that will set the associated option.
+            /// </summary>
+            /// <param name="value">Value to set.</param>
+            /// <returns>Update object.</returns>
+            /// <seealso cref="ActivityHandle.UpdateOptionsAsync"/>
+            public ActivityOptionsUpdate ValueSet(T value) => new(this, true, value, options => apply(options, value));
 
-        /// <summary>
-        /// Convert the options to their protobuf equivalent.
-        /// </summary>
-        /// <returns>Protobuf options.</returns>
-        internal ActivityOptions ToProto()
-        {
-            ActivityOptions proto = new();
-
-            if (taskQueue != null)
-            {
-                proto.TaskQueue = new() { Name = taskQueue };
-            }
-            if (scheduleToCloseTimeout is { } s2c)
-            {
-                proto.ScheduleToCloseTimeout = Duration.FromTimeSpan(s2c);
-            }
-            if (scheduleToStartTimeout is { } s2st)
-            {
-                proto.ScheduleToStartTimeout = Duration.FromTimeSpan(s2st);
-            }
-            if (startToCloseTimeout is { } st2c)
-            {
-                proto.StartToCloseTimeout = Duration.FromTimeSpan(st2c);
-            }
-            if (heartbeatTimeout is { } ht)
-            {
-                proto.HeartbeatTimeout = Duration.FromTimeSpan(ht);
-            }
-            if (retryPolicy != null)
-            {
-                proto.RetryPolicy = retryPolicy.ToProto();
-            }
-            if (priority != null)
-            {
-                proto.Priority = priority.ToProto();
-            }
-            if (startDelay is { } sd)
-            {
-                proto.StartDelay = Duration.FromTimeSpan(sd);
-            }
-
-            return proto;
-        }
-
-        /// <summary>
-        /// Returns field mask for update options operation.
-        /// </summary>
-        /// <returns>Options field mask.</returns>
-        internal FieldMask UpdateMask()
-        {
-            FieldMask mask = new();
-            mask.Paths.AddRange(paths);
-            return mask.Normalize();
-        }
-
-        private void SetRef<T>(string path, out T? field, T? value)
-            where T : class
-        {
-            if (value == null)
-            {
-                paths.Remove(path);
-                field = null;
-            }
-            else
-            {
-                paths.Add(path);
-                field = value;
-            }
-        }
-
-        private void SetVal<T>(string path, out T? field, T? value)
-            where T : struct
-        {
-            if (value == null)
-            {
-                paths.Remove(path);
-                field = null;
-            }
-            else
-            {
-                paths.Add(path);
-                field = value;
-            }
-        }
-
-        private void SetClearRef<T>(string path, ref T? field, bool clear)
-            where T : class
-        {
-            if (clear)
-            {
-                paths.Add(path);
-                field = null;
-            }
-            else if (field == null)
-            {
-                paths.Remove(path);
-            }
-        }
-
-        private void SetClearVal<T>(string path, ref T? field, bool clear)
-            where T : struct
-        {
-            if (clear)
-            {
-                paths.Add(path);
-                field = null;
-            }
-            else if (field == null)
-            {
-                paths.Remove(path);
-            }
+            /// <summary>
+            /// Creates an update object that will unset the associated option.
+            /// </summary>
+            /// <returns>Update object.</returns>
+            /// <seealso cref="ActivityHandle.UpdateOptionsAsync"/>
+            public ActivityOptionsUpdate ValueUnset() => new(this, false, null, _ => { });
         }
     }
 }
