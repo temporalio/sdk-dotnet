@@ -124,7 +124,7 @@ namespace Temporalio.Client
                         IdConflictPolicy = input.Options.IdConflictPolicy,
                         RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                         UserMetadata = await dataConverter.ToUserMetadataAsync(
-                            input.Options.StaticSummary, input.Options.StaticDetails).
+                            input.Options.Summary, input.Options.StaticDetails).
                             ConfigureAwait(false),
                         Priority = input.Options.Priority?.ToProto(),
                         OnConflictOptions = input.Options.OnConflictOptions,
@@ -222,6 +222,10 @@ namespace Temporalio.Client
                         Namespace = Client.Options.Namespace,
                         ActivityId = input.Id,
                         RunId = input.RunId ?? string.Empty,
+                        IncludeInput = input.Options?.IncludeInput ?? false,
+                        IncludeOutcome = input.Options?.IncludeOutcome ?? false,
+                        IncludeHeartbeatDetails = input.Options?.IncludeHeartbeatDetails ?? false,
+                        IncludeLastFailure = input.Options?.IncludeLastFailure ?? false,
                     },
                     DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                 return new(resp, Client.Options.Namespace, Client.Options.DataConverter);
