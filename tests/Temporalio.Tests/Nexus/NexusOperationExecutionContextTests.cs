@@ -29,6 +29,13 @@ public class NexusOperationExecutionContextTests
     }
 
     [Fact]
+    public void HandlerContext_IsOperationStartContext()
+    {
+        var context = NewContext();
+        Assert.IsType<OperationStartContext>(context.HandlerContext);
+    }
+
+    [Fact]
     public void TryAddResponseLink_AppendsWorkflowEventLink()
     {
         var context = NewContext();
