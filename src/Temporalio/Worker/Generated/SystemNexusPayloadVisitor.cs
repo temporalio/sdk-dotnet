@@ -415,27 +415,6 @@ namespace Temporalio.Worker
                         visitPayloads),
             };
 
-        internal static async Task<bool> TryVisitAsync(
-            Payload payload,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
-        {
-            if (!IsSystemPayload(payload))
-            {
-                return false;
-            }
-
-            if (!payload.Metadata.TryGetValue("messageType", out var messageType) ||
-                !EnvelopeVisitors.TryGetValue(messageType.ToStringUtf8(), out var visit))
-            {
-                throw new InvalidOperationException(
-                    $"Unrecognized marked System Nexus envelope message type: {messageType?.ToStringUtf8() ?? "<missing>"}");
-            }
-
-            await visit(payload, visitPayload, visitPayloads).ConfigureAwait(false);
-            return true;
-        }
-
         private static async Task Visit_temporal_api_common_v1_Memo(
             global::Temporalio.Api.Common.V1.Memo value,
             PayloadVisitor visitPayload,

@@ -51,6 +51,16 @@ namespace Temporalio.Worker
             }
 
             var payload = Payload.Parser.ParseFrom(content.Data);
+            var isSystemPayload = SystemNexusPayloadVisitor.IsSystemPayload(payload);
+
+            if (isSystemPayload &&
+                !SystemNexusPayloadVisitor.TryGetVisitor(payload, out var messageType, out _))
+            {
+                throw new HandlerException(
+                    HandlerErrorType.Internal,
+                    $"Unrecognized System Nexus envelope message type: {messageType}",
+                    errorRetryBehavior: HandlerErrorRetryBehavior.Retryable);
+            }
 
             // Decode with payload codec if configured. Codec failures are treated as
             // retryable INTERNAL errors since they are typically transient (e.g. a remote
@@ -92,7 +102,7 @@ namespace Temporalio.Worker
             object? result;
             try
             {
-                var payloadConverter = SystemNexusPayloadVisitor.IsSystemPayload(payload) ?
+                var payloadConverter = isSystemPayload ?
                     new SystemNexusPayloadConverter(
                         dataConverter.PayloadConverter, dataConverter.FailureConverter) :
                     dataConverter.PayloadConverter;

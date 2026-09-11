@@ -7,6 +7,7 @@ using Google.Protobuf;
 using NexusRpc;
 using NexusRpc.Handlers;
 using Temporalio.Api.Common.V1;
+using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Temporalio.Nexus;
@@ -46,7 +47,7 @@ public class NexusPayloadSerializerTests
     [Fact]
     public async Task DeserializeAsync_SystemPayload_AppliesTransferTypeConverter()
     {
-        var transferValue = new WorkflowType { Name = "test-value" };
+        var transferValue = new SignalWithStartWorkflowExecutionRequest { Namespace = "test-value" };
         Assert.True(new BinaryProtoConverter().TryToPayload(transferValue, out var payload));
         SystemNexusPayloadVisitor.MarkSystemPayload(payload!);
 
@@ -62,13 +63,40 @@ public class NexusPayloadSerializerTests
 
     public sealed class TestSystemRequestConverter : ITemporalTransferTypeConverter
     {
-        public Type TransferType => typeof(WorkflowType);
+        public Type TransferType => typeof(SignalWithStartWorkflowExecutionRequest);
 
         public object ToTransferType(object? value) =>
-            new WorkflowType { Name = ((TestSystemRequest)value!).Value };
+            new SignalWithStartWorkflowExecutionRequest { Namespace = ((TestSystemRequest)value!).Value };
 
         public object FromTransferType(object? transferType) =>
-            new TestSystemRequest(((WorkflowType)transferType!).Name);
+            new TestSystemRequest(((SignalWithStartWorkflowExecutionRequest)transferType!).Namespace);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task DeserializeAsync_UnknownSystemPayload_BecomesRetryableInternal(bool withCodec)
+    {
+        var codec = new CountingPayloadCodec();
+        var dataConverter = withCodec ?
+            DataConverter.Default with { PayloadCodec = codec } :
+            DataConverter.Default;
+        var payload = DataConverter.Default.PayloadConverter.ToPayload("ignored");
+        payload.Metadata["messageType"] = ByteString.CopyFromUtf8(
+            "temporal.api.workflowservice.v1.UnknownRequest");
+        SystemNexusPayloadVisitor.MarkSystemPayload(payload);
+
+        var exc = await Assert.ThrowsAsync<HandlerException>(() =>
+            new NexusPayloadSerializer(dataConverter).DeserializeAsync(
+                new(payload.ToByteArray()), typeof(string)));
+
+        Assert.Equal(HandlerErrorType.Internal, exc.ErrorType);
+        Assert.Equal(HandlerErrorRetryBehavior.Retryable, exc.ErrorRetryBehavior);
+        Assert.Equal(
+            "Unrecognized System Nexus envelope message type: " +
+            "temporal.api.workflowservice.v1.UnknownRequest",
+            exc.Message);
+        Assert.Equal(0, codec.DecodeCount);
     }
 
     [Fact]
@@ -120,6 +148,21 @@ public class NexusPayloadSerializerTests
             {
                 DataConverter.Default.PayloadConverter.ToPayload("decoded-input"),
             });
+        }
+    }
+
+    private class CountingPayloadCodec : IPayloadCodec
+    {
+        public int DecodeCount { get; private set; }
+
+        public Task<IReadOnlyCollection<Payload>> EncodeAsync(
+            IReadOnlyCollection<Payload> payloads) => Task.FromResult(payloads);
+
+        public Task<IReadOnlyCollection<Payload>> DecodeAsync(
+            IReadOnlyCollection<Payload> payloads)
+        {
+            DecodeCount++;
+            return Task.FromResult(payloads);
         }
     }
 
