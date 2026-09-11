@@ -9,7 +9,6 @@ namespace Temporalio.Client
     /// <summary>
     /// Representation of a standalone activity execution from a list call.
     /// </summary>
-    /// <remarks>WARNING: Standalone activities are experimental.</remarks>
     public class ActivityExecution
     {
         private readonly Lazy<SearchAttributeCollection> searchAttributes;

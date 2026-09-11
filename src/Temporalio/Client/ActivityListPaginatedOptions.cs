@@ -5,7 +5,6 @@ namespace Temporalio.Client
     /// <summary>
     /// Options for <see cref="ITemporalClient.ListActivitiesPaginatedAsync"/>.
     /// </summary>
-    /// <remarks>WARNING: Standalone activities are experimental.</remarks>
     public class ActivityListPaginatedOptions : ICloneable
     {
         /// <summary>

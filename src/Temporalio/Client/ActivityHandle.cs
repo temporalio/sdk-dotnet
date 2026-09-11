@@ -12,7 +12,6 @@ namespace Temporalio.Client
     /// <param name="Client">Client used for activity handle calls.</param>
     /// <param name="Id">Activity ID.</param>
     /// <param name="RunId">Activity run ID if known.</param>
-    /// <remarks>WARNING: Standalone activities are experimental.</remarks>
     public record ActivityHandle(
         ITemporalClient Client,
         string Id,
@@ -27,7 +26,6 @@ namespace Temporalio.Client
         /// Exception thrown for unsuccessful activity result.
         /// </exception>
         /// <exception cref="RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         public Task GetResultAsync(RpcOptions? rpcOptions = null) =>
             GetResultAsync<ValueTuple>(rpcOptions);
 
@@ -41,7 +39,6 @@ namespace Temporalio.Client
         /// Exception thrown for unsuccessful activity result.
         /// </exception>
         /// <exception cref="RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         public virtual async Task<TResult> GetResultAsync<TResult>(
             RpcOptions? rpcOptions = null)
         {
@@ -105,7 +102,6 @@ namespace Temporalio.Client
         /// <param name="options">Extra options.</param>
         /// <returns>Description for the activity.</returns>
         /// <exception cref="RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         public virtual Task<ActivityExecutionDescription> DescribeAsync(
             ActivityDescribeOptions? options = null) =>
             Client.OutboundInterceptor.DescribeActivityAsync(new(
@@ -119,7 +115,6 @@ namespace Temporalio.Client
         /// <param name="options">Cancellation options.</param>
         /// <returns>Cancel accepted task.</returns>
         /// <exception cref="RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         public virtual Task CancelAsync(ActivityCancelOptions? options = null) =>
             Client.OutboundInterceptor.CancelActivityAsync(new(
                 Id: Id,
@@ -132,7 +127,6 @@ namespace Temporalio.Client
         /// <param name="options">Termination options.</param>
         /// <returns>Terminate completed task.</returns>
         /// <exception cref="RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         public virtual Task TerminateAsync(ActivityTerminateOptions? options = null) =>
             Client.OutboundInterceptor.TerminateActivityAsync(new(
                 Id: Id,
@@ -147,7 +141,6 @@ namespace Temporalio.Client
     /// <param name="Client">Client used for activity handle calls.</param>
     /// <param name="Id">Activity ID.</param>
     /// <param name="RunId">Activity run ID if known.</param>
-    /// <remarks>WARNING: Standalone activities are experimental.</remarks>
     public record ActivityHandle<TResult>(
         ITemporalClient Client,
         string Id,
@@ -163,7 +156,6 @@ namespace Temporalio.Client
         /// Exception thrown for unsuccessful activity result.
         /// </exception>
         /// <exception cref="RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         public new Task<TResult> GetResultAsync(RpcOptions? rpcOptions = null) =>
             GetResultAsync<TResult>(rpcOptions);
     }

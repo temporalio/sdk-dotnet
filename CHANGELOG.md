@@ -64,6 +64,8 @@ to docs, or any other relevant information.
 
 ### Changed
 
+- Standalone Activities are now generally available (GA). Standalone activities as Nexus operations
+  remain experimental.
 - A non-retryable `ApplicationFailureException` with error type `PayloadValidationError` thrown by a
   payload codec or payload converter while decoding Nexus operation input is now reported as a
   non-retryable `BadRequest` handler exception (with the application failure as its cause) instead of
