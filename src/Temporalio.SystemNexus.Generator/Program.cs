@@ -163,27 +163,6 @@ static void GeneratePayloadVisitor(
 
     builder.AppendLine("            };");
     builder.AppendLine();
-    builder.AppendLine("        internal static async Task<bool> TryVisitAsync(");
-    builder.AppendLine("            Payload payload,");
-    builder.AppendLine("            PayloadVisitor visitPayload,");
-    builder.AppendLine("            PayloadsVisitor visitPayloads)");
-    builder.AppendLine("        {");
-    builder.AppendLine("            if (!IsSystemPayload(payload))");
-    builder.AppendLine("            {");
-    builder.AppendLine("                return false;");
-    builder.AppendLine("            }");
-    builder.AppendLine();
-    builder.AppendLine("            if (!payload.Metadata.TryGetValue(\"messageType\", out var messageType) ||");
-    builder.AppendLine("                !EnvelopeVisitors.TryGetValue(messageType.ToStringUtf8(), out var visit))");
-    builder.AppendLine("            {");
-    builder.AppendLine("                throw new InvalidOperationException(");
-    builder.AppendLine("                    $\"Unrecognized marked System Nexus envelope message type: {messageType?.ToStringUtf8() ?? \"<missing>\"}\");");
-    builder.AppendLine("            }");
-    builder.AppendLine();
-    builder.AppendLine("            await visit(payload, visitPayload, visitPayloads).ConfigureAwait(false);");
-    builder.AppendLine("            return true;");
-    builder.AppendLine("        }");
-    builder.AppendLine();
     foreach (var operation in operationMessages)
     {
         EmitVisitMethod(builder, operation.Input, messages, containsPayloadMemo, emittedMethods);

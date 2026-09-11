@@ -33,6 +33,8 @@ to docs, or any other relevant information.
 
 ### Added
 
+- Nexus workers now decode marked Temporal System Nexus operation inputs with the System Nexus converter.
+- NexusPayloadSerializer now preserves marked System Nexus envelopes while applying payload codecs only to their embedded user payloads.
 - New options in `ActivityDescribeOptions` that can be used to retrieve data associated with
   activity execution, such as input and result.
 - New properties and methods in `ActivityExecution` and `ActivityExecutionDescription`:
@@ -69,7 +71,7 @@ to docs, or any other relevant information.
   non-retryable `BadRequest` handler exception (with the application failure as its cause) instead of
   an `Internal` one. This lets a data converter signal that the input itself is invalid. The handler
   exception is reported as `Invalid operation input`, which is distinct from the `failed to decode
-  Nexus operation input` message used when decoding itself fails. Application failures of any other
+- Nexus operation input` message used when decoding itself fails. Application failures of any other
   error type, and retryable `PayloadValidationError` failures, keep their existing behavior.
 
 ### Fixed
