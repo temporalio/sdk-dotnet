@@ -69,7 +69,7 @@ to docs, or any other relevant information.
   non-retryable `BadRequest` handler exception (with the application failure as its cause) instead of
   an `Internal` one. This lets a data converter signal that the input itself is invalid. The handler
   exception is reported as `Invalid operation input`, which is distinct from the `failed to decode
-Nexus operation input` message used when decoding itself fails. Application failures of any other
+- Nexus operation input` message used when decoding itself fails. Application failures of any other
   error type, and retryable `PayloadValidationError` failures, keep their existing behavior.
 
 ### Fixed
@@ -212,7 +212,6 @@ Nexus operation input` message used when decoding itself fails. Application fail
 - Fixed `ClientEnvConfig` TLS-disabled profiles to preserve disabled TLS in connection options.
 - OTLP metric export failures are now logged through Core telemetry when OpenTelemetry's periodic metric reader reports an export error.
 - Worker heartbeat now samples host CPU/memory at the heartbeat interval (only when enabled) rather than every 100ms.
-
 ### Added
 
 - Added the `[TemporalOperation]` attribute for declaring a Temporal-backed Nexus operation start
