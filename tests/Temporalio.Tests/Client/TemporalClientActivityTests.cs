@@ -571,6 +571,145 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task PauseActivityAsync_Interceptor_IsCalledProperly()
+    {
+        var interceptor = new ActivityTracingInterceptor();
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.Interceptors = new IClientInterceptor[] { interceptor };
+        var client = new TemporalClient(Client.Connection, newOptions);
+
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var activityId = $"act-{Guid.NewGuid()}";
+        var handle = await client.StartActivityAsync(
+            () => VoidActivityAsync(),
+            new(activityId, taskQueue)
+            {
+                ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
+            });
+
+        try
+        {
+            await handle.PauseAsync(new() { Reason = "Pause reason" });
+
+            await AssertMore.EventuallyAsync(async () =>
+            {
+                var desc = await handle.DescribeAsync();
+                Assert.Equal(ActivityExecutionStatus.Paused, desc.Status);
+            });
+
+            await handle.UnpauseAsync(new() { Reason = "Unpause reason" });
+
+            await AssertMore.EventuallyAsync(async () =>
+            {
+                var desc = await handle.DescribeAsync();
+                Assert.Equal(ActivityExecutionStatus.Running, desc.Status);
+            });
+
+            Assert.Equal("StartActivity", interceptor.Events[0].Name);
+            Assert.Equal(
+                activityId,
+                ((StartActivityInput)interceptor.Events[0].Input).Options.Id);
+
+            Assert.Equal("PauseActivity", interceptor.Events[1].Name);
+            Assert.Equal(
+                activityId,
+                ((PauseActivityInput)interceptor.Events[1].Input).Id);
+            Assert.Equal(
+                "Pause reason",
+                ((PauseActivityInput)interceptor.Events[1].Input).Options?.Reason);
+
+            Assert.Equal("DescribeActivity", interceptor.Events[2].Name);
+            Assert.Equal(
+                activityId,
+                ((DescribeActivityInput)interceptor.Events[2].Input).Id);
+
+            Assert.Equal("UnpauseActivity", interceptor.Events[3].Name);
+            Assert.Equal(
+                activityId,
+                ((UnpauseActivityInput)interceptor.Events[3].Input).Id);
+            Assert.Equal(
+                "Unpause reason",
+                ((UnpauseActivityInput)interceptor.Events[3].Input).Options?.Reason);
+
+            Assert.Equal("DescribeActivity", interceptor.Events[4].Name);
+            Assert.Equal(
+                activityId,
+                ((DescribeActivityInput)interceptor.Events[4].Input).Id);
+        }
+        finally
+        {
+            await handle.TerminateAsync();
+        }
+    }
+
+    [Fact]
+    public async Task UpdateActivityOptionsAsync_Interceptor_IsCalledProperly()
+    {
+        var interceptor = new ActivityTracingInterceptor();
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.Interceptors = new IClientInterceptor[] { interceptor };
+        var client = new TemporalClient(Client.Connection, newOptions);
+
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var activityId = $"act-{Guid.NewGuid()}";
+        var handle = await client.StartActivityAsync(
+            () => VoidActivityAsync(),
+            new(activityId, taskQueue)
+            {
+                ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
+            });
+
+        try
+        {
+            await handle.UpdateOptionsAsync(new() { Updates = new[] { ActivityOptionsUpdate.ScheduleToCloseTimeout.ValueSet(TimeSpan.FromMinutes(10)) } });
+
+            await AssertMore.EventuallyAsync(async () =>
+            {
+                var desc = await handle.DescribeAsync();
+                Assert.Equal(TimeSpan.FromMinutes(10), desc.ScheduleToCloseTimeout);
+            });
+
+            await handle.RestoreOriginalOptionsAsync();
+
+            await AssertMore.EventuallyAsync(async () =>
+            {
+                var desc = await handle.DescribeAsync();
+                Assert.Equal(TimeSpan.FromMinutes(5), desc.ScheduleToCloseTimeout);
+            });
+
+            Assert.Equal("StartActivity", interceptor.Events[0].Name);
+            Assert.Equal(
+                activityId,
+                ((StartActivityInput)interceptor.Events[0].Input).Options.Id);
+
+            Assert.Equal("UpdateActivityOptions", interceptor.Events[1].Name);
+            Assert.Equal(
+                activityId,
+                ((UpdateActivityOptionsInput)interceptor.Events[1].Input).Id);
+
+            Assert.Equal("DescribeActivity", interceptor.Events[2].Name);
+            Assert.Equal(
+                activityId,
+                ((DescribeActivityInput)interceptor.Events[2].Input).Id);
+
+            Assert.Equal("RestoreOriginalActivityOptions", interceptor.Events[3].Name);
+            Assert.Equal(
+                activityId,
+                ((RestoreOriginalActivityOptionsInput)interceptor.Events[3].Input).Id);
+
+            Assert.Equal("DescribeActivity", interceptor.Events[4].Name);
+            Assert.Equal(
+                activityId,
+                ((DescribeActivityInput)interceptor.Events[4].Input).Id);
+        }
+        finally
+        {
+            // Cleanup
+            await handle.TerminateAsync();
+        }
+    }
+
+    [Fact]
     public async Task ExecuteActivityAsync_WorkerActivityInfo_IsAccurate()
     {
         var taskQueue = $"tq-{Guid.NewGuid()}";
@@ -597,6 +736,109 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
             Assert.Null(info.WorkflowRunId);
             Assert.Null(info.WorkflowType);
         });
+    }
+
+    [Fact]
+    public async Task UpdateActivityOptionsAsync_UpdatesCorrectly()
+    {
+        var originalTaskQueue = $"tq-{Guid.NewGuid()}";
+        var updatedTaskQueue = originalTaskQueue + "-updated";
+
+        var originalTimeSpan = TimeSpan.FromMinutes(5);
+        var firstUpdateTimeSpan = TimeSpan.FromMinutes(10);
+        var secondUpdateTimeSpan = TimeSpan.FromMinutes(15);
+
+        StartActivityOptions startOptions = new($"act-{Guid.NewGuid()}", originalTaskQueue)
+        {
+            ScheduleToCloseTimeout = originalTimeSpan,
+            ScheduleToStartTimeout = originalTimeSpan,
+            StartToCloseTimeout = originalTimeSpan,
+            HeartbeatTimeout = originalTimeSpan,
+            Priority = new(fairnessKey: "original"),
+            RetryPolicy = new() { InitialInterval = originalTimeSpan },
+            StartDelay = originalTimeSpan,
+        };
+
+        var handle = await Client.StartActivityAsync(() => VoidActivityAsync(), startOptions);
+
+        try
+        {
+            var firstUpdateResult = await handle.UpdateOptionsAsync(new()
+            {
+                Updates = new[]
+                {
+                    ActivityOptionsUpdate.TaskQueue.ValueSet(updatedTaskQueue),
+                    ActivityOptionsUpdate.ScheduleToCloseTimeout.ValueSet(firstUpdateTimeSpan),
+                    ActivityOptionsUpdate.ScheduleToStartTimeout.ValueSet(firstUpdateTimeSpan),
+                    ActivityOptionsUpdate.StartToCloseTimeout.ValueSet(firstUpdateTimeSpan),
+                    ActivityOptionsUpdate.HeartbeatTimeout.ValueSet(firstUpdateTimeSpan),
+                    ActivityOptionsUpdate.Priority.ValueSet(new(fairnessKey: "first update")),
+                    ActivityOptionsUpdate.RetryPolicy.ValueSet(new() { InitialInterval = firstUpdateTimeSpan }),
+                    ActivityOptionsUpdate.StartDelay.ValueSet(firstUpdateTimeSpan),
+                },
+            });
+            Assert.Equal(updatedTaskQueue, firstUpdateResult.TaskQueue);
+            Assert.Equal(firstUpdateTimeSpan, firstUpdateResult.ScheduleToCloseTimeout);
+            Assert.Equal(firstUpdateTimeSpan, firstUpdateResult.ScheduleToStartTimeout);
+            Assert.Equal(firstUpdateTimeSpan, firstUpdateResult.StartToCloseTimeout);
+            Assert.Equal(firstUpdateTimeSpan, firstUpdateResult.HeartbeatTimeout);
+            Assert.Equal("first update", firstUpdateResult.Priority?.FairnessKey);
+            Assert.Equal(firstUpdateTimeSpan, firstUpdateResult.RetryPolicy?.InitialInterval);
+            Assert.Equal(firstUpdateTimeSpan, firstUpdateResult.StartDelay);
+
+            await AssertMore.EventuallyAsync(async () =>
+            {
+                var desc = await handle.DescribeAsync();
+                Assert.Equal(updatedTaskQueue, desc.TaskQueue);
+                Assert.Equal(firstUpdateTimeSpan, desc.ScheduleToCloseTimeout);
+                Assert.Equal(firstUpdateTimeSpan, desc.ScheduleToStartTimeout);
+                Assert.Equal(firstUpdateTimeSpan, desc.StartToCloseTimeout);
+                Assert.Equal(firstUpdateTimeSpan, desc.HeartbeatTimeout);
+                Assert.Equal("updated", desc.Priority?.FairnessKey);
+                Assert.Equal(firstUpdateTimeSpan, desc.RetryPolicy?.InitialInterval);
+                Assert.Equal(firstUpdateTimeSpan, desc.StartDelay);
+            });
+
+            var secondUpdateResult = await handle.UpdateOptionsAsync(new()
+            {
+                Updates = new[]
+                {
+                    ActivityOptionsUpdate.ScheduleToCloseTimeout.ValueUnset(),
+                    ActivityOptionsUpdate.StartToCloseTimeout.ValueSet(secondUpdateTimeSpan),
+                    ActivityOptionsUpdate.Priority.ValueSet(new(fairnessKey: "second update")),
+                    ActivityOptionsUpdate.RetryPolicy.ValueSet(new() { MaximumInterval = secondUpdateTimeSpan }), // should reset InitialInterval
+                    ActivityOptionsUpdate.StartDelay.ValueSet(secondUpdateTimeSpan),
+                },
+            });
+            Assert.Equal(updatedTaskQueue, secondUpdateResult.TaskQueue);
+            // Server is inconsistent between zero and null for unset durations
+            Assert.True(secondUpdateResult.ScheduleToCloseTimeout is null || secondUpdateResult.ScheduleToCloseTimeout == TimeSpan.Zero);
+            Assert.Equal(firstUpdateTimeSpan, secondUpdateResult.ScheduleToStartTimeout);
+            Assert.Equal(secondUpdateTimeSpan, secondUpdateResult.StartToCloseTimeout);
+            Assert.Equal(firstUpdateTimeSpan, secondUpdateResult.HeartbeatTimeout);
+            Assert.Equal("first update", secondUpdateResult.Priority?.FairnessKey);
+            // Server sets a theoretically unknowable default value to missing retry policy fields
+            Assert.NotEqual(firstUpdateTimeSpan, secondUpdateResult.RetryPolicy?.InitialInterval);
+            Assert.Equal(secondUpdateTimeSpan, secondUpdateResult.RetryPolicy?.MaximumInterval);
+            Assert.Equal(secondUpdateTimeSpan, secondUpdateResult.StartDelay);
+
+            var restoreResult = await handle.RestoreOriginalOptionsAsync();
+
+            Assert.Equal(originalTaskQueue, restoreResult.TaskQueue);
+            Assert.Equal(originalTimeSpan, restoreResult.ScheduleToCloseTimeout);
+            Assert.Equal(originalTimeSpan, restoreResult.ScheduleToStartTimeout);
+            Assert.Equal(originalTimeSpan, restoreResult.StartToCloseTimeout);
+            Assert.Equal(originalTimeSpan, restoreResult.HeartbeatTimeout);
+            Assert.Equal("original", restoreResult.Priority?.FairnessKey);
+            Assert.Equal(originalTimeSpan, restoreResult.RetryPolicy?.InitialInterval);
+            Assert.NotEqual(secondUpdateTimeSpan, restoreResult.RetryPolicy?.MaximumInterval);
+            Assert.Equal(originalTimeSpan, restoreResult.StartDelay);
+        }
+        finally
+        {
+            // Cleanup
+            await handle.TerminateAsync();
+        }
     }
 
     public record ActivityInfoSnapshot(
@@ -673,6 +915,30 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
         {
             Events.Add(new("TerminateActivity", input));
             return base.TerminateActivityAsync(input);
+        }
+
+        public override Task PauseActivityAsync(PauseActivityInput input)
+        {
+            Events.Add(new("PauseActivity", input));
+            return base.PauseActivityAsync(input);
+        }
+
+        public override Task UnpauseActivityAsync(UnpauseActivityInput input)
+        {
+            Events.Add(new("UnpauseActivity", input));
+            return base.UnpauseActivityAsync(input);
+        }
+
+        public override Task<ActivityUpdateOptionsResult> UpdateActivityOptionsAsync(UpdateActivityOptionsInput input)
+        {
+            Events.Add(new("UpdateActivityOptions", input));
+            return base.UpdateActivityOptionsAsync(input);
+        }
+
+        public override Task<ActivityUpdateOptionsResult> RestoreOriginalActivityOptionsAsync(RestoreOriginalActivityOptionsInput input)
+        {
+            Events.Add(new("RestoreOriginalActivityOptions", input));
+            return base.RestoreOriginalActivityOptionsAsync(input);
         }
     }
 

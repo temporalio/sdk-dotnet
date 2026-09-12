@@ -33,6 +33,7 @@ to docs, or any other relevant information.
 
 ### Added
 
+- New `ActivityHandle` methods: `Pause`, `Unpause`, `UpdateOptions` and `RestoreOriginalOptions`.
 - New options in `ActivityDescribeOptions` that can be used to retrieve data associated with
   activity execution, such as input and result.
 - New properties and methods in `ActivityExecution` and `ActivityExecutionDescription`:

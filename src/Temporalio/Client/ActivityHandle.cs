@@ -132,6 +132,69 @@ namespace Temporalio.Client
                 Id: Id,
                 RunId: RunId,
                 Options: options));
+
+        /// <summary>
+        /// Request this activity to be paused.
+        /// </summary>
+        /// <param name="options">Pause options.</param>
+        /// <returns>
+        /// Pause request task. On completion, the server has accepted the pause request, but the current attempt may
+        /// still continue running.
+        /// </returns>
+        /// <exception cref="RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        public virtual Task PauseAsync(ActivityPauseOptions? options = null) =>
+            Client.OutboundInterceptor.PauseActivityAsync(new(
+                Id: Id,
+                RunId: RunId,
+                Options: options));
+
+        /// <summary>
+        /// Request this activity to be unpaused.
+        /// </summary>
+        /// <param name="options">Unpause options.</param>
+        /// <returns>Unpause completed task.</returns>
+        /// <exception cref="RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        public virtual Task UnpauseAsync(ActivityUnpauseOptions? options = null) =>
+            Client.OutboundInterceptor.UnpauseActivityAsync(new(
+                Id: Id,
+                RunId: RunId,
+                Options: options));
+
+        /// <summary>
+        /// Update execution options of this activity.
+        /// </summary>
+        /// <param name="options">
+        /// Options for the update operation. Property <see cref="ActivityUpdateOptionsOptions.Updates">Updates</see>
+        /// must be non-empty.
+        /// </param>
+        /// <returns>Current activity options after the update was applied.</returns>
+        /// <exception cref="ArgumentException">
+        /// If <see cref="ActivityUpdateOptionsOptions.Updates">options.Updates</see> is null or empty.
+        /// </exception>
+        /// <exception cref="RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        /// <seealso cref="RestoreOriginalOptionsAsync"/>
+        public virtual Task<ActivityUpdateOptionsResult> UpdateOptionsAsync(ActivityUpdateOptionsOptions options) =>
+            Client.OutboundInterceptor.UpdateActivityOptionsAsync(new(
+                Id: Id,
+                RunId: RunId,
+                Options: options));
+
+        /// <summary>
+        /// Restore original options of this activity.
+        /// </summary>
+        /// <param name="options">Options for the restore operation.</param>
+        /// <returns>Current activity options after they were restored.</returns>
+        /// <exception cref="RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        /// <seealso cref="UpdateOptionsAsync"/>
+        public virtual Task<ActivityUpdateOptionsResult> RestoreOriginalOptionsAsync(ActivityRestoreOriginalOptionsOptions? options = null) =>
+            Client.OutboundInterceptor.RestoreOriginalActivityOptionsAsync(new(
+                Id: Id,
+                RunId: RunId,
+                Options: options));
     }
 
     /// <summary>

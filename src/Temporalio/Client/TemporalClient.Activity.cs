@@ -306,6 +306,96 @@ namespace Temporalio.Client
                     NextPageToken: resp.NextPageToken.IsEmpty ? null : resp.NextPageToken.ToByteArray());
             }
 
+            /// <inheritdoc />
+            public override async Task PauseActivityAsync(PauseActivityInput input)
+            {
+                await Client.Connection.WorkflowService.PauseActivityExecutionAsync(
+                    new()
+                    {
+                        Namespace = Client.Options.Namespace,
+                        ActivityId = input.Id,
+                        RunId = input.RunId ?? string.Empty,
+                        Identity = Client.Connection.Options.Identity,
+                        RequestId = Guid.NewGuid().ToString(),
+                        Reason = input.Options?.Reason ?? string.Empty,
+                    },
+                    DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
+            }
+
+            /// <inheritdoc />
+            public override async Task UnpauseActivityAsync(UnpauseActivityInput input)
+            {
+                UnpauseActivityExecutionRequest req = new()
+                {
+                    Namespace = Client.Options.Namespace,
+                    ActivityId = input.Id,
+                    RunId = input.RunId ?? string.Empty,
+                    Identity = Client.Connection.Options.Identity,
+                    RequestId = Guid.NewGuid().ToString(),
+                    Reason = input.Options?.Reason ?? string.Empty,
+                };
+                if (input.Options?.Jitter is { } jitter)
+                {
+                    req.Jitter = Duration.FromTimeSpan(jitter);
+                }
+
+                await Client.Connection.WorkflowService.UnpauseActivityExecutionAsync(
+                    req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
+            }
+
+            /// <inheritdoc />
+            public override async Task<ActivityUpdateOptionsResult> UpdateActivityOptionsAsync(
+                UpdateActivityOptionsInput input)
+            {
+                if (input.Options.Updates is not { Count: > 0 })
+                {
+                    throw new ArgumentException("Updates list is empty", nameof(input));
+                }
+
+                UpdateActivityExecutionOptionsRequest req = new()
+                {
+                    Namespace = Client.Options.Namespace,
+                    ActivityId = input.Id,
+                    RunId = input.RunId ?? string.Empty,
+                    Identity = Client.Connection.Options.Identity,
+                    RequestId = Guid.NewGuid().ToString(),
+                };
+
+                foreach (var update in input.Options.Updates)
+                {
+                    if (req.UpdateMask.Paths.Contains(update.Key.Path))
+                    {
+                        throw new ArgumentException($"Duplicate activity options update key `{update.Key}`", nameof(input));
+                    }
+                    req.UpdateMask.Paths.Add(update.Key.Path);
+                    if (update.HasValue)
+                    {
+                        update.Apply(req.ActivityOptions);
+                    }
+                }
+
+                var resp = await Client.Connection.WorkflowService.UpdateActivityExecutionOptionsAsync(
+                    req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
+                return new ActivityUpdateOptionsResult(resp.ActivityOptions);
+            }
+
+            /// <inheritdoc />
+            public override async Task<ActivityUpdateOptionsResult> RestoreOriginalActivityOptionsAsync(RestoreOriginalActivityOptionsInput input)
+            {
+                var resp = await Client.Connection.WorkflowService.UpdateActivityExecutionOptionsAsync(
+                    new()
+                    {
+                        Namespace = Client.Options.Namespace,
+                        ActivityId = input.Id,
+                        RunId = input.RunId ?? string.Empty,
+                        Identity = Client.Connection.Options.Identity,
+                        RequestId = Guid.NewGuid().ToString(),
+                        RestoreOriginal = true,
+                    },
+                    DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
+                return new ActivityUpdateOptionsResult(resp.ActivityOptions);
+            }
+
 #if NETCOREAPP3_0_OR_GREATER
             private async IAsyncEnumerable<ActivityExecution> ListActivitiesInternalAsync(
                 ListActivitiesInput input,
