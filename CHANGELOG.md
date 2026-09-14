@@ -19,6 +19,8 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+## [1.19.0] - 2026-09-10
+
 ### :boom: Breaking Changes
 
 - Renamed and removed several experimental methods and properties in Standalone Activities APIs:
