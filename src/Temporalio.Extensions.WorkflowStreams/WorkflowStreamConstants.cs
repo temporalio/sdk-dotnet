@@ -6,25 +6,26 @@ namespace Temporalio.Extensions.WorkflowStreams
     /// <summary>
     /// Fixed handler names and application-failure types in the Workflow Streams wire protocol.
     /// </summary>
-    internal static class WorkflowStreamConstants
+    /// <remarks>WARNING: Workflow Streams is experimental and may change.</remarks>
+    public static class WorkflowStreamConstants
     {
         /// <summary>Signal used to append an external publisher's batch.</summary>
-        internal const string PublishSignalName = TemporalRuntime.WorkflowStreamPublishSignalName;
+        public const string PublishSignalName = TemporalRuntime.WorkflowStreamPublishSignalName;
 
         /// <summary>Update used to long-poll for stream items.</summary>
-        internal const string PollUpdateName = TemporalRuntime.WorkflowStreamPollUpdateName;
+        public const string PollUpdateName = TemporalRuntime.WorkflowStreamPollUpdateName;
 
         /// <summary>Query used to read the current global offset.</summary>
-        internal const string OffsetQueryName = TemporalRuntime.WorkflowStreamOffsetQueryName;
+        public const string OffsetQueryName = TemporalRuntime.WorkflowStreamOffsetQueryName;
 
         /// <summary>Failure type returned when a requested offset has been truncated.</summary>
-        internal const string TruncatedOffsetErrorType = "TruncatedOffset";
+        public const string TruncatedOffsetErrorType = "TruncatedOffset";
 
         /// <summary>Failure type returned when truncation is requested past the log end.</summary>
-        internal const string TruncateOutOfRangeErrorType = "TruncateOutOfRange";
+        public const string TruncateOutOfRangeErrorType = "TruncateOutOfRange";
 
         /// <summary>Failure type returned while pollers detach for continue-as-new.</summary>
-        internal const string StreamDrainingErrorType = "StreamDraining";
+        public const string StreamDrainingErrorType = "StreamDraining";
 
         /// <summary>Keeps each update result comfortably below server payload limits.</summary>
         internal const int MaxPollResponseBytes = 1_000_000;
