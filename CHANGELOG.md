@@ -19,7 +19,7 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
-## [1.19.0] - 2026-09-10
+## [1.19.0] - 2026-09-14
 
 ### :boom: Breaking Changes
 
