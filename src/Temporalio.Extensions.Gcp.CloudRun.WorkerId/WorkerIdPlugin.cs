@@ -17,8 +17,8 @@ namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
     /// Cloud Run worker identity, so an explicitly configured identity always wins. Workers created
     /// from the connected client inherit that identity.
     /// <para>
-    /// The metadata fetch fails fast with an <see cref="InvalidOperationException" /> at connect time
-    /// when the process is not running on a Cloud Run worker pool or service. Tests and advanced
+    /// The metadata fetch throws an <see cref="InvalidOperationException" /> at connect time when the
+    /// process is not running on a Cloud Run worker pool or service. Tests and advanced
     /// users can bypass the real fetch with <see cref="WorkerIdPluginOptions" />.
     /// </para>
     /// WARNING: Google Cloud Run support is experimental.

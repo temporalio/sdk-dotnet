@@ -1,8 +1,7 @@
-# Google Cloud Run Worker Support
+# Google Cloud Run worker identity support
 
 This extension provides `WorkerIdPlugin`, a Temporal client/worker plugin that derives a worker
-identity from Google Cloud Run instance metadata, for use with a normal long-lived worker on Cloud
-Run worker pools and services.
+identity from Google Cloud Run instance metadata, for Cloud Run worker pools and services.
 
 Add the `Temporalio.Extensions.Gcp.CloudRun.WorkerId` package from
 [NuGet](https://www.nuget.org/packages/Temporalio.Extensions.Gcp.CloudRun.WorkerId). For example,
@@ -63,9 +62,7 @@ If you need the raw values instead, call `GoogleCloudRunMetadata.FetchAsync()` d
 
 ## How it works
 
-Unlike AWS Lambda, Cloud Run runs a long-lived container with no per-invocation handler to wrap, so
-this is a metadata-driven plugin rather than a worker wrapper. You register the plugin on the client
-you already build, and it sets the client identity for you.
+You register the plugin on the client you already build, and it sets the client identity for you.
 
 At connect time the plugin's client hook fetches the Cloud Run metadata once and caches it. The
 metadata is three values gathered by `GoogleCloudRunMetadata.FetchAsync`:
@@ -81,7 +78,7 @@ metadata is three values gathered by `GoogleCloudRunMetadata.FetchAsync`:
 
 Cloud Run worker pools receive the `CLOUD_RUN_*` variables (and no `K_*` variables), while Cloud Run
 services receive the `K_*` variables. The metadata server is available on both, so resolving the
-name and revision in that order covers both worker pools and services. Worker pools are the primary target.
+name and revision in that order covers both worker pools and services.
 
 From those values the client hook sets `TemporalConnectionOptions.Identity` to `WorkerIdentity`,
 which is `{InstanceId}@{Revision}`, falling back to `{InstanceId}@{Name}` when the revision is empty,
@@ -89,9 +86,8 @@ or just `{InstanceId}` when both are empty. It only sets the identity when one i
 configured, so an explicitly configured identity wins. Workers created from the connected client
 inherit that identity.
 
-If the metadata server cannot be reached, the plugin fails fast at connect time with a clear
-`InvalidOperationException`, which usually means the process is not running on a Cloud Run worker
-pool or service.
+If the metadata server cannot be reached, the plugin throws an `InvalidOperationException` at connect
+time, which usually means the process is not running on a Cloud Run worker pool or service.
 
 ## Testing and advanced use
 

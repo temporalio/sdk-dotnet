@@ -10,8 +10,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
     /// long-lived worker, on both Cloud Run worker pools and services.
     /// </summary>
     /// <remarks>
-    /// Cloud Run runs a long-lived container, so unlike the AWS Lambda extension this is a metadata
-    /// helper rather than a worker wrapper. Most callers should register a <see cref="WorkerIdPlugin" />
+    /// Most callers should register a <see cref="WorkerIdPlugin" />
     /// on <see cref="Temporalio.Client.TemporalClientConnectOptions.Plugins" />, which fetches this
     /// metadata once at connect time and applies the worker identity automatically. This type is
     /// exposed for advanced use, for example reading <see cref="WorkerIdentity" /> directly.
