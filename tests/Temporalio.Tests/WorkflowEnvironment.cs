@@ -71,7 +71,7 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
             {
                 DevServerOptions = new()
                 {
-                    DownloadVersion = "v1.8.3-server-1.32.0-162.0",
+                    DownloadVersion = "v1.9.0-rc.1",
                     ExtraArgs = new List<string>
                     {
                         // Disable search attribute cache
