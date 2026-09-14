@@ -19,7 +19,6 @@ namespace Temporalio.Client
         /// Activity was already started according to ID reuse and conflict policy.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         Task<ActivityHandle<TResult>> StartActivityAsync<TResult>(
             Expression<Func<Task<TResult>>> activityCall, StartActivityOptions options);
 
@@ -34,7 +33,6 @@ namespace Temporalio.Client
         /// Activity was already started according to ID reuse and conflict policy.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         Task<ActivityHandle> StartActivityAsync(
             Expression<Func<Task>> activityCall, StartActivityOptions options);
 
@@ -50,7 +48,6 @@ namespace Temporalio.Client
         /// Activity was already started according to ID reuse and conflict policy.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         Task<ActivityHandle> StartActivityAsync(
             string activity, IReadOnlyCollection<object?> args, StartActivityOptions options);
 
@@ -60,7 +57,6 @@ namespace Temporalio.Client
         /// <param name="id">Activity ID.</param>
         /// <param name="runId">Activity run ID or null for latest.</param>
         /// <returns>Created activity handle.</returns>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         ActivityHandle GetActivityHandle(string id, string? runId = null);
 
         /// <summary>
@@ -70,7 +66,6 @@ namespace Temporalio.Client
         /// <param name="id">Activity ID.</param>
         /// <param name="runId">Activity run ID or null for latest.</param>
         /// <returns>Created activity handle.</returns>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         ActivityHandle<TResult> GetActivityHandle<TResult>(string id, string? runId = null);
 
 #if NETCOREAPP3_0_OR_GREATER
@@ -80,7 +75,6 @@ namespace Temporalio.Client
         /// <param name="query">Query to use for filtering.</param>
         /// <param name="options">Options for the list call.</param>
         /// <returns>Async enumerator for the activities.</returns>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         public IAsyncEnumerable<ActivityExecution> ListActivitiesAsync(
             string query, ActivityListOptions? options = null);
 #endif
@@ -91,7 +85,6 @@ namespace Temporalio.Client
         /// <param name="query">Query to use for counting.</param>
         /// <param name="options">Options for the count call.</param>
         /// <returns>Count information for the activities.</returns>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         public Task<ActivityExecutionCount> CountActivitiesAsync(
             string query, ActivityCountOptions? options = null);
 
@@ -112,7 +105,6 @@ namespace Temporalio.Client
         /// A single page of a list of activities.
         /// Repeat the call using <see cref="ActivityListPage.NextPageToken"/> to get more pages.
         /// </returns>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         Task<ActivityListPage> ListActivitiesPaginatedAsync(
             string query, byte[]? nextPageToken, ActivityListPaginatedOptions? options = null);
     }

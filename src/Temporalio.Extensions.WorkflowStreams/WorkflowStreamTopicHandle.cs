@@ -2,14 +2,16 @@ namespace Temporalio.Extensions.WorkflowStreams
 {
     /// <summary>A workflow-side handle bound to one topic.</summary>
     /// <remarks>WARNING: Workflow Streams is experimental and may change.</remarks>
-    public sealed class WorkflowTopicHandle
+    public sealed class WorkflowStreamTopicHandle
     {
         private readonly WorkflowStream stream;
 
-        /// <summary>Initializes a new instance of the <see cref="WorkflowTopicHandle"/> class.</summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkflowStreamTopicHandle"/> class.
+        /// </summary>
         /// <param name="stream">Workflow stream whose global log receives publications.</param>
         /// <param name="name">Normalized topic name.</param>
-        internal WorkflowTopicHandle(WorkflowStream stream, string name)
+        internal WorkflowStreamTopicHandle(WorkflowStream stream, string name)
         {
             this.stream = stream;
             Name = name ?? string.Empty;

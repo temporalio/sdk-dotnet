@@ -19,16 +19,34 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
-### :boom: Breaking Changes
-
-- Removed the experimental `SignalWithStartWorkflowOptions.RequestId`. Request IDs for
-  workflow-side signal-with-start are now assigned internally and are no longer user-settable.
-
 ### Added
 
 - Added the experimental `Temporalio.Extensions.WorkflowStreams` package for durable, batched,
   offset-based publish/subscribe streams hosted by workflows, interoperable with other Temporal
   SDK Workflow Streams implementations.
+
+## [1.19.0] - 2026-09-14
+
+### :boom: Breaking Changes
+
+- Renamed and removed several experimental methods and properties in Standalone Activities APIs:
+  - `StartActivityOptions.StaticSummary` renamed to `Summary`.
+  - `ActivityExecutionDescription.GetStaticSummaryAsync` renamed to `GetSummaryAsync`.
+  - `ActivityExecution.ScheduledTime` renamed to `ScheduleTime`.
+  - Removed `ActivityExecution.StateTransitionCount`.
+  - Removed `ActivityExecutionDescription.LongPollToken`.
+  - Removed `ActivityDescribeOptions.LongPollToken`.
+- Removed the experimental `SignalWithStartWorkflowOptions.RequestId`. Request IDs for
+  workflow-side signal-with-start are now assigned internally and are no longer user-settable.
+
+### Added
+
+- New options in `ActivityDescribeOptions` that can be used to retrieve data associated with
+  activity execution, such as input and result.
+- New properties and methods in `ActivityExecution` and `ActivityExecutionDescription`:
+  `ExecutionTime`, `LastDeploymentVersion`, `Priority`, `RetryPolicy`, `StartDelay`,
+  `TotalHeartbeatCount`, `GetLastFailureAsync`, `GetOutcomeFailureAsync`, `GetResultAsync`,
+  and access to raw Proto objects from the response.
 - Added operation-specific outbound workflow interceptors for Temporal System Nexus operations.
   `SignalWithStartWorkflowAsync` can now be intercepted before the existing
   `ScheduleSystemNexusOperationAsync` hook.
@@ -52,6 +70,8 @@ to docs, or any other relevant information.
 
 ### Changed
 
+- Standalone Activities are now generally available (GA). Standalone activities as Nexus operations
+  remain experimental.
 - A non-retryable `ApplicationFailureException` with error type `PayloadValidationError` thrown by a
   payload codec or payload converter while decoding Nexus operation input is now reported as a
   non-retryable `BadRequest` handler exception (with the application failure as its cause) instead of

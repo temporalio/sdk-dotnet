@@ -9,7 +9,6 @@ namespace Temporalio.Client
     /// <summary>
     /// Representation of a count from a count activities call.
     /// </summary>
-    /// <remarks>WARNING: Standalone activities are experimental.</remarks>
     public class ActivityExecutionCount
     {
         /// <summary>
@@ -38,7 +37,6 @@ namespace Temporalio.Client
         /// <summary>
         /// Aggregation group if the activity count query had a group-by clause.
         /// </summary>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         public class AggregationGroup
         {
             /// <summary>

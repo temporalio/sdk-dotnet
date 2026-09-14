@@ -56,7 +56,7 @@ namespace Temporalio.Extensions.WorkflowStreams
             {
                 lock (stateLock)
                 {
-                    return timer != null;
+                    return timer != null && !disposing;
                 }
             }
         }
@@ -78,15 +78,7 @@ namespace Temporalio.Extensions.WorkflowStreams
                     throw new ObjectDisposedException(nameof(WorkflowStreamClient));
                 }
                 var payload = value as Payload ?? payloadConverter.ToPayload(value);
-                var encoded = PayloadWire.Encode(payload);
-                if (PayloadWire.EstimateSize(encoded, topic) >
-                    WorkflowStreamConstants.MaxPollResponseBytes)
-                {
-                    throw new ArgumentException(
-                        "The Workflow Stream item is too large to fit in a poll response",
-                        nameof(value));
-                }
-                buffer.Add(new() { Topic = topic, Data = encoded });
+                buffer.Add(new() { Topic = topic, Data = PayloadWire.Encode(payload) });
                 EnsureStartedLocked();
                 wake = forceFlush || (maxBatchSize > 0 && buffer.Count >= maxBatchSize);
             }
@@ -139,10 +131,6 @@ namespace Temporalio.Extensions.WorkflowStreams
                     return disposeTask;
                 }
                 disposing = true;
-                timer?.Dispose();
-                timer = null;
-                stopSource.Cancel();
-                Wake();
                 disposeTask = DisposeCoreAsync();
                 return disposeTask;
             }
@@ -277,6 +265,9 @@ namespace Temporalio.Extensions.WorkflowStreams
         private async Task DisposeCoreAsync()
         {
             await Task.Yield();
+            timer?.Dispose();
+            stopSource.Cancel();
+            Wake();
             Exception? firstError = null;
             try
             {

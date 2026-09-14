@@ -4,7 +4,6 @@ namespace Temporalio.Exceptions
     /// Exception thrown by client when attempting to start a standalone activity that was already
     /// started.
     /// </summary>
-    /// <remarks>WARNING: Standalone activities are experimental.</remarks>
     public class ActivityAlreadyStartedException : FailureException
     {
         /// <summary>

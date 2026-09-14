@@ -48,7 +48,7 @@ public class OrderWorkflow
     [WorkflowRun]
     public async Task RunAsync(OrderInput input)
     {
-        stream.Topic("status").Publish(new { State = "started" });
+        stream.GetTopic<object>("status").Publish(new { State = "started" });
 
         await Workflow.WaitConditionAsync(() => finished || Workflow.ContinueAsNewSuggested);
         if (Workflow.ContinueAsNewSuggested)
@@ -83,11 +83,11 @@ retained log.
 
 Use one asynchronously disposed client per target Workflow ID. Values are converted to Temporal
 `Payload`s when `Publish` is called, then buffered until the two-second interval, the configured
-batch size, a force flush, an explicit flush, or asynchronous disposal.
+batch size, a publication with `forceFlush: true`, a call to `FlushAsync`, or asynchronous disposal.
 
 ```csharp
 await using var streams = new WorkflowStreamClient(temporalClient, workflowId);
-var status = streams.Topic("status");
+var status = streams.GetTopic<object>("status");
 
 status.Publish(new { State = "working" });
 status.Publish(new { State = "done" }, forceFlush: true);
@@ -110,7 +110,7 @@ public async Task ReportAsync(IEnumerable<Progress> values)
     await using var streams = WorkflowStreamClient.FromActivity();
     foreach (var value in values)
     {
-        streams.Topic("progress").Publish(value);
+        streams.GetTopic<Progress>("progress").Publish(value);
     }
 }
 ```
@@ -120,12 +120,13 @@ are released. Publication after disposal throws `ObjectDisposedException`.
 
 ## Subscribe
 
-Subscriptions yield raw Temporal `Payload`s so consumers can choose a result type per topic. The
-returned `IAsyncEnumerable<WorkflowStreamItem>` is reusable: each enumeration starts with its own
-offset and polling state.
+Strongly typed subscriptions deserialize each payload to the topic handle's value type. The returned
+`IAsyncEnumerable<WorkflowStreamItem<T>>` is reusable: each enumeration starts with its own offset
+and polling state. The non-generic overloads remain available for heterogeneous topics and yield raw
+Temporal `Payload`s.
 
 ```csharp
-var subscription = streams.SubscribeAsync(new()
+var subscription = streams.SubscribeAsync<MyEvent>(new()
 {
     Topics = new[] { "status", "progress" },
     FromOffset = 0,
@@ -133,16 +134,15 @@ var subscription = streams.SubscribeAsync(new()
 
 await foreach (var item in subscription.WithCancellation(cancellationToken))
 {
-    var value = matchingPayloadConverter.ToValue(item.Payload, typeof(MyEvent));
-    Console.WriteLine($"{item.Offset} {item.Topic}: {value}");
+    Console.WriteLine($"{item.Offset} {item.Topic}: {item.Value}");
 }
 ```
 
-For one topic, use `streams.Topic("status").SubscribeAsync(fromOffset)`. An empty topic collection
-subscribes to every topic; the empty string is the cross-SDK no-topic value. Consumer cancellation
-cancels the in-flight RPC and throws `OperationCanceledException`. Disposing the owning client ends
-its active enumerations cleanly. Enumerations also end cleanly when the Workflow reaches a terminal
-state and automatically follow continue-as-new chains.
+For one topic, use `streams.GetTopic<StatusUpdate>("status").SubscribeAsync(fromOffset)`. An empty
+topic collection subscribes to every topic; the empty string is the cross-SDK no-topic value.
+Consumer cancellation cancels the in-flight RPC and throws `OperationCanceledException`. Disposing
+the owning client ends its active enumerations cleanly. Enumerations also end cleanly when the
+Workflow reaches a terminal state and automatically follow continue-as-new chains.
 
 ## Data conversion and interoperability
 
@@ -161,6 +161,11 @@ Only payload conversion is applied to an individual item. A client's payload cod
 is applied once to the Signal or Update envelope rather than once per item, avoiding double encoding.
 The envelope itself must use JSON-compatible conversion for cross-language interoperability.
 
+`FromActivity` uses the Activity's payload converter for individual stream items. Do not use its
+subscriptions with a custom payload converter that requires the serialization context used for
+deserialization to match the context used for serialization: Activity publications and Workflow
+Stream subscriptions necessarily have different contexts.
+
 ## Operational limits
 
 - Every waiting subscription uses an admitted Workflow Update. Account for concurrent and total
@@ -169,5 +174,5 @@ The envelope itself must use JSON-compatible conversion for cross-language inter
   ready. An individual item must fit in one page.
 - The Workflow log has no automatic retention policy. Truncate items once all required consumers have
   advanced, and carry only the retained state through continue-as-new.
-- Publishing uses Signals, so malformed or oversized externally supplied wire entries cannot return
-  errors to their sender. The Workflow skips them and emits a replay-safe warning.
+- Publishing uses Signals, so malformed externally supplied wire entries cannot return errors to
+  their sender. The Workflow skips them and emits a replay-safe warning.

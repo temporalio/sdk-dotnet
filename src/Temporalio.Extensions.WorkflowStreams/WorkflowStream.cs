@@ -10,6 +10,8 @@ using Temporalio.Workflows;
 
 namespace Temporalio.Extensions.WorkflowStreams
 {
+#pragma warning disable CA1711 // The cross-SDK protocol's established public name describes a stream.
+#pragma warning disable CA2007 // Workflow continuations must stay on the deterministic scheduler.
     /// <summary>
     /// A durable, offset-addressed, multi-topic log hosted inside a Temporal workflow.
     /// </summary>
@@ -22,7 +24,7 @@ namespace Temporalio.Extensions.WorkflowStreams
         private readonly List<LogEntry> log = new();
         private readonly SortedDictionary<string, long> publisherSequences = new();
         private readonly SortedDictionary<string, double> publisherLastSeen = new();
-        private readonly Dictionary<string, WorkflowTopicHandle> topicHandles = new();
+        private readonly Dictionary<string, object> topicHandles = new();
         private readonly WorkflowStreamOptions options;
         private long baseOffset;
         private bool draining;
@@ -72,13 +74,38 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// <summary>Gets a workflow-side publisher for a topic.</summary>
         /// <param name="name">Topic name. Null is represented by the empty topic.</param>
         /// <returns>A memoized topic handle.</returns>
-        public WorkflowTopicHandle Topic(string? name)
+        public WorkflowStreamTopicHandle GetTopic(string? name)
         {
             name ??= string.Empty;
-            if (!topicHandles.TryGetValue(name, out var handle))
+            if (!topicHandles.TryGetValue(name, out var untypedHandle))
             {
-                handle = new(this, name);
-                topicHandles.Add(name, handle);
+                untypedHandle = new WorkflowStreamTopicHandle(this, name);
+                topicHandles.Add(name, untypedHandle);
+            }
+            if (untypedHandle is not WorkflowStreamTopicHandle handle)
+            {
+                throw new InvalidOperationException(
+                    $"Topic '{name}' is already bound to a different value type");
+            }
+            return handle;
+        }
+
+        /// <summary>Gets a strongly typed workflow-side publisher for a topic.</summary>
+        /// <typeparam name="T">Type of values published to the topic.</typeparam>
+        /// <param name="name">Topic name. Null is represented by the empty topic.</param>
+        /// <returns>A memoized topic handle.</returns>
+        public WorkflowStreamTopicHandle<T> GetTopic<T>(string? name)
+        {
+            name ??= string.Empty;
+            if (!topicHandles.TryGetValue(name, out var untypedHandle))
+            {
+                untypedHandle = new WorkflowStreamTopicHandle<T>(this, name);
+                topicHandles.Add(name, untypedHandle);
+            }
+            if (untypedHandle is not WorkflowStreamTopicHandle<T> handle)
+            {
+                throw new InvalidOperationException(
+                    $"Topic '{name}' is already bound to a different value type");
             }
             return handle;
         }
@@ -119,7 +146,7 @@ namespace Temporalio.Extensions.WorkflowStreams
             return new()
             {
                 BaseOffset = baseOffset,
-                Log = log.Select(entry => new WireItem
+                Log = log.Select(entry => new WorkflowStreamWireItem
                 {
                     Topic = entry.Topic,
                     Data = PayloadWire.Encode(entry.Payload),
@@ -172,58 +199,25 @@ namespace Temporalio.Extensions.WorkflowStreams
         internal void Publish(string topic, object? value)
         {
             var payload = value as Payload ?? Workflow.PayloadConverter.ToPayload(value);
-            var encoded = PayloadWire.Encode(payload);
-            if (PayloadWire.EstimateSize(encoded, topic) >
-                WorkflowStreamConstants.MaxPollResponseBytes)
-            {
-                throw new ApplicationFailureException(
-                    "Workflow Stream item is too large to fit in a poll response",
-                    WorkflowStreamConstants.OversizedItemErrorType,
-                    nonRetryable: true);
-            }
             log.Add(new(topic, payload));
         }
 
         private void Restore(WorkflowStreamState? state)
         {
-            static ApplicationFailureException InvalidState(string message, Exception? inner) =>
-                new(
-                    message,
-                    inner,
-                    WorkflowStreamConstants.InvalidStateErrorType,
-                    nonRetryable: true);
-
             if (state == null)
             {
                 return;
             }
             if (state.BaseOffset < 0)
             {
-                throw InvalidState("The base offset cannot be negative", null);
+                throw new ArgumentOutOfRangeException(
+                    nameof(state), "The base offset cannot be negative");
             }
             baseOffset = state.BaseOffset;
-            foreach (var item in state.Log ?? Array.Empty<WireItem>())
+            foreach (var item in state.Log ?? Array.Empty<WorkflowStreamWireItem>())
             {
-                try
-                {
-                    var topic = item?.Topic ?? string.Empty;
-                    var payload = PayloadWire.Decode(item?.Data ?? string.Empty);
-                    if (PayloadWire.EstimateSize(PayloadWire.Encode(payload), topic) >
-                        WorkflowStreamConstants.MaxPollResponseBytes)
-                    {
-                        throw InvalidState("A retained item is too large", null);
-                    }
-                    log.Add(new(topic, payload));
-                }
-                catch (ApplicationFailureException)
-                {
-                    throw;
-                }
-                catch (Exception err) when (
-                    err is FormatException || err is InvalidProtocolBufferException)
-                {
-                    throw InvalidState("A retained item is malformed", err);
-                }
+                var topic = item?.Topic ?? string.Empty;
+                log.Add(new(topic, PayloadWire.Decode(item?.Data ?? string.Empty)));
             }
             foreach (var pair in state.PublisherSequences ?? new Dictionary<string, long>())
             {
@@ -271,14 +265,6 @@ namespace Temporalio.Extensions.WorkflowStreams
             {
                 var topic = item?.Topic ?? string.Empty;
                 var data = item?.Data ?? string.Empty;
-                if (PayloadWire.EstimateSize(data, topic) >
-                    WorkflowStreamConstants.MaxPollResponseBytes)
-                {
-                    Workflow.Logger.LogWarning(
-                        "Ignoring an oversized Workflow Stream signal item on topic {Topic}",
-                        topic);
-                    continue;
-                }
                 try
                 {
                     log.Add(new(topic, PayloadWire.Decode(data)));
@@ -320,7 +306,7 @@ namespace Temporalio.Extensions.WorkflowStreams
                 topicFilter = new(input.Topics.Select(topic => topic ?? string.Empty));
             }
 
-            var items = new List<WireItem>();
+            var items = new List<WorkflowStreamWireItem>();
             var size = 0;
             var moreReady = false;
             var nextOffset = baseOffset + log.Count;

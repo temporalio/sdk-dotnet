@@ -6,16 +6,17 @@ namespace Temporalio.Extensions.WorkflowStreams
 {
     /// <summary>The cross-language result returned by the poll update.</summary>
     /// <remarks>WARNING: Workflow Streams is experimental and may change.</remarks>
-    public sealed class PollResult
+    internal sealed class PollResult
     {
-        private IReadOnlyCollection<WireItem> items = Array.Empty<WireItem>();
+        private IReadOnlyCollection<WorkflowStreamWireItem> items =
+            Array.Empty<WorkflowStreamWireItem>();
 
         /// <summary>Gets or sets the items returned by this page.</summary>
         [JsonPropertyName("items")]
-        public IReadOnlyCollection<WireItem> Items
+        public IReadOnlyCollection<WorkflowStreamWireItem> Items
         {
             get => items;
-            set => items = value ?? Array.Empty<WireItem>();
+            set => items = value ?? Array.Empty<WorkflowStreamWireItem>();
         }
 
         /// <summary>Gets or sets the offset for the next poll.</summary>

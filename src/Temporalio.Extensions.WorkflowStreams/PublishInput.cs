@@ -6,7 +6,7 @@ namespace Temporalio.Extensions.WorkflowStreams
 {
     /// <summary>The cross-language signal input for publishing a batch.</summary>
     /// <remarks>WARNING: Workflow Streams is experimental and may change.</remarks>
-    public sealed class PublishInput
+    internal sealed class PublishInput
     {
         private IReadOnlyCollection<PublishEntry> items = Array.Empty<PublishEntry>();
         private string publisherId = string.Empty;

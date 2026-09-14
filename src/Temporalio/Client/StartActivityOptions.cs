@@ -9,7 +9,6 @@ namespace Temporalio.Client
     /// Options for starting a standalone activity. <see cref="Id" /> and <see cref="TaskQueue" />
     /// are required.
     /// </summary>
-    /// <remarks>WARNING: Standalone activities are experimental.</remarks>
     public class StartActivityOptions : ICloneable
     {
         /// <summary>
@@ -89,14 +88,12 @@ namespace Temporalio.Client
         /// Gets or sets a single-line fixed summary for this activity execution that may appear in
         /// UI/CLI. This can be in single-line Temporal markdown format.
         /// </summary>
-        /// <remarks>WARNING: This setting is experimental.</remarks>
-        public string? StaticSummary { get; set; }
+        public string? Summary { get; set; }
 
         /// <summary>
         /// Gets or sets general fixed details for this activity execution that may appear in
         /// UI/CLI. This can be in Temporal markdown format and can span multiple lines.
         /// </summary>
-        /// <remarks>WARNING: This setting is experimental.</remarks>
         public string? StaticDetails { get; set; }
 
         /// <summary>

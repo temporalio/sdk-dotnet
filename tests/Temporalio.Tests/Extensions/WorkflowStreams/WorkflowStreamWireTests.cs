@@ -32,7 +32,7 @@ public class WorkflowStreamWireTests
         {
             Log = new[]
             {
-                new WireItem { Topic = "orders", Data = "cGF5bG9hZA==", Offset = 3 },
+                new WorkflowStreamWireItem { Topic = "orders", Data = "cGF5bG9hZA==", Offset = 3 },
             },
             BaseOffset = 3,
             PublisherSequences = new Dictionary<string, long> { ["publisher"] = 7 },
@@ -76,7 +76,7 @@ public class WorkflowStreamWireTests
     public void WireDtos_NormalizeNullTopics()
     {
         var entry = JsonSerializer.Deserialize<PublishEntry>("""{"topic":null,"data":""}""");
-        var item = JsonSerializer.Deserialize<WireItem>(
+        var item = JsonSerializer.Deserialize<WorkflowStreamWireItem>(
             """{"topic":null,"data":"","offset":0}""");
         var poll = JsonSerializer.Deserialize<PollInput>(
             """{"topics":[null,"orders"],"from_offset":0}""");

@@ -4,7 +4,7 @@ namespace Temporalio.Extensions.WorkflowStreams
 {
     /// <summary>A stream item in the cross-language JSON envelope.</summary>
     /// <remarks>WARNING: Workflow Streams is experimental and may change.</remarks>
-    public sealed class WireItem
+    public sealed class WorkflowStreamWireItem
     {
         private string topic = string.Empty;
         private string data = string.Empty;

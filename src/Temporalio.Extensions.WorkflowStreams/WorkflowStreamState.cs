@@ -8,7 +8,9 @@ namespace Temporalio.Extensions.WorkflowStreams
     /// <remarks>WARNING: Workflow Streams is experimental and may change.</remarks>
     public sealed class WorkflowStreamState
     {
-        private IReadOnlyCollection<WireItem> log = Array.Empty<WireItem>();
+        private IReadOnlyCollection<WorkflowStreamWireItem> log =
+            Array.Empty<WorkflowStreamWireItem>();
+
         private IReadOnlyDictionary<string, long> publisherSequences =
             new Dictionary<string, long>();
 
@@ -17,10 +19,10 @@ namespace Temporalio.Extensions.WorkflowStreams
 
         /// <summary>Gets or sets the retained stream log.</summary>
         [JsonPropertyName("log")]
-        public IReadOnlyCollection<WireItem> Log
+        public IReadOnlyCollection<WorkflowStreamWireItem> Log
         {
             get => log;
-            set => log = value ?? Array.Empty<WireItem>();
+            set => log = value ?? Array.Empty<WorkflowStreamWireItem>();
         }
 
         /// <summary>Gets or sets the global offset represented by the start of <see cref="Log"/>.</summary>
