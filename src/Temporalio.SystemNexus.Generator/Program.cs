@@ -275,8 +275,7 @@ static void EmitEnvelopeVisitor(
     Dictionary<string, bool> containsPayloadMemo,
     HashSet<string> emittedVisitors)
 {
-    if (!ContainsPayload(message, messages, containsPayloadMemo) ||
-        !emittedVisitors.Add(message.FullName))
+    if (!emittedVisitors.Add(message.FullName))
     {
         return;
     }
@@ -296,8 +295,7 @@ static void EmitVisitMethod(
     Dictionary<string, bool> containsPayloadMemo,
     HashSet<string> emittedMethods)
 {
-    if (!ContainsPayload(message, messages, containsPayloadMemo) ||
-        !emittedMethods.Add(message.FullName))
+    if (!emittedMethods.Add(message.FullName))
     {
         return;
     }

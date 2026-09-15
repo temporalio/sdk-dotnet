@@ -17,6 +17,66 @@ namespace Temporalio.Worker
         private static readonly IReadOnlyDictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, Task>> EnvelopeVisitors =
             new Dictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, Task>>
             {
+                ["temporal.api.workflowservice.v1.RegisterNamespaceRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RegisterNamespaceRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RegisterNamespaceRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.RegisterNamespaceResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RegisterNamespaceResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RegisterNamespaceResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeNamespaceRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeNamespaceRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeNamespaceRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeNamespaceResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeNamespaceResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeNamespaceResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListNamespacesRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListNamespacesRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListNamespacesRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListNamespacesResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListNamespacesResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListNamespacesResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateNamespaceRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateNamespaceRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateNamespaceRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateNamespaceResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateNamespaceResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateNamespaceResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeprecateNamespaceRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeprecateNamespaceRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeprecateNamespaceRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeprecateNamespaceResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeprecateNamespaceResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeprecateNamespaceResponse,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.StartWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.StartWorkflowExecutionRequest>(
                         payload,
@@ -41,16 +101,34 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_ExecuteMultiOperationResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.GetWorkflowExecutionHistoryRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetWorkflowExecutionHistoryRequest,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.GetWorkflowExecutionHistoryResponse"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryResponse>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_GetWorkflowExecutionHistoryResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.GetWorkflowExecutionHistoryReverseRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryReverseRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetWorkflowExecutionHistoryReverseRequest,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.GetWorkflowExecutionHistoryReverseResponse"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryReverseResponse>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_GetWorkflowExecutionHistoryReverseResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.PollWorkflowTaskQueueRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PollWorkflowTaskQueueRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_PollWorkflowTaskQueueRequest,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.PollWorkflowTaskQueueResponse"] = (payload, visitPayload, visitPayloads) =>
@@ -77,6 +155,18 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_RespondWorkflowTaskFailedRequest,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.RespondWorkflowTaskFailedResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondWorkflowTaskFailedResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RespondWorkflowTaskFailedResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.PollActivityTaskQueueRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PollActivityTaskQueueRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_PollActivityTaskQueueRequest,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.PollActivityTaskQueueResponse"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PollActivityTaskQueueResponse>(
                         payload,
@@ -89,10 +179,22 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_RecordActivityTaskHeartbeatRequest,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.RecordActivityTaskHeartbeatResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RecordActivityTaskHeartbeatResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RecordActivityTaskHeartbeatResponse,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.RecordActivityTaskHeartbeatByIdRequest"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RecordActivityTaskHeartbeatByIdRequest>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_RecordActivityTaskHeartbeatByIdRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.RecordActivityTaskHeartbeatByIdResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RecordActivityTaskHeartbeatByIdResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RecordActivityTaskHeartbeatByIdResponse,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.RespondActivityTaskCompletedRequest"] = (payload, visitPayload, visitPayloads) =>
@@ -101,10 +203,22 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_RespondActivityTaskCompletedRequest,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.RespondActivityTaskCompletedResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCompletedResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RespondActivityTaskCompletedResponse,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.RespondActivityTaskCompletedByIdRequest"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCompletedByIdRequest>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_RespondActivityTaskCompletedByIdRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.RespondActivityTaskCompletedByIdResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCompletedByIdResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RespondActivityTaskCompletedByIdResponse,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.RespondActivityTaskFailedRequest"] = (payload, visitPayload, visitPayloads) =>
@@ -137,10 +251,34 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_RespondActivityTaskCanceledRequest,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.RespondActivityTaskCanceledResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCanceledResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RespondActivityTaskCanceledResponse,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.RespondActivityTaskCanceledByIdRequest"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCanceledByIdRequest>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_RespondActivityTaskCanceledByIdRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.RespondActivityTaskCanceledByIdResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCanceledByIdResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RespondActivityTaskCanceledByIdResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.RequestCancelWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RequestCancelWorkflowExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RequestCancelWorkflowExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.RequestCancelWorkflowExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RequestCancelWorkflowExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RequestCancelWorkflowExecutionResponse,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.SignalWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
@@ -149,10 +287,22 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_SignalWorkflowExecutionRequest,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.SignalWorkflowExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SignalWorkflowExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_SignalWorkflowExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.SignalWithStartWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_SignalWithStartWorkflowExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.SignalWithStartWorkflowExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_SignalWithStartWorkflowExecutionResponse,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.ResetWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
@@ -161,10 +311,40 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_ResetWorkflowExecutionRequest,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.ResetWorkflowExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ResetWorkflowExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ResetWorkflowExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.TerminateWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.TerminateWorkflowExecutionRequest>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_TerminateWorkflowExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.TerminateWorkflowExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.TerminateWorkflowExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_TerminateWorkflowExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeleteWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeleteWorkflowExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeleteWorkflowExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeleteWorkflowExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeleteWorkflowExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeleteWorkflowExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListOpenWorkflowExecutionsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListOpenWorkflowExecutionsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListOpenWorkflowExecutionsRequest,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.ListOpenWorkflowExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
@@ -173,10 +353,22 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_ListOpenWorkflowExecutionsResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.ListClosedWorkflowExecutionsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListClosedWorkflowExecutionsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListClosedWorkflowExecutionsRequest,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.ListClosedWorkflowExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListClosedWorkflowExecutionsResponse>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_ListClosedWorkflowExecutionsResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListWorkflowExecutionsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListWorkflowExecutionsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListWorkflowExecutionsRequest,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.ListWorkflowExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
@@ -185,10 +377,22 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_ListWorkflowExecutionsResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.ListArchivedWorkflowExecutionsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListArchivedWorkflowExecutionsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListArchivedWorkflowExecutionsRequest,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.ListArchivedWorkflowExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListArchivedWorkflowExecutionsResponse>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_ListArchivedWorkflowExecutionsResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ScanWorkflowExecutionsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ScanWorkflowExecutionsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ScanWorkflowExecutionsRequest,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.ScanWorkflowExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
@@ -197,16 +401,64 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_ScanWorkflowExecutionsResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.CountWorkflowExecutionsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CountWorkflowExecutionsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_CountWorkflowExecutionsRequest,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.CountWorkflowExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CountWorkflowExecutionsResponse>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_CountWorkflowExecutionsResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.GetSearchAttributesRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetSearchAttributesRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetSearchAttributesRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.GetSearchAttributesResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetSearchAttributesResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetSearchAttributesResponse,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.RespondQueryTaskCompletedRequest"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondQueryTaskCompletedRequest>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_RespondQueryTaskCompletedRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.RespondQueryTaskCompletedResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondQueryTaskCompletedResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RespondQueryTaskCompletedResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ResetStickyTaskQueueRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ResetStickyTaskQueueRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ResetStickyTaskQueueRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ResetStickyTaskQueueResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ResetStickyTaskQueueResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ResetStickyTaskQueueResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ShutdownWorkerRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ShutdownWorkerRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ShutdownWorkerRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ShutdownWorkerResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ShutdownWorkerResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ShutdownWorkerResponse,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.QueryWorkflowRequest"] = (payload, visitPayload, visitPayloads) =>
@@ -221,16 +473,82 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_QueryWorkflowResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeWorkflowExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeWorkflowExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.DescribeWorkflowExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeWorkflowExecutionResponse>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_DescribeWorkflowExecutionResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeTaskQueueRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeTaskQueueRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeTaskQueueRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeTaskQueueResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeTaskQueueResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeTaskQueueResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.GetClusterInfoRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetClusterInfoRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetClusterInfoRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.GetClusterInfoResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetClusterInfoResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetClusterInfoResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.GetSystemInfoRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetSystemInfoRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetSystemInfoRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.GetSystemInfoResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetSystemInfoResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetSystemInfoResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListTaskQueuePartitionsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListTaskQueuePartitionsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListTaskQueuePartitionsRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListTaskQueuePartitionsResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListTaskQueuePartitionsResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListTaskQueuePartitionsResponse,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.CreateScheduleRequest"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CreateScheduleRequest>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_CreateScheduleRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.CreateScheduleResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CreateScheduleResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_CreateScheduleResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeScheduleRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeScheduleRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeScheduleRequest,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.DescribeScheduleResponse"] = (payload, visitPayload, visitPayloads) =>
@@ -245,10 +563,64 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_UpdateScheduleRequest,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateScheduleResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateScheduleResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateScheduleResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.PatchScheduleRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PatchScheduleRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_PatchScheduleRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.PatchScheduleResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PatchScheduleResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_PatchScheduleResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListScheduleMatchingTimesRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListScheduleMatchingTimesRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListScheduleMatchingTimesRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListScheduleMatchingTimesResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListScheduleMatchingTimesResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListScheduleMatchingTimesResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeleteScheduleRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeleteScheduleRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeleteScheduleRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeleteScheduleResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeleteScheduleResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeleteScheduleResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListSchedulesRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListSchedulesRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListSchedulesRequest,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.ListSchedulesResponse"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListSchedulesResponse>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_ListSchedulesResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.CountSchedulesRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CountSchedulesRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_CountSchedulesRequest,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.CountSchedulesResponse"] = (payload, visitPayload, visitPayloads) =>
@@ -257,10 +629,82 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_CountSchedulesResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateWorkerBuildIdCompatibilityRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkerBuildIdCompatibilityRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateWorkerBuildIdCompatibilityRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateWorkerBuildIdCompatibilityResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkerBuildIdCompatibilityResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateWorkerBuildIdCompatibilityResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.GetWorkerBuildIdCompatibilityRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetWorkerBuildIdCompatibilityRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetWorkerBuildIdCompatibilityRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.GetWorkerBuildIdCompatibilityResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetWorkerBuildIdCompatibilityResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetWorkerBuildIdCompatibilityResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateWorkerVersioningRulesRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkerVersioningRulesRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateWorkerVersioningRulesRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateWorkerVersioningRulesResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkerVersioningRulesResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateWorkerVersioningRulesResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.GetWorkerVersioningRulesRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetWorkerVersioningRulesRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetWorkerVersioningRulesRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.GetWorkerVersioningRulesResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetWorkerVersioningRulesResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetWorkerVersioningRulesResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.GetWorkerTaskReachabilityRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetWorkerTaskReachabilityRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetWorkerTaskReachabilityRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.GetWorkerTaskReachabilityResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetWorkerTaskReachabilityResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetWorkerTaskReachabilityResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeDeploymentRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeDeploymentRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeDeploymentRequest,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.DescribeDeploymentResponse"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeDeploymentResponse>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_DescribeDeploymentResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeWorkerDeploymentVersionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeWorkerDeploymentVersionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeWorkerDeploymentVersionRequest,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.DescribeWorkerDeploymentVersionResponse"] = (payload, visitPayload, visitPayloads) =>
@@ -269,10 +713,34 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_DescribeWorkerDeploymentVersionResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.ListDeploymentsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListDeploymentsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListDeploymentsRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListDeploymentsResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListDeploymentsResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListDeploymentsResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.GetDeploymentReachabilityRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetDeploymentReachabilityRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetDeploymentReachabilityRequest,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.GetDeploymentReachabilityResponse"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetDeploymentReachabilityResponse>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_GetDeploymentReachabilityResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.GetCurrentDeploymentRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetCurrentDeploymentRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_GetCurrentDeploymentRequest,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.GetCurrentDeploymentResponse"] = (payload, visitPayload, visitPayloads) =>
@@ -293,10 +761,100 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_SetCurrentDeploymentResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.SetWorkerDeploymentCurrentVersionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentCurrentVersionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_SetWorkerDeploymentCurrentVersionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.SetWorkerDeploymentCurrentVersionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentCurrentVersionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_SetWorkerDeploymentCurrentVersionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeWorkerDeploymentRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeWorkerDeploymentRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeWorkerDeploymentRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeWorkerDeploymentResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeWorkerDeploymentResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeWorkerDeploymentResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeleteWorkerDeploymentRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeleteWorkerDeploymentRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeleteWorkerDeploymentResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeleteWorkerDeploymentResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeleteWorkerDeploymentVersionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentVersionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeleteWorkerDeploymentVersionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeleteWorkerDeploymentVersionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentVersionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeleteWorkerDeploymentVersionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.SetWorkerDeploymentRampingVersionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentRampingVersionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_SetWorkerDeploymentRampingVersionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.SetWorkerDeploymentRampingVersionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentRampingVersionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_SetWorkerDeploymentRampingVersionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListWorkerDeploymentsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListWorkerDeploymentsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListWorkerDeploymentsRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListWorkerDeploymentsResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListWorkerDeploymentsResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListWorkerDeploymentsResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.CreateWorkerDeploymentRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_CreateWorkerDeploymentRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.CreateWorkerDeploymentResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_CreateWorkerDeploymentResponse,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.CreateWorkerDeploymentVersionRequest"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentVersionRequest>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_CreateWorkerDeploymentVersionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.CreateWorkerDeploymentVersionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentVersionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_CreateWorkerDeploymentVersionResponse,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.UpdateWorkerDeploymentVersionComputeConfigRequest"] = (payload, visitPayload, visitPayloads) =>
@@ -305,10 +863,22 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionComputeConfigRequest,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateWorkerDeploymentVersionComputeConfigResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionComputeConfigResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionComputeConfigResponse,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.ValidateWorkerDeploymentVersionComputeConfigRequest"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ValidateWorkerDeploymentVersionComputeConfigRequest>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_ValidateWorkerDeploymentVersionComputeConfigRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ValidateWorkerDeploymentVersionComputeConfigResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ValidateWorkerDeploymentVersionComputeConfigResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ValidateWorkerDeploymentVersionComputeConfigResponse,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.UpdateWorkerDeploymentVersionMetadataRequest"] = (payload, visitPayload, visitPayloads) =>
@@ -323,6 +893,18 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionMetadataResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.SetWorkerDeploymentManagerRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentManagerRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_SetWorkerDeploymentManagerRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.SetWorkerDeploymentManagerResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentManagerResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_SetWorkerDeploymentManagerResponse,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.UpdateWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkflowExecutionRequest>(
                         payload,
@@ -333,6 +915,12 @@ namespace Temporalio.Worker
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkflowExecutionResponse>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_UpdateWorkflowExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.PollWorkflowExecutionUpdateRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PollWorkflowExecutionUpdateRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_PollWorkflowExecutionUpdateRequest,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.PollWorkflowExecutionUpdateResponse"] = (payload, visitPayload, visitPayloads) =>
@@ -347,6 +935,54 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_StartBatchOperationRequest,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.StartBatchOperationResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.StartBatchOperationResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_StartBatchOperationResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.StopBatchOperationRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.StopBatchOperationRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_StopBatchOperationRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.StopBatchOperationResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.StopBatchOperationResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_StopBatchOperationResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeBatchOperationRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeBatchOperationRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeBatchOperationRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeBatchOperationResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeBatchOperationResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeBatchOperationResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListBatchOperationsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListBatchOperationsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListBatchOperationsRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListBatchOperationsResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListBatchOperationsResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListBatchOperationsResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.PollNexusTaskQueueRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PollNexusTaskQueueRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_PollNexusTaskQueueRequest,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.PollNexusTaskQueueResponse"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PollNexusTaskQueueResponse>(
                         payload,
@@ -359,10 +995,250 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_RespondNexusTaskCompletedRequest,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.RespondNexusTaskCompletedResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondNexusTaskCompletedResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RespondNexusTaskCompletedResponse,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.RespondNexusTaskFailedRequest"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondNexusTaskFailedRequest>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_RespondNexusTaskFailedRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.RespondNexusTaskFailedResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondNexusTaskFailedResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RespondNexusTaskFailedResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateActivityOptionsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateActivityOptionsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateActivityOptionsRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateActivityOptionsResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateActivityOptionsResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateActivityOptionsResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateWorkflowExecutionOptionsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkflowExecutionOptionsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateWorkflowExecutionOptionsRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateWorkflowExecutionOptionsResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkflowExecutionOptionsResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateWorkflowExecutionOptionsResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.PauseActivityRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PauseActivityRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_PauseActivityRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.PauseActivityResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PauseActivityResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_PauseActivityResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UnpauseActivityRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UnpauseActivityRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UnpauseActivityRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UnpauseActivityResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UnpauseActivityResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UnpauseActivityResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ResetActivityRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ResetActivityRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ResetActivityRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ResetActivityResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ResetActivityResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ResetActivityResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.CreateWorkflowRuleRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CreateWorkflowRuleRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_CreateWorkflowRuleRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.CreateWorkflowRuleResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CreateWorkflowRuleResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_CreateWorkflowRuleResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeWorkflowRuleRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeWorkflowRuleRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeWorkflowRuleRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeWorkflowRuleResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeWorkflowRuleResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeWorkflowRuleResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeleteWorkflowRuleRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeleteWorkflowRuleRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeleteWorkflowRuleRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeleteWorkflowRuleResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeleteWorkflowRuleResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeleteWorkflowRuleResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListWorkflowRulesRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListWorkflowRulesRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListWorkflowRulesRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListWorkflowRulesResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListWorkflowRulesResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListWorkflowRulesResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.TriggerWorkflowRuleRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.TriggerWorkflowRuleRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_TriggerWorkflowRuleRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.TriggerWorkflowRuleResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.TriggerWorkflowRuleResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_TriggerWorkflowRuleResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.RecordWorkerHeartbeatRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RecordWorkerHeartbeatRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RecordWorkerHeartbeatRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.RecordWorkerHeartbeatResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RecordWorkerHeartbeatResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RecordWorkerHeartbeatResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListWorkersRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListWorkersRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListWorkersRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListWorkersResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListWorkersResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListWorkersResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.CountWorkersRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CountWorkersRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_CountWorkersRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.CountWorkersResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CountWorkersResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_CountWorkersResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateTaskQueueConfigRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateTaskQueueConfigRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateTaskQueueConfigRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateTaskQueueConfigResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateTaskQueueConfigResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateTaskQueueConfigResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.FetchWorkerConfigRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.FetchWorkerConfigRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_FetchWorkerConfigRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.FetchWorkerConfigResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.FetchWorkerConfigResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_FetchWorkerConfigResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateWorkerConfigRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkerConfigRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateWorkerConfigRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateWorkerConfigResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkerConfigResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateWorkerConfigResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeWorkerRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeWorkerRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeWorkerRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeWorkerResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeWorkerResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeWorkerResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.PauseWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PauseWorkflowExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_PauseWorkflowExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.PauseWorkflowExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PauseWorkflowExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_PauseWorkflowExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UnpauseWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UnpauseWorkflowExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UnpauseWorkflowExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UnpauseWorkflowExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UnpauseWorkflowExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UnpauseWorkflowExecutionResponse,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.StartActivityExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
@@ -371,10 +1247,28 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_StartActivityExecutionRequest,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.StartActivityExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.StartActivityExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_StartActivityExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.StartNexusOperationExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.StartNexusOperationExecutionRequest>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_StartNexusOperationExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.StartNexusOperationExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.StartNexusOperationExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_StartNexusOperationExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeActivityExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeActivityExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeActivityExecutionRequest,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.DescribeActivityExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
@@ -383,10 +1277,22 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_DescribeActivityExecutionResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.DescribeNexusOperationExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeNexusOperationExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DescribeNexusOperationExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.DescribeNexusOperationExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeNexusOperationExecutionResponse>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_DescribeNexusOperationExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.PollActivityExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PollActivityExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_PollActivityExecutionRequest,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.PollActivityExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
@@ -395,10 +1301,46 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_PollActivityExecutionResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.PollNexusOperationExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PollNexusOperationExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_PollNexusOperationExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.PollNexusOperationExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PollNexusOperationExecutionResponse>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_PollNexusOperationExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListActivityExecutionsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListActivityExecutionsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListActivityExecutionsRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListActivityExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListActivityExecutionsResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListActivityExecutionsResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListNexusOperationExecutionsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListNexusOperationExecutionsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListNexusOperationExecutionsRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ListNexusOperationExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListNexusOperationExecutionsResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ListNexusOperationExecutionsResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.CountActivityExecutionsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CountActivityExecutionsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_CountActivityExecutionsRequest,
                         visitPayload,
                         visitPayloads),
                 ["temporal.api.workflowservice.v1.CountActivityExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
@@ -407,10 +1349,136 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_CountActivityExecutionsResponse,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.CountNexusOperationExecutionsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_CountNexusOperationExecutionsRequest,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.CountNexusOperationExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsResponse>(
                         payload,
                         Visit_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.RequestCancelActivityExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RequestCancelActivityExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RequestCancelActivityExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.RequestCancelActivityExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RequestCancelActivityExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RequestCancelActivityExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.RequestCancelNexusOperationExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RequestCancelNexusOperationExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RequestCancelNexusOperationExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.RequestCancelNexusOperationExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RequestCancelNexusOperationExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_RequestCancelNexusOperationExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.TerminateActivityExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.TerminateActivityExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_TerminateActivityExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.TerminateActivityExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.TerminateActivityExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_TerminateActivityExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeleteActivityExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeleteActivityExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeleteActivityExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeleteActivityExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeleteActivityExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeleteActivityExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.PauseActivityExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PauseActivityExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_PauseActivityExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.PauseActivityExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PauseActivityExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_PauseActivityExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ResetActivityExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ResetActivityExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ResetActivityExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.ResetActivityExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ResetActivityExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_ResetActivityExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UnpauseActivityExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UnpauseActivityExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UnpauseActivityExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UnpauseActivityExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateActivityExecutionOptionsRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateActivityExecutionOptionsRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateActivityExecutionOptionsRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.UpdateActivityExecutionOptionsResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateActivityExecutionOptionsResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_UpdateActivityExecutionOptionsResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.TerminateNexusOperationExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.TerminateNexusOperationExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_TerminateNexusOperationExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.TerminateNexusOperationExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.TerminateNexusOperationExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_TerminateNexusOperationExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeleteNexusOperationExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeleteNexusOperationExecutionRequest>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeleteNexusOperationExecutionRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.workflowservice.v1.DeleteNexusOperationExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DeleteNexusOperationExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_DeleteNexusOperationExecutionResponse,
                         visitPayload,
                         visitPayloads),
             };
@@ -434,6 +1502,86 @@ namespace Temporalio.Worker
 
             await visit(payload, visitPayload, visitPayloads).ConfigureAwait(false);
             return true;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_RegisterNamespaceRequest(
+            global::Temporalio.Api.WorkflowService.V1.RegisterNamespaceRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_RegisterNamespaceResponse(
+            global::Temporalio.Api.WorkflowService.V1.RegisterNamespaceResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeNamespaceRequest(
+            global::Temporalio.Api.WorkflowService.V1.DescribeNamespaceRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeNamespaceResponse(
+            global::Temporalio.Api.WorkflowService.V1.DescribeNamespaceResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListNamespacesRequest(
+            global::Temporalio.Api.WorkflowService.V1.ListNamespacesRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListNamespacesResponse(
+            global::Temporalio.Api.WorkflowService.V1.ListNamespacesResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateNamespaceRequest(
+            global::Temporalio.Api.WorkflowService.V1.UpdateNamespaceRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateNamespaceResponse(
+            global::Temporalio.Api.WorkflowService.V1.UpdateNamespaceResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeprecateNamespaceRequest(
+            global::Temporalio.Api.WorkflowService.V1.DeprecateNamespaceRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeprecateNamespaceResponse(
+            global::Temporalio.Api.WorkflowService.V1.DeprecateNamespaceResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_common_v1_Memo(
@@ -1369,6 +2517,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_GetWorkflowExecutionHistoryRequest(
+            global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_GetWorkflowExecutionHistoryResponse(
             global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryResponse value,
             PayloadVisitor visitPayload,
@@ -1380,6 +2536,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_GetWorkflowExecutionHistoryReverseRequest(
+            global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryReverseRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_GetWorkflowExecutionHistoryReverseResponse(
             global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryReverseResponse value,
             PayloadVisitor visitPayload,
@@ -1389,6 +2553,14 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_history_v1_History(value.History, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_PollWorkflowTaskQueueRequest(
+            global::Temporalio.Api.WorkflowService.V1.PollWorkflowTaskQueueRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_command_v1_ScheduleActivityTaskCommandAttributes(
@@ -1677,6 +2849,22 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_RespondWorkflowTaskFailedResponse(
+            global::Temporalio.Api.WorkflowService.V1.RespondWorkflowTaskFailedResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_PollActivityTaskQueueRequest(
+            global::Temporalio.Api.WorkflowService.V1.PollActivityTaskQueueRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_RecordActivityTaskHeartbeatRequest(
             global::Temporalio.Api.WorkflowService.V1.RecordActivityTaskHeartbeatRequest value,
             PayloadVisitor visitPayload,
@@ -1686,6 +2874,14 @@ namespace Temporalio.Worker
             {
                 await visitPayloads(value.Details.Payloads_).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_RecordActivityTaskHeartbeatResponse(
+            global::Temporalio.Api.WorkflowService.V1.RecordActivityTaskHeartbeatResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflowservice_v1_RecordActivityTaskHeartbeatByIdRequest(
@@ -1699,6 +2895,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_RecordActivityTaskHeartbeatByIdResponse(
+            global::Temporalio.Api.WorkflowService.V1.RecordActivityTaskHeartbeatByIdResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_RespondActivityTaskCompletedRequest(
             global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCompletedRequest value,
             PayloadVisitor visitPayload,
@@ -1710,6 +2914,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_RespondActivityTaskCompletedResponse(
+            global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCompletedResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_RespondActivityTaskCompletedByIdRequest(
             global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCompletedByIdRequest value,
             PayloadVisitor visitPayload,
@@ -1719,6 +2931,14 @@ namespace Temporalio.Worker
             {
                 await visitPayloads(value.Result.Payloads_).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_RespondActivityTaskCompletedByIdResponse(
+            global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCompletedByIdResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflowservice_v1_RespondActivityTaskFailedRequest(
@@ -1784,6 +3004,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_RespondActivityTaskCanceledResponse(
+            global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCanceledResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_RespondActivityTaskCanceledByIdRequest(
             global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCanceledByIdRequest value,
             PayloadVisitor visitPayload,
@@ -1793,6 +3021,30 @@ namespace Temporalio.Worker
             {
                 await visitPayloads(value.Details.Payloads_).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_RespondActivityTaskCanceledByIdResponse(
+            global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCanceledByIdResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_RequestCancelWorkflowExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.RequestCancelWorkflowExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_RequestCancelWorkflowExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.RequestCancelWorkflowExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflowservice_v1_SignalWorkflowExecutionRequest(
@@ -1808,6 +3060,14 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_common_v1_Header(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_SignalWorkflowExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.SignalWorkflowExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflowservice_v1_SignalWithStartWorkflowExecutionRequest(
@@ -1835,6 +3095,14 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_sdk_v1_UserMetadata(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_SignalWithStartWorkflowExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflow_v1_PostResetOperation_SignalWorkflow(
@@ -1874,6 +3142,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_ResetWorkflowExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.ResetWorkflowExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_TerminateWorkflowExecutionRequest(
             global::Temporalio.Api.WorkflowService.V1.TerminateWorkflowExecutionRequest value,
             PayloadVisitor visitPayload,
@@ -1883,6 +3159,38 @@ namespace Temporalio.Worker
             {
                 await visitPayloads(value.Details.Payloads_).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_TerminateWorkflowExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.TerminateWorkflowExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeleteWorkflowExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.DeleteWorkflowExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeleteWorkflowExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.DeleteWorkflowExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListOpenWorkflowExecutionsRequest(
+            global::Temporalio.Api.WorkflowService.V1.ListOpenWorkflowExecutionsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflow_v1_WorkflowExecutionInfo(
@@ -1907,6 +3215,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_ListClosedWorkflowExecutionsRequest(
+            global::Temporalio.Api.WorkflowService.V1.ListClosedWorkflowExecutionsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_ListClosedWorkflowExecutionsResponse(
             global::Temporalio.Api.WorkflowService.V1.ListClosedWorkflowExecutionsResponse value,
             PayloadVisitor visitPayload,
@@ -1916,6 +3232,14 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_workflow_v1_WorkflowExecutionInfo(item_temporal_api_workflowservice_v1_ListClosedWorkflowExecutionsResponse_1, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListWorkflowExecutionsRequest(
+            global::Temporalio.Api.WorkflowService.V1.ListWorkflowExecutionsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflowservice_v1_ListWorkflowExecutionsResponse(
@@ -1929,6 +3253,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_ListArchivedWorkflowExecutionsRequest(
+            global::Temporalio.Api.WorkflowService.V1.ListArchivedWorkflowExecutionsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_ListArchivedWorkflowExecutionsResponse(
             global::Temporalio.Api.WorkflowService.V1.ListArchivedWorkflowExecutionsResponse value,
             PayloadVisitor visitPayload,
@@ -1940,6 +3272,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_ScanWorkflowExecutionsRequest(
+            global::Temporalio.Api.WorkflowService.V1.ScanWorkflowExecutionsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_ScanWorkflowExecutionsResponse(
             global::Temporalio.Api.WorkflowService.V1.ScanWorkflowExecutionsResponse value,
             PayloadVisitor visitPayload,
@@ -1949,6 +3289,14 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_workflow_v1_WorkflowExecutionInfo(item_temporal_api_workflowservice_v1_ScanWorkflowExecutionsResponse_1, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_CountWorkflowExecutionsRequest(
+            global::Temporalio.Api.WorkflowService.V1.CountWorkflowExecutionsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflowservice_v1_CountWorkflowExecutionsResponse_AggregationGroup(
@@ -1973,6 +3321,22 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_GetSearchAttributesRequest(
+            global::Temporalio.Api.WorkflowService.V1.GetSearchAttributesRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_GetSearchAttributesResponse(
+            global::Temporalio.Api.WorkflowService.V1.GetSearchAttributesResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_RespondQueryTaskCompletedRequest(
             global::Temporalio.Api.WorkflowService.V1.RespondQueryTaskCompletedRequest value,
             PayloadVisitor visitPayload,
@@ -1986,6 +3350,46 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_failure_v1_Failure(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_RespondQueryTaskCompletedResponse(
+            global::Temporalio.Api.WorkflowService.V1.RespondQueryTaskCompletedResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ResetStickyTaskQueueRequest(
+            global::Temporalio.Api.WorkflowService.V1.ResetStickyTaskQueueRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ResetStickyTaskQueueResponse(
+            global::Temporalio.Api.WorkflowService.V1.ResetStickyTaskQueueResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ShutdownWorkerRequest(
+            global::Temporalio.Api.WorkflowService.V1.ShutdownWorkerRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ShutdownWorkerResponse(
+            global::Temporalio.Api.WorkflowService.V1.ShutdownWorkerResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflowservice_v1_QueryWorkflowRequest(
@@ -2008,6 +3412,14 @@ namespace Temporalio.Worker
             {
                 await visitPayloads(value.QueryResult.Payloads_).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeWorkflowExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.DescribeWorkflowExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflow_v1_WorkflowExecutionConfig(
@@ -2100,6 +3512,70 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeTaskQueueRequest(
+            global::Temporalio.Api.WorkflowService.V1.DescribeTaskQueueRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeTaskQueueResponse(
+            global::Temporalio.Api.WorkflowService.V1.DescribeTaskQueueResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_GetClusterInfoRequest(
+            global::Temporalio.Api.WorkflowService.V1.GetClusterInfoRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_GetClusterInfoResponse(
+            global::Temporalio.Api.WorkflowService.V1.GetClusterInfoResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_GetSystemInfoRequest(
+            global::Temporalio.Api.WorkflowService.V1.GetSystemInfoRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_GetSystemInfoResponse(
+            global::Temporalio.Api.WorkflowService.V1.GetSystemInfoResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListTaskQueuePartitionsRequest(
+            global::Temporalio.Api.WorkflowService.V1.ListTaskQueuePartitionsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListTaskQueuePartitionsResponse(
+            global::Temporalio.Api.WorkflowService.V1.ListTaskQueuePartitionsResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflow_v1_NewWorkflowExecutionInfo(
             global::Temporalio.Api.Workflow.V1.NewWorkflowExecutionInfo value,
             PayloadVisitor visitPayload,
@@ -2160,6 +3636,22 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_CreateScheduleResponse(
+            global::Temporalio.Api.WorkflowService.V1.CreateScheduleResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeScheduleRequest(
+            global::Temporalio.Api.WorkflowService.V1.DescribeScheduleRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_DescribeScheduleResponse(
             global::Temporalio.Api.WorkflowService.V1.DescribeScheduleResponse value,
             PayloadVisitor visitPayload,
@@ -2190,6 +3682,70 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateScheduleResponse(
+            global::Temporalio.Api.WorkflowService.V1.UpdateScheduleResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_PatchScheduleRequest(
+            global::Temporalio.Api.WorkflowService.V1.PatchScheduleRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_PatchScheduleResponse(
+            global::Temporalio.Api.WorkflowService.V1.PatchScheduleResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListScheduleMatchingTimesRequest(
+            global::Temporalio.Api.WorkflowService.V1.ListScheduleMatchingTimesRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListScheduleMatchingTimesResponse(
+            global::Temporalio.Api.WorkflowService.V1.ListScheduleMatchingTimesResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeleteScheduleRequest(
+            global::Temporalio.Api.WorkflowService.V1.DeleteScheduleRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeleteScheduleResponse(
+            global::Temporalio.Api.WorkflowService.V1.DeleteScheduleResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListSchedulesRequest(
+            global::Temporalio.Api.WorkflowService.V1.ListSchedulesRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_schedule_v1_ScheduleListEntry(
             global::Temporalio.Api.Schedule.V1.ScheduleListEntry value,
             PayloadVisitor visitPayload,
@@ -2212,6 +3768,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_CountSchedulesRequest(
+            global::Temporalio.Api.WorkflowService.V1.CountSchedulesRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_CountSchedulesResponse_AggregationGroup(
             global::Temporalio.Api.WorkflowService.V1.CountSchedulesResponse.Types.AggregationGroup value,
             PayloadVisitor visitPayload,
@@ -2232,6 +3796,94 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_workflowservice_v1_CountSchedulesResponse_AggregationGroup(item_temporal_api_workflowservice_v1_CountSchedulesResponse_2, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateWorkerBuildIdCompatibilityRequest(
+            global::Temporalio.Api.WorkflowService.V1.UpdateWorkerBuildIdCompatibilityRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateWorkerBuildIdCompatibilityResponse(
+            global::Temporalio.Api.WorkflowService.V1.UpdateWorkerBuildIdCompatibilityResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_GetWorkerBuildIdCompatibilityRequest(
+            global::Temporalio.Api.WorkflowService.V1.GetWorkerBuildIdCompatibilityRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_GetWorkerBuildIdCompatibilityResponse(
+            global::Temporalio.Api.WorkflowService.V1.GetWorkerBuildIdCompatibilityResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateWorkerVersioningRulesRequest(
+            global::Temporalio.Api.WorkflowService.V1.UpdateWorkerVersioningRulesRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateWorkerVersioningRulesResponse(
+            global::Temporalio.Api.WorkflowService.V1.UpdateWorkerVersioningRulesResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_GetWorkerVersioningRulesRequest(
+            global::Temporalio.Api.WorkflowService.V1.GetWorkerVersioningRulesRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_GetWorkerVersioningRulesResponse(
+            global::Temporalio.Api.WorkflowService.V1.GetWorkerVersioningRulesResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_GetWorkerTaskReachabilityRequest(
+            global::Temporalio.Api.WorkflowService.V1.GetWorkerTaskReachabilityRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_GetWorkerTaskReachabilityResponse(
+            global::Temporalio.Api.WorkflowService.V1.GetWorkerTaskReachabilityResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeDeploymentRequest(
+            global::Temporalio.Api.WorkflowService.V1.DescribeDeploymentRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_deployment_v1_DeploymentInfo(
@@ -2257,6 +3909,14 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_deployment_v1_DeploymentInfo(value.DeploymentInfo, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeWorkerDeploymentVersionRequest(
+            global::Temporalio.Api.WorkflowService.V1.DescribeWorkerDeploymentVersionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_deployment_v1_VersionMetadata(
@@ -2350,6 +4010,30 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_ListDeploymentsRequest(
+            global::Temporalio.Api.WorkflowService.V1.ListDeploymentsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListDeploymentsResponse(
+            global::Temporalio.Api.WorkflowService.V1.ListDeploymentsResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_GetDeploymentReachabilityRequest(
+            global::Temporalio.Api.WorkflowService.V1.GetDeploymentReachabilityRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_GetDeploymentReachabilityResponse(
             global::Temporalio.Api.WorkflowService.V1.GetDeploymentReachabilityResponse value,
             PayloadVisitor visitPayload,
@@ -2359,6 +4043,14 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_deployment_v1_DeploymentInfo(value.DeploymentInfo, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_GetCurrentDeploymentRequest(
+            global::Temporalio.Api.WorkflowService.V1.GetCurrentDeploymentRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflowservice_v1_GetCurrentDeploymentResponse(
@@ -2412,6 +4104,118 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_SetWorkerDeploymentCurrentVersionRequest(
+            global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentCurrentVersionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_SetWorkerDeploymentCurrentVersionResponse(
+            global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentCurrentVersionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeWorkerDeploymentRequest(
+            global::Temporalio.Api.WorkflowService.V1.DescribeWorkerDeploymentRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeWorkerDeploymentResponse(
+            global::Temporalio.Api.WorkflowService.V1.DescribeWorkerDeploymentResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeleteWorkerDeploymentRequest(
+            global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeleteWorkerDeploymentResponse(
+            global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeleteWorkerDeploymentVersionRequest(
+            global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentVersionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeleteWorkerDeploymentVersionResponse(
+            global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentVersionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_SetWorkerDeploymentRampingVersionRequest(
+            global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentRampingVersionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_SetWorkerDeploymentRampingVersionResponse(
+            global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentRampingVersionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListWorkerDeploymentsRequest(
+            global::Temporalio.Api.WorkflowService.V1.ListWorkerDeploymentsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListWorkerDeploymentsResponse(
+            global::Temporalio.Api.WorkflowService.V1.ListWorkerDeploymentsResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_CreateWorkerDeploymentRequest(
+            global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_CreateWorkerDeploymentResponse(
+            global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_CreateWorkerDeploymentVersionRequest(
             global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentVersionRequest value,
             PayloadVisitor visitPayload,
@@ -2421,6 +4225,14 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_compute_v1_ComputeConfig(value.ComputeConfig, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_CreateWorkerDeploymentVersionResponse(
+            global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentVersionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_compute_v1_ComputeConfigScalingGroupUpdate(
@@ -2448,6 +4260,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionComputeConfigResponse(
+            global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionComputeConfigResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_ValidateWorkerDeploymentVersionComputeConfigRequest(
             global::Temporalio.Api.WorkflowService.V1.ValidateWorkerDeploymentVersionComputeConfigRequest value,
             PayloadVisitor visitPayload,
@@ -2460,6 +4280,14 @@ namespace Temporalio.Worker
                     await Visit_temporal_api_compute_v1_ComputeConfigScalingGroupUpdate(item_temporal_api_workflowservice_v1_ValidateWorkerDeploymentVersionComputeConfigRequest_6, visitPayload, visitPayloads).ConfigureAwait(false);
                 }
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ValidateWorkerDeploymentVersionComputeConfigResponse(
+            global::Temporalio.Api.WorkflowService.V1.ValidateWorkerDeploymentVersionComputeConfigResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionMetadataRequest(
@@ -2485,6 +4313,30 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_deployment_v1_VersionMetadata(value.Metadata, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_SetWorkerDeploymentManagerRequest(
+            global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentManagerRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_SetWorkerDeploymentManagerResponse(
+            global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentManagerResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_PollWorkflowExecutionUpdateRequest(
+            global::Temporalio.Api.WorkflowService.V1.PollWorkflowExecutionUpdateRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflowservice_v1_PollWorkflowExecutionUpdateResponse(
@@ -2552,6 +4404,70 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_batch_v1_BatchOperationReset(value.ResetOperation, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_StartBatchOperationResponse(
+            global::Temporalio.Api.WorkflowService.V1.StartBatchOperationResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_StopBatchOperationRequest(
+            global::Temporalio.Api.WorkflowService.V1.StopBatchOperationRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_StopBatchOperationResponse(
+            global::Temporalio.Api.WorkflowService.V1.StopBatchOperationResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeBatchOperationRequest(
+            global::Temporalio.Api.WorkflowService.V1.DescribeBatchOperationRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeBatchOperationResponse(
+            global::Temporalio.Api.WorkflowService.V1.DescribeBatchOperationResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListBatchOperationsRequest(
+            global::Temporalio.Api.WorkflowService.V1.ListBatchOperationsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListBatchOperationsResponse(
+            global::Temporalio.Api.WorkflowService.V1.ListBatchOperationsResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_PollNexusTaskQueueRequest(
+            global::Temporalio.Api.WorkflowService.V1.PollNexusTaskQueueRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_nexus_v1_StartOperationRequest(
@@ -2635,6 +4551,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_RespondNexusTaskCompletedResponse(
+            global::Temporalio.Api.WorkflowService.V1.RespondNexusTaskCompletedResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_RespondNexusTaskFailedRequest(
             global::Temporalio.Api.WorkflowService.V1.RespondNexusTaskFailedRequest value,
             PayloadVisitor visitPayload,
@@ -2644,6 +4568,318 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_failure_v1_Failure(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_RespondNexusTaskFailedResponse(
+            global::Temporalio.Api.WorkflowService.V1.RespondNexusTaskFailedResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateActivityOptionsRequest(
+            global::Temporalio.Api.WorkflowService.V1.UpdateActivityOptionsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateActivityOptionsResponse(
+            global::Temporalio.Api.WorkflowService.V1.UpdateActivityOptionsResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateWorkflowExecutionOptionsRequest(
+            global::Temporalio.Api.WorkflowService.V1.UpdateWorkflowExecutionOptionsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateWorkflowExecutionOptionsResponse(
+            global::Temporalio.Api.WorkflowService.V1.UpdateWorkflowExecutionOptionsResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_PauseActivityRequest(
+            global::Temporalio.Api.WorkflowService.V1.PauseActivityRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_PauseActivityResponse(
+            global::Temporalio.Api.WorkflowService.V1.PauseActivityResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UnpauseActivityRequest(
+            global::Temporalio.Api.WorkflowService.V1.UnpauseActivityRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UnpauseActivityResponse(
+            global::Temporalio.Api.WorkflowService.V1.UnpauseActivityResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ResetActivityRequest(
+            global::Temporalio.Api.WorkflowService.V1.ResetActivityRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ResetActivityResponse(
+            global::Temporalio.Api.WorkflowService.V1.ResetActivityResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_CreateWorkflowRuleRequest(
+            global::Temporalio.Api.WorkflowService.V1.CreateWorkflowRuleRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_CreateWorkflowRuleResponse(
+            global::Temporalio.Api.WorkflowService.V1.CreateWorkflowRuleResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeWorkflowRuleRequest(
+            global::Temporalio.Api.WorkflowService.V1.DescribeWorkflowRuleRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeWorkflowRuleResponse(
+            global::Temporalio.Api.WorkflowService.V1.DescribeWorkflowRuleResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeleteWorkflowRuleRequest(
+            global::Temporalio.Api.WorkflowService.V1.DeleteWorkflowRuleRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeleteWorkflowRuleResponse(
+            global::Temporalio.Api.WorkflowService.V1.DeleteWorkflowRuleResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListWorkflowRulesRequest(
+            global::Temporalio.Api.WorkflowService.V1.ListWorkflowRulesRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListWorkflowRulesResponse(
+            global::Temporalio.Api.WorkflowService.V1.ListWorkflowRulesResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_TriggerWorkflowRuleRequest(
+            global::Temporalio.Api.WorkflowService.V1.TriggerWorkflowRuleRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_TriggerWorkflowRuleResponse(
+            global::Temporalio.Api.WorkflowService.V1.TriggerWorkflowRuleResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_RecordWorkerHeartbeatRequest(
+            global::Temporalio.Api.WorkflowService.V1.RecordWorkerHeartbeatRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_RecordWorkerHeartbeatResponse(
+            global::Temporalio.Api.WorkflowService.V1.RecordWorkerHeartbeatResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListWorkersRequest(
+            global::Temporalio.Api.WorkflowService.V1.ListWorkersRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListWorkersResponse(
+            global::Temporalio.Api.WorkflowService.V1.ListWorkersResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_CountWorkersRequest(
+            global::Temporalio.Api.WorkflowService.V1.CountWorkersRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_CountWorkersResponse(
+            global::Temporalio.Api.WorkflowService.V1.CountWorkersResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateTaskQueueConfigRequest(
+            global::Temporalio.Api.WorkflowService.V1.UpdateTaskQueueConfigRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateTaskQueueConfigResponse(
+            global::Temporalio.Api.WorkflowService.V1.UpdateTaskQueueConfigResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_FetchWorkerConfigRequest(
+            global::Temporalio.Api.WorkflowService.V1.FetchWorkerConfigRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_FetchWorkerConfigResponse(
+            global::Temporalio.Api.WorkflowService.V1.FetchWorkerConfigResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateWorkerConfigRequest(
+            global::Temporalio.Api.WorkflowService.V1.UpdateWorkerConfigRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateWorkerConfigResponse(
+            global::Temporalio.Api.WorkflowService.V1.UpdateWorkerConfigResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeWorkerRequest(
+            global::Temporalio.Api.WorkflowService.V1.DescribeWorkerRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeWorkerResponse(
+            global::Temporalio.Api.WorkflowService.V1.DescribeWorkerResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_PauseWorkflowExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.PauseWorkflowExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_PauseWorkflowExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.PauseWorkflowExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UnpauseWorkflowExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.UnpauseWorkflowExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UnpauseWorkflowExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.UnpauseWorkflowExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflowservice_v1_StartActivityExecutionRequest(
@@ -2665,6 +4901,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_StartActivityExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.StartActivityExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_StartNexusOperationExecutionRequest(
             global::Temporalio.Api.WorkflowService.V1.StartNexusOperationExecutionRequest value,
             PayloadVisitor visitPayload,
@@ -2678,6 +4922,22 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_sdk_v1_UserMetadata(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_StartNexusOperationExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.StartNexusOperationExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeActivityExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.DescribeActivityExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_activity_v1_ActivityExecutionInfo(
@@ -2763,6 +5023,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_DescribeNexusOperationExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.DescribeNexusOperationExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_nexus_v1_NexusOperationExecutionCancellationInfo(
             global::Temporalio.Api.Nexus.V1.NexusOperationExecutionCancellationInfo value,
             PayloadVisitor visitPayload,
@@ -2816,6 +5084,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_PollActivityExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.PollActivityExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_PollActivityExecutionResponse(
             global::Temporalio.Api.WorkflowService.V1.PollActivityExecutionResponse value,
             PayloadVisitor visitPayload,
@@ -2825,6 +5101,14 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_activity_v1_ActivityExecutionOutcome(value.Outcome, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_PollNexusOperationExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.PollNexusOperationExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflowservice_v1_PollNexusOperationExecutionResponse(
@@ -2840,6 +5124,46 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_failure_v1_Failure(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListActivityExecutionsRequest(
+            global::Temporalio.Api.WorkflowService.V1.ListActivityExecutionsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListActivityExecutionsResponse(
+            global::Temporalio.Api.WorkflowService.V1.ListActivityExecutionsResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListNexusOperationExecutionsRequest(
+            global::Temporalio.Api.WorkflowService.V1.ListNexusOperationExecutionsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ListNexusOperationExecutionsResponse(
+            global::Temporalio.Api.WorkflowService.V1.ListNexusOperationExecutionsResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_CountActivityExecutionsRequest(
+            global::Temporalio.Api.WorkflowService.V1.CountActivityExecutionsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
         private static async Task Visit_temporal_api_workflowservice_v1_CountActivityExecutionsResponse_AggregationGroup(
@@ -2864,6 +5188,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static Task Visit_temporal_api_workflowservice_v1_CountNexusOperationExecutionsRequest(
+            global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_AggregationGroup(
             global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsResponse.Types.AggregationGroup value,
             PayloadVisitor visitPayload,
@@ -2884,6 +5216,166 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_AggregationGroup(item_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_2, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_RequestCancelActivityExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.RequestCancelActivityExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_RequestCancelActivityExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.RequestCancelActivityExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_RequestCancelNexusOperationExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.RequestCancelNexusOperationExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_RequestCancelNexusOperationExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.RequestCancelNexusOperationExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_TerminateActivityExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.TerminateActivityExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_TerminateActivityExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.TerminateActivityExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeleteActivityExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.DeleteActivityExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeleteActivityExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.DeleteActivityExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_PauseActivityExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.PauseActivityExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_PauseActivityExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.PauseActivityExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ResetActivityExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.ResetActivityExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_ResetActivityExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.ResetActivityExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UnpauseActivityExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UnpauseActivityExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.UnpauseActivityExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateActivityExecutionOptionsRequest(
+            global::Temporalio.Api.WorkflowService.V1.UpdateActivityExecutionOptionsRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_UpdateActivityExecutionOptionsResponse(
+            global::Temporalio.Api.WorkflowService.V1.UpdateActivityExecutionOptionsResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_TerminateNexusOperationExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.TerminateNexusOperationExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_TerminateNexusOperationExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.TerminateNexusOperationExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeleteNexusOperationExecutionRequest(
+            global::Temporalio.Api.WorkflowService.V1.DeleteNexusOperationExecutionRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static Task Visit_temporal_api_workflowservice_v1_DeleteNexusOperationExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.DeleteNexusOperationExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            return Task.CompletedTask;
         }
 
     }

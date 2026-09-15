@@ -5,6 +5,7 @@ using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Converters;
 using Temporalio.Nexus;
+using Temporalio.Tests.Converters;
 using Temporalio.Worker;
 using Temporalio.Worker.Interceptors;
 using Temporalio.Workflows;
@@ -69,7 +70,8 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
         var payloadConverter = new DefaultPayloadConverter(contextualEncodings);
         var dataConverter = new DataConverter(
             payloadConverter,
-            DataConverter.Default.FailureConverter);
+            DataConverter.Default.FailureConverter,
+            new Base64PayloadCodec());
         var clientOptions = (TemporalClientOptions)Client.Options.Clone();
         clientOptions.DataConverter = dataConverter;
         var client = new TemporalClient(Client.Connection, clientOptions);
