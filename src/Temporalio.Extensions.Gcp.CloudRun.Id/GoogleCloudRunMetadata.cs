@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 namespace Temporalio.Extensions.Gcp.CloudRun.Id
 {
     /// <summary>
-    /// Reads Google Cloud Run instance metadata to derive a Temporal worker identity for a
-    /// long-lived worker, on both Cloud Run worker pools and services.
+    /// Reads Google Cloud Run instance metadata to derive a Temporal worker identity on both Cloud Run worker pools and services.
     /// </summary>
     /// <remarks>
     /// Most callers should register a <see cref="CloudRunIDPlugin" />
