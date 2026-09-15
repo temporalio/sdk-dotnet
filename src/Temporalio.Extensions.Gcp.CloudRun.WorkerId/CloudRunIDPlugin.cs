@@ -7,7 +7,7 @@ using Temporalio.Common;
 namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
 {
     /// <summary>
-    /// Temporal client and worker plugin that derives the worker identity from Google Cloud Run
+    /// Temporal client and worker plugin that derives the client identity from Google Cloud Run
     /// instance metadata, on both Cloud Run worker pools and services.
     /// </summary>
     /// <remarks>
@@ -19,11 +19,11 @@ namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
     /// <para>
     /// The metadata fetch throws an <see cref="InvalidOperationException" /> at connect time when the
     /// process is not running on a Cloud Run worker pool or service. Tests and advanced
-    /// users can bypass the real fetch with <see cref="WorkerIdPluginOptions" />.
+    /// users can bypass the real fetch with <see cref="CloudRunIDPluginOptions" />.
     /// </para>
     /// WARNING: Google Cloud Run support is experimental.
     /// </remarks>
-    public class WorkerIdPlugin : SimplePlugin
+    public class CloudRunIDPlugin : SimplePlugin
     {
         private readonly Uri? metadataUri;
         private readonly TimeSpan? timeout;
@@ -31,23 +31,23 @@ namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
         private GoogleCloudRunMetadata? metadata;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkerIdPlugin"/> class using the default
+        /// Initializes a new instance of the <see cref="CloudRunIDPlugin"/> class using the default
         /// Cloud Run metadata server URI and timeout.
         /// </summary>
-        public WorkerIdPlugin()
-            : this(new WorkerIdPluginOptions())
+        public CloudRunIDPlugin()
+            : this(new CloudRunIDPluginOptions())
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkerIdPlugin"/> class.
+        /// Initializes a new instance of the <see cref="CloudRunIDPlugin"/> class.
         /// </summary>
         /// <param name="options">
         /// Plugin options, including optional pre-fetched metadata or metadata server URI and
         /// timeout overrides.
         /// </param>
-        public WorkerIdPlugin(WorkerIdPluginOptions options)
-            : base("Temporalio.Extensions.Gcp.CloudRun.WorkerId.WorkerIdPlugin")
+        public CloudRunIDPlugin(CloudRunIDPluginOptions options)
+            : base("Temporalio.Extensions.Gcp.CloudRun.WorkerId.CloudRunIDPlugin")
         {
             if (options == null)
             {

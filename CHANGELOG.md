@@ -22,7 +22,7 @@ to docs, or any other relevant information.
 ### Added
 
 - Added the experimental `Temporalio.Extensions.Gcp.CloudRun.WorkerId` package for long-lived
-  Temporal workers on Google Cloud Run worker pools and services. Register a single `WorkerIdPlugin`
+  Temporal workers on Google Cloud Run worker pools and services. Register a single `CloudRunIDPlugin`
   on your client's `Plugins`; it sets the worker identity from the Cloud Run instance at connect
   time (unless one is already configured), and workers created from that client inherit it.
 

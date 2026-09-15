@@ -10,7 +10,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
     /// long-lived worker, on both Cloud Run worker pools and services.
     /// </summary>
     /// <remarks>
-    /// Most callers should register a <see cref="WorkerIdPlugin" />
+    /// Most callers should register a <see cref="CloudRunIDPlugin" />
     /// on <see cref="Temporalio.Client.TemporalClientConnectOptions.Plugins" />, which fetches this
     /// metadata once at connect time and applies the worker identity automatically. This type is
     /// exposed for advanced use, for example reading <see cref="WorkerIdentity" /> directly.

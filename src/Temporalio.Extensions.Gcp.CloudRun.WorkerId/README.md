@@ -1,6 +1,6 @@
 # Google Cloud Run worker identity support
 
-This extension provides `WorkerIdPlugin`, a Temporal client/worker plugin that derives a worker
+This extension provides `CloudRunIDPlugin`, a Temporal client/worker plugin that derives a client
 identity from Google Cloud Run instance metadata, for Cloud Run worker pools and services.
 
 Add the `Temporalio.Extensions.Gcp.CloudRun.WorkerId` package from
@@ -11,7 +11,7 @@ using the `dotnet` CLI:
 
 ## Quick Start
 
-Construct a `WorkerIdPlugin`, register it on your client connect options via `Plugins`, then run a
+Construct a `CloudRunIDPlugin`, register it on your client connect options via `Plugins`, then run a
 normal long-lived worker. Registering it once on the client is enough: the plugin sets the client
 identity at connect time, and workers created from that client inherit it.
 
@@ -27,7 +27,7 @@ var connectOptions = new TemporalClientConnectOptions("my-namespace.a1b2c.tmprl.
     Namespace = "my-namespace",
     // Register the plugin once on the client. It reads the Cloud Run metadata at connect time and
     // propagates to workers created from the connected client.
-    Plugins = new[] { new WorkerIdPlugin() },
+    Plugins = new[] { new CloudRunIDPlugin() },
     // ... Temporal Cloud API key / mTLS credentials ...
 };
 
@@ -91,11 +91,11 @@ time, which usually means the process is not running on a Cloud Run worker pool 
 
 ## Testing and advanced use
 
-`WorkerIdPlugin` accepts a `WorkerIdPluginOptions` for tests and advanced scenarios. Set
+`CloudRunIDPlugin` accepts a `CloudRunIDPluginOptions` for tests and advanced scenarios. Set
 `MetadataUri` / `Timeout` to point the fetch at a different endpoint, or set `Metadata` to a
 pre-fetched `GoogleCloudRunMetadata` to skip the metadata server entirely:
 
 ```csharp
 var metadata = await GoogleCloudRunMetadata.FetchAsync();
-var plugin = new WorkerIdPlugin(new WorkerIdPluginOptions { Metadata = metadata });
+var plugin = new CloudRunIDPlugin(new CloudRunIDPluginOptions { Metadata = metadata });
 ```

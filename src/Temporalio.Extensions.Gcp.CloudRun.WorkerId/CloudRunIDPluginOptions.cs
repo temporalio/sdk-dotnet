@@ -3,10 +3,10 @@ using System;
 namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
 {
     /// <summary>
-    /// Options for <see cref="WorkerIdPlugin" />.
+    /// Options for <see cref="CloudRunIDPlugin" />.
     /// </summary>
     /// <remarks>WARNING: Google Cloud Run support is experimental.</remarks>
-    public class WorkerIdPluginOptions : ICloneable
+    public class CloudRunIDPluginOptions : ICloneable
     {
         /// <summary>
         /// Gets or sets pre-fetched Cloud Run metadata for the plugin to use.
