@@ -15,14 +15,17 @@ internal sealed class CloudRunMetadataServer : IDisposable
     private readonly int statusCode;
     private readonly string reasonPhrase;
     private readonly string body;
+    private readonly TimeSpan delay;
     private readonly List<string> requests = new();
     private readonly object gate = new();
 
-    public CloudRunMetadataServer(int statusCode = 200, string reasonPhrase = "OK", string body = "")
+    public CloudRunMetadataServer(
+        int statusCode = 200, string reasonPhrase = "OK", string body = "", TimeSpan delay = default)
     {
         this.statusCode = statusCode;
         this.reasonPhrase = reasonPhrase;
         this.body = body;
+        this.delay = delay;
         listener = new TcpListener(IPAddress.Loopback, 0);
         listener.Start();
         var port = ((IPEndPoint)listener.LocalEndpoint).Port;
@@ -90,6 +93,11 @@ internal sealed class CloudRunMetadataServer : IDisposable
         lock (gate)
         {
             requests.Add(request);
+        }
+
+        if (delay > TimeSpan.Zero)
+        {
+            await Task.Delay(delay);
         }
 
         var bodyBytes = Encoding.UTF8.GetBytes(body);

@@ -3,10 +3,10 @@ using System;
 namespace Temporalio.Extensions.Gcp.CloudRun.Id
 {
     /// <summary>
-    /// Internal seams for <see cref="CloudRunIDPlugin" />: pre-fetched metadata, or a metadata
+    /// Internal seams for <see cref="CloudRunIdPlugin" />: pre-fetched metadata, or a metadata
     /// server URI / timeout override. Used by tests, not part of the public API.
     /// </summary>
-    internal class CloudRunIDPluginOptions : ICloneable
+    internal class CloudRunIdPluginOptions : ICloneable
     {
         /// <summary>
         /// Gets or sets pre-fetched Cloud Run metadata for the plugin to use.

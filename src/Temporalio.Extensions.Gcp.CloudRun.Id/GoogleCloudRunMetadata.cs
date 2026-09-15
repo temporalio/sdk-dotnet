@@ -9,7 +9,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun.Id
     /// Reads Google Cloud Run instance metadata to derive a Temporal worker identity on both Cloud Run worker pools and services.
     /// </summary>
     /// <remarks>
-    /// Most callers should register a <see cref="CloudRunIDPlugin" />
+    /// Most callers should register a <see cref="CloudRunIdPlugin" />
     /// on <see cref="Temporalio.Client.TemporalClientConnectOptions.Plugins" />, which fetches this
     /// metadata once at connect time and applies the worker identity automatically. This type is
     /// exposed for advanced use, for example reading <see cref="Identity" /> directly.
@@ -83,19 +83,10 @@ namespace Temporalio.Extensions.Gcp.CloudRun.Id
         }
 
         /// <summary>
-        /// Fetch Cloud Run metadata using the default metadata server URI and timeout.
+        /// Fetch Cloud Run metadata. The metadata server URI and request timeout default when null.
         /// </summary>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>The resolved Cloud Run metadata.</returns>
-        public static Task<GoogleCloudRunMetadata> FetchAsync(
-            CancellationToken cancellationToken = default) =>
-            FetchAsync(DefaultMetadataUri, DefaultTimeout, cancellationToken);
-
-        /// <summary>
-        /// Fetch Cloud Run metadata from the given metadata server URI.
-        /// </summary>
-        /// <param name="metadataUri">Metadata server URI for the instance id.</param>
-        /// <param name="timeout">Timeout for the metadata request.</param>
+        /// <param name="metadataUri">Metadata server URI for the instance id, or null for the default.</param>
+        /// <param name="timeout">Timeout for the metadata request, or null for the default.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>The resolved Cloud Run metadata.</returns>
         /// <remarks>
@@ -107,14 +98,16 @@ namespace Temporalio.Extensions.Gcp.CloudRun.Id
         /// <c>Metadata-Flavor: Google</c> request header.
         /// </remarks>
         /// <exception cref="InvalidOperationException">
-        /// Thrown when the instance id cannot be read from the metadata server, which usually means
-        /// the process is not running on a Google Cloud Run worker pool or service.
+        /// Thrown when the instance id cannot be read from the metadata server (it is unreachable,
+        /// times out, or returns an empty id), which usually means the process is not running on a
+        /// Google Cloud Run worker pool or service.
         /// </exception>
         public static async Task<GoogleCloudRunMetadata> FetchAsync(
-            Uri metadataUri,
-            TimeSpan timeout,
+            Uri? metadataUri = null,
+            TimeSpan? timeout = null,
             CancellationToken cancellationToken = default)
         {
+            var uri = metadataUri ?? DefaultMetadataUri;
             var name = FirstNonEmptyEnvironmentVariable(
                 WorkerPoolEnvironmentVariable,
                 ServiceEnvironmentVariable);
@@ -122,8 +115,8 @@ namespace Temporalio.Extensions.Gcp.CloudRun.Id
                 WorkerPoolRevisionEnvironmentVariable,
                 ServiceRevisionEnvironmentVariable);
 
-            using var httpClient = new HttpClient { Timeout = timeout };
-            using var request = new HttpRequestMessage(HttpMethod.Get, metadataUri);
+            using var httpClient = new HttpClient { Timeout = timeout ?? DefaultTimeout };
+            using var request = new HttpRequestMessage(HttpMethod.Get, uri);
             request.Headers.Add(MetadataFlavorHeader, MetadataFlavorValue);
 
             string instanceId;
@@ -139,30 +132,28 @@ namespace Temporalio.Extensions.Gcp.CloudRun.Id
             {
                 throw new InvalidOperationException(
                     "Failed to read the Google Cloud Run instance id from the metadata server at " +
-                    $"{metadataUri}. This process may not be running on a Google Cloud Run worker " +
-                    "pool or service.",
+                    $"{uri}. This process may not be running on a Google Cloud Run worker pool or " +
+                    "service.",
                     e);
+            }
+            catch (OperationCanceledException e) when (!cancellationToken.IsCancellationRequested)
+            {
+                throw new InvalidOperationException(
+                    "Timed out reading the Google Cloud Run instance id from the metadata server " +
+                    $"at {uri}. This process may not be running on a Google Cloud Run worker pool " +
+                    "or service.",
+                    e);
+            }
+
+            if (instanceId.Length == 0)
+            {
+                throw new InvalidOperationException(
+                    $"The Google Cloud Run metadata server at {uri} returned an empty instance id. " +
+                    "This process may not be running on a Google Cloud Run worker pool or service.");
             }
 
             return new GoogleCloudRunMetadata(instanceId, name, revision);
         }
-
-        /// <summary>
-        /// Fetch Cloud Run metadata, filling in the default metadata server URI and timeout for any
-        /// argument that is null.
-        /// </summary>
-        /// <param name="metadataUri">Metadata server URI, or null for the default.</param>
-        /// <param name="timeout">Metadata request timeout, or null for the default.</param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>The resolved Cloud Run metadata.</returns>
-        internal static Task<GoogleCloudRunMetadata> FetchWithDefaultsAsync(
-            Uri? metadataUri,
-            TimeSpan? timeout,
-            CancellationToken cancellationToken) =>
-            FetchAsync(
-                metadataUri ?? DefaultMetadataUri,
-                timeout ?? DefaultTimeout,
-                cancellationToken);
 
         private static string FirstNonEmptyEnvironmentVariable(params string[] names)
         {

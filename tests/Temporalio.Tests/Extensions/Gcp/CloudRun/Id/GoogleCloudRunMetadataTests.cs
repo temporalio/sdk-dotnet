@@ -126,6 +126,39 @@ public class GoogleCloudRunMetadataTests
     }
 
     [Fact]
+    public async Task FetchAsync_ThrowsWhenRequestTimesOut()
+    {
+        using var server = new CloudRunMetadataServer(
+            body: "instance-1", delay: TimeSpan.FromSeconds(2));
+        using var env = CloudRunEnvironment(
+            workerPool: null,
+            service: null,
+            workerPoolRevision: null,
+            serviceRevision: null);
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => GoogleCloudRunMetadata.FetchAsync(server.Uri, TimeSpan.FromMilliseconds(100)));
+
+        Assert.Contains("Timed out", ex.Message);
+    }
+
+    [Fact]
+    public async Task FetchAsync_ThrowsWhenInstanceIdEmpty()
+    {
+        using var server = new CloudRunMetadataServer(body: "  \n");
+        using var env = CloudRunEnvironment(
+            workerPool: null,
+            service: null,
+            workerPoolRevision: null,
+            serviceRevision: null);
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => GoogleCloudRunMetadata.FetchAsync(server.Uri, TimeSpan.FromSeconds(5)));
+
+        Assert.Contains("empty instance id", ex.Message);
+    }
+
+    [Fact]
     public void Identity_UsesInstanceIdAndRevision()
     {
         var metadata = new GoogleCloudRunMetadata("instance-1", "pool-name", "revision-1");

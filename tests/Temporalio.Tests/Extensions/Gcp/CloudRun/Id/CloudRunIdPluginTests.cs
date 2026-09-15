@@ -9,7 +9,7 @@ using Xunit;
 // environment variables never run in parallel with each other or with the sibling extension tests
 // that set the same variables.
 [Collection(OpenTelemetryEnvironmentDefinition.Name)]
-public class CloudRunIDPluginTests
+public class CloudRunIdPluginTests
 {
     private const string WorkerPoolEnvironmentVariable = "CLOUD_RUN_WORKER_POOL";
     private const string ServiceEnvironmentVariable = "K_SERVICE";
@@ -18,14 +18,14 @@ public class CloudRunIDPluginTests
 
     [Fact]
     public void Constructor_NullOptionsThrows() =>
-        Assert.Throws<ArgumentNullException>(() => new CloudRunIDPlugin(null!));
+        Assert.Throws<ArgumentNullException>(() => new CloudRunIdPlugin(null!));
 
     [Fact]
     public async Task ConnectAsync_SetsIdentityWhenUnset()
     {
         using var server = new CloudRunMetadataServer(body: "instance-1");
         using var env = CloudRunEnvironment(revision: "revision-1");
-        var plugin = new CloudRunIDPlugin(new CloudRunIDPluginOptions
+        var plugin = new CloudRunIdPlugin(new CloudRunIdPluginOptions
         {
             MetadataUri = server.Uri,
             Timeout = TimeSpan.FromSeconds(5),
@@ -50,7 +50,7 @@ public class CloudRunIDPluginTests
     {
         using var server = new CloudRunMetadataServer(body: "instance-1");
         using var env = CloudRunEnvironment(revision: "revision-1");
-        var plugin = new CloudRunIDPlugin(new CloudRunIDPluginOptions
+        var plugin = new CloudRunIdPlugin(new CloudRunIdPluginOptions
         {
             MetadataUri = server.Uri,
             Timeout = TimeSpan.FromSeconds(5),
@@ -73,7 +73,7 @@ public class CloudRunIDPluginTests
         }
 
         // The server is disposed, so nothing is listening on that port anymore.
-        var plugin = new CloudRunIDPlugin(new CloudRunIDPluginOptions
+        var plugin = new CloudRunIdPlugin(new CloudRunIdPluginOptions
         {
             MetadataUri = uri,
             Timeout = TimeSpan.FromSeconds(5),
@@ -99,7 +99,7 @@ public class CloudRunIDPluginTests
     {
         using var server = new CloudRunMetadataServer(body: "instance-1");
         using var env = CloudRunEnvironment(revision: "revision-1");
-        var plugin = new CloudRunIDPlugin(new CloudRunIDPluginOptions
+        var plugin = new CloudRunIdPlugin(new CloudRunIdPluginOptions
         {
             MetadataUri = server.Uri,
             Timeout = TimeSpan.FromSeconds(5),

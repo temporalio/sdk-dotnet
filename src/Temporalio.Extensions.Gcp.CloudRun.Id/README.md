@@ -1,6 +1,6 @@
 # Google Cloud Run worker identity support
 
-This extension provides `CloudRunIDPlugin`, a Temporal client/worker plugin that derives a client
+This extension provides `CloudRunIdPlugin`, a Temporal client/worker plugin that derives a client
 identity from Google Cloud Run instance metadata, for Cloud Run worker pools and services.
 
 Add the `Temporalio.Extensions.Gcp.CloudRun.Id` package from
@@ -11,12 +11,13 @@ using the `dotnet` CLI:
 
 ## Quick Start
 
-Construct a `CloudRunIDPlugin`, register it on your client connect options via `Plugins`, then run a
+Construct a `CloudRunIdPlugin`, register it on your client connect options via `Plugins`, then run a
 normal long-lived worker. Registering it once on the client is enough: the plugin sets the client
 identity at connect time, and workers created from that client inherit it.
 
 ```csharp
 using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Temporalio.Client;
 using Temporalio.Extensions.Gcp.CloudRun.Id;
@@ -27,7 +28,7 @@ var connectOptions = new TemporalClientConnectOptions("my-namespace.a1b2c.tmprl.
     Namespace = "my-namespace",
     // Register the plugin once on the client. It reads the Cloud Run metadata at connect time and
     // propagates to workers created from the connected client.
-    Plugins = new[] { new CloudRunIDPlugin() },
+    Plugins = new[] { new CloudRunIdPlugin() },
     // ... Temporal Cloud API key / mTLS credentials ...
 };
 
@@ -41,11 +42,11 @@ using var worker = new TemporalWorker(
 
 // Cloud Run sends SIGTERM before stopping the instance; cancel the worker on it.
 using var shutdown = new CancellationTokenSource();
-Console.CancelKeyPress += (_, eventArgs) =>
+using var sigterm = PosixSignalRegistration.Create(PosixSignal.SIGTERM, context =>
 {
-    eventArgs.Cancel = true;
+    context.Cancel = true;
     shutdown.Cancel();
-};
+});
 
 try
 {
@@ -56,6 +57,10 @@ catch (OperationCanceledException)
     // Expected shutdown path.
 }
 ```
+
+> **Note:** the plugin applies the identity when the client connects, so it only runs if your client
+> connects with the plugin registered. If the client is created lazily — as some dependency-injection
+> setups do — the plugin may not be applied; register it on the connect options the client is built from.
 
 If you need the raw values instead, call `GoogleCloudRunMetadata.FetchAsync()` directly and read
 `Identity` yourself.

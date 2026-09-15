@@ -22,7 +22,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun.Id
     /// </para>
     /// WARNING: Google Cloud Run support is experimental.
     /// </remarks>
-    public class CloudRunIDPlugin : SimplePlugin
+    public class CloudRunIdPlugin : SimplePlugin
     {
         private readonly Uri? metadataUri;
         private readonly TimeSpan? timeout;
@@ -30,21 +30,21 @@ namespace Temporalio.Extensions.Gcp.CloudRun.Id
         private GoogleCloudRunMetadata? metadata;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CloudRunIDPlugin"/> class using the default
+        /// Initializes a new instance of the <see cref="CloudRunIdPlugin"/> class using the default
         /// Cloud Run metadata server URI and timeout.
         /// </summary>
-        public CloudRunIDPlugin()
-            : this(new CloudRunIDPluginOptions())
+        public CloudRunIdPlugin()
+            : this(new CloudRunIdPluginOptions())
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CloudRunIDPlugin"/> class from internal
+        /// Initializes a new instance of the <see cref="CloudRunIdPlugin"/> class from internal
         /// test seams (pre-fetched metadata, or a metadata server URI / timeout override).
         /// </summary>
         /// <param name="options">Internal options.</param>
-        internal CloudRunIDPlugin(CloudRunIDPluginOptions options)
-            : base("Temporalio.Extensions.Gcp.CloudRun.Id.CloudRunIDPlugin")
+        internal CloudRunIdPlugin(CloudRunIdPluginOptions options)
+            : base("Temporalio.Extensions.Gcp.CloudRun.Id.CloudRunIdPlugin")
         {
             if (options == null)
             {
@@ -84,7 +84,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun.Id
                 }
             }
 
-            var fetched = await GoogleCloudRunMetadata.FetchWithDefaultsAsync(
+            var fetched = await GoogleCloudRunMetadata.FetchAsync(
                 metadataUri, timeout, cancellationToken).ConfigureAwait(false);
 
             lock (metadataLock)
