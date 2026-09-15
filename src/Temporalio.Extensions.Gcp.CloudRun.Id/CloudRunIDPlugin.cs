@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Temporalio.Client;
 using Temporalio.Common;
 
-namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
+namespace Temporalio.Extensions.Gcp.CloudRun.Id
 {
     /// <summary>
     /// Temporal client and worker plugin that derives the client identity from Google Cloud Run
@@ -47,7 +47,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
         /// timeout overrides.
         /// </param>
         public CloudRunIDPlugin(CloudRunIDPluginOptions options)
-            : base("Temporalio.Extensions.Gcp.CloudRun.WorkerId.CloudRunIDPlugin")
+            : base("Temporalio.Extensions.Gcp.CloudRun.Id.CloudRunIDPlugin")
         {
             if (options == null)
             {
@@ -66,7 +66,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
             var resolved = await GetMetadataAsync(CancellationToken.None).ConfigureAwait(false);
             if (string.IsNullOrEmpty(options.Identity))
             {
-                options.Identity = resolved.WorkerIdentity;
+                options.Identity = resolved.Identity;
             }
             return await continuation(options).ConfigureAwait(false);
         }

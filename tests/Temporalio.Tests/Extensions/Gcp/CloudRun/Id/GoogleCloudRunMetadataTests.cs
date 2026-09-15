@@ -1,6 +1,6 @@
-namespace Temporalio.Tests.Extensions.Gcp.CloudRun.WorkerId;
+namespace Temporalio.Tests.Extensions.Gcp.CloudRun.Id;
 
-using Temporalio.Extensions.Gcp.CloudRun.WorkerId;
+using Temporalio.Extensions.Gcp.CloudRun.Id;
 using Temporalio.Tests.Extensions.OpenTelemetry;
 using Xunit;
 
@@ -126,27 +126,27 @@ public class GoogleCloudRunMetadataTests
     }
 
     [Fact]
-    public void WorkerIdentity_UsesInstanceIdAndRevision()
+    public void Identity_UsesInstanceIdAndRevision()
     {
         var metadata = new GoogleCloudRunMetadata("instance-1", "pool-name", "revision-1");
 
-        Assert.Equal("instance-1@revision-1", metadata.WorkerIdentity);
+        Assert.Equal("instance-1@revision-1", metadata.Identity);
     }
 
     [Fact]
-    public void WorkerIdentity_FallsBackToNameWhenRevisionEmpty()
+    public void Identity_FallsBackToNameWhenRevisionEmpty()
     {
         var metadata = new GoogleCloudRunMetadata("instance-1", "pool-name", string.Empty);
 
-        Assert.Equal("instance-1@pool-name", metadata.WorkerIdentity);
+        Assert.Equal("instance-1@pool-name", metadata.Identity);
     }
 
     [Fact]
-    public void WorkerIdentity_FallsBackToInstanceIdWhenNameAndRevisionEmpty()
+    public void Identity_FallsBackToInstanceIdWhenNameAndRevisionEmpty()
     {
         var metadata = new GoogleCloudRunMetadata("instance-1", string.Empty, string.Empty);
 
-        Assert.Equal("instance-1", metadata.WorkerIdentity);
+        Assert.Equal("instance-1", metadata.Identity);
     }
 
     private EnvironmentScope CloudRunEnvironment(

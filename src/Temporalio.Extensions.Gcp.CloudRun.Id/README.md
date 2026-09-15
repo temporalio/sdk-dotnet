@@ -3,11 +3,11 @@
 This extension provides `CloudRunIDPlugin`, a Temporal client/worker plugin that derives a client
 identity from Google Cloud Run instance metadata, for Cloud Run worker pools and services.
 
-Add the `Temporalio.Extensions.Gcp.CloudRun.WorkerId` package from
-[NuGet](https://www.nuget.org/packages/Temporalio.Extensions.Gcp.CloudRun.WorkerId). For example,
+Add the `Temporalio.Extensions.Gcp.CloudRun.Id` package from
+[NuGet](https://www.nuget.org/packages/Temporalio.Extensions.Gcp.CloudRun.Id). For example,
 using the `dotnet` CLI:
 
-    dotnet add package Temporalio.Extensions.Gcp.CloudRun.WorkerId
+    dotnet add package Temporalio.Extensions.Gcp.CloudRun.Id
 
 ## Quick Start
 
@@ -19,7 +19,7 @@ identity at connect time, and workers created from that client inherit it.
 using System;
 using System.Threading;
 using Temporalio.Client;
-using Temporalio.Extensions.Gcp.CloudRun.WorkerId;
+using Temporalio.Extensions.Gcp.CloudRun.Id;
 using Temporalio.Worker;
 
 var connectOptions = new TemporalClientConnectOptions("my-namespace.a1b2c.tmprl.cloud:7233")
@@ -58,7 +58,7 @@ catch (OperationCanceledException)
 ```
 
 If you need the raw values instead, call `GoogleCloudRunMetadata.FetchAsync()` directly and read
-`WorkerIdentity` yourself.
+`Identity` yourself.
 
 ## How it works
 
@@ -80,7 +80,7 @@ Cloud Run worker pools receive the `CLOUD_RUN_*` variables (and no `K_*` variabl
 services receive the `K_*` variables. The metadata server is available on both, so resolving the
 name and revision in that order covers both worker pools and services.
 
-From those values the client hook sets `TemporalConnectionOptions.Identity` to `WorkerIdentity`,
+From those values the client hook sets `TemporalConnectionOptions.Identity` to `Identity`,
 which is `{InstanceId}@{Revision}`, falling back to `{InstanceId}@{Name}` when the revision is empty,
 or just `{InstanceId}` when both are empty. It only sets the identity when one is not already
 configured, so an explicitly configured identity wins. Workers created from the connected client

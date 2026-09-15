@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
+namespace Temporalio.Extensions.Gcp.CloudRun.Id
 {
     /// <summary>
     /// Reads Google Cloud Run instance metadata to derive a Temporal worker identity for a
@@ -13,7 +13,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
     /// Most callers should register a <see cref="CloudRunIDPlugin" />
     /// on <see cref="Temporalio.Client.TemporalClientConnectOptions.Plugins" />, which fetches this
     /// metadata once at connect time and applies the worker identity automatically. This type is
-    /// exposed for advanced use, for example reading <see cref="WorkerIdentity" /> directly.
+    /// exposed for advanced use, for example reading <see cref="Identity" /> directly.
     /// WARNING: Google Cloud Run support is experimental.
     /// </remarks>
     public sealed class GoogleCloudRunMetadata
@@ -67,7 +67,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun.WorkerId
         /// <c>{InstanceId}@{Revision}</c>, falling back to <c>{InstanceId}@{Name}</c> when the
         /// revision is empty, or just <c>{InstanceId}</c> when both are empty.
         /// </summary>
-        public string WorkerIdentity
+        public string Identity
         {
             get
             {
