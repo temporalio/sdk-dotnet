@@ -16,8 +16,14 @@ document as your quick reference when submitting pull requests.
   tests.
 - Declaration lists in config files are kept alphabetized, case-insensitively and ignoring any
   quoting. This covers `Directory.Packages.props`, each `ItemGroup` in `Directory.Build.props`,
-  `.config/dotnet-tools.json`, the `[tasks.*]` blocks in `mise.toml`, and the Dependabot `ignore`
-  list. Insert new entries in order rather than appending them.
+  `.config/dotnet-tools.json`, and the `[tasks.*]` blocks in `mise.toml`. Insert new entries in
+  order rather than appending them.
+- To change a package version, edit `Directory.Packages.props` and then run
+  `dotnet restore --force-evaluate` at the repository root to regenerate the `packages.lock.json`
+  files, since CI restores them in locked mode. Never add a `PackageReference` or
+  `VersionOverride` to a project to move a version. Dependencies of the shipped `src/*` projects
+  are deliberately held at low version floors so downstream consumers are not forced forward;
+  raise one only when asked to.
 - The build treats warnings as errors (`TreatWarningsAsErrors`) and enables the full analyzer set
   (`AnalysisMode=AllEnabledByDefault`) plus StyleCop. A build that produces analyzer warnings will
   fail. Fix the underlying issue rather than suppressing it, unless a suppression is already the
