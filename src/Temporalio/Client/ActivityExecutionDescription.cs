@@ -15,7 +15,6 @@ namespace Temporalio.Client
     /// <summary>
     /// Description of a standalone activity execution from a describe call.
     /// </summary>
-    /// <remarks>WARNING: Standalone activities are experimental.</remarks>
     public class ActivityExecutionDescription : ActivityExecution
     {
         private readonly DataConverter dataConverter;

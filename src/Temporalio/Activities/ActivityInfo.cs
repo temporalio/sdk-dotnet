@@ -73,7 +73,6 @@ namespace Temporalio.Activities
         /// <summary>
         /// Gets a value indicating whether this activity was started by a workflow.
         /// </summary>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         public bool IsWorkflowActivity => WorkflowId != null;
 
         /// <summary>

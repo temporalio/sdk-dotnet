@@ -280,7 +280,6 @@ namespace Temporalio.Client
         /// Activity did not complete successfully.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         public static async Task<TResult> ExecuteActivityAsync<TResult>(
             this ITemporalClient client,
             Expression<Func<Task<TResult>>> activityCall,
@@ -308,7 +307,6 @@ namespace Temporalio.Client
         /// Activity did not complete successfully.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         public static async Task ExecuteActivityAsync(
             this ITemporalClient client,
             Expression<Func<Task>> activityCall,
@@ -337,7 +335,6 @@ namespace Temporalio.Client
         /// Activity did not complete successfully.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         public static async Task ExecuteActivityAsync(
             this ITemporalClient client,
             string activity,
@@ -368,7 +365,6 @@ namespace Temporalio.Client
         /// Activity did not complete successfully.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
         public static async Task<TResult> ExecuteActivityAsync<TResult>(
             this ITemporalClient client,
             string activity,

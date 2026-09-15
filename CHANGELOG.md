@@ -19,6 +19,15 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### Added
+
+- Added the experimental `Temporalio.Extensions.Gcp.CloudRun.WorkerId` package for long-lived
+  Temporal workers on Google Cloud Run worker pools and services. Register a single `WorkerIdPlugin`
+  on your client's `Plugins`; it sets the worker identity from the Cloud Run instance at connect
+  time (unless one is already configured), and workers created from that client inherit it.
+
+## [1.19.0] - 2026-09-14
+
 ### :boom: Breaking Changes
 
 - Renamed and removed several experimental methods and properties in Standalone Activities APIs:
@@ -33,10 +42,6 @@ to docs, or any other relevant information.
 
 ### Added
 
-- Added the experimental `Temporalio.Extensions.Gcp.CloudRun.WorkerId` package for long-lived
-  Temporal workers on Google Cloud Run worker pools and services. Register a single `WorkerIdPlugin`
-  on your client's `Plugins`; it sets the worker identity from the Cloud Run instance at connect
-  time (unless one is already configured), and workers created from that client inherit it.
 - New options in `ActivityDescribeOptions` that can be used to retrieve data associated with
   activity execution, such as input and result.
 - New properties and methods in `ActivityExecution` and `ActivityExecutionDescription`:
@@ -66,6 +71,8 @@ to docs, or any other relevant information.
 
 ### Changed
 
+- Standalone Activities are now generally available (GA). Standalone activities as Nexus operations
+  remain experimental.
 - A non-retryable `ApplicationFailureException` with error type `PayloadValidationError` thrown by a
   payload codec or payload converter while decoding Nexus operation input is now reported as a
   non-retryable `BadRequest` handler exception (with the application failure as its cause) instead of

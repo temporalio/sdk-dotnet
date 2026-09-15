@@ -5,7 +5,6 @@ namespace Temporalio.Client
     /// <summary>
     /// Options for describing a standalone activity.
     /// </summary>
-    /// <remarks>WARNING: Standalone activities are experimental.</remarks>
     public class ActivityDescribeOptions : ICloneable
     {
         /// <summary>
