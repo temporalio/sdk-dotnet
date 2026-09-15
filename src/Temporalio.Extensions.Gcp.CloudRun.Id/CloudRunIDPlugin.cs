@@ -18,8 +18,7 @@ namespace Temporalio.Extensions.Gcp.CloudRun.Id
     /// from the connected client inherit that identity.
     /// <para>
     /// The metadata fetch throws an <see cref="InvalidOperationException" /> at connect time when the
-    /// process is not running on a Cloud Run worker pool or service. Tests and advanced
-    /// users can bypass the real fetch with <see cref="CloudRunIDPluginOptions" />.
+    /// process is not running on a Cloud Run worker pool or service.
     /// </para>
     /// WARNING: Google Cloud Run support is experimental.
     /// </remarks>
@@ -40,13 +39,11 @@ namespace Temporalio.Extensions.Gcp.CloudRun.Id
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CloudRunIDPlugin"/> class.
+        /// Initializes a new instance of the <see cref="CloudRunIDPlugin"/> class from internal
+        /// test seams (pre-fetched metadata, or a metadata server URI / timeout override).
         /// </summary>
-        /// <param name="options">
-        /// Plugin options, including optional pre-fetched metadata or metadata server URI and
-        /// timeout overrides.
-        /// </param>
-        public CloudRunIDPlugin(CloudRunIDPluginOptions options)
+        /// <param name="options">Internal options.</param>
+        internal CloudRunIDPlugin(CloudRunIDPluginOptions options)
             : base("Temporalio.Extensions.Gcp.CloudRun.Id.CloudRunIDPlugin")
         {
             if (options == null)

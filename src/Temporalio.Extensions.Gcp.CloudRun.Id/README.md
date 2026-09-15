@@ -88,14 +88,3 @@ inherit that identity.
 
 If the metadata server cannot be reached, the plugin throws an `InvalidOperationException` at connect
 time, which usually means the process is not running on a Cloud Run worker pool or service.
-
-## Testing and advanced use
-
-`CloudRunIDPlugin` accepts a `CloudRunIDPluginOptions` for tests and advanced scenarios. Set
-`MetadataUri` / `Timeout` to point the fetch at a different endpoint, or set `Metadata` to a
-pre-fetched `GoogleCloudRunMetadata` to skip the metadata server entirely:
-
-```csharp
-var metadata = await GoogleCloudRunMetadata.FetchAsync();
-var plugin = new CloudRunIDPlugin(new CloudRunIDPluginOptions { Metadata = metadata });
-```
