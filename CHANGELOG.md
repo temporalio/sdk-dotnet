@@ -19,6 +19,12 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### Added
+
+- Added the experimental `Temporalio.Extensions.WorkflowStreams` package for durable, batched,
+  offset-based publish/subscribe streams hosted by workflows, interoperable with other Temporal
+  SDK Workflow Streams implementations.
+
 ## [1.19.0] - 2026-09-14
 
 ### :boom: Breaking Changes
