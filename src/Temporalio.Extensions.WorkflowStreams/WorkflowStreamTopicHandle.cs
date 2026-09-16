@@ -1,7 +1,11 @@
 namespace Temporalio.Extensions.WorkflowStreams
 {
-    /// <summary>A workflow-side handle bound to one topic.</summary>
-    /// <remarks>WARNING: Workflow Streams is experimental and may change.</remarks>
+    /// <summary>
+    /// A workflow-side handle bound to one topic.
+    /// </summary>
+    /// <remarks>
+    /// WARNING: Workflow Streams is experimental and may change.
+    /// </remarks>
     public sealed class WorkflowStreamTopicHandle
     {
         private readonly WorkflowStream stream;
@@ -9,19 +13,29 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowStreamTopicHandle"/> class.
         /// </summary>
-        /// <param name="stream">Workflow stream whose global log receives publications.</param>
-        /// <param name="name">Normalized topic name.</param>
+        /// <param name="stream">
+        /// Workflow stream whose global log receives publications.
+        /// </param>
+        /// <param name="name">
+        /// Normalized topic name.
+        /// </param>
         internal WorkflowStreamTopicHandle(WorkflowStream stream, string name)
         {
             this.stream = stream;
             Name = name ?? string.Empty;
         }
 
-        /// <summary>Gets the topic name.</summary>
+        /// <summary>
+        /// Gets the topic name.
+        /// </summary>
         public string Name { get; }
 
-        /// <summary>Appends a value to the workflow's durable stream log.</summary>
-        /// <param name="value">The value or pre-built Temporal payload to append.</param>
+        /// <summary>
+        /// Appends a value to the workflow's durable stream log.
+        /// </summary>
+        /// <param name="value">
+        /// The value or pre-built Temporal payload to append.
+        /// </param>
         public void Publish(object? value) => stream.Publish(Name, value);
     }
 }

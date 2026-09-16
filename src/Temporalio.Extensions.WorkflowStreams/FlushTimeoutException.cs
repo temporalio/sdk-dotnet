@@ -11,8 +11,12 @@ namespace Temporalio.Extensions.WorkflowStreams
     /// </remarks>
     public class FlushTimeoutException : TemporalException
     {
-        /// <summary>Initializes a new instance of the <see cref="FlushTimeoutException"/> class.</summary>
-        /// <param name="message">Description of the expired ambiguous-delivery window.</param>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FlushTimeoutException"/> class.
+        /// </summary>
+        /// <param name="message">
+        /// Description of the expired ambiguous-delivery window.
+        /// </param>
         internal FlushTimeoutException(string message)
             : base(message)
         {

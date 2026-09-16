@@ -4,8 +4,12 @@ using System.Text.Json.Serialization;
 
 namespace Temporalio.Extensions.WorkflowStreams
 {
-    /// <summary>Serializable Workflow Streams state for continue-as-new.</summary>
-    /// <remarks>WARNING: Workflow Streams is experimental and may change.</remarks>
+    /// <summary>
+    /// Serializable Workflow Streams state for continue-as-new.
+    /// </summary>
+    /// <remarks>
+    /// WARNING: Workflow Streams is experimental and may change.
+    /// </remarks>
     public sealed class WorkflowStreamState
     {
         private IReadOnlyCollection<WorkflowStreamWireItem> log =
@@ -17,7 +21,9 @@ namespace Temporalio.Extensions.WorkflowStreams
         private IReadOnlyDictionary<string, double> publisherLastSeen =
             new Dictionary<string, double>();
 
-        /// <summary>Gets or sets the retained stream log.</summary>
+        /// <summary>
+        /// Gets or sets the retained stream log.
+        /// </summary>
         [JsonPropertyName("log")]
         public IReadOnlyCollection<WorkflowStreamWireItem> Log
         {
@@ -25,11 +31,15 @@ namespace Temporalio.Extensions.WorkflowStreams
             set => log = value ?? Array.Empty<WorkflowStreamWireItem>();
         }
 
-        /// <summary>Gets or sets the global offset represented by the start of <see cref="Log"/>.</summary>
+        /// <summary>
+        /// Gets or sets the global offset represented by the start of <see cref="Log"/>.
+        /// </summary>
         [JsonPropertyName("base_offset")]
         public long BaseOffset { get; set; }
 
-        /// <summary>Gets or sets the most recently observed sequence for each publisher.</summary>
+        /// <summary>
+        /// Gets or sets the most recently observed sequence for each publisher.
+        /// </summary>
         [JsonPropertyName("publisher_sequences")]
         public IReadOnlyDictionary<string, long> PublisherSequences
         {
@@ -37,7 +47,9 @@ namespace Temporalio.Extensions.WorkflowStreams
             set => publisherSequences = value ?? new Dictionary<string, long>();
         }
 
-        /// <summary>Gets or sets each publisher's last-seen Unix timestamp in seconds.</summary>
+        /// <summary>
+        /// Gets or sets each publisher's last-seen Unix timestamp in seconds.
+        /// </summary>
         [JsonPropertyName("publisher_last_seen")]
         public IReadOnlyDictionary<string, double> PublisherLastSeen
         {

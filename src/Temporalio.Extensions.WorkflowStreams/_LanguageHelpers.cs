@@ -2,7 +2,9 @@
 
 namespace System.Runtime.CompilerServices
 {
-    /// <summary>Required for record support on the package's target framework.</summary>
+    /// <summary>
+    /// Required for record support on the package's target framework.
+    /// </summary>
     internal static class IsExternalInit
     {
     }

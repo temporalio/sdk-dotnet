@@ -41,6 +41,31 @@ public class WorkflowStreamClientTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task GetTopic_AllowsTypedAndUntypedHandlesWithSameName()
+    {
+        await using var client = new WorkflowStreamClient(Client, "workflow-id");
+
+        Assert.NotSame(client.GetTopic("topic"), client.GetTopic("topic"));
+        Assert.Equal("topic", client.GetTopic<string>("topic").Name);
+        Assert.Equal("topic", client.GetTopic("topic").Name);
+    }
+
+    [Fact]
+    public async Task WorkflowGetTopic_AllowsTypedAndUntypedHandlesWithSameName()
+    {
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<TopicHandlesWorkflow>());
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (TopicHandlesWorkflow workflow) => workflow.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            Assert.True(await handle.GetResultAsync());
+        });
+    }
+
+    [Fact]
     public async Task PublishSubscribe_IsReusableFilteredAndCancelable()
     {
         using var worker = new TemporalWorker(
@@ -307,6 +332,23 @@ public class WorkflowStreamClientTests : WorkflowEnvironmentTestBase
         {
             finished = true;
             return Task.CompletedTask;
+        }
+    }
+
+    [Workflow]
+    public class TopicHandlesWorkflow
+    {
+        [WorkflowRun]
+        public Task<bool> RunAsync()
+        {
+            var stream = new WorkflowStream();
+            var firstUntyped = stream.GetTopic("topic");
+            var typed = stream.GetTopic<string>("topic");
+            var secondUntyped = stream.GetTopic("topic");
+            return Task.FromResult(
+                firstUntyped.Name == typed.Name &&
+                typed.Name == secondUntyped.Name &&
+                !ReferenceEquals(firstUntyped, secondUntyped));
         }
     }
 }

@@ -9,7 +9,9 @@ using Temporalio.Exceptions;
 
 namespace Temporalio.Extensions.WorkflowStreams
 {
-    /// <summary>Owns serialized client publication state and its single timer.</summary>
+    /// <summary>
+    /// Owns serialized client publication state and its single timer.
+    /// </summary>
     internal sealed class StreamPublisher : IAsyncDisposable
     {
         private readonly object stateLock = new();
@@ -33,10 +35,18 @@ namespace Temporalio.Extensions.WorkflowStreams
         private bool disposing;
         private FlushTimeoutException? deferredError;
 
-        /// <summary>Initializes a new instance of the <see cref="StreamPublisher"/> class.</summary>
-        /// <param name="signalAsync">Injected workflow signal operation.</param>
-        /// <param name="payloadConverter">Converter applied synchronously during publication.</param>
-        /// <param name="options">Snapshotted client options.</param>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StreamPublisher"/> class.
+        /// </summary>
+        /// <param name="signalAsync">
+        /// Injected workflow signal operation.
+        /// </param>
+        /// <param name="payloadConverter">
+        /// Converter applied synchronously during publication.
+        /// </param>
+        /// <param name="options">
+        /// Snapshotted client options.
+        /// </param>
         internal StreamPublisher(
             Func<PublishInput, CancellationToken, Task> signalAsync,
             IPayloadConverter payloadConverter,
@@ -49,7 +59,9 @@ namespace Temporalio.Extensions.WorkflowStreams
             maxRetryDuration = options.MaxRetryDuration;
         }
 
-        /// <summary>Gets a value indicating whether this publisher owns a live timer.</summary>
+        /// <summary>
+        /// Gets a value indicating whether this publisher owns a live timer.
+        /// </summary>
         internal bool HasLiveTimer
         {
             get
@@ -64,10 +76,18 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// <inheritdoc />
         public ValueTask DisposeAsync() => new(DisposeTaskAsync());
 
-        /// <summary>Converts before enqueueing so one bad value cannot poison later batches.</summary>
-        /// <param name="topic">Normalized topic name.</param>
-        /// <param name="value">Value or raw payload to publish.</param>
-        /// <param name="forceFlush">Whether to wake the flusher immediately.</param>
+        /// <summary>
+        /// Converts before enqueueing so one bad value cannot poison later batches.
+        /// </summary>
+        /// <param name="topic">
+        /// Normalized topic name.
+        /// </param>
+        /// <param name="value">
+        /// Value or raw payload to publish.
+        /// </param>
+        /// <param name="forceFlush">
+        /// Whether to wake the flusher immediately.
+        /// </param>
         internal void Publish(string topic, object? value, bool forceFlush)
         {
             var wake = false;
@@ -88,9 +108,15 @@ namespace Temporalio.Extensions.WorkflowStreams
             }
         }
 
-        /// <summary>Implements a sequence-based barrier over all items present at entry.</summary>
-        /// <param name="cancellationToken">Cancellation token for signal attempts.</param>
-        /// <returns>A task that completes after the barrier is acknowledged.</returns>
+        /// <summary>
+        /// Implements a sequence-based barrier over all items present at entry.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// Cancellation token for signal attempts.
+        /// </param>
+        /// <returns>
+        /// A task that completes after the barrier is acknowledged.
+        /// </returns>
         internal async Task FlushAsync(CancellationToken cancellationToken)
         {
             ThrowDeferredError();
@@ -120,8 +146,12 @@ namespace Temporalio.Extensions.WorkflowStreams
             ThrowDeferredError();
         }
 
-        /// <summary>Returns the task shared by all terminal operations.</summary>
-        /// <returns>The shared terminal task.</returns>
+        /// <summary>
+        /// Returns the task shared by all terminal operations.
+        /// </summary>
+        /// <returns>
+        /// The shared terminal task.
+        /// </returns>
         internal Task DisposeTaskAsync()
         {
             lock (stateLock)

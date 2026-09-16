@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -12,7 +13,9 @@ using Temporalio.Exceptions;
 
 namespace Temporalio.Extensions.WorkflowStreams
 {
-    /// <summary>External publisher and subscriber for a workflow-hosted stream.</summary>
+    /// <summary>
+    /// External publisher and subscriber for a workflow-hosted stream.
+    /// </summary>
     /// <remarks>
     /// Dispose asynchronously to drain buffered publications and stop subscriptions owned by this
     /// client. WARNING: Workflow Streams is experimental and may change.
@@ -26,15 +29,22 @@ namespace Temporalio.Extensions.WorkflowStreams
         private readonly WorkflowStreamClientOptions options;
         private readonly IPayloadConverter payloadConverter;
         private readonly StreamPublisher publisher;
-        private readonly Dictionary<string, object> topicHandles = new();
         private readonly CancellationTokenSource disposeSource = new();
         private readonly CancellationToken disposeToken;
         private Task? disposeTask;
 
-        /// <summary>Initializes a new instance of the <see cref="WorkflowStreamClient"/> class.</summary>
-        /// <param name="client">Temporal client used for signals, updates, and queries.</param>
-        /// <param name="workflowId">Target workflow ID.</param>
-        /// <param name="options">Client options, snapshotted by this constructor.</param>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkflowStreamClient"/> class.
+        /// </summary>
+        /// <param name="client">
+        /// Temporal client used for signals, updates, and queries.
+        /// </param>
+        /// <param name="workflowId">
+        /// Target workflow ID.
+        /// </param>
+        /// <param name="options">
+        /// Client options, snapshotted by this constructor.
+        /// </param>
         public WorkflowStreamClient(
             ITemporalClient client,
             string workflowId,
@@ -81,12 +91,20 @@ namespace Temporalio.Extensions.WorkflowStreams
             publisher = new(SignalAsync, this.payloadConverter, this.options);
         }
 
-        /// <summary>Gets a value indicating whether the publisher owns a live timer.</summary>
+        /// <summary>
+        /// Gets a value indicating whether the publisher owns a live timer.
+        /// </summary>
         internal bool HasLivePublisherTimer => publisher.HasLiveTimer;
 
-        /// <summary>Creates a stream client targeting the current activity's parent workflow.</summary>
-        /// <param name="options">Client options.</param>
-        /// <returns>A client for the activity's parent workflow.</returns>
+        /// <summary>
+        /// Creates a stream client targeting the current activity's parent workflow.
+        /// </summary>
+        /// <param name="options">
+        /// Client options.
+        /// </param>
+        /// <returns>
+        /// A client for the activity's parent workflow.
+        /// </returns>
         /// <remarks>
         /// The activity's payload converter is used for stream items. Payload converters that
         /// require matching serialization context during deserialization are not compatible with
@@ -101,54 +119,48 @@ namespace Temporalio.Extensions.WorkflowStreams
             return new(context.TemporalClient, id, options, context.PayloadConverter);
         }
 
-        /// <summary>Gets a memoized handle for a topic.</summary>
-        /// <param name="name">Topic name. Null is represented by the empty topic.</param>
-        /// <returns>A topic handle.</returns>
+        /// <summary>
+        /// Creates a handle for a topic.
+        /// </summary>
+        /// <param name="name">
+        /// Topic name. Null is represented by the empty topic.
+        /// </param>
+        /// <returns>
+        /// A topic handle.
+        /// </returns>
         public WorkflowStreamClientTopicHandle GetTopic(string? name)
         {
             name ??= string.Empty;
-            lock (stateLock)
-            {
-                if (!topicHandles.TryGetValue(name, out var untypedHandle))
-                {
-                    untypedHandle = new WorkflowStreamClientTopicHandle(this, name);
-                    topicHandles.Add(name, untypedHandle);
-                }
-                if (untypedHandle is not WorkflowStreamClientTopicHandle handle)
-                {
-                    throw new InvalidOperationException(
-                        $"Topic '{name}' is already bound to a different value type");
-                }
-                return handle;
-            }
+            return new(this, name);
         }
 
-        /// <summary>Gets a memoized, strongly typed handle for a topic.</summary>
-        /// <typeparam name="T">Type of values published to and received from the topic.</typeparam>
-        /// <param name="name">Topic name. Null is represented by the empty topic.</param>
-        /// <returns>A topic handle.</returns>
+        /// <summary>
+        /// Creates a strongly typed handle for a topic.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Type of values published to and received from the topic.
+        /// </typeparam>
+        /// <param name="name">
+        /// Topic name. Null is represented by the empty topic.
+        /// </param>
+        /// <returns>
+        /// A topic handle.
+        /// </returns>
         public WorkflowStreamClientTopicHandle<T> GetTopic<T>(string? name)
         {
             name ??= string.Empty;
-            lock (stateLock)
-            {
-                if (!topicHandles.TryGetValue(name, out var untypedHandle))
-                {
-                    untypedHandle = new WorkflowStreamClientTopicHandle<T>(this, name);
-                    topicHandles.Add(name, untypedHandle);
-                }
-                if (untypedHandle is not WorkflowStreamClientTopicHandle<T> handle)
-                {
-                    throw new InvalidOperationException(
-                        $"Topic '{name}' is already bound to a different value type");
-                }
-                return handle;
-            }
+            return new(this, name);
         }
 
-        /// <summary>Creates a reusable subscription with independent state per enumeration.</summary>
-        /// <param name="options">Subscription options, snapshotted by this call.</param>
-        /// <returns>A reusable asynchronous stream of raw Temporal payloads.</returns>
+        /// <summary>
+        /// Creates a reusable subscription with independent state per enumeration.
+        /// </summary>
+        /// <param name="options">
+        /// Subscription options, snapshotted by this call.
+        /// </param>
+        /// <returns>
+        /// A reusable asynchronous stream of raw Temporal payloads.
+        /// </returns>
         public IAsyncEnumerable<WorkflowStreamItem> SubscribeAsync(
             WorkflowStreamSubscribeOptions? options = null)
         {
@@ -168,23 +180,43 @@ namespace Temporalio.Extensions.WorkflowStreams
             return SubscribeCoreAsync(snapshot);
         }
 
-        /// <summary>Creates a reusable, strongly typed subscription.</summary>
-        /// <typeparam name="T">Type to which each item is deserialized.</typeparam>
-        /// <param name="options">Subscription options, snapshotted by this call.</param>
-        /// <returns>A reusable asynchronous stream of decoded values.</returns>
+        /// <summary>
+        /// Creates a reusable, strongly typed subscription.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Type to which each item is deserialized.
+        /// </typeparam>
+        /// <param name="options">
+        /// Subscription options, snapshotted by this call.
+        /// </param>
+        /// <returns>
+        /// A reusable asynchronous stream of decoded values.
+        /// </returns>
         public IAsyncEnumerable<WorkflowStreamItem<T>> SubscribeAsync<T>(
             WorkflowStreamSubscribeOptions? options = null) =>
             ConvertItemsAsync<T>(SubscribeAsync(options));
 
-        /// <summary>Flushes publications buffered before this call and waits for acknowledgement.</summary>
-        /// <param name="cancellationToken">Cancellation token for the flush operation.</param>
-        /// <returns>A task that completes when the flush barrier is acknowledged.</returns>
+        /// <summary>
+        /// Flushes publications buffered before this call and waits for acknowledgement.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// Cancellation token for the flush operation.
+        /// </param>
+        /// <returns>
+        /// A task that completes when the flush barrier is acknowledged.
+        /// </returns>
         public Task FlushAsync(CancellationToken cancellationToken = default) =>
             publisher.FlushAsync(cancellationToken);
 
-        /// <summary>Queries the current global offset.</summary>
-        /// <param name="cancellationToken">Cancellation token for the query.</param>
-        /// <returns>The offset immediately after the last retained item.</returns>
+        /// <summary>
+        /// Queries the current global offset.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// Cancellation token for the query.
+        /// </param>
+        /// <returns>
+        /// The offset immediately after the last retained item.
+        /// </returns>
         public async Task<long> GetOffsetAsync(CancellationToken cancellationToken = default)
         {
             using var linked = CancellationTokenSource.CreateLinkedTokenSource(
@@ -198,25 +230,51 @@ namespace Temporalio.Extensions.WorkflowStreams
                 }).ConfigureAwait(false);
         }
 
-        /// <summary>Stops owned subscriptions and drains buffered publications.</summary>
-        /// <returns>A value task shared by concurrent disposal calls.</returns>
+        /// <summary>
+        /// Stops owned subscriptions and drains buffered publications.
+        /// </summary>
+        /// <returns>
+        /// A value task shared by concurrent disposal calls.
+        /// </returns>
         public ValueTask DisposeAsync()
         {
+            TaskCompletionSource<object?>? startSource = null;
+            Task task;
             lock (stateLock)
             {
                 if (disposeTask == null)
                 {
-                    disposeSource.Cancel();
-                    disposeTask = DisposeCoreAsync(publisher.DisposeAsync().AsTask());
+                    startSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
+                    disposeTask = DisposeCoreAsync(startSource.Task);
                 }
-                return new(disposeTask);
+                task = disposeTask;
             }
+            if (startSource != null)
+            {
+                try
+                {
+                    disposeSource.Cancel();
+                }
+                finally
+                {
+                    startSource.SetResult(null);
+                }
+            }
+            return new(task);
         }
 
-        /// <summary>Keeps topic handles on the publisher's single conversion and batching path.</summary>
-        /// <param name="topic">Normalized topic name.</param>
-        /// <param name="value">Value or raw payload to publish.</param>
-        /// <param name="forceFlush">Whether to flush the pending batch immediately.</param>
+        /// <summary>
+        /// Keeps topic handles on the publisher's single conversion and batching path.
+        /// </summary>
+        /// <param name="topic">
+        /// Normalized topic name.
+        /// </param>
+        /// <param name="value">
+        /// Value or raw payload to publish.
+        /// </param>
+        /// <param name="forceFlush">
+        /// Whether to flush the pending batch immediately.
+        /// </param>
         internal void Publish(string topic, object? value, bool forceFlush) =>
             publisher.Publish(topic, value, forceFlush);
 
@@ -242,19 +300,19 @@ namespace Temporalio.Extensions.WorkflowStreams
                     Rpc = new() { CancellationToken = cancellationToken },
                 });
 
-        private async Task DisposeCoreAsync(Task publisherDisposeTask)
+        private async Task DisposeCoreAsync(Task startTask)
         {
-            await Task.Yield();
+#pragma warning disable VSTHRD003 // These tasks coordinate the client's shared disposal operation.
+            await startTask.ConfigureAwait(false);
             try
             {
-#pragma warning disable VSTHRD003 // This is the publisher's shared terminal task.
-                await publisherDisposeTask.ConfigureAwait(false);
-#pragma warning restore VSTHRD003
+                await publisher.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {
                 disposeSource.Dispose();
             }
+#pragma warning restore VSTHRD003
         }
 
         private async IAsyncEnumerable<WorkflowStreamItem> SubscribeCoreAsync(
@@ -284,6 +342,7 @@ namespace Temporalio.Extensions.WorkflowStreams
                 disposeToken, cancellationToken);
             var rpcToken = linkedSource.Token;
             var offset = options.FromOffset;
+            string? polledRunId = null;
 
             while (true)
             {
@@ -299,7 +358,11 @@ namespace Temporalio.Extensions.WorkflowStreams
                 try
                 {
                     attempt = await PollOnceAsync(
-                        options.Topics, offset, rpcToken).ConfigureAwait(false);
+                        options.Topics, offset, options.PollCooldown, rpcToken).ConfigureAwait(false);
+                    if (attempt.RunId != null)
+                    {
+                        polledRunId = attempt.RunId;
+                    }
                     pollError = attempt.Error;
                 }
                 catch (OperationCanceledException)
@@ -340,7 +403,7 @@ namespace Temporalio.Extensions.WorkflowStreams
                     try
                     {
                         status = await DescribeStatusAsync(
-                            attempt?.RunId, rpcToken).ConfigureAwait(false);
+                            polledRunId, rpcToken).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -393,12 +456,14 @@ namespace Temporalio.Extensions.WorkflowStreams
         private async Task<PollAttempt> PollOnceAsync(
             IReadOnlyCollection<string> topics,
             long offset,
+            TimeSpan pollCooldown,
             CancellationToken cancellationToken)
         {
             var updateId = Guid.NewGuid().ToString("N");
             WorkflowUpdateHandle<PollResult> updateHandle;
             while (true)
             {
+                var attemptStartedAt = Stopwatch.GetTimestamp();
                 try
                 {
                     updateHandle = await workflowHandle.StartUpdateAsync<PollResult>(
@@ -421,6 +486,14 @@ namespace Temporalio.Extensions.WorkflowStreams
                 catch (WorkflowUpdateRpcTimeoutOrCanceledException)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
+                    var attemptDuration = TimeSpan.FromSeconds(
+                        (Stopwatch.GetTimestamp() - attemptStartedAt) /
+                        (double)Stopwatch.Frequency);
+                    if (attemptDuration < TimeSpan.FromTicks(options.RpcTimeout.Ticks / 2))
+                    {
+                        await Task.Delay(pollCooldown, cancellationToken).
+                            ConfigureAwait(false);
+                    }
                 }
                 catch (TemporalException err)
                 {
@@ -435,6 +508,7 @@ namespace Temporalio.Extensions.WorkflowStreams
             var runId = updateHandle.WorkflowRunId;
             while (true)
             {
+                var attemptStartedAt = Stopwatch.GetTimestamp();
                 try
                 {
                     var result = await updateHandle.GetResultAsync(new()
@@ -447,6 +521,14 @@ namespace Temporalio.Extensions.WorkflowStreams
                 catch (WorkflowUpdateRpcTimeoutOrCanceledException)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
+                    var attemptDuration = TimeSpan.FromSeconds(
+                        (Stopwatch.GetTimestamp() - attemptStartedAt) /
+                        (double)Stopwatch.Frequency);
+                    if (attemptDuration < TimeSpan.FromTicks(options.RpcTimeout.Ticks / 2))
+                    {
+                        await Task.Delay(pollCooldown, cancellationToken).
+                            ConfigureAwait(false);
+                    }
                 }
                 catch (TemporalException err)
                 {
@@ -476,14 +558,9 @@ namespace Temporalio.Extensions.WorkflowStreams
                     }).ConfigureAwait(false);
                 return description.Status;
             }
-            catch (OperationCanceledException)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                return WorkflowExecutionStatus.Unspecified;
-            }
-            catch (RpcException err) when (
-                err.Code == RpcException.StatusCode.DeadlineExceeded ||
-                err.Code == RpcException.StatusCode.Cancelled)
+#pragma warning disable CA1031 // The original poll failure is more relevant than a status lookup failure.
+            catch (Exception)
+#pragma warning restore CA1031
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 return WorkflowExecutionStatus.Unspecified;
@@ -513,10 +590,18 @@ namespace Temporalio.Extensions.WorkflowStreams
 
         private sealed class PollAttempt
         {
-            /// <summary>Initializes a new instance of the <see cref="PollAttempt"/> class.</summary>
-            /// <param name="result">Successful result, if present.</param>
-            /// <param name="runId">Admitted workflow run ID, if known.</param>
-            /// <param name="error">Poll error, if present.</param>
+            /// <summary>
+            /// Initializes a new instance of the <see cref="PollAttempt"/> class.
+            /// </summary>
+            /// <param name="result">
+            /// Successful result, if present.
+            /// </param>
+            /// <param name="runId">
+            /// Admitted workflow run ID, if known.
+            /// </param>
+            /// <param name="error">
+            /// Poll error, if present.
+            /// </param>
             internal PollAttempt(PollResult? result, string? runId, Exception? error)
             {
                 Result = result;
@@ -524,13 +609,19 @@ namespace Temporalio.Extensions.WorkflowStreams
                 Error = error;
             }
 
-            /// <summary>Gets the successful result, if present.</summary>
+            /// <summary>
+            /// Gets the successful result, if present.
+            /// </summary>
             internal PollResult? Result { get; }
 
-            /// <summary>Gets the admitted workflow run ID, if known.</summary>
+            /// <summary>
+            /// Gets the admitted workflow run ID, if known.
+            /// </summary>
             internal string? RunId { get; }
 
-            /// <summary>Gets the poll error, if present.</summary>
+            /// <summary>
+            /// Gets the poll error, if present.
+            /// </summary>
             internal Exception? Error { get; }
         }
     }

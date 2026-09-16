@@ -24,27 +24,38 @@ namespace Temporalio.Extensions.WorkflowStreams
         private readonly List<LogEntry> log = new();
         private readonly SortedDictionary<string, long> publisherSequences = new();
         private readonly SortedDictionary<string, double> publisherLastSeen = new();
-        private readonly Dictionary<string, object> topicHandles = new();
         private readonly WorkflowStreamOptions options;
         private long baseOffset;
         private bool draining;
 
-        /// <summary>Initializes a new instance of the <see cref="WorkflowStream"/> class.</summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkflowStream"/> class.
+        /// </summary>
         public WorkflowStream()
             : this(null, null)
         {
         }
 
-        /// <summary>Initializes a new instance of the <see cref="WorkflowStream"/> class.</summary>
-        /// <param name="state">State captured before continue-as-new, or null for a new stream.</param>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkflowStream"/> class.
+        /// </summary>
+        /// <param name="state">
+        /// State captured before continue-as-new, or null for a new stream.
+        /// </param>
         public WorkflowStream(WorkflowStreamState? state)
             : this(state, null)
         {
         }
 
-        /// <summary>Initializes a new instance of the <see cref="WorkflowStream"/> class.</summary>
-        /// <param name="state">State captured before continue-as-new, or null for a new stream.</param>
-        /// <param name="options">Stream options, snapshotted by this constructor.</param>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkflowStream"/> class.
+        /// </summary>
+        /// <param name="state">
+        /// State captured before continue-as-new, or null for a new stream.
+        /// </param>
+        /// <param name="options">
+        /// Stream options, snapshotted by this constructor.
+        /// </param>
         public WorkflowStream(WorkflowStreamState? state, WorkflowStreamOptions? options)
         {
             this.options = (WorkflowStreamOptions)(options ?? new WorkflowStreamOptions()).Clone();
@@ -71,55 +82,61 @@ namespace Temporalio.Extensions.WorkflowStreams
                     (Func<long>)(() => baseOffset + log.Count));
         }
 
-        /// <summary>Gets a workflow-side publisher for a topic.</summary>
-        /// <param name="name">Topic name. Null is represented by the empty topic.</param>
-        /// <returns>A memoized topic handle.</returns>
+        /// <summary>
+        /// Creates a workflow-side publisher for a topic.
+        /// </summary>
+        /// <param name="name">
+        /// Topic name. Null is represented by the empty topic.
+        /// </param>
+        /// <returns>
+        /// A topic handle.
+        /// </returns>
         public WorkflowStreamTopicHandle GetTopic(string? name)
         {
             name ??= string.Empty;
-            if (!topicHandles.TryGetValue(name, out var untypedHandle))
-            {
-                untypedHandle = new WorkflowStreamTopicHandle(this, name);
-                topicHandles.Add(name, untypedHandle);
-            }
-            if (untypedHandle is not WorkflowStreamTopicHandle handle)
-            {
-                throw new InvalidOperationException(
-                    $"Topic '{name}' is already bound to a different value type");
-            }
-            return handle;
+            return new(this, name);
         }
 
-        /// <summary>Gets a strongly typed workflow-side publisher for a topic.</summary>
-        /// <typeparam name="T">Type of values published to the topic.</typeparam>
-        /// <param name="name">Topic name. Null is represented by the empty topic.</param>
-        /// <returns>A memoized topic handle.</returns>
+        /// <summary>
+        /// Creates a strongly typed workflow-side publisher for a topic.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Type of values published to the topic.
+        /// </typeparam>
+        /// <param name="name">
+        /// Topic name. Null is represented by the empty topic.
+        /// </param>
+        /// <returns>
+        /// A topic handle.
+        /// </returns>
         public WorkflowStreamTopicHandle<T> GetTopic<T>(string? name)
         {
             name ??= string.Empty;
-            if (!topicHandles.TryGetValue(name, out var untypedHandle))
-            {
-                untypedHandle = new WorkflowStreamTopicHandle<T>(this, name);
-                topicHandles.Add(name, untypedHandle);
-            }
-            if (untypedHandle is not WorkflowStreamTopicHandle<T> handle)
-            {
-                throw new InvalidOperationException(
-                    $"Topic '{name}' is already bound to a different value type");
-            }
-            return handle;
+            return new(this, name);
         }
 
-        /// <summary>Unblocks admitted pollers and rejects new polls during continue-as-new.</summary>
+        /// <summary>
+        /// Unblocks admitted pollers and rejects new polls during continue-as-new.
+        /// </summary>
         public void DetachPollers() => draining = true;
 
-        /// <summary>Captures retained state using the configured publisher time-to-live.</summary>
-        /// <returns>A cross-language state snapshot.</returns>
+        /// <summary>
+        /// Captures retained state using the configured publisher time-to-live.
+        /// </summary>
+        /// <returns>
+        /// A cross-language state snapshot.
+        /// </returns>
         public WorkflowStreamState GetState() => GetState(options.PublisherTtl);
 
-        /// <summary>Captures retained state with a specific publisher time-to-live.</summary>
-        /// <param name="publisherTtl">Age after which publisher deduplication state is omitted.</param>
-        /// <returns>A cross-language state snapshot.</returns>
+        /// <summary>
+        /// Captures retained state with a specific publisher time-to-live.
+        /// </summary>
+        /// <param name="publisherTtl">
+        /// Age after which publisher deduplication state is omitted.
+        /// </param>
+        /// <returns>
+        /// A cross-language state snapshot.
+        /// </returns>
         public WorkflowStreamState GetState(TimeSpan publisherTtl)
         {
             if (publisherTtl <= TimeSpan.Zero)
@@ -163,7 +180,9 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// <param name="createException">
         /// Callback that creates the SDK continue-as-new exception from the captured state.
         /// </param>
-        /// <returns>A task that does not complete normally.</returns>
+        /// <returns>
+        /// A task that does not complete normally.
+        /// </returns>
         public async Task ContinueAsNewAsync(
             Func<WorkflowStreamState, ContinueAsNewException> createException)
         {
@@ -172,8 +191,12 @@ namespace Temporalio.Extensions.WorkflowStreams
             throw createException(GetState());
         }
 
-        /// <summary>Discards entries before a global offset.</summary>
-        /// <param name="upToOffset">The first offset to retain.</param>
+        /// <summary>
+        /// Discards entries before a global offset.
+        /// </summary>
+        /// <param name="upToOffset">
+        /// The first offset to retain.
+        /// </param>
         public void Truncate(long upToOffset)
         {
             var removeCount = upToOffset - baseOffset;
@@ -193,9 +216,15 @@ namespace Temporalio.Extensions.WorkflowStreams
             baseOffset = upToOffset;
         }
 
-        /// <summary>Keeps workflow-side publications on the same converter and log path.</summary>
-        /// <param name="topic">Normalized topic name.</param>
-        /// <param name="value">Value or raw payload to append.</param>
+        /// <summary>
+        /// Keeps workflow-side publications on the same converter and log path.
+        /// </summary>
+        /// <param name="topic">
+        /// Normalized topic name.
+        /// </param>
+        /// <param name="value">
+        /// Value or raw payload to append.
+        /// </param>
         internal void Publish(string topic, object? value)
         {
             var payload = value as Payload ?? Workflow.PayloadConverter.ToPayload(value);
