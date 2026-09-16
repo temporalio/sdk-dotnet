@@ -21,6 +21,10 @@ to docs, or any other relevant information.
 
 ### Added
 
+- Added the experimental `Temporalio.Extensions.Gcp.CloudRun.Id` package for long-lived
+  Temporal workers on Google Cloud Run worker pools and services. Register a single `CloudRunIdPlugin`
+  on your client's `Plugins`; it sets the worker identity from the Cloud Run instance at connect
+  time (unless one is already configured), and workers created from that client inherit it.
 - Added the experimental `Temporalio.Extensions.WorkflowStreams` package for durable, batched,
   offset-based publish/subscribe streams hosted by workflows, interoperable with other Temporal
   SDK Workflow Streams implementations.
