@@ -11,7 +11,8 @@
             "Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/*.csproj",
             "Temporalio.Extensions.Gcp.CloudRun.Id/*.csproj",
             "Temporalio.Extensions.Hosting/*.csproj",
-            "Temporalio.Extensions.OpenTelemetry/*.csproj"
+            "Temporalio.Extensions.OpenTelemetry/*.csproj",
+            "Temporalio.Extensions.WorkflowStreams/*.csproj"
           ],
           "exclude": [
             "**/bin/**",

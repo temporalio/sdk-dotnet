@@ -36,6 +36,11 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Temporalio.Extensions.Hosting</_Parameter1>
     </AssemblyAttribute>
+    <!-- Workflow Streams shares the reserved protocol handler names with the core SDK so the
+         allowlist and extension cannot drift independently. -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Temporalio.Extensions.WorkflowStreams</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
   <!-- Build/copy debug/release bridge DLL -->
