@@ -149,12 +149,19 @@ namespace Temporalio.Client
                     req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                 // The response names the endpoint, service and operation, so the description
                 // decodes its payloads with the context the operation was started with. That
-                // includes the static summary and details, which are attached with it.
-                var dataConverter = Client.Options.DataConverter.WithSerializationContext(
-                    new ISerializationContext.Nexus(
-                        Endpoint: resp.Info.Endpoint,
-                        Service: resp.Info.Service,
-                        Operation: resp.Info.Operation));
+                // includes the static summary and details, which are attached with it. A response
+                // that does not report the endpoint would otherwise scope by an empty one and
+                // silently disagree with the start request, so it falls back to no context,
+                // matching the handler path.
+                var dataConverter = Client.Options.DataConverter;
+                if (!string.IsNullOrEmpty(resp.Info.Endpoint))
+                {
+                    dataConverter = dataConverter.WithSerializationContext(
+                        new ISerializationContext.Nexus(
+                            Endpoint: resp.Info.Endpoint,
+                            Service: resp.Info.Service,
+                            Operation: resp.Info.Operation));
+                }
                 return new(resp, Client.Options.Namespace, dataConverter);
             }
 

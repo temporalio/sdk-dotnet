@@ -413,6 +413,9 @@ namespace Temporalio.Worker
                     codec = context.CodecWorkflowContext;
                     break;
             }
+            // Deliberately uses whatever codec the switch above selected for this command, so a
+            // command's user metadata is serialized with the same context as the rest of it. For
+            // ScheduleNexusOperation that is the operation's context.
             if (cmd.UserMetadata != null && codec != null)
             {
                 if (cmd.UserMetadata.Summary != null)
