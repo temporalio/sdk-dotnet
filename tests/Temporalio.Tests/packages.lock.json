@@ -476,6 +476,12 @@
           "Temporalio": "[1.19.0, )"
         }
       },
+      "temporalio.extensions.gcp.cloudrun.id": {
+        "type": "Project",
+        "dependencies": {
+          "Temporalio": "[1.19.0, )"
+        }
+      },
       "temporalio.extensions.gcp.cloudrun.opentelemetry": {
         "type": "Project",
         "dependencies": {
@@ -483,12 +489,6 @@
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.15.3, )",
           "Temporalio": "[1.19.0, )",
           "Temporalio.Extensions.OpenTelemetry": "[1.19.0, )"
-        }
-      },
-      "temporalio.extensions.gcp.cloudrun.workerid": {
-        "type": "Project",
-        "dependencies": {
-          "Temporalio": "[1.18.0, )"
         }
       },
       "temporalio.extensions.hosting": {
@@ -509,7 +509,7 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.Bcl.AsyncInterfaces": "[9.0.4, )",
-          "Temporalio": "[1.18.0, )"
+          "Temporalio": "[1.19.0, )"
         }
       },
       "Amazon.Lambda.Core": {
