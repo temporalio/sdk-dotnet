@@ -899,6 +899,13 @@ namespace Temporalio.Worker
         }
 
         /// <inheritdoc/>
+        public ISerializationContext? GetPendingNexusOperationSerializationContext(uint seq)
+        {
+            nexusOperationsPending.TryGetValue(seq, out var pending);
+            return pending?.SerializationContext;
+        }
+
+        /// <inheritdoc/>
         protected override IEnumerable<Task>? GetScheduledTasks() => scheduledTasks;
 
         /// <inheritdoc/>
@@ -2750,6 +2757,7 @@ namespace Temporalio.Worker
 
                 var handleSource = new TaskCompletionSource<NexusWorkflowOperationHandle<TResult>>();
                 var pending = new PendingNexusOperationInfo(
+                    SerializationContext: serializationContext,
                     StartCompletionSource: new(),
                     ResultCompletionSource: new());
                 instance.nexusOperationsPending[seq] = pending;
@@ -3236,6 +3244,7 @@ namespace Temporalio.Worker
             TaskCompletionSource<ResolveRequestCancelExternalWorkflow> CompletionSource);
 
         private record PendingNexusOperationInfo(
+            ISerializationContext? SerializationContext,
             TaskCompletionSource<ResolveNexusOperationStart> StartCompletionSource,
             TaskCompletionSource<NexusOperationResult> ResultCompletionSource);
 
