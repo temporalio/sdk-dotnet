@@ -7,7 +7,8 @@ namespace Temporalio.Converters
     /// <summary>
     /// Base interface for all serialization contexts that can be passed in to
     /// <see cref="IWithSerializationContext{TResult}.WithSerializationContext(ISerializationContext)"/>.
-    /// The two implementations used by the SDK are <see cref="Activity"/> and <see cref="Workflow"/>.
+    /// The implementations used by the SDK are <see cref="Activity"/>, <see cref="Workflow"/>, and
+    /// <see cref="Nexus"/>.
     /// </summary>
     public interface ISerializationContext
     {
@@ -93,5 +94,46 @@ namespace Temporalio.Converters
         public sealed record Workflow(
             string Namespace,
             string WorkflowId) : IHasWorkflow;
+
+        /// <summary>
+        /// Serialization context for Nexus operation payloads, identifying the Nexus endpoint,
+        /// service, and resolved operation the payload belongs to. See
+        /// <see cref="IWithSerializationContext{TResult}.WithSerializationContext(ISerializationContext)"/>
+        /// for information on when this is made available to converters and codecs.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Callers receive this context when encoding operation inputs and when decoding operation
+        /// results and failures. Handlers receive it when decoding operation inputs, encoding
+        /// synchronous operation results, and encoding failures produced while handling a Nexus
+        /// task.
+        /// </para>
+        /// <para>
+        /// The context is not propagated to the eventual result of an asynchronous operation,
+        /// because the operation is completed out of band rather than by the task the handler was
+        /// invoked for. A standalone operation handle uses the context of its start request,
+        /// including when the start request returns an already-running operation; a handle obtained
+        /// by operation ID without starting an operation has no endpoint, service, or operation to
+        /// build a context from and therefore serializes without one.
+        /// </para>
+        /// <para>
+        /// Failure conversion is not symmetric: a failure is encoded by the handler and decoded by
+        /// the caller, so an implementation sees this context on only one side of a given failure,
+        /// and for some operation paths it sees no context at all. Context-dependent encodings must
+        /// therefore be self-describing, and decoders must keep accepting payloads that were
+        /// encoded without a context.
+        /// </para>
+        /// <para>
+        /// WARNING: This constructor may have required properties added and is not guaranteed to
+        /// remain compatible from one version to the next.
+        /// </para>
+        /// </remarks>
+        /// <param name="Endpoint">Nexus endpoint name.</param>
+        /// <param name="Service">Nexus service name.</param>
+        /// <param name="Operation">Resolved Nexus operation name.</param>
+        public sealed record Nexus(
+            string Endpoint,
+            string Service,
+            string Operation) : ISerializationContext;
     }
 }
