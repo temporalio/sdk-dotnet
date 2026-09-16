@@ -60,10 +60,12 @@ catch (OperationCanceledException)
 
 > **Note:** the plugin applies the identity when the client connects, so it only runs if your client
 > connects with the plugin registered. If the client is created lazily — as some dependency-injection
-> setups do — the plugin may not be applied; register it on the connect options the client is built from.
+> setups do — the plugin may not be applied; in that case set the identity yourself before building the client:
 
-If you need the raw values instead, call `GoogleCloudRunMetadata.FetchAsync()` directly and read
-`Identity` yourself.
+```csharp
+var metadata = await GoogleCloudRunMetadata.FetchAsync();
+connectOptions.Identity = metadata.Identity;
+```
 
 ## How it works
 
