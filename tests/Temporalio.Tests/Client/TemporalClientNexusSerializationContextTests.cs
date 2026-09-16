@@ -96,7 +96,7 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
     }
 
     [Fact]
-    public async Task Describe_ReadsTheUncontextualizedSummary()
+    public async Task Describe_ReadsTheSummaryUnderTheOperationsContext()
     {
         await RunAsync(async (client, codec, endpoint) =>
         {
@@ -110,8 +110,8 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
                 });
             await handle.GetResultAsync();
 
-            // The summary is encoded without a Nexus context, so describe has to read it back the
-            // same way. Decoding it under a context the encoder never used would corrupt it.
+            // User metadata is serialized with the operation's context, so describe has to read it
+            // back under the same one. The strict codec fails a mismatch either way round.
             var description = await handle.DescribeAsync();
             Assert.Equal("the-summary", await description.GetStaticSummaryAsync());
         });

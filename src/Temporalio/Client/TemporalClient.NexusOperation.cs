@@ -61,10 +61,9 @@ namespace Temporalio.Client
                 try
                 {
                     // The handler does not see the caller, so Nexus payloads are contextualized by
-                    // the endpoint, service and operation instead. The summary is deliberately left
-                    // uncontextualized so it stays readable without knowing the operation.
-                    var dataConverter = Client.Options.DataConverter;
-                    var inputDataConverter = dataConverter.WithSerializationContext(
+                    // the endpoint, service and operation instead. User metadata is included, the
+                    // same way workflow and activity user metadata is serialized with theirs.
+                    var dataConverter = Client.Options.DataConverter.WithSerializationContext(
                         new ISerializationContext.Nexus(
                             Endpoint: input.Endpoint,
                             Service: input.Service,
@@ -88,7 +87,7 @@ namespace Temporalio.Client
                     };
                     if (input.Arg != null)
                     {
-                        req.Input = await inputDataConverter.ToPayloadAsync(input.Arg).ConfigureAwait(false);
+                        req.Input = await dataConverter.ToPayloadAsync(input.Arg).ConfigureAwait(false);
                     }
                     if (input.Options.ScheduleToCloseTimeout is TimeSpan s2c)
                     {
@@ -148,12 +147,15 @@ namespace Temporalio.Client
                 };
                 var resp = await Client.Connection.WorkflowService.DescribeNexusOperationExecutionAsync(
                     req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
-                // Deliberately not scoped to a Nexus context. The only payloads a description
-                // decodes today are the static summary and details, and those are encoded without
-                // a Nexus context, so decoding them under one would not round-trip for a converter
-                // that varies by context. A Nexus context belongs here only once the description
-                // exposes the operation's input, result or failure, which are context-scoped.
-                return new(resp, Client.Options.Namespace, Client.Options.DataConverter);
+                // The response names the endpoint, service and operation, so the description
+                // decodes its payloads with the context the operation was started with. That
+                // includes the static summary and details, which are attached with it.
+                var dataConverter = Client.Options.DataConverter.WithSerializationContext(
+                    new ISerializationContext.Nexus(
+                        Endpoint: resp.Info.Endpoint,
+                        Service: resp.Info.Service,
+                        Operation: resp.Info.Operation));
+                return new(resp, Client.Options.Namespace, dataConverter);
             }
 
             /// <inheritdoc />
