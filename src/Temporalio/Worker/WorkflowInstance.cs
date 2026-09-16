@@ -2697,19 +2697,30 @@ namespace Temporalio.Worker
                 {
                     serializationContext = operationInfo.SerializationContext?.Invoke(arg);
                 }
+                // The caller workflow is not available to the operation handler, so Nexus payloads
+                // are contextualized by the endpoint, service and operation instead. A Temporal
+                // System Nexus operation keeps the context its registry entry selected, because its
+                // payloads are read by the operation's real target rather than by a Nexus handler.
+                // Endpoint is optional on the options type but the scheduled command always
+                // carries a proto string, which defaults to empty rather than null.
+                ISerializationContext effectiveSerializationContext =
+                    serializationContext
+                    ?? new ISerializationContext.Nexus(
+                        Endpoint: input.ClientOptions.Endpoint ?? string.Empty,
+                        Service: input.Service,
+                        Operation: input.OperationName);
 
                 var payloadConverter = instance.payloadConverterNoContext;
                 var failureConverter = instance.failureConverterNoContext;
-                if (serializationContext != null)
+                if (payloadConverter is IWithSerializationContext<IPayloadConverter> payloadWithContext)
                 {
-                    if (payloadConverter is IWithSerializationContext<IPayloadConverter> payloadWithContext)
-                    {
-                        payloadConverter = payloadWithContext.WithSerializationContext(serializationContext);
-                    }
-                    if (failureConverter is IWithSerializationContext<IFailureConverter> failureWithContext)
-                    {
-                        failureConverter = failureWithContext.WithSerializationContext(serializationContext);
-                    }
+                    payloadConverter =
+                        payloadWithContext.WithSerializationContext(effectiveSerializationContext);
+                }
+                if (failureConverter is IWithSerializationContext<IFailureConverter> failureWithContext)
+                {
+                    failureConverter =
+                        failureWithContext.WithSerializationContext(effectiveSerializationContext);
                 }
 
                 var systemNexusPayloadConverter = SystemNexusPayloadVisitor.IsSystemEndpoint(
@@ -2756,8 +2767,10 @@ namespace Temporalio.Worker
                 instance.AddCommand(workflowCommand);
 
                 var handleSource = new TaskCompletionSource<NexusWorkflowOperationHandle<TResult>>();
+                // The codec must see the same context the converters above were scoped to, so this
+                // carries the effective context, not the registry-only one.
                 var pending = new PendingNexusOperationInfo(
-                    SerializationContext: serializationContext,
+                    SerializationContext: effectiveSerializationContext,
                     StartCompletionSource: new(),
                     ResultCompletionSource: new());
                 instance.nexusOperationsPending[seq] = pending;

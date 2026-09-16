@@ -118,6 +118,8 @@ namespace Temporalio.Worker
                         }
                         break;
                     case WorkflowActivationJob.VariantOneofCase.ResolveNexusOperation:
+                        // Apply the context the operation was scheduled with, so a result that
+                        // arrives later is decoded the way it was encoded.
                         var nexusCodec = context.CodecNoContext;
                         if (nexusCodec is IWithSerializationContext<IPayloadCodec> withNexus &&
                             context.Instance?.GetPendingNexusOperationSerializationContext(
@@ -155,6 +157,8 @@ namespace Temporalio.Worker
                         }
                         break;
                     case WorkflowActivationJob.VariantOneofCase.ResolveNexusOperationStart:
+                        // Apply the context the operation was scheduled with, so a start failure is
+                        // decoded the way the handler encoded it.
                         var nexusStartCodec = context.CodecNoContext;
                         if (nexusStartCodec is IWithSerializationContext<IPayloadCodec> withNexusStart &&
                             context.Instance?.GetPendingNexusOperationSerializationContext(
@@ -352,6 +356,13 @@ namespace Temporalio.Worker
                     }
                     break;
                 case WorkflowCommand.VariantOneofCase.ScheduleNexusOperation:
+                    // Apply the context the operation's converter was scoped to, rather than
+                    // rebuilding one here. For a Temporal System Nexus operation that context comes
+                    // from the operation's registry entry and is not a Nexus context, and the
+                    // nested payloads this encodes are read by the operation's real target. With no
+                    // pending entry there is nothing to scope by, so the input and this command's
+                    // user metadata are both encoded without a context rather than under a guessed
+                    // one.
                     codec = context.CodecNoContext;
                     if (codec is IWithSerializationContext<IPayloadCodec> withNexus &&
                         context.Instance?.GetPendingNexusOperationSerializationContext(
