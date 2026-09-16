@@ -27,6 +27,7 @@ namespace Temporalio.Extensions.WorkflowStreams
         private readonly WorkflowStreamOptions options;
         private long baseOffset;
         private bool draining;
+        private bool stateCapturedForContinueAsNew;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowStream"/> class.
@@ -175,20 +176,17 @@ namespace Temporalio.Extensions.WorkflowStreams
         }
 
         /// <summary>
-        /// Detaches pollers, waits for handlers, captures state, and continues as new.
+        /// Detaches pollers, waits for handlers, and captures state for continue-as-new.
         /// </summary>
-        /// <param name="createException">
-        /// Callback that creates the SDK continue-as-new exception from the captured state.
-        /// </param>
         /// <returns>
-        /// A task that does not complete normally.
+        /// The final stream state to pass to the next workflow run.
         /// </returns>
-        public async Task ContinueAsNewAsync(
-            Func<WorkflowStreamState, ContinueAsNewException> createException)
+        public async Task<WorkflowStreamState> CaptureStateForContinueAsNewAsync()
         {
             DetachPollers();
             await Workflow.WaitConditionAsync(() => Workflow.AllHandlersFinished);
-            throw createException(GetState());
+            stateCapturedForContinueAsNew = true;
+            return GetState();
         }
 
         /// <summary>
@@ -227,6 +225,11 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// </param>
         internal void Publish(string topic, object? value)
         {
+            if (stateCapturedForContinueAsNew)
+            {
+                throw new InvalidOperationException(
+                    "Cannot publish after state has been captured for continue-as-new");
+            }
             var payload = value as Payload ?? Workflow.PayloadConverter.ToPayload(value);
             log.Add(new(topic, payload));
         }

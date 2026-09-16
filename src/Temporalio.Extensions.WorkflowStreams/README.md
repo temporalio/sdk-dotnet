@@ -53,10 +53,10 @@ public class OrderWorkflow
         await Workflow.WaitConditionAsync(() => finished || Workflow.ContinueAsNewSuggested);
         if (Workflow.ContinueAsNewSuggested)
         {
-            await stream.ContinueAsNewAsync(state =>
-                Workflow.CreateContinueAsNewException(
-                    (OrderWorkflow workflow) => workflow.RunAsync(
-                        input with { StreamState = state })));
+            var state = await stream.CaptureStateForContinueAsNewAsync();
+            throw Workflow.CreateContinueAsNewException(
+                (OrderWorkflow workflow) => workflow.RunAsync(
+                    input with { StreamState = state }));
         }
     }
 
@@ -69,11 +69,10 @@ public class OrderWorkflow
 }
 ```
 
-`ContinueAsNewAsync` first detaches admitted pollers, waits until all handlers finish, and only then
-captures `WorkflowStreamState` and invokes the callback. Thread that state through the next run's
-input as shown above. For custom continue-as-new options, perform the same sequence explicitly:
-call `DetachPollers()`, wait for `Workflow.AllHandlersFinished`, call `GetState()`, and create the
-continue-as-new exception yourself.
+`CaptureStateForContinueAsNewAsync` first detaches admitted pollers, waits until all handlers finish,
+and only then captures `WorkflowStreamState`. Thread that state through the next run's input as shown
+above. Once it captures the state, workflow-side publication is disabled so the snapshot describes
+the final stream contents. Create and throw the continue-as-new exception immediately.
 
 The log is retained until the Workflow calls `Truncate(offset)`. Offsets are global across every
 topic. A subscriber that falls behind truncation automatically resumes at the beginning of the

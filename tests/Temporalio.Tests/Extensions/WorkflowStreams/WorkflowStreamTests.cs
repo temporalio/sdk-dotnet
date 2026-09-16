@@ -37,6 +37,21 @@ public class WorkflowStreamTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Fact]
+    public async Task CaptureStateForContinueAsNewAsync_DisablesWorkflowPublication()
+    {
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<StateCaptureWorkflow>());
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (StateCaptureWorkflow workflow) => workflow.RunAsync(null),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            Assert.True(await handle.GetResultAsync());
+        });
+    }
+
     [Workflow]
     public class PublishingWorkflow
     {
@@ -55,6 +70,33 @@ public class WorkflowStreamTests : WorkflowEnvironmentTestBase
         {
             finished = true;
             return Task.CompletedTask;
+        }
+    }
+
+    [Workflow]
+    public class StateCaptureWorkflow
+    {
+        private readonly WorkflowStream stream;
+
+        [WorkflowInit]
+        public StateCaptureWorkflow(WorkflowStreamState? state)
+        {
+            stream = new(state);
+        }
+
+        [WorkflowRun]
+        public async Task<bool> RunAsync(WorkflowStreamState? state)
+        {
+            _ = await stream.CaptureStateForContinueAsNewAsync();
+            try
+            {
+                stream.GetTopic("topic").Publish("too late");
+            }
+            catch (InvalidOperationException)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

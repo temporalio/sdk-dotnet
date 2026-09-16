@@ -312,10 +312,10 @@ public class WorkflowStreamClientTests : WorkflowEnvironmentTestBase
             if (continueOnce)
             {
                 await Workflow.WaitConditionAsync(() => continueRequested);
-                await stream.ContinueAsNewAsync(nextState =>
-                    Workflow.CreateContinueAsNewException(
-                        (ContinuingStreamWorkflow workflow) =>
-                            workflow.RunAsync(nextState, false)));
+                var nextState = await stream.CaptureStateForContinueAsNewAsync();
+                throw Workflow.CreateContinueAsNewException(
+                    (ContinuingStreamWorkflow workflow) =>
+                        workflow.RunAsync(nextState, false));
             }
             await Workflow.WaitConditionAsync(() => finished);
         }
