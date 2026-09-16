@@ -31,16 +31,13 @@ to docs, or any other relevant information.
 
 ## [1.19.0] - 2026-09-14
 - Added experimental `ISerializationContext.Nexus` support for Nexus callers and handlers. Callers
-  use it for operation inputs, results, and failures; handlers use it for inputs, synchronous
-  results, and failures. This lets a payload converter, codec, or failure converter vary its
-  behavior by Nexus endpoint, service, and operation, for example to select an encryption key per
-  endpoint. Asynchronous handler results are not context-scoped, and neither are a Nexus
-  operation's static summary and details. A standalone operation handle uses the context of its
-  start request, including when the start request returns an already-running operation; a handle
-  obtained from `GetNexusOperationHandle` has no endpoint, service, or operation and therefore
-  serializes without a Nexus context.
-- Added experimental `NexusOperationHandle.Endpoint`, `.Service`, and `.Operation`, which identify
-  the operation a started handle is for. They are set together or not at all.
+  use it for inputs, results, and failures; handlers use it for inputs, synchronous results, and
+  failures. Asynchronous handler results and detached standalone handles are not yet supported.
+  Standalone `UseExisting` handles use their start request's context. A Nexus operation's static
+  summary and details are attached without this context and are read back without it, so they
+  remain readable by a converter that varies by context.
+- Added experimental `NexusOperationHandle.Endpoint`, `.Service`, and `.Operation`, identifying the
+  operation a started handle is for.
 
 ## [1.19.0] - 2026-09-10
 
