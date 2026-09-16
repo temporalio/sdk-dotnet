@@ -2750,7 +2750,7 @@ namespace Temporalio.Worker
                 {
                     workflowCommand.UserMetadata = new()
                     {
-                        Summary = instance.payloadConverterNoContext.ToPayload(summary),
+                        Summary = payloadConverter.ToPayload(summary),
                     };
                 }
                 instance.AddCommand(workflowCommand);
