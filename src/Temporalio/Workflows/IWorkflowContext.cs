@@ -229,13 +229,15 @@ namespace Temporalio.Workflows
             string id, string? runId = null);
 
         /// <summary>
-        /// Backing call for <see cref="Workflow.Patched" /> and
-        /// <see cref="Workflow.DeprecatePatch" />.
+        /// Backing call for <see cref="Workflow.Patched(string)" /> and
+        /// <see cref="Workflow.DeprecatePatch(string)" />.
         /// </summary>
         /// <param name="patchId">Patch ID.</param>
         /// <param name="deprecated">Whether to deprecate.</param>
+        /// <param name="eventGroups">Optional Event Groups to attach to the patch marker.</param>
         /// <returns>Whether patched.</returns>
-        bool Patch(string patchId, bool deprecated);
+        bool Patch(
+            string patchId, bool deprecated, IReadOnlyCollection<EventGroup>? eventGroups = null);
 
         /// <summary>
         /// Backing call for
@@ -255,13 +257,20 @@ namespace Temporalio.Workflows
         /// Backing call for <see cref="Workflow.UpsertMemo" />.
         /// </summary>
         /// <param name="updates">Updates to perform.</param>
-        void UpsertMemo(IReadOnlyCollection<MemoUpdate> updates);
+        /// <param name="eventGroups">Optional Event Groups to attach to the memo upsert.</param>
+        void UpsertMemo(
+            IReadOnlyCollection<MemoUpdate> updates,
+            IReadOnlyCollection<EventGroup>? eventGroups = null);
 
         /// <summary>
         /// Backing call for <see cref="Workflow.UpsertTypedSearchAttributes" />.
         /// </summary>
         /// <param name="updates">Updates to perform.</param>
-        void UpsertTypedSearchAttributes(IReadOnlyCollection<SearchAttributeUpdate> updates);
+        /// <param name="eventGroups">Optional Event Groups to attach to the search-attribute
+        /// upsert.</param>
+        void UpsertTypedSearchAttributes(
+            IReadOnlyCollection<SearchAttributeUpdate> updates,
+            IReadOnlyCollection<EventGroup>? eventGroups = null);
 
         /// <summary>
         /// Backing call for <see cref="Workflow.WaitConditionWithOptionsAsync(WaitConditionOptions)" />

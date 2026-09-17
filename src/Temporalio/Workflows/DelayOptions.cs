@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Temporalio.Workflows
@@ -34,10 +35,43 @@ namespace Temporalio.Workflows
         /// <param name="summary">See <see cref="Summary" />.</param>
         /// <param name="cancellationToken">See <see cref="CancellationToken" />.</param>
         public DelayOptions(TimeSpan delay, string? summary = null, CancellationToken? cancellationToken = null)
+            : this(delay, summary, cancellationToken, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DelayOptions"/> class.
+        /// </summary>
+        /// <param name="millisecondsDelay">See <see cref="Delay" />.</param>
+        /// <param name="summary">See <see cref="Summary" />.</param>
+        /// <param name="cancellationToken">See <see cref="CancellationToken" />.</param>
+        /// <param name="eventGroups">See <see cref="EventGroups" />.</param>
+        public DelayOptions(
+            int millisecondsDelay,
+            string? summary,
+            CancellationToken? cancellationToken,
+            IReadOnlyCollection<EventGroup>? eventGroups)
+            : this(TimeSpan.FromMilliseconds(millisecondsDelay), summary, cancellationToken, eventGroups)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DelayOptions"/> class.
+        /// </summary>
+        /// <param name="delay">See <see cref="Delay" />.</param>
+        /// <param name="summary">See <see cref="Summary" />.</param>
+        /// <param name="cancellationToken">See <see cref="CancellationToken" />.</param>
+        /// <param name="eventGroups">See <see cref="EventGroups" />.</param>
+        public DelayOptions(
+            TimeSpan delay,
+            string? summary,
+            CancellationToken? cancellationToken,
+            IReadOnlyCollection<EventGroup>? eventGroups)
         {
             Delay = delay;
             Summary = summary;
             CancellationToken = cancellationToken;
+            EventGroups = eventGroups;
         }
 
         /// <summary>
@@ -69,6 +103,13 @@ namespace Temporalio.Workflows
         /// <see cref="Workflow.CancellationToken" />.
         /// </summary>
         public CancellationToken? CancellationToken { get; set; }
+
+        /// <summary>
+        /// Gets or sets Event Groups to attach to this timer, in addition to those active in the
+        /// current <see cref="Workflow.WithEventGroups" /> scope.
+        /// </summary>
+        /// <remarks>WARNING: Event Groups are experimental.</remarks>
+        public IReadOnlyCollection<EventGroup>? EventGroups { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.

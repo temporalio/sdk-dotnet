@@ -57,6 +57,14 @@ namespace Temporalio.Workflows
         /// </summary>
         /// <returns>Task for completion of the cancellation request.</returns>
         public abstract Task CancelAsync();
+
+        /// <summary>
+        /// Cancel an external workflow.
+        /// </summary>
+        /// <param name="options">Cancel options, including Event Groups.</param>
+        /// <returns>Task for completion of the cancellation request.</returns>
+        /// <remarks>WARNING: This API is experimental.</remarks>
+        public virtual Task CancelAsync(ExternalWorkflowCancelOptions? options) => CancelAsync();
     }
 
     /// <inheritdoc />

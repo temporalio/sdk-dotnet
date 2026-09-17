@@ -336,6 +336,21 @@ namespace Temporalio.Workflows
             Context.CreateContinueAsNewException(workflow, args, options);
 
         /// <summary>
+        /// Create an Event Group that can be attached to commands scheduled by this workflow.
+        /// </summary>
+        /// <param name="id">Non-empty group identity. Commands with the same ID belong to the same
+        /// group. The ID is stored as plain text in workflow history and should not contain
+        /// sensitive information.</param>
+        /// <param name="options">Options, including an optional display label.</param>
+        /// <returns>The Event Group.</returns>
+        /// <remarks>WARNING: Event Groups are experimental.</remarks>
+        public static EventGroup CreateEventGroup(string id, EventGroupOptions? options = null)
+        {
+            _ = Context;
+            return EventGroup.Create(id, (options ?? new()).Label);
+        }
+
+        /// <summary>
         /// Create an untyped Nexus client with a string service name and endpoint. This is a
         /// shortcut for <see cref="CreateNexusWorkflowClient(string, NexusWorkflowClientOptions)"/>.
         /// </summary>
@@ -427,12 +442,26 @@ namespace Temporalio.Workflows
         /// </summary>
         /// <param name="patchId">Patch ID.</param>
         /// <remarks>
-        /// This marks a workflow that had <see cref="Patched" /> in a previous version of the code
-        /// as no longer applicable because all workflows that use the old code path are done and
-        /// will never be queried again. Therefore the old code path is removed as well.
+        /// This marks a workflow that had <see cref="Patched(string)" /> in a previous version of
+        /// the code as no longer applicable because all workflows that use the old code path are
+        /// done and will never be queried again. Therefore the old code path is removed as well.
         /// </remarks>
         public static void DeprecatePatch(string patchId) =>
             Context.Patch(patchId, deprecated: true);
+
+        /// <summary>
+        /// Mark a patch as deprecated.
+        /// </summary>
+        /// <param name="patchId">Patch ID.</param>
+        /// <param name="options">Patch options.</param>
+        /// <remarks>
+        /// This marks a workflow that had <see cref="Patched(string)" /> in a previous version of
+        /// the code as no longer applicable because all workflows that use the old code path are
+        /// done and will never be queried again. Therefore the old code path is removed as well.
+        /// </remarks>
+        /// <remarks>WARNING: This API is experimental.</remarks>
+        public static void DeprecatePatch(string patchId, PatchOptions options) =>
+            Context.Patch(patchId, deprecated: true, options.EventGroups);
 
         /// <summary>
         /// Execute a static non-async activity with result via lambda.
@@ -1119,11 +1148,34 @@ namespace Temporalio.Workflows
         /// successive calls to this function for the same ID and workflow are memoized.
         /// </para>
         /// <para>
-        /// Use <see cref="DeprecatePatch" /> when all workflows are done and will never be queried
-        /// again. The old code path can be removed at that time too.
+        /// Use <see cref="DeprecatePatch(string)" /> when all workflows are done and will never be
+        /// queried again. The old code path can be removed at that time too.
         /// </para>
         /// </remarks>
-        public static bool Patched(string patchId) => Context.Patch(patchId, deprecated: false);
+        public static bool Patched(string patchId) =>
+            Context.Patch(patchId, deprecated: false);
+
+        /// <summary>
+        /// Patch a workflow.
+        /// </summary>
+        /// <param name="patchId">Patch ID.</param>
+        /// <param name="options">Patch options.</param>
+        /// <returns>True if this should take the newer patch, false if it should take the old
+        /// path.</returns>
+        /// <remarks>
+        /// <para>
+        /// When called, this will only return true if code should take the newer path which means
+        /// this is either not replaying or is replaying and has seen this patch before. Results for
+        /// successive calls to this function for the same ID and workflow are memoized.
+        /// </para>
+        /// <para>
+        /// Use <see cref="DeprecatePatch(string)" /> when all workflows are done and will never be
+        /// queried again. The old code path can be removed at that time too.
+        /// </para>
+        /// </remarks>
+        /// <remarks>WARNING: This API is experimental.</remarks>
+        public static bool Patched(string patchId, PatchOptions options) =>
+            Context.Patch(patchId, deprecated: false, options.EventGroups);
 
         /// <summary>
         /// Workflow-safe form of <see cref="Task.Run(Func{Task}, CancellationToken)" />.
@@ -1237,6 +1289,17 @@ namespace Temporalio.Workflows
             Context.UpsertMemo(updates);
 
         /// <summary>
+        /// Issue updates to the workflow memo.
+        /// </summary>
+        /// <param name="options">Options, including the updates and Event Groups.</param>
+        /// <exception cref="ArgumentException">If no updates given, two updates are given for a
+        /// key, or an update value cannot be converted.</exception>
+        /// <seealso cref="UpsertMemo" />
+        /// <remarks>WARNING: This API is experimental.</remarks>
+        public static void UpsertMemoWithOptions(UpsertMemoOptions options) =>
+            Context.UpsertMemo(options.Updates, options.EventGroups);
+
+        /// <summary>
         /// Issue updates to the workflow search attributes.
         /// </summary>
         /// <param name="updates">Updates to issue.</param>
@@ -1244,6 +1307,17 @@ namespace Temporalio.Workflows
         /// key.</exception>
         public static void UpsertTypedSearchAttributes(params SearchAttributeUpdate[] updates) =>
             Context.UpsertTypedSearchAttributes(updates);
+
+        /// <summary>
+        /// Issue updates to the workflow search attributes.
+        /// </summary>
+        /// <param name="options">Options, including the updates and Event Groups.</param>
+        /// <exception cref="ArgumentException">If no updates given or two updates are given for a
+        /// key.</exception>
+        /// <seealso cref="UpsertTypedSearchAttributes" />
+        /// <remarks>WARNING: This API is experimental.</remarks>
+        public static void UpsertTypedSearchAttributesWithOptions(UpsertSearchAttributesOptions options) =>
+            Context.UpsertTypedSearchAttributes(options.Updates, options.EventGroups);
 
         /// <summary>
         /// Wait for the given function to return true. See documentation of
@@ -1321,6 +1395,29 @@ namespace Temporalio.Workflows
         /// occurs.</returns>
         public static Task<bool> WaitConditionWithOptionsAsync(WaitConditionOptions options) =>
             Context.WaitConditionWithOptionsAsync(options);
+
+        /// <summary>
+        /// Attach Event Groups to every command produced within the returned scope.
+        /// </summary>
+        /// <param name="groups">Event Groups created with
+        /// <see cref="CreateEventGroup" />. Nested scopes compose; the same ID overwrites.
+        /// </param>
+        /// <returns>A disposable scope. Dispose (typically via <c>using</c>) to restore the previous
+        /// ambient Event Groups.</returns>
+        /// <remarks>
+        /// Only usable from within a workflow. Commands issued after the scope is disposed are
+        /// unaffected. Coroutines started inside the scope inherit it via <see cref="AsyncLocal{T}" />.
+        /// </remarks>
+        /// <remarks>WARNING: Event Groups are experimental.</remarks>
+        public static EventGroupScope WithEventGroups(params EventGroup[] groups)
+        {
+            _ = Context;
+            if (groups == null)
+            {
+                throw new ArgumentNullException(nameof(groups));
+            }
+            return EventGroupAmbient.PushExplicit(groups);
+        }
 
         /// <summary>
         /// Workflow-safe form of <see cref="Task.WhenAny(Task[])" />.
