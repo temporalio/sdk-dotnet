@@ -120,8 +120,9 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
     [Fact]
     public async Task HandleObtainedById_HasNoContext()
     {
-        await RunAsync(async (client, codec, endpoint) =>
-        {
+        await RunAsync(
+            async (client, codec, endpoint) =>
+            {
             var nexusClient = client.CreateNexusClient<IContextService>(endpoint);
             var started = await nexusClient.StartNexusOperationAsync<string>(
                 svc => svc.Echo("hello"),
@@ -134,23 +135,29 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
             // under a context must stay readable without one.
             var detached = client.GetNexusOperationHandle<string>(started.Id, started.RunId);
             Assert.Equal("echo:hello", await detached.GetResultAsync());
-        });
+            },
+            allowContextlessDecodeOfSignedPayload: true);
     }
 
     private static ISerializationContext.Nexus Expected(string endpoint) =>
         new(endpoint, "ContextService", nameof(IContextService.Echo));
 
-    private Task RunAsync(Func<ITemporalClient, RecordingCodec, string, Task> testFunc) =>
-        RunAsync((client, codec, endpoint, _) => testFunc(client, codec, endpoint));
+    private Task RunAsync(
+        Func<ITemporalClient, RecordingCodec, string, Task> testFunc,
+        bool allowContextlessDecodeOfSignedPayload = false) =>
+        RunAsync(
+            (client, codec, endpoint, _) => testFunc(client, codec, endpoint),
+            allowContextlessDecodeOfSignedPayload);
 
     private async Task RunAsync(
-        Func<ITemporalClient, RecordingCodec, string, RecordingFailureConverter, Task> testFunc)
+        Func<ITemporalClient, RecordingCodec, string, RecordingFailureConverter, Task> testFunc,
+        bool allowContextlessDecodeOfSignedPayload = false)
     {
         // Both sides share the codec so a signature written by one is checked by the other. Any
         // payload the SDK encodes and decodes under different contexts therefore fails the decode,
         // the way a codec keyed on the context would. Only the client gets the recording failure
         // converter, so the contexts it records are the client's.
-        var codec = new RecordingCodec();
+        var codec = new RecordingCodec(allowContextlessDecodeOfSignedPayload);
         var failureConverter = new RecordingFailureConverter();
         var clientOptions = (TemporalClientOptions)Client.Options.Clone();
         clientOptions.DataConverter = DataConverter.Default with
@@ -249,16 +256,23 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
 
         private readonly List<ISerializationContext?> seen;
         private readonly ISerializationContext? context;
+        // A handle obtained by operation ID legitimately decodes a context-encoded payload without
+        // a context, so that direction is only an error when a test says it should be.
+        private readonly bool allowContextlessDecodeOfSignedPayload;
 
-        public RecordingCodec()
-            : this(new List<ISerializationContext?>(), null)
+        public RecordingCodec(bool allowContextlessDecodeOfSignedPayload = false)
+            : this(new List<ISerializationContext?>(), null, allowContextlessDecodeOfSignedPayload)
         {
         }
 
-        private RecordingCodec(List<ISerializationContext?> seen, ISerializationContext? context)
+        private RecordingCodec(
+            List<ISerializationContext?> seen,
+            ISerializationContext? context,
+            bool allowContextlessDecodeOfSignedPayload)
         {
             this.seen = seen;
             this.context = context;
+            this.allowContextlessDecodeOfSignedPayload = allowContextlessDecodeOfSignedPayload;
         }
 
         // Shared by every instance derived via WithSerializationContext, so a test sees them all.
@@ -282,7 +296,7 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
         }
 
         public IPayloadCodec WithSerializationContext(ISerializationContext context) =>
-            new RecordingCodec(seen, context);
+            new RecordingCodec(seen, context, allowContextlessDecodeOfSignedPayload);
 
         public Task<IReadOnlyCollection<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads)
         {
@@ -319,6 +333,13 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
                 if (context is ISerializationContext.Nexus nexus)
                 {
                     Assert.Equal(Signature(nexus), signature.ToStringUtf8());
+                }
+                else
+                {
+                    // The reverse mismatch: encoded under a context, decoded without one.
+                    Assert.True(
+                        allowContextlessDecodeOfSignedPayload,
+                        $"payload encoded under a Nexus context was decoded under {context}");
                 }
                 var copy = p.Clone();
                 copy.Metadata.Remove(SignatureKey);

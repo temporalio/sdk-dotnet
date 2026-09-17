@@ -46,6 +46,9 @@ namespace Temporalio.Worker
         private readonly ILogger logger;
         private readonly Handler handler;
         private readonly ConcurrentDictionary<ByteString, RunningTask> runningTasks = new();
+        // Warn once per worker rather than once per task if the server does not report Nexus
+        // endpoints. Int rather than bool so it can be set with Interlocked.
+        private int warnedMissingEndpoint;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NexusWorker"/> class.
@@ -134,12 +137,10 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Serialization context for the operation a task is for, or null when the request variant
-        /// does not name a service and operation, or when the task does not report the endpoint it
-        /// was addressed to (servers before 1.30.0).
+        /// does not name a service and operation.
         /// </summary>
         private static Converters.ISerializationContext.Nexus? SerializationContextForTask(
-            PollNexusTaskQueueResponse task, string endpoint) =>
-            string.IsNullOrEmpty(endpoint) ? null : task.Request.VariantCase switch
+            PollNexusTaskQueueResponse task, string endpoint) => task.Request.VariantCase switch
             {
                 Request.VariantOneofCase.StartOperation => new(
                     Endpoint: endpoint,
@@ -162,6 +163,15 @@ namespace Temporalio.Worker
 
         private async Task HandlePollTaskAsync(RunningTask running, PollNexusTaskQueueResponse task, DateTime? requestDeadline, string endpoint)
         {
+            if (string.IsNullOrEmpty(endpoint) &&
+                Interlocked.Exchange(ref warnedMissingEndpoint, 1) == 0)
+            {
+                logger.LogWarning(
+                    "Nexus task did not report the endpoint it was addressed to, which requires " +
+                    "server 1.30.0 or later. Payloads this worker serializes for Nexus operations " +
+                    "will use a serialization context that does not match the caller's, so a data " +
+                    "converter that varies by context will not round-trip them.");
+            }
             try
             {
                 // Handle poll and post back to Core
@@ -299,12 +309,8 @@ namespace Temporalio.Worker
                     ? new CanceledFailureException(e.Message, e.InnerException)
                     : new ApplicationFailureException(
                         e.Message, e.InnerException, "OperationError", nonRetryable: true);
-                var opDataConverter = worker.Client.Options.DataConverter;
-                if (executionContext.SerializationContext is { } opFailureContext)
-                {
-                    opDataConverter = opDataConverter.WithSerializationContext(opFailureContext);
-                }
-                var opFailure = await opDataConverter
+                var opFailure = await worker.Client.Options.DataConverter
+                    .WithSerializationContext(executionContext.SerializationContext)
                     .ToFailureAsync(convertedException).ConfigureAwait(false);
                 return new() { Failure = opFailure };
             }

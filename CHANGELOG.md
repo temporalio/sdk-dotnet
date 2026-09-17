@@ -33,9 +33,10 @@ to docs, or any other relevant information.
 - Added experimental `ISerializationContext.Nexus` support for Nexus callers and handlers. Callers
   use it for inputs, results, and failures; handlers use it for inputs, synchronous results, and
   failures. Asynchronous handler results and detached standalone handles are not yet supported.
-  Standalone `UseExisting` handles use their start request's context. A Nexus operation's static
-  summary and details are serialized with this context, the same way workflow and activity user
-  metadata are serialized with theirs.
+  Standalone `UseExisting` handles use their start request's context. A Nexus operation's user
+  metadata is serialized with this context, the same way workflow and activity user metadata are
+  serialized with theirs: the static summary sent when starting an operation, and the summary and
+  details read back from a description.
 - Added experimental `NexusOperationHandle.Endpoint`, `.Service`, and `.Operation`, identifying the
   operation a started handle is for.
 

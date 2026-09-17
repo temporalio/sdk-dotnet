@@ -37,29 +37,6 @@ public class NexusSerializationContextTests
     }
 
     [Fact]
-    public void SerializationContext_NoEndpointReported_IsNull()
-    {
-        // Servers before 1.30.0 do not report the endpoint the task was addressed to. Scoping by an
-        // empty endpoint would silently disagree with the caller, which scoped by the real one.
-        Assert.Null(NewExecutionContext(endpoint: string.Empty).SerializationContext);
-    }
-
-    [Fact]
-    public async Task SerializeAsync_NoEndpointReported_UsesNoContext()
-    {
-        var codec = new RecordingCodec();
-        var serializer = new NexusPayloadSerializer(DataConverter.Default with
-        {
-            PayloadCodec = codec,
-        });
-
-        await WithOperationInScopeAsync(
-            () => serializer.SerializeAsync("value"), endpoint: string.Empty);
-
-        Assert.Equal(new ISerializationContext?[] { null }, codec.Contexts);
-    }
-
-    [Fact]
     public async Task SerializeAsync_WithOperationInScope_UsesOperationContext()
     {
         var codec = new RecordingCodec();
@@ -132,10 +109,9 @@ public class NexusSerializationContextTests
 
     // Awaits inside the scope so the context has to survive the continuation, not just the
     // synchronous prologue of the call.
-    private static async Task<T> WithOperationInScopeAsync<T>(
-        Func<Task<T>> action, string endpoint = Endpoint)
+    private static async Task<T> WithOperationInScopeAsync<T>(Func<Task<T>> action)
     {
-        NexusOperationExecutionContext.AsyncLocalCurrent.Value = NewExecutionContext(endpoint);
+        NexusOperationExecutionContext.AsyncLocalCurrent.Value = NewExecutionContext();
         try
         {
             return await action().ConfigureAwait(false);
@@ -146,14 +122,14 @@ public class NexusSerializationContextTests
         }
     }
 
-    private static NexusOperationExecutionContext NewExecutionContext(string endpoint = Endpoint) =>
+    private static NexusOperationExecutionContext NewExecutionContext() =>
         new(
             handlerContext: new OperationStartContext(
                 Service: Service,
                 Operation: Operation,
                 CancellationToken: CancellationToken.None,
                 RequestId: Guid.NewGuid().ToString()),
-            info: new("ns", "tq", endpoint),
+            info: new("ns", "tq", Endpoint),
             logger: NullLogger.Instance,
             runtimeMetricMeter: new Lazy<MetricMeter>(
                 () => throw new InvalidOperationException("metric meter not expected in test")),

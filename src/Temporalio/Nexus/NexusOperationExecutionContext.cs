@@ -112,18 +112,15 @@ namespace Temporalio.Nexus
         /// operation the request names.
         /// </summary>
         /// <remarks>
-        /// Null when the task does not report the endpoint it was addressed to, which is the case
-        /// on servers before 1.30.0. Scoping by an empty endpoint would silently disagree with the
-        /// caller, which scoped by the real one, so such payloads are serialized without a context
-        /// instead.
+        /// Servers before 1.30.0 do not report the endpoint the task was addressed to, so the
+        /// context is scoped by an empty endpoint there and does not agree with the caller's.
+        /// Nexus serialization context on the handler side requires server 1.30.0 or later.
         /// </remarks>
-        internal Converters.ISerializationContext.Nexus? SerializationContext =>
-            string.IsNullOrEmpty(Info.Endpoint) ?
-                null :
-                new(
-                    Endpoint: Info.Endpoint,
-                    Service: HandlerContext.Service,
-                    Operation: HandlerContext.Operation);
+        internal Converters.ISerializationContext.Nexus SerializationContext =>
+            new(
+                Endpoint: Info.Endpoint,
+                Service: HandlerContext.Service,
+                Operation: HandlerContext.Operation);
 
         /// <summary>
         /// Gets or sets the <c>common.v1.Link</c>s extracted from the inbound Nexus task so they can
