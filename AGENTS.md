@@ -137,8 +137,8 @@ Reviewers will look for:
 - `Directory.Build.props` – shared MSBuild properties
 - `Directory.Packages.props` – central package versions (this repo uses central package management).
 - `.config/dotnet-tools.json` – pinned .NET codegen tools (ClangSharpPInvokeGenerator, docfx).
-- `mise.toml` – pinned `protoc` and `nex-gen`, plus the `gen`/`docs`/`bridge:check-sync` tasks CI
-  runs and the `apicompat:baseline`/`bridge:relock` maintenance tasks.
+- `mise.toml` – pinned `protoc`, `nex-gen`, and `yq`, plus the `gen`/`docs`/`bridge:check-sync`
+  tasks CI runs and the `apicompat:baseline`/`bridge:relock` maintenance tasks.
 - `.editorconfig` – analyzer/StyleCop rule configuration and Temporal-specific overrides.
 - `README.md`, `CONTRIBUTING.md` – contributor and development guide.
 - `bin/`, `obj/`, `target/` – compiled output. You never need to look in here.
@@ -164,8 +164,7 @@ Reviewers will look for:
   graph is pinned by `Bridge/Cargo.lock` (sdk-rust gitignores its own lockfile, being a published
   library). This matches the Python, TypeScript, and Ruby SDKs. Always build with `--locked`, and
   always run cargo from `src/Temporalio/Bridge` so `Bridge/rust-toolchain.toml` applies.
-- After bumping the sdk-core submodule: re-mirror any changed `[workspace.dependencies]`,
-  `[workspace.lints]`, `[profile.release-lto]`, or toolchain channel from `sdk-core/Cargo.toml` and
+- After bumping the sdk-core submodule: re-mirror whatever changed in `sdk-core/Cargo.toml` and
   `sdk-core/rust-toolchain.toml` into `Bridge/Cargo.toml` and `Bridge/rust-toolchain.toml`, run
   `mise run bridge:check-sync` to confirm, then `mise run bridge:relock` and commit the lockfile. CI
   runs `bridge:check-sync`, and `--locked` fails the build if the lockfile is stale.

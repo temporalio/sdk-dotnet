@@ -1328,7 +1328,7 @@ Prerequisites:
   rustup honors that pin
 * [Protobuf Compiler](https://protobuf.dev/) (i.e. `protoc` on the `PATH`)
 * [mise](https://mise.jdx.dev/getting-started.html) — running `mise install` in the repository root installs the
-  `protoc` version pinned in [`mise.toml`](mise.toml) and puts it on the `PATH`, matching what CI uses
+  tool versions pinned in [`mise.toml`](mise.toml) and puts them on the `PATH`, matching what CI uses
 * This repository, cloned recursively
 
 With all prerequisites in place, run:
@@ -1343,9 +1343,9 @@ The native Rust library is built automatically as part of the above, through the
 [`src/Temporalio/Bridge/Cargo.toml`](src/Temporalio/Bridge/Cargo.toml). That workspace exists so the
 library's dependency graph is pinned by a committed
 [`Cargo.lock`](src/Temporalio/Bridge/Cargo.lock); `sdk-core` is a published Rust library and
-deliberately does not commit one of its own. Its `[workspace.dependencies]`, `[workspace.lints]`,
-`[profile.release-lto]`, and toolchain channel are mirrored from the submodule, so after bumping
-`sdk-core` copy over anything that changed upstream and then run:
+deliberately does not commit one of its own. Its workspace tables and toolchain channel are
+mirrored from the submodule, so after bumping `sdk-core` copy over anything that changed upstream
+and then run:
 
     mise run bridge:check-sync  # confirm the mirrored tables match the submodule
     mise run bridge:relock      # refresh Bridge/Cargo.lock, then commit it

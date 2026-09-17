@@ -3,64 +3,63 @@
 # changes them upstream would otherwise leave us building the bridge against different versions than
 # upstream tests with, and the build would still succeed: --locked cannot catch it, because our
 # lockfile would agree with our own stale manifest.
+#
+# Run this as 'mise run bridge:check-sync', which puts the pinned yq on the PATH.
 set -eu
 
 dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-ours="$dir/Cargo.toml"
-theirs="$dir/sdk-core/Cargo.toml"
 
-if [ ! -f "$theirs" ]; then
-    echo "error: $theirs not found; run 'git submodule update --init --recursive'" >&2
+if ! command -v yq >/dev/null 2>&1; then
+    echo "error: yq not found on the PATH; run 'mise run bridge:check-sync'" >&2
     exit 1
 fi
 
-# Continuation lines of a multi-line value are always indented, so a leading "[" only ever starts a
-# table header and can be used to find both ends of a table.
-extract() {
-    awk -v want="$2" 'substr($0, 1, 1) == "[" { inside = ($0 == want) } inside' "$1"
+if [ ! -f "$dir/sdk-core/Cargo.toml" ]; then
+    echo "error: $dir/sdk-core not populated; run 'git submodule update --init --recursive'" >&2
+    exit 1
+fi
+
+# The whole manifest is compared except for the keys deleted here, so a table added upstream is
+# reported rather than silently skipped:
+#   workspace.members, workspace.default-members - ours claims only the crate we build, by its
+#                                                  path relative to this manifest.
+#   workspace.package.license-file               - upstream names its own LICENSE.txt, ours
+#                                                  names this repository's LICENSE.
+mirrored='del(
+    .workspace.members,
+    .workspace["default-members"],
+    .workspace.package["license-file"]
+) | sort_keys(..)'
+
+# sort_keys leaves only a real difference in the parsed values to reach the diff, never
+# formatting, comments or key order.
+manifest() {
+    yq --input-format toml --output-format json "$mirrored" "$1/Cargo.toml"
 }
 
-table_names() {
-    awk 'substr($0, 1, 1) == "[" { print }' "$1" | sort
+# Only the channel has to match: rustup reads rust-toolchain.toml from the working directory, so
+# ours is the file that governs the bridge build, and upstream's components are for their own CI.
+channel() {
+    yq --input-format toml --output-format yaml '.toolchain.channel' "$1/rust-toolchain.toml"
 }
+
+theirs=$(mktemp)
+ours=$(mktemp)
+trap 'rm -f "$theirs" "$ours"' EXIT HUP INT TERM
 
 status=0
 
-# Compared first so that a table added upstream which we mirror nowhere is reported, rather than
-# silently skipped by the per-table loop below.
-a=$(mktemp)
-b=$(mktemp)
-table_names "$theirs" > "$a"
-table_names "$ours" > "$b"
-if ! diff -u -L "sdk-core/Cargo.toml tables" "$a" -L "Bridge/Cargo.toml tables" "$b"; then
+manifest "$dir/sdk-core" > "$theirs"
+manifest "$dir" > "$ours"
+if ! diff -u -L "sdk-core/Cargo.toml" "$theirs" -L "Bridge/Cargo.toml" "$ours"; then
     status=1
 fi
-rm -f "$a" "$b"
 
-# [workspace.package] is omitted: upstream's license-file names its own LICENSE.txt, ours names this
-# repo's LICENSE.
-for section in \
-    '[workspace.dependencies]' \
-    '[workspace.lints.rust]' \
-    '[workspace.lints.clippy]' \
-    '[profile.release-lto]'; do
-    a=$(mktemp)
-    b=$(mktemp)
-    extract "$theirs" "$section" > "$a"
-    extract "$ours" "$section" > "$b"
-    if ! diff -u -L "sdk-core/Cargo.toml $section" "$a" -L "Bridge/Cargo.toml $section" "$b"; then
-        status=1
-    fi
-    rm -f "$a" "$b"
-done
-
-channel() {
-    sed -n 's/^[[:space:]]*channel[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' "$1"
-}
-theirs_channel=$(channel "$dir/sdk-core/rust-toolchain.toml")
-ours_channel=$(channel "$dir/rust-toolchain.toml")
+theirs_channel=$(channel "$dir/sdk-core")
+ours_channel=$(channel "$dir")
 if [ "$theirs_channel" != "$ours_channel" ]; then
-    echo "Rust toolchain channel differs: sdk-core pins '$theirs_channel', Bridge pins '$ours_channel'"
+    echo "Rust toolchain channel differs: sdk-core pins '$theirs_channel', Bridge pins" \
+        "'$ours_channel'" >&2
     status=1
 fi
 
