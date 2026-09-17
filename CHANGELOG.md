@@ -74,7 +74,7 @@ to docs, or any other relevant information.
 - Added experimental `NexusOperationHandle.Endpoint`, `.Service`, and `.Operation`, identifying the
   operation a started handle is for.
 
-## [1.19.0] - 2026-09-10
+## [1.19.0] - 2026-09-14
 
 ### :boom: Breaking Changes
 
