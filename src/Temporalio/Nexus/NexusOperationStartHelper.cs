@@ -91,5 +91,34 @@ namespace Temporalio.Nexus
             }
             return callback;
         }
+
+        /// <summary>
+        /// Build on-conflict options for an activity start under a <c>UseExisting</c> ID conflict
+        /// policy, attaching only the artifacts the start actually carries. The server rejects
+        /// attaching a request ID with no accompanying link or completion callback, so this
+        /// returns <c>null</c> unless there is at least one to attach.
+        /// </summary>
+        /// <param name="idConflictPolicy">The activity ID conflict policy.</param>
+        /// <param name="hasLinks">Whether the start carries links to attach.</param>
+        /// <param name="hasCompletionCallback">Whether the start carries a completion callback to
+        /// attach.</param>
+        /// <returns>On-conflict options, or <c>null</c> if not applicable.</returns>
+        internal static Api.Common.V1.OnConflictOptions? CreateActivityOnConflictOptions(
+            Api.Enums.V1.ActivityIdConflictPolicy idConflictPolicy,
+            bool hasLinks,
+            bool hasCompletionCallback)
+        {
+            if (idConflictPolicy != Api.Enums.V1.ActivityIdConflictPolicy.UseExisting ||
+                (!hasLinks && !hasCompletionCallback))
+            {
+                return null;
+            }
+            return new()
+            {
+                AttachLinks = hasLinks,
+                AttachCompletionCallbacks = hasCompletionCallback,
+                AttachRequestId = true,
+            };
+        }
     }
 }

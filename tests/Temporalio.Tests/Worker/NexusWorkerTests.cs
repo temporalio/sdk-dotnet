@@ -1,5 +1,7 @@
 namespace Temporalio.Tests.Worker;
 
+using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging.Abstractions;
 using NexusRpc;
 using NexusRpc.Handlers;
 using Temporalio.Activities;
@@ -2372,6 +2374,15 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         public static Task<string> EchoAsync(string input) =>
             Task.FromResult($"echo-activity:{input}");
 
+        public static ConcurrentDictionary<string, int> EchoRunCounts { get; } = new();
+
+        [Activity]
+        public static Task<string> CountingEchoAsync(string input)
+        {
+            EchoRunCounts.AddOrUpdate(input, 1, (_, count) => count + 1);
+            return Task.FromResult($"echo-activity:{input}");
+        }
+
         [Activity]
         public static async Task WaitForCancelAsync()
         {
@@ -2384,6 +2395,307 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             }
             ctx.CancellationToken.ThrowIfCancellationRequested();
         }
+    }
+
+    [Fact]
+    public async Task StartActivityAsync_RawActivityStartFromSyncHandler_TwoActivitiesBothSucceed()
+    {
+        await RunRawActivityStartTwoActivitiesAsync();
+    }
+
+    [Fact]
+    public async Task StartActivityAsync_RawActivityStartFromSyncHandler_ActivitiesCarryInboundLink()
+    {
+        var (activityIds, callerWorkflowId) = await RunRawActivityStartTwoActivitiesAsync();
+        foreach (var activityId in activityIds)
+        {
+            var desc = await Client.GetActivityHandle(activityId).DescribeAsync();
+            var link = Assert.Single(desc.RawInfo.Links);
+            Assert.Equal(callerWorkflowId, link.WorkflowEvent.WorkflowId);
+            Assert.Equal(
+                Api.Enums.V1.EventType.NexusOperationScheduled,
+                link.WorkflowEvent.EventRef.EventType);
+        }
+    }
+
+    [Fact]
+    public async Task StartActivityAsync_RawActivityStartFromSyncHandler_PreservesCallerSuppliedLinks()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (ctx, input) =>
+                {
+                    var client = NexusOperationExecutionContext.Current.TemporalClient;
+                    var callerLink = new Link
+                    {
+                        WorkflowEvent = new()
+                        {
+                            Namespace = "caller-supplied-namespace",
+                            WorkflowId = "caller-supplied-workflow-id",
+                            RunId = Guid.NewGuid().ToString(),
+                            EventRef = new()
+                            {
+                                EventId = 1,
+                                EventType = Api.Enums.V1.EventType.WorkflowExecutionStarted,
+                            },
+                        },
+                    };
+                    var handle = await client.StartActivityAsync<string>(
+                        () => ActivityStubs.EchoAsync(input),
+                        new()
+                        {
+                            Id = $"act-{Guid.NewGuid()}",
+                            TaskQueue = NexusOperationExecutionContext.Current.Info.TaskQueue,
+                            ScheduleToCloseTimeout = TimeSpan.FromMinutes(1),
+                            Links = new[] { callerLink },
+                        });
+                    return handle.Id;
+                }))).
+            AddActivity(ActivityStubs.EchoAsync);
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        string? activityId = null;
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            activityId = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("hello"));
+        });
+
+        var desc = await Client.GetActivityHandle(activityId!).DescribeAsync();
+        Assert.Equal(2, desc.RawInfo.Links.Count);
+        Assert.Contains(
+            desc.RawInfo.Links,
+            l => l.WorkflowEvent.WorkflowId == "caller-supplied-workflow-id");
+        Assert.Contains(
+            desc.RawInfo.Links,
+            l => l.WorkflowEvent.EventRef.EventType == Api.Enums.V1.EventType.NexusOperationScheduled);
+    }
+
+    [Fact]
+    public async Task StartActivityAsync_RawActivityStartUseExistingWithoutInboundLinks_Succeeds()
+    {
+        var activityId = $"act-{Guid.NewGuid()}";
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (ctx, input) =>
+                {
+                    var client = NexusOperationExecutionContext.Current.TemporalClient;
+                    await client.StartActivityAsync(
+                        "WaitForCancel",
+                        Array.Empty<object?>(),
+                        new()
+                        {
+                            Id = input,
+                            TaskQueue = NexusOperationExecutionContext.Current.Info.TaskQueue,
+                            ScheduleToCloseTimeout = TimeSpan.FromMinutes(2),
+                            IdConflictPolicy = ActivityIdConflictPolicy.UseExisting,
+                        });
+                    return "attached";
+                }))).
+            AddActivity(ActivityStubs.WaitForCancelAsync);
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        using var worker = new TemporalWorker(Client, workerOptions);
+        await worker.ExecuteAsync(async () =>
+        {
+            var existingHandle = await Client.StartActivityAsync(
+                "WaitForCancel",
+                Array.Empty<object?>(),
+                new()
+                {
+                    Id = activityId,
+                    TaskQueue = workerOptions.TaskQueue!,
+                    ScheduleToCloseTimeout = TimeSpan.FromMinutes(2),
+                    HeartbeatTimeout = TimeSpan.FromSeconds(10),
+                });
+
+            var result = await Client.CreateNexusClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync<string>(
+                    svc => svc.DoSomething(activityId),
+                    new($"op-{Guid.NewGuid()}") { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+            Assert.Equal("attached", result);
+
+            await existingHandle.CancelAsync();
+        });
+    }
+
+    [Fact]
+    public async Task StartActivityAsync_RawActivityStartUseExistingWithCallerSuppliedLinksOnly_AttachesCallerLinks()
+    {
+        var activityId = $"act-{Guid.NewGuid()}";
+        var callerLink = new Link
+        {
+            WorkflowEvent = new()
+            {
+                Namespace = "caller-supplied-namespace",
+                WorkflowId = "caller-supplied-workflow-id",
+                RunId = Guid.NewGuid().ToString(),
+                EventRef = new()
+                {
+                    EventId = 1,
+                    EventType = Api.Enums.V1.EventType.WorkflowExecutionStarted,
+                },
+            },
+        };
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (ctx, input) =>
+                {
+                    var client = NexusOperationExecutionContext.Current.TemporalClient;
+                    await client.StartActivityAsync(
+                        "WaitForCancel",
+                        Array.Empty<object?>(),
+                        new()
+                        {
+                            Id = input,
+                            TaskQueue = NexusOperationExecutionContext.Current.Info.TaskQueue,
+                            ScheduleToCloseTimeout = TimeSpan.FromMinutes(2),
+                            IdConflictPolicy = ActivityIdConflictPolicy.UseExisting,
+                            Links = new[] { callerLink },
+                        });
+                    return "attached";
+                }))).
+            AddActivity(ActivityStubs.WaitForCancelAsync);
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        using var worker = new TemporalWorker(Client, workerOptions);
+        await worker.ExecuteAsync(async () =>
+        {
+            var existingHandle = await Client.StartActivityAsync(
+                "WaitForCancel",
+                Array.Empty<object?>(),
+                new()
+                {
+                    Id = activityId,
+                    TaskQueue = workerOptions.TaskQueue!,
+                    ScheduleToCloseTimeout = TimeSpan.FromMinutes(2),
+                    HeartbeatTimeout = TimeSpan.FromSeconds(10),
+                });
+
+            var result = await Client.CreateNexusClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync<string>(
+                    svc => svc.DoSomething(activityId),
+                    new($"op-{Guid.NewGuid()}") { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+            Assert.Equal("attached", result);
+
+            var desc = await existingHandle.DescribeAsync();
+            Assert.Contains(
+                desc.RawInfo.Links,
+                l => l.WorkflowEvent?.WorkflowId == "caller-supplied-workflow-id");
+
+            await existingHandle.CancelAsync();
+        });
+    }
+
+    [Fact]
+    public async Task StartActivityAsync_RawActivityStartUseExistingWithMalformedInboundLinks_Succeeds()
+    {
+        var activityId = $"act-{Guid.NewGuid()}";
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var workerOptions = new TemporalWorkerOptions(taskQueue).
+            AddActivity(ActivityStubs.WaitForCancelAsync);
+
+        using var worker = new TemporalWorker(Client, workerOptions);
+        await worker.ExecuteAsync(async () =>
+        {
+            var existingHandle = await Client.StartActivityAsync(
+                () => ActivityStubs.WaitForCancelAsync(),
+                new()
+                {
+                    Id = activityId,
+                    TaskQueue = taskQueue,
+                    ScheduleToCloseTimeout = TimeSpan.FromMinutes(2),
+                    HeartbeatTimeout = TimeSpan.FromSeconds(10),
+                });
+
+            // Simulate a Nexus start context whose only inbound link is unrecognized, which
+            // NexusOperationStartHelper.CreateInboundLinks drops, yielding a non-null but empty
+            // collection.
+            var handlerContext = new OperationStartContext(
+                Service: "svc",
+                Operation: "op",
+                CancellationToken: CancellationToken.None,
+                RequestId: Guid.NewGuid().ToString())
+            {
+                InboundLinks = new[] { new NexusLink(new Uri("https://example.com"), "unrecognized-type") },
+            };
+            var executionContext = new NexusOperationExecutionContext(
+                handlerContext: handlerContext,
+                info: new(Client.Options.Namespace, taskQueue, "endpoint"),
+                logger: NullLogger.Instance,
+                runtimeMetricMeter: new Lazy<MetricMeter>(
+                    () => throw new InvalidOperationException("metric meter not expected in test")),
+                temporalClient: Client);
+            NexusOperationExecutionContext.AsyncLocalCurrent.Value = executionContext;
+            try
+            {
+                // Should not be rejected by the server for attaching a request ID with no link or
+                // completion callback to accompany it.
+                var conflictHandle = await Client.StartActivityAsync(
+                    () => ActivityStubs.WaitForCancelAsync(),
+                    new()
+                    {
+                        Id = activityId,
+                        TaskQueue = taskQueue,
+                        ScheduleToCloseTimeout = TimeSpan.FromMinutes(2),
+                        IdConflictPolicy = ActivityIdConflictPolicy.UseExisting,
+                    });
+                Assert.Equal(existingHandle.Id, conflictHandle.Id);
+            }
+            finally
+            {
+                NexusOperationExecutionContext.AsyncLocalCurrent.Value = null;
+            }
+
+            await existingHandle.CancelAsync();
+        });
+    }
+
+    [Fact]
+    public async Task StartActivityAsync_RawActivityStartFromSyncHandler_DedupsAcrossRedelivery()
+    {
+        var activityKey = $"redelivery-{Guid.NewGuid()}";
+        var invocationCount = 0;
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (ctx, input) =>
+                {
+                    var attempt = Interlocked.Increment(ref invocationCount);
+                    var client = NexusOperationExecutionContext.Current.TemporalClient;
+                    var handle = await client.StartActivityAsync<string>(
+                        () => ActivityStubs.CountingEchoAsync(input),
+                        new()
+                        {
+                            Id = $"act-{input}",
+                            TaskQueue = NexusOperationExecutionContext.Current.Info.TaskQueue,
+                            ScheduleToCloseTimeout = TimeSpan.FromMinutes(2),
+                        });
+                    var result = await handle.GetResultAsync();
+                    if (attempt == 1)
+                    {
+                        // Forces a real server-driven redelivery of this StartOperation task.
+                        throw new InvalidOperationException("Simulated failure to force redelivery");
+                    }
+                    return result;
+                }))).
+            AddActivity(ActivityStubs.CountingEchoAsync);
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        using var worker = new TemporalWorker(Client, workerOptions);
+        await worker.ExecuteAsync(async () =>
+        {
+            var result = await Client.CreateNexusClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync<string>(
+                    svc => svc.DoSomething(activityKey),
+                    new($"op-{Guid.NewGuid()}")
+                    {
+                        ScheduleToCloseTimeout = TimeSpan.FromMinutes(3),
+                        Rpc = new() { Timeout = TimeSpan.FromMinutes(3) },
+                    });
+            Assert.Equal($"echo-activity:{activityKey}", result);
+        });
+
+        Assert.Equal(1, ActivityStubs.EchoRunCounts.GetValueOrDefault(activityKey));
     }
 
     [Fact]
@@ -2877,6 +3189,53 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var name = $"nexus-endpoint-{taskQueue}";
         await Env.TestEnv.CreateNexusEndpointAsync(name, taskQueue);
         return name;
+    }
+
+    private async Task<(string[] ActivityIds, string CallerWorkflowId)>
+        RunRawActivityStartTwoActivitiesAsync()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (ctx, input) =>
+                {
+                    var client = NexusOperationExecutionContext.Current.TemporalClient;
+                    var taskQueue = NexusOperationExecutionContext.Current.Info.TaskQueue;
+                    var first = await client.StartActivityAsync<string>(
+                        () => ActivityStubs.EchoAsync($"{input}-a"),
+                        new()
+                        {
+                            Id = $"act-a-{Guid.NewGuid()}",
+                            TaskQueue = taskQueue,
+                            ScheduleToCloseTimeout = TimeSpan.FromMinutes(1),
+                        });
+                    var second = await client.StartActivityAsync<string>(
+                        () => ActivityStubs.EchoAsync($"{input}-b"),
+                        new()
+                        {
+                            Id = $"act-b-{Guid.NewGuid()}",
+                            TaskQueue = taskQueue,
+                            ScheduleToCloseTimeout = TimeSpan.FromMinutes(1),
+                        });
+                    return $"{first.Id}|{second.Id}|{await first.GetResultAsync()}|" +
+                        $"{await second.GetResultAsync()}";
+                }))).
+            AddActivity(ActivityStubs.EchoAsync);
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        var callerWorkflowId = $"caller-{Guid.NewGuid()}";
+        string[]? activityIds = null;
+        await RunInWorkflowAsync(
+            workerOptions,
+            async () =>
+            {
+                var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("hello"));
+                var parts = result.Split('|');
+                Assert.Equal("echo-activity:hello-a|echo-activity:hello-b", $"{parts[2]}|{parts[3]}");
+                activityIds = new[] { parts[0], parts[1] };
+            },
+            callerWorkflowId: callerWorkflowId);
+        return (activityIds!, callerWorkflowId);
     }
 
     [Workflow]
