@@ -161,14 +161,12 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
         {
             // Do something async to make sure that works
             await Task.Delay(10, cancellationToken);
-            ReserveTracking(ctx);
-            return new SlotPermit(ReserveCount);
+            return new SlotPermit(ReserveTracking(ctx));
         }
 
         public override SlotPermit? TryReserveSlot(SlotReserveContext ctx)
         {
-            ReserveTracking(ctx);
-            return new SlotPermit(ReserveCount);
+            return new SlotPermit(ReserveTracking(ctx));
         }
 
         public override void MarkSlotUsed(SlotMarkUsedContext ctx)
@@ -212,13 +210,14 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
             }
         }
 
-        private void ReserveTracking(SlotReserveContext ctx)
+        private uint ReserveTracking(SlotReserveContext ctx)
         {
             lock (lockObj)
             {
                 ReserveCount++;
                 SeenStickyTypes.Add(ctx.IsSticky);
                 SeenReserveTypes.Add(ctx.SlotType);
+                return ReserveCount;
             }
         }
     }
