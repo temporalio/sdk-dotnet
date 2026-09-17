@@ -28,8 +28,6 @@ to docs, or any other relevant information.
 - Added the experimental `Temporalio.Extensions.WorkflowStreams` package for durable, batched,
   offset-based publish/subscribe streams hosted by workflows, interoperable with other Temporal
   SDK Workflow Streams implementations.
-
-## [1.19.0] - 2026-09-14
 - Added experimental `ISerializationContext.Nexus` support for Nexus callers and handlers. Callers
   use it for inputs, results, and failures; handlers use it for inputs, synchronous results, and
   failures. Asynchronous handler results and detached standalone handles are not yet supported.
@@ -40,7 +38,7 @@ to docs, or any other relevant information.
 - Added experimental `NexusOperationHandle.Endpoint`, `.Service`, and `.Operation`, identifying the
   operation a started handle is for.
 
-## [1.19.0] - 2026-09-10
+## [1.19.0] - 2026-09-14
 
 ### :boom: Breaking Changes
 
