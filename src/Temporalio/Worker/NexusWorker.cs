@@ -46,9 +46,6 @@ namespace Temporalio.Worker
         private readonly ILogger logger;
         private readonly Handler handler;
         private readonly ConcurrentDictionary<ByteString, RunningTask> runningTasks = new();
-        // Warn once per worker rather than once per task if the server does not report Nexus
-        // endpoints. Int rather than bool so it can be set with Interlocked.
-        private int warnedMissingEndpoint;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NexusWorker"/> class.
@@ -163,15 +160,6 @@ namespace Temporalio.Worker
 
         private async Task HandlePollTaskAsync(RunningTask running, PollNexusTaskQueueResponse task, DateTime? requestDeadline, string endpoint)
         {
-            if (string.IsNullOrEmpty(endpoint) &&
-                Interlocked.Exchange(ref warnedMissingEndpoint, 1) == 0)
-            {
-                logger.LogWarning(
-                    "Nexus task did not report the endpoint it was addressed to, which requires " +
-                    "server 1.30.0 or later. Payloads this worker serializes for Nexus operations " +
-                    "will use a serialization context that does not match the caller's, so a data " +
-                    "converter that varies by context will not round-trip them.");
-            }
             try
             {
                 // Handle poll and post back to Core

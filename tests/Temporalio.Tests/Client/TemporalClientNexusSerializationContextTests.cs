@@ -256,8 +256,8 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
 
         private readonly List<ISerializationContext?> seen;
         private readonly ISerializationContext? context;
-        // A handle obtained by operation ID legitimately decodes a context-encoded payload without
-        // a context, so that direction is only an error when a test says it should be.
+        // A handle obtained by operation ID decodes a context-encoded payload without a context,
+        // so that direction is only an error when a test says it should be.
         private readonly bool allowContextlessDecodeOfSignedPayload;
 
         public RecordingCodec(bool allowContextlessDecodeOfSignedPayload = false)
