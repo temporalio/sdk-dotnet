@@ -19,6 +19,16 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### Added
+
+- Added the experimental `Temporalio.Extensions.Gcp.CloudRun.Id` package for long-lived
+  Temporal workers on Google Cloud Run worker pools and services. Register a single `CloudRunIdPlugin`
+  on your client's `Plugins`; it sets the worker identity from the Cloud Run instance at connect
+  time (unless one is already configured), and workers created from that client inherit it.
+- Added the experimental `Temporalio.Extensions.WorkflowStreams` package for durable, batched,
+  offset-based publish/subscribe streams hosted by workflows, interoperable with other Temporal
+  SDK Workflow Streams implementations.
+
 ## [1.19.0] - 2026-09-14
 
 ### :boom: Breaking Changes
@@ -78,6 +88,8 @@ to docs, or any other relevant information.
 
 - Fixed workflow-side `SignalWithStartWorkflowAsync` to participate in outbound workflow
   interception, propagate tracing headers, and apply the target workflow serialization context.
+- Fixed workflow-side `SignalWithStartWorkflowAsync` payload codecs to apply the target workflow
+  serialization context to System Nexus request payloads.
 - Worker shutdown now drains activity completions that are still flushing their result to the
   server before finishing. Previously such a completion — typically one whose final heartbeat RPC
   was still in flight — could be permanently stranded by shutdown, so the activity's result was
