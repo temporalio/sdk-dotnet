@@ -34,9 +34,8 @@ namespace Temporalio.Worker
         /// case when this serializer is used directly rather than by the worker.
         /// </remarks>
         private DataConverter ContextualDataConverter =>
-            Temporalio.Nexus.NexusOperationExecutionContext.AsyncLocalCurrent.Value?
-                .SerializationContext is { } context ?
-                    dataConverter.WithSerializationContext(context) : dataConverter;
+            Temporalio.Nexus.NexusOperationExecutionContext.AsyncLocalCurrent.Value is { } ctx ?
+                dataConverter.WithSerializationContext(ctx.SerializationContext) : dataConverter;
 
         /// <inheritdoc/>
         public async Task<ISerializer.Content> SerializeAsync(object? value)
