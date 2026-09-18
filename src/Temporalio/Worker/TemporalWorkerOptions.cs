@@ -286,11 +286,11 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the callback that decides whether the first non-replay call to
-        /// <see cref="Workflow.Patched" /> for a patch ID should activate that patch.
+        /// <see cref="Workflow.Patched(string)" /> for a patch ID should activate that patch.
         /// </summary>
         /// <remarks>
         /// The callback is only invoked for a newly encountered patch. Existing history markers,
-        /// replay, and <see cref="Workflow.DeprecatePatch" /> bypass the callback. Returning <c>false</c>
+        /// replay, and <see cref="Workflow.DeprecatePatch(string)" /> bypass the callback. Returning <c>false</c>
         /// leaves the patch inactive and does not record a patch marker. The callback runs in a
         /// read-only workflow context and therefore cannot use workflow randomness, wait, or
         /// schedule workflow commands.

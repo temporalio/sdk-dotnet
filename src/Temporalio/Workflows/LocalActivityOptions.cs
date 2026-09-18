@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Temporalio.Common;
 
@@ -86,6 +87,13 @@ namespace Temporalio.Workflows
         /// This can be in single-line Temporal markdown format.
         /// </summary>
         public string? Summary { get; set; }
+
+        /// <summary>
+        /// Gets or sets Event Groups to attach to this command, in addition to those active in the
+        /// current <see cref="Workflow.WithEventGroups" /> scope.
+        /// </summary>
+        /// <remarks>WARNING: Event Groups are experimental.</remarks>
+        public IReadOnlyCollection<EventGroup>? EventGroups { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.
