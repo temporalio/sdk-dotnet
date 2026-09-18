@@ -26,9 +26,6 @@ namespace Temporalio.Nexus
                     }).
                 ToDictionary(kv => kv.Item1, kv => kv.e);
 
-        private static readonly EnumDescriptor EventTypeDescriptor =
-            EventTypeReflection.Descriptor.FindTypeByName<EnumDescriptor>("EventType");
-
         private static readonly char[] QuerySeparator = new[] { '&' };
         private static readonly char[] QueryValueSeparator = new[] { '=' };
 
@@ -44,7 +41,7 @@ namespace Temporalio.Nexus
             if (evt.EventRef is { } evtRef)
             {
                 queryParams["referenceType"] = "EventReference";
-                queryParams["eventType"] = EventTypeDescriptor.FindValueByNumber((int)evtRef.EventType).Name;
+                queryParams["eventType"] = evtRef.EventType.ToString();
                 if (evtRef.EventId > 0)
                 {
                     queryParams["eventID"] = evtRef.EventId.ToString();
@@ -53,22 +50,14 @@ namespace Temporalio.Nexus
             else if (evt.RequestIdRef is { } reqIdRef)
             {
                 queryParams["referenceType"] = "RequestIdReference";
-                queryParams["eventType"] = EventTypeDescriptor.FindValueByNumber((int)reqIdRef.EventType).Name;
+                queryParams["eventType"] = reqIdRef.EventType.ToString();
                 queryParams["requestID"] = reqIdRef.RequestId;
             }
 
-            // Build URI with empty authority so there is no host. UriBuilder cannot be used
-            // here because even with Host explicitly set to "", it emits "temporal:/path"
-            // (single slash) rather than the canonical "temporal:///path" form other SDKs use.
-            var uriStr = "temporal:///namespaces/" + Uri.EscapeDataString(evt.Namespace) +
-                "/workflows/" + Uri.EscapeDataString(evt.WorkflowId) + "/" +
-                Uri.EscapeDataString(evt.RunId) + "/history";
-            if (queryParams.Count > 0)
-            {
-                uriStr += "?" + string.Join("&", queryParams.Select(kvp =>
-                    $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}"));
-            }
-            return new(new Uri(uriStr), Api.Common.V1.Link.Types.WorkflowEvent.Descriptor.FullName);
+            return new(
+                BuildTemporalLinkUri(
+                    "workflows", evt.Namespace, evt.WorkflowId, evt.RunId, "history", queryParams),
+                Api.Common.V1.Link.Types.WorkflowEvent.Descriptor.FullName);
         }
 
         /// <summary>
@@ -78,13 +67,10 @@ namespace Temporalio.Nexus
         /// <returns>Nexus link.</returns>
         public static NexusLink ToNexusLink(this Api.Common.V1.Link.Types.NexusOperation nexusOp)
         {
-            // Build URI with empty authority so there is no host. UriBuilder cannot be used
-            // here because even with Host explicitly set to "", it emits "temporal:/path"
-            // (single slash) rather than the canonical "temporal:///path" form other SDKs use.
-            var uriStr = "temporal:///namespaces/" + Uri.EscapeDataString(nexusOp.Namespace) +
-                "/nexus-operations/" + Uri.EscapeDataString(nexusOp.OperationId) +
-                "/" + Uri.EscapeDataString(nexusOp.RunId) + "/details";
-            return new(new Uri(uriStr), Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName);
+            return new(
+                BuildTemporalLinkUri(
+                    "nexus-operations", nexusOp.Namespace, nexusOp.OperationId, nexusOp.RunId, "details"),
+                Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName);
         }
 
         /// <summary>
@@ -94,13 +80,10 @@ namespace Temporalio.Nexus
         /// <returns>Nexus link.</returns>
         public static NexusLink ToNexusLink(this Api.Common.V1.Link.Types.Activity act)
         {
-            // Build URI with empty authority so there is no host. UriBuilder cannot be used
-            // here because even with Host explicitly set to "", it emits "temporal:/path"
-            // (single slash) rather than the canonical "temporal:///path" form other SDKs use.
-            var uriStr = "temporal:///namespaces/" + Uri.EscapeDataString(act.Namespace) +
-                "/activities/" + Uri.EscapeDataString(act.ActivityId) +
-                "/" + Uri.EscapeDataString(act.RunId) + "/details";
-            return new(new Uri(uriStr), Api.Common.V1.Link.Types.Activity.Descriptor.FullName);
+            return new(
+                BuildTemporalLinkUri(
+                    "activities", act.Namespace, act.ActivityId, act.RunId, "details"),
+                Api.Common.V1.Link.Types.Activity.Descriptor.FullName);
         }
 
         /// <summary>
@@ -170,17 +153,15 @@ namespace Temporalio.Nexus
         /// <returns>Nexus link.</returns>
         public static NexusLink ToNexusLink(this Api.Common.V1.Link.Types.Workflow workflow)
         {
-            // Build URI with empty authority so there is no host. UriBuilder cannot be used
-            // here because even with Host explicitly set to "", it emits "temporal:/path"
-            // (single slash) rather than the canonical "temporal:///path" form other SDKs use.
-            var uriStr = "temporal:///namespaces/" + Uri.EscapeDataString(workflow.Namespace) +
-                "/workflows/" + Uri.EscapeDataString(workflow.WorkflowId) + "/" +
-                Uri.EscapeDataString(workflow.RunId);
+            var queryParams = new Dictionary<string, string>();
             if (workflow.Reason.Length > 0)
             {
-                uriStr += "?reason=" + Uri.EscapeDataString(workflow.Reason);
+                queryParams["reason"] = workflow.Reason;
             }
-            return new(new Uri(uriStr), Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+            return new(
+                BuildTemporalLinkUri(
+                    "workflows", workflow.Namespace, workflow.WorkflowId, workflow.RunId, null, queryParams),
+                Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
         }
 
         /// <summary>
@@ -323,6 +304,40 @@ namespace Temporalio.Nexus
                     kv => Uri.UnescapeDataString(kv[0]),
                     kv => kv.Length > 1 ?
                         Uri.UnescapeDataString(kv[1].Replace("+", " ")) : string.Empty);
+
+        // Build a Temporal-shaped link URI: /namespaces/{namespace}/{kind}/{id}/{run}[/{tail}]
+        // with an optional query. The mirror of ParseTemporalLinkPath, so the two shapes stay in
+        // step.
+        //
+        // Concatenated rather than built with UriBuilder: even with Host explicitly set to "",
+        // UriBuilder emits "temporal:/path" (single slash) rather than the canonical
+        // "temporal:///path" form, which needs an empty authority.
+        private static Uri BuildTemporalLinkUri(
+            string kind,
+            string @namespace,
+            string id,
+            string runId,
+            string? tail,
+            IEnumerable<KeyValuePair<string, string>>? queryParams = null)
+        {
+            var uriStr = "temporal:///namespaces/" + Uri.EscapeDataString(@namespace) +
+                "/" + kind + "/" + Uri.EscapeDataString(id) +
+                "/" + Uri.EscapeDataString(runId);
+            if (tail != null)
+            {
+                uriStr += "/" + tail;
+            }
+            if (queryParams != null)
+            {
+                var query = string.Join("&", queryParams.Select(kvp =>
+                    $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}"));
+                if (query.Length > 0)
+                {
+                    uriStr += "?" + query;
+                }
+            }
+            return new Uri(uriStr);
+        }
 
         // Validate a Temporal-shaped link URI and return its path segments. Expected path shape is
         // /namespaces/{namespace}/{kind}/{id}/{run}/{tail}, or /namespaces/{namespace}/{kind}/{id}/{run}

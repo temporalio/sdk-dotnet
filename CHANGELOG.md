@@ -29,6 +29,11 @@ to docs, or any other relevant information.
   offset-based publish/subscribe streams hosted by workflows, interoperable with other Temporal
   SDK Workflow Streams implementations.
 
+### Changed
+
+- Unified the Nexus link converters. The `eventType` query parameter on a link is now the short
+  PascalCase name, matching the other SDKs.
+
 ## [1.19.0] - 2026-09-14
 
 ### :boom: Breaking Changes
