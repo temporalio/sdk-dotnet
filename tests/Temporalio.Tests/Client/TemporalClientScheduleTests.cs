@@ -288,7 +288,10 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         });
 
         // Delete when done
-        await TestUtils.DeleteAllSchedulesAsync(Client);
+        foreach (var id in expectedIds)
+        {
+            await Client.GetScheduleHandle(id).DeleteAsync();
+        }
     }
 
     [Fact]
@@ -327,7 +330,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         }
 
         // Delete when done
-        await TestUtils.DeleteAllSchedulesAsync(Client);
+        await handle.DeleteAsync();
     }
 
     [Fact]
@@ -358,7 +361,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
             await Client.GetWorkflowHandle(exec.WorkflowId, exec.FirstExecutionRunId).GetResultAsync<string>());
 
         // Delete when done
-        await TestUtils.DeleteAllSchedulesAsync(Client);
+        await handle.DeleteAsync();
     }
 
     [Fact]
@@ -417,6 +420,6 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         Assert.True(numActions == 6 || numActions == 7, $"Invalid num actions: {numActions}");
 
         // Delete when done
-        await TestUtils.DeleteAllSchedulesAsync(Client);
+        await handle.DeleteAsync();
     }
 }
