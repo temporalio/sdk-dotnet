@@ -19,6 +19,17 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### :boom: Breaking Changes
+
+- Queries, update validators, and wait condition callbacks are now enforced as read-only contexts.
+  They can no longer issue workflow commands, schedule workflow work, continue as new, create or
+  deprecate a patch, mutate handlers, set current details, or use `Workflow.Random` and
+  `Workflow.NewGuid` (advancing the random state outside of replayed workflow code shifts the
+  sequence for every later use of it). A violating query fails that query, while a violating
+  update validator or wait condition callback fails the workflow task.
+  `Workflow.Unsafe.WithTracingEventListenerDisabled` is now enforced at the call site as well,
+  though randomness remains allowed there since it is ordinary replayed workflow code.
+
 ### Added
 
 - Added the experimental `Temporalio.Extensions.Gcp.CloudRun.Id` package for long-lived

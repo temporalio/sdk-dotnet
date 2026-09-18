@@ -235,6 +235,20 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                         await Workflow.DelayAsync(100);
                         return await Task.Run(async () => "done");
                     });
+                case Scenario.ListenerDisabledCreateCommandSync:
+                    return Workflow.Unsafe.WithTracingEventListenerDisabled(() =>
+                    {
+                        Workflow.UpsertMemo(MemoUpdate.ValueSet("some-key", "some-value"));
+                        return "done";
+                    });
+                case Scenario.ListenerDisabledRandom:
+                    // Allowed since this block is ordinary replayed workflow code
+                    return Workflow.Unsafe.WithTracingEventListenerDisabled(() =>
+                    {
+                        _ = Workflow.NewGuid();
+                        _ = Workflow.Random.Next();
+                        return "done";
+                    });
 
                 // Good
                 case Scenario.TaskFactoryStartNew:
@@ -285,6 +299,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             // https://github.com/dotnet/runtime/issues/83159
             DataflowReceiveAsync,
             ListenerDisabledCreateCommand,
+            ListenerDisabledCreateCommandSync,
 
             // Good
             TaskFactoryStartNew,
@@ -297,6 +312,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             WorkflowRunTask,
             WorkflowRunTaskAfterTaskStart,
             TaskRunListenerDisabled,
+            ListenerDisabledRandom,
         }
     }
 
@@ -333,7 +349,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             "not scheduled on workflow scheduler");
         await AssertScenarioFailsTask(
             StandardLibraryCallsWorkflow.Scenario.ListenerDisabledCreateCommand,
-            "Function during tracing event listener disabling created workflow commands");
+            "Cannot wait or schedule workflow work in this context");
+        await AssertScenarioFailsTask(
+            StandardLibraryCallsWorkflow.Scenario.ListenerDisabledCreateCommandSync,
+            "Cannot issue workflow commands in this context");
     }
 
     [Fact]
@@ -362,6 +381,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowRunTask);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowRunTaskAfterTaskStart);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskRunListenerDisabled);
+        await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.ListenerDisabledRandom);
     }
 
     [Workflow]
@@ -1182,7 +1202,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             // Make commands in a query
             var exc3 = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
                 () => handle.QueryAsync(wf => wf.QueryMakingCommands()));
-            Assert.Contains("created workflow commands", exc3.Message);
+            Assert.Contains("Cannot wait or schedule workflow work in this context", exc3.Message);
             // Access method as property
             var exc4 = await Assert.ThrowsAsync<ArgumentException>(
                 () => handle.QueryAsync<Func<string>>(wf => wf.QueryNoArg));
@@ -1220,12 +1240,18 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         private static readonly List<bool> EventsForIsReplaying = new();
 
         private string? completeWorkflow;
+        private int randomValue;
+        private string newGuid = string.Empty;
 
         [WorkflowRun]
         public async Task<string> RunAsync()
         {
             Workflow.Logger.LogInformation("Some log {Foo}", "Bar");
             EventsForIsReplaying.Add(Workflow.Unsafe.IsReplaying);
+            // Captured here rather than in the queries below, since a query advancing the
+            // random state would shift the sequence for the rest of the workflow
+            randomValue = Workflow.Random.Next(3);
+            newGuid = Workflow.NewGuid().ToString();
             await Workflow.WaitConditionAsync(() => completeWorkflow != null);
             return completeWorkflow!;
         }
@@ -1237,10 +1263,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public DateTime CurrentTime() => Workflow.UtcNow;
 
         [WorkflowQuery]
-        public int Random(int max) => Workflow.Random.Next(max);
+        public int Random() => randomValue;
 
         [WorkflowQuery]
-        public string NewGuid() => Workflow.NewGuid().ToString();
+        public string NewGuid() => newGuid;
 
         [WorkflowQuery]
         public bool[] GetEventsForIsReplaying() => EventsForIsReplaying.ToArray();
@@ -1266,7 +1292,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     await handle.QueryAsync(wf => wf.CurrentTime()),
                     DateTime.UtcNow - TimeSpan.FromMinutes(5),
                     DateTime.UtcNow + TimeSpan.FromMinutes(5));
-                Assert.InRange(await handle.QueryAsync(wf => wf.Random(3)), 0, 2);
+                Assert.InRange(await handle.QueryAsync(wf => wf.Random()), 0, 2);
                 // Check GUID is parseable and shows 4 as UUID version
                 var guid = await handle.QueryAsync(wf => wf.NewGuid());
                 Assert.True(Guid.TryParseExact(guid, "D", out _));
@@ -1278,7 +1304,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Assert.Contains(loggerFactory.Logs, entry => entry.Formatted == "Some log Bar");
                 // Now clear and issue query and confirm log is not present
                 loggerFactory.ClearLogs();
-                Assert.InRange(await handle.QueryAsync(wf => wf.Random(3)), 0, 2);
+                Assert.InRange(await handle.QueryAsync(wf => wf.Random()), 0, 2);
                 Assert.DoesNotContain(
                     loggerFactory.Logs, entry => entry.Formatted == "Some log Bar");
             },
@@ -3159,8 +3185,152 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             });
     }
 
+    [Workflow]
+    public class ReadOnlyContextWorkflow
+    {
+        private string conditionOperation = string.Empty;
+
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.WaitConditionAsync(() =>
+        {
+            if (conditionOperation.Length > 0)
+            {
+                PerformOperation(conditionOperation);
+            }
+            return false;
+        });
+
+        [WorkflowSignal]
+        public Task SetConditionOperationAsync(string operation)
+        {
+            conditionOperation = operation;
+            return Task.CompletedTask;
+        }
+
+        [WorkflowQuery]
+        public bool PerformInQuery(string operation)
+        {
+            PerformOperation(operation);
+            return true;
+        }
+
+        [WorkflowQuery]
+        public bool Healthy => true;
+
+        [WorkflowUpdate]
+        public Task PerformInValidatedUpdateAsync(string operation) => Task.CompletedTask;
+
+        [WorkflowUpdateValidator(nameof(PerformInValidatedUpdateAsync))]
+        public void ValidatePerformInValidatedUpdate(string operation) =>
+            PerformOperation(operation);
+
+        private static void PerformOperation(string operation)
+        {
+            switch (operation)
+            {
+                case "upsert-memo":
+                    Workflow.UpsertMemo(MemoUpdate.ValueSet("some-key", "some-value"));
+                    break;
+                case "delay":
+                    _ = Workflow.DelayAsync(5000);
+                    break;
+                case "run-task":
+                    _ = Workflow.RunTaskAsync(() => Task.CompletedTask);
+                    break;
+                case "signal-external":
+                    // Reaches AddCommand from inside an async method, so this confirms the
+                    // synchronous guard at the entry point rather than a discarded faulted task
+                    _ = Workflow.GetExternalWorkflowHandle<ReadOnlyContextWorkflow>("some-id").
+                        SignalAsync(wf => wf.SetConditionOperationAsync("noop"));
+                    break;
+                case "patch":
+                    _ = Workflow.Patched("some-patch");
+                    break;
+                case "random":
+                    _ = Workflow.NewGuid();
+                    break;
+                case "continue-as-new":
+                    throw Workflow.CreateContinueAsNewException(
+                        (ReadOnlyContextWorkflow wf) => wf.RunAsync());
+            }
+        }
+    }
+
+    [Theory]
+    [InlineData("upsert-memo", "Cannot issue workflow commands in this context")]
+    [InlineData("delay", "Cannot wait or schedule workflow work in this context")]
+    [InlineData("run-task", "Cannot wait or schedule workflow work in this context")]
+    [InlineData("signal-external", "Cannot issue workflow commands in this context")]
+    [InlineData("patch", "Cannot create patch in this context")]
+    [InlineData("random", "Cannot use workflow randomness in this context")]
+    [InlineData("continue-as-new", "Cannot continue as new in this context")]
+    public async Task ExecuteWorkflowAsync_QueryContext_IsReadOnly(
+        string operation, string expectedError)
+    {
+        await ExecuteWorkerAsync<ReadOnlyContextWorkflow>(async worker =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (ReadOnlyContextWorkflow wf) => wf.RunAsync(),
+                new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+            // Query results are not durable, so this fails only the query
+            var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
+                () => handle.QueryAsync(wf => wf.PerformInQuery(operation)));
+            Assert.Contains(expectedError, exc.Message);
+            Assert.True(await handle.QueryAsync(wf => wf.Healthy));
+        });
+    }
+
+    [Theory]
+    [InlineData("upsert-memo", "Cannot issue workflow commands in this context")]
+    [InlineData("delay", "Cannot wait or schedule workflow work in this context")]
+    [InlineData("run-task", "Cannot wait or schedule workflow work in this context")]
+    [InlineData("signal-external", "Cannot issue workflow commands in this context")]
+    [InlineData("patch", "Cannot create patch in this context")]
+    [InlineData("random", "Cannot use workflow randomness in this context")]
+    [InlineData("continue-as-new", "Cannot continue as new in this context")]
+    public async Task ExecuteWorkflowAsync_UpdateValidatorContext_IsReadOnly(
+        string operation, string expectedError)
+    {
+        await ExecuteWorkerAsync<ReadOnlyContextWorkflow>(async worker =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (ReadOnlyContextWorkflow wf) => wf.RunAsync(),
+                new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+            // Update rejections are durable, so this fails the task instead
+            _ = Task.Run(() => handle.ExecuteUpdateAsync(wf =>
+                wf.PerformInValidatedUpdateAsync(operation)));
+            await AssertTaskFailureContainsEventuallyAsync(handle, expectedError);
+            // Terminate the handle so it doesn't keep failing
+            await handle.TerminateAsync();
+        });
+    }
+
+    [Theory]
+    [InlineData("upsert-memo", "Cannot issue workflow commands in this context")]
+    [InlineData("delay", "Cannot wait or schedule workflow work in this context")]
+    [InlineData("run-task", "Cannot wait or schedule workflow work in this context")]
+    [InlineData("signal-external", "Cannot issue workflow commands in this context")]
+    [InlineData("patch", "Cannot create patch in this context")]
+    [InlineData("random", "Cannot use workflow randomness in this context")]
+    [InlineData("continue-as-new", "Cannot continue as new in this context")]
+    public async Task ExecuteWorkflowAsync_WaitConditionContext_IsReadOnly(
+        string operation, string expectedError)
+    {
+        await ExecuteWorkerAsync<ReadOnlyContextWorkflow>(async worker =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (ReadOnlyContextWorkflow wf) => wf.RunAsync(),
+                new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+            await handle.SignalAsync(wf => wf.SetConditionOperationAsync(operation));
+            // There is no caller to fail here, so this fails the task
+            await AssertTaskFailureContainsEventuallyAsync(handle, expectedError);
+            // Terminate the handle so it doesn't keep failing
+            await handle.TerminateAsync();
+        });
+    }
+
     [Fact]
-    public async Task ExecuteWorkflowAsync_PatchActivationCallback_RejectsReadOnlyCallsFromQueryAndValidator()
+    public async Task ExecuteWorkflowAsync_PatchActivationCallback_RejectsReadOnlyCallsFromQuery()
     {
         var calls = 0;
         await ExecuteWorkerAsync<PatchActivationWorkflow>(
@@ -3171,16 +3341,44 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
                 Assert.False(await handle.QueryAsync(wf => wf.FirstPatchResult()));
 
+                // Query results are not durable, so this fails only the query
                 var queryExc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
                     () => handle.QueryAsync(wf => wf.PatchFromQuery("query-patch")));
                 Assert.Contains("Cannot create patch in this context", queryExc.Message);
 
-                var updateExc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
-                    () => handle.ExecuteUpdateAsync(wf => wf.PatchFromUpdateAsync("validator-patch")));
-                Assert.Contains("Cannot create patch in this context", updateExc.InnerException?.Message);
-
                 await handle.SignalAsync(wf => wf.ReleaseAsync());
                 Assert.Equal([false, false], await handle.GetResultAsync());
+            },
+            new TemporalWorkerOptions
+            {
+                PatchActivationCallback = _ =>
+                {
+                    Interlocked.Increment(ref calls);
+                    return false;
+                },
+            });
+        Assert.Equal(1, calls);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_PatchActivationCallback_RejectsReadOnlyCallsFromValidator()
+    {
+        var calls = 0;
+        await ExecuteWorkerAsync<PatchActivationWorkflow>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (PatchActivationWorkflow wf) => wf.RunAsync("main-patch", true),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                Assert.False(await handle.QueryAsync(wf => wf.FirstPatchResult()));
+
+                // Update rejections are durable, so this fails the task instead
+                _ = Task.Run(() => handle.ExecuteUpdateAsync(
+                    wf => wf.PatchFromUpdateAsync("validator-patch")));
+                await AssertTaskFailureContainsEventuallyAsync(
+                    handle, "Cannot create patch in this context");
+                // Terminate the handle so it doesn't keep failing
+                await handle.TerminateAsync();
             },
             new TemporalWorkerOptions
             {
@@ -4518,13 +4716,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Assert.Equal("Intentional validator invalid operation", appExc.Message);
             Assert.Equal("InvalidOperationException", appExc.ErrorType);
 
-            // Validator continue as new exception treated like non-Temporal exception
-            updateExc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
-                () => handle.ExecuteUpdateAsync(wf =>
-                    wf.DoUpdateOneParamNoResponseAsync("validate-continue-as-new")));
-            appExc = Assert.IsType<ApplicationFailureException>(updateExc.InnerException);
-            Assert.Equal("ContinueAsNewException", appExc.ErrorType);
-
             // Check history and confirm none of those validator exceptions made it to history
             await foreach (var evt in handle.FetchHistoryEventsAsync())
             {
@@ -4635,9 +4826,11 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             // Do an update in the background
             _ = Task.Run(() => handle.ExecuteUpdateAsync(wf => wf.DoUpdateValidatorCommandsAsync()));
-            // Confirm task fails
+            // Update rejections are durable, so this fails the task instead
             await AssertTaskFailureContainsEventuallyAsync(
-                handle, "Update validator for DoUpdateValidatorCommands created workflow commands");
+                handle, "Cannot wait or schedule workflow work in this context");
+            // Terminate the handle so it doesn't keep failing
+            await handle.TerminateAsync();
         });
     }
 

@@ -99,7 +99,12 @@ namespace Temporalio.Worker
         private bool applyModernEventLoopLogic;
         private bool dynamicOptionsGetterInvoked;
         private bool inQueryOrValidator;
-        private bool contextFrozen;
+        // Queries, update validators, wait condition callbacks, and the patch activation callback
+        // are not replayed, so they must not advance the deterministic random state either.
+        private bool contextReadOnly;
+        // WithTracingEventListenerDisabled is replayed like any other workflow code, so randomness
+        // there is safe even though commands and scheduling are not.
+        private bool contextCommandsDisallowed;
         private string currentDetails = string.Empty;
 
         /// <summary>
@@ -415,7 +420,12 @@ namespace Temporalio.Worker
         {
             get
             {
-                ThrowIfContextFrozen("use workflow randomness");
+                // Not AssertNotReadOnly, since only unreplayed contexts bar randomness
+                if (contextReadOnly)
+                {
+                    throw new ReadOnlyContextException(
+                        "Cannot use workflow randomness in this context");
+                }
                 return random;
             }
         }
@@ -445,9 +455,9 @@ namespace Temporalio.Worker
         /// <inheritdoc/>
         public void AssertNotReadOnly(string operation)
         {
-            if (contextFrozen || inQueryOrValidator)
+            if (contextReadOnly || contextCommandsDisallowed)
             {
-                throw new InvalidOperationException($"Cannot {operation} in this context");
+                throw new ReadOnlyContextException($"Cannot {operation} in this context");
             }
         }
 
@@ -455,7 +465,7 @@ namespace Temporalio.Worker
         public ContinueAsNewException CreateContinueAsNewException(
             string workflow, IReadOnlyCollection<object?> args, ContinueAsNewOptions? options)
         {
-            ThrowIfContextFrozen("continue as new");
+            AssertNotReadOnly("continue as new");
             return outbound.Value.CreateContinueAsNewException(new(
                 Workflow: workflow,
                 Args: args,
@@ -473,18 +483,18 @@ namespace Temporalio.Worker
 
         /// <inheritdoc/>
         public Task DelayWithOptionsAsync(DelayOptions options) =>
-            ContextFrozenChecked(() => outbound.Value.DelayAsync(new(options)));
+            ReadOnlyChecked(() => outbound.Value.DelayAsync(new(options)));
 
         /// <inheritdoc/>
         public Task<TResult> ExecuteActivityAsync<TResult>(
             string activity, IReadOnlyCollection<object?> args, ActivityOptions options) =>
-            ContextFrozenChecked(() => outbound.Value.ScheduleActivityAsync<TResult>(
+            ReadOnlyChecked(() => outbound.Value.ScheduleActivityAsync<TResult>(
                 new(Activity: activity, Args: args, Options: options, Headers: null)));
 
         /// <inheritdoc/>
         public Task<TResult> ExecuteLocalActivityAsync<TResult>(
             string activity, IReadOnlyCollection<object?> args, LocalActivityOptions options) =>
-            ContextFrozenChecked(() => outbound.Value.ScheduleLocalActivityAsync<TResult>(
+            ReadOnlyChecked(() => outbound.Value.ScheduleLocalActivityAsync<TResult>(
                 new(Activity: activity, Args: args, Options: options, Headers: null)));
 
         /// <inheritdoc/>
@@ -507,15 +517,15 @@ namespace Temporalio.Worker
             if (!deprecated && !IsReplaying && !patchesNotified.Contains(patchId) &&
                 patchActivationCallback != null)
             {
-                var previousContextFrozen = contextFrozen;
+                var previousContextReadOnly = contextReadOnly;
                 try
                 {
-                    contextFrozen = true;
+                    contextReadOnly = true;
                     patched = patchActivationCallback(new(Info, patchId));
                 }
                 finally
                 {
-                    contextFrozen = previousContextFrozen;
+                    contextReadOnly = previousContextReadOnly;
                 }
             }
             else
@@ -536,13 +546,13 @@ namespace Temporalio.Worker
         /// <inheritdoc/>
         public Task<ChildWorkflowHandle<TWorkflow, TResult>> StartChildWorkflowAsync<TWorkflow, TResult>(
             string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions options) =>
-            ContextFrozenChecked(() => outbound.Value.StartChildWorkflowAsync<TWorkflow, TResult>(
+            ReadOnlyChecked(() => outbound.Value.StartChildWorkflowAsync<TWorkflow, TResult>(
                 new(Workflow: workflow, Args: args, Options: options, Headers: null)));
 
         /// <inheritdoc />
         public void UpsertMemo(IReadOnlyCollection<MemoUpdate> updates)
         {
-            ThrowIfContextFrozen("issue workflow commands");
+            AssertNotReadOnly("issue workflow commands");
             if (updates.Count == 0)
             {
                 throw new ArgumentException("At least one update required", nameof(updates));
@@ -589,7 +599,7 @@ namespace Temporalio.Worker
         /// <inheritdoc/>
         public void UpsertTypedSearchAttributes(IReadOnlyCollection<SearchAttributeUpdate> updates)
         {
-            ThrowIfContextFrozen("issue workflow commands");
+            AssertNotReadOnly("issue workflow commands");
             if (updates.Count == 0)
             {
                 throw new ArgumentException("At least one update required", nameof(updates));
@@ -680,7 +690,9 @@ namespace Temporalio.Worker
             // anyways. This is an unsafe calls and docs on the user-facing portion adequately
             // explain the dangers.
             var prevEnabled = TracingEventsEnabled;
+            var prevCommandsDisallowed = contextCommandsDisallowed;
             TracingEventsEnabled = false;
+            contextCommandsDisallowed = true;
             try
             {
                 // Make sure no commands were added
@@ -699,6 +711,7 @@ namespace Temporalio.Worker
             finally
             {
                 TracingEventsEnabled = prevEnabled;
+                contextCommandsDisallowed = prevCommandsDisallowed;
             }
         }
 
@@ -922,7 +935,7 @@ namespace Temporalio.Worker
         /// <inheritdoc/>
         protected override void QueueTask(Task task)
         {
-            ThrowIfContextFrozen("wait or schedule workflow work");
+            AssertNotReadOnly("wait or schedule workflow work");
             // Only queue if not already done
             if (!scheduledTaskNodes.ContainsKey(task))
             {
@@ -982,8 +995,19 @@ namespace Temporalio.Worker
                     {
                         foreach (var condition in conditions)
                         {
-                            // Check whether the condition evaluates to true
-                            if (condition.Item1())
+                            // Only the callback is read-only: resolving the source below resumes
+                            // workflow tasks, which legitimately schedule work
+                            bool conditionMet;
+                            contextReadOnly = true;
+                            try
+                            {
+                                conditionMet = condition.Item1();
+                            }
+                            finally
+                            {
+                                contextReadOnly = false;
+                            }
+                            if (conditionMet)
                             {
                                 // Set condition as resolved
                                 condition.Item2.TrySetResult(null);
@@ -1006,7 +1030,7 @@ namespace Temporalio.Worker
 
         private void AddCommand(WorkflowCommand cmd)
         {
-            ThrowIfContextFrozen("issue workflow commands");
+            AssertNotReadOnly("issue workflow commands");
             if (completion == null)
             {
                 throw new InvalidOperationException("No completion available");
@@ -1015,18 +1039,15 @@ namespace Temporalio.Worker
             completion.Successful?.Commands.Add(cmd);
         }
 
-        private T ContextFrozenChecked<T>(Func<T> func)
-        {
-            ThrowIfContextFrozen("wait or schedule workflow work");
-            return func();
-        }
+        private T ReadOnlyChecked<T>(Func<T> func) =>
+            ReadOnlyChecked("wait or schedule workflow work", func);
 
-        private void ThrowIfContextFrozen(string operation)
+        // Throwing from inside an async method would only fault the returned task, which
+        // read-only code usually discards, so those callers check here at their entry point
+        private T ReadOnlyChecked<T>(string operation, Func<T> func)
         {
-            if (contextFrozen)
-            {
-                throw new InvalidOperationException($"Cannot {operation} in this context");
-            }
+            AssertNotReadOnly(operation);
+            return func();
         }
 
 #pragma warning disable CA2008 // We don't have to pass a scheduler, factory already implies one
@@ -1320,6 +1341,7 @@ namespace Temporalio.Worker
                         try
                         {
                             inQueryOrValidator = true;
+                            contextReadOnly = true;
                             inbound.Value.ValidateUpdate(new(
                                 Id: update.Id,
                                 Update: update.Name,
@@ -1330,6 +1352,7 @@ namespace Temporalio.Worker
                         finally
                         {
                             inQueryOrValidator = false;
+                            contextReadOnly = false;
                         }
                         // If the command count changed, we need to issue a task failure
                         var newCmdCount = completion?.Successful?.Commands?.Count ?? 0;
@@ -1355,6 +1378,13 @@ namespace Temporalio.Worker
                         Accepted = new(),
                     },
                 });
+            }
+            catch (ReadOnlyContextException e)
+            {
+                // Rejections are durable, so a worker bug would permanently fail this update even
+                // after corrected code is deployed. Fail the task so it can be retried instead.
+                currentActivationException = e;
+                return Task.CompletedTask;
             }
             catch (Exception e)
             {
@@ -1502,65 +1532,67 @@ namespace Temporalio.Worker
                 var ignored = Instance;
 
                 var origCmdCount = completion?.Successful?.Commands?.Count;
+                object? resultObj;
                 try
                 {
-                    inQueryOrValidator = true;
-                    WorkflowQueryDefinition? queryDefn;
-                    object? resultObj;
+                    // The response command has to be added outside the read-only window below
+                    try
+                    {
+                        inQueryOrValidator = true;
+                        contextReadOnly = true;
+                        WorkflowQueryDefinition? queryDefn;
 
-                    if (query.QueryType == "__stack_trace")
-                    {
-                        // Use raw value built from default converter because we don't want to use
-                        // user-conversion
-                        resultObj = new RawValue(DataConverter.Default.PayloadConverter.ToPayload(
-                            GetStackTrace()));
-                    }
-                    else if (query.QueryType == "__temporal_workflow_metadata")
-                    {
-                        // Use raw value built from default converter because we don't want to use
-                        // user-conversion
-                        resultObj = new RawValue(DataConverter.Default.PayloadConverter.ToPayload(
-                            GetWorkflowMetadata()));
-                    }
-                    else
-                    {
-                        // Find definition or fail
-                        var queries = mutableQueries.IsValueCreated ? mutableQueries.Value : Definition.Queries;
-                        if (!queries.TryGetValue(query.QueryType, out queryDefn))
+                        if (query.QueryType == "__stack_trace")
                         {
-                            // Do not fall back onto dynamic query if using the reserved prefix
-                            if (!query.QueryType.StartsWith(TemporalRuntime.ReservedNamePrefix))
-                            {
-                                queryDefn = DynamicQuery;
-                            }
-                            if (queryDefn == null)
-                            {
-                                var knownQueries = queries.Keys.OrderBy(k => k);
-                                throw new InvalidOperationException(
-                                    $"Query handler for {query.QueryType} expected but not found, " +
-                                    $"known queries: [{string.Join(" ", knownQueries)}]");
-                            }
+                            // Use raw value built from default converter because we don't want to
+                            // use user-conversion
+                            resultObj = new RawValue(DataConverter.Default.PayloadConverter.ToPayload(
+                                GetStackTrace()));
                         }
-                        resultObj = inbound.Value.HandleQuery(new(
-                            Id: query.QueryId,
-                            Query: query.QueryType,
-                            Definition: queryDefn,
-                            Args: DecodeArgs(
-                                method: queryDefn.Method ?? queryDefn.Delegate!.Method,
-                                payloads: query.Arguments,
-                                itemName: $"Query {query.QueryType}",
-                                dynamic: queryDefn.Dynamic,
-                                dynamicArgPrepend: query.QueryType),
-                            Headers: query.Headers));
-                    }
-                    AddCommand(new()
-                    {
-                        RespondToQuery = new()
+                        else if (query.QueryType == "__temporal_workflow_metadata")
                         {
-                            QueryId = query.QueryId,
-                            Succeeded = new() { Response = payloadConverterWorkflowContext.ToPayload(resultObj) },
-                        },
-                    });
+                            // Use raw value built from default converter because we don't want to
+                            // use user-conversion
+                            resultObj = new RawValue(DataConverter.Default.PayloadConverter.ToPayload(
+                                GetWorkflowMetadata()));
+                        }
+                        else
+                        {
+                            // Find definition or fail
+                            var queries = mutableQueries.IsValueCreated ? mutableQueries.Value : Definition.Queries;
+                            if (!queries.TryGetValue(query.QueryType, out queryDefn))
+                            {
+                                // Do not fall back onto dynamic query if using the reserved prefix
+                                if (!query.QueryType.StartsWith(TemporalRuntime.ReservedNamePrefix))
+                                {
+                                    queryDefn = DynamicQuery;
+                                }
+                                if (queryDefn == null)
+                                {
+                                    var knownQueries = queries.Keys.OrderBy(k => k);
+                                    throw new InvalidOperationException(
+                                        $"Query handler for {query.QueryType} expected but not found, " +
+                                        $"known queries: [{string.Join(" ", knownQueries)}]");
+                                }
+                            }
+                            resultObj = inbound.Value.HandleQuery(new(
+                                Id: query.QueryId,
+                                Query: query.QueryType,
+                                Definition: queryDefn,
+                                Args: DecodeArgs(
+                                    method: queryDefn.Method ?? queryDefn.Delegate!.Method,
+                                    payloads: query.Arguments,
+                                    itemName: $"Query {query.QueryType}",
+                                    dynamic: queryDefn.Dynamic,
+                                    dynamicArgPrepend: query.QueryType),
+                                Headers: query.Headers));
+                        }
+                    }
+                    finally
+                    {
+                        inQueryOrValidator = false;
+                        contextReadOnly = false;
+                    }
                 }
                 catch (Exception e)
                 {
@@ -1575,10 +1607,14 @@ namespace Temporalio.Worker
                     });
                     return Task.CompletedTask;
                 }
-                finally
+                AddCommand(new()
                 {
-                    inQueryOrValidator = false;
-                }
+                    RespondToQuery = new()
+                    {
+                        QueryId = query.QueryId,
+                        Succeeded = new() { Response = payloadConverterWorkflowContext.ToPayload(resultObj) },
+                    },
+                });
                 // Check for commands but don't include null counts in check since Successful is
                 // unset by other completion failures
                 var newCmdCount = completion?.Successful?.Commands?.Count;
@@ -3052,12 +3088,14 @@ namespace Temporalio.Worker
                 string signal,
                 IReadOnlyCollection<object?> args,
                 ChildWorkflowSignalOptions? options = null) =>
-                instance.outbound.Value.SignalChildWorkflowAsync(new(
-                    Id: Id,
-                    Signal: signal,
-                    Args: args,
-                    Options: options,
-                    Headers: null));
+                instance.ReadOnlyChecked(
+                    "issue workflow commands",
+                    () => instance.outbound.Value.SignalChildWorkflowAsync(new(
+                        Id: Id,
+                        Signal: signal,
+                        Args: args,
+                        Options: options,
+                        Headers: null)));
         }
 
         /// <summary>
@@ -3095,17 +3133,22 @@ namespace Temporalio.Worker
                 string signal,
                 IReadOnlyCollection<object?> args,
                 ExternalWorkflowSignalOptions? options = null) =>
-                instance.outbound.Value.SignalExternalWorkflowAsync(new(
-                    Id: Id,
-                    RunId: RunId,
-                    Signal: signal,
-                    Args: args,
-                    Options: options,
-                    Headers: null));
+                instance.ReadOnlyChecked(
+                    "issue workflow commands",
+                    () => instance.outbound.Value.SignalExternalWorkflowAsync(new(
+                        Id: Id,
+                        RunId: RunId,
+                        Signal: signal,
+                        Args: args,
+                        Options: options,
+                        Headers: null)));
 
             /// <inheritdoc />
             public override Task CancelAsync() =>
-                instance.outbound.Value.CancelExternalWorkflowAsync(new(Id: Id, RunId: RunId));
+                instance.ReadOnlyChecked(
+                    "issue workflow commands",
+                    () => instance.outbound.Value.CancelExternalWorkflowAsync(
+                        new(Id: Id, RunId: RunId)));
         }
 
         private class NexusWorkflowClientImpl : NexusWorkflowClient
@@ -3125,15 +3168,16 @@ namespace Temporalio.Worker
 
             public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 string operationName, object? arg, NexusWorkflowOperationOptions? options = null) =>
-                SystemNexusPayloadVisitor.IsSystemEndpoint(Options.Endpoint) ?
-                instance.StartSystemNexusOperationAsync<TResult>(Service, operationName, arg) :
-                instance.outbound.Value.ScheduleNexusOperationAsync<TResult>(new(
-                    Service: Service,
-                    ClientOptions: Options,
-                    OperationName: operationName,
-                    Arg: arg,
-                    Options: options ?? new(),
-                    Headers: null));
+                instance.ReadOnlyChecked(() =>
+                    SystemNexusPayloadVisitor.IsSystemEndpoint(Options.Endpoint) ?
+                    instance.StartSystemNexusOperationAsync<TResult>(Service, operationName, arg) :
+                    instance.outbound.Value.ScheduleNexusOperationAsync<TResult>(new(
+                        Service: Service,
+                        ClientOptions: Options,
+                        OperationName: operationName,
+                        Arg: arg,
+                        Options: options ?? new(),
+                        Headers: null)));
         }
 
         private class NexusWorkflowClientImpl<TService> : NexusWorkflowClient<TService>
@@ -3153,15 +3197,16 @@ namespace Temporalio.Worker
 
             public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 string operationName, object? arg, NexusWorkflowOperationOptions? options = null) =>
-                SystemNexusPayloadVisitor.IsSystemEndpoint(Options.Endpoint) ?
-                instance.StartSystemNexusOperationAsync<TResult>(Service, operationName, arg) :
-                instance.outbound.Value.ScheduleNexusOperationAsync<TResult>(new(
-                    Service: Service,
-                    ClientOptions: Options,
-                    OperationName: operationName,
-                    Arg: arg,
-                    Options: options ?? new(),
-                    Headers: null));
+                instance.ReadOnlyChecked(() =>
+                    SystemNexusPayloadVisitor.IsSystemEndpoint(Options.Endpoint) ?
+                    instance.StartSystemNexusOperationAsync<TResult>(Service, operationName, arg) :
+                    instance.outbound.Value.ScheduleNexusOperationAsync<TResult>(new(
+                        Service: Service,
+                        ClientOptions: Options,
+                        OperationName: operationName,
+                        Arg: arg,
+                        Options: options ?? new(),
+                        Headers: null)));
         }
 
         private class NexusWorkflowOperationHandleImpl<TResult> : NexusWorkflowOperationHandle<TResult>
