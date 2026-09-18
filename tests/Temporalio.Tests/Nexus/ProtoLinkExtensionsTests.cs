@@ -553,4 +553,108 @@ public class ProtoLinkExtensionsTests
         Assert.Equal("wf-id", workflow.WorkflowId);
         Assert.Equal("run-id", workflow.RunId);
     }
+
+    [Fact]
+    public void WorkflowEvent_ToNexusLink_EmitsPascalCaseEventType()
+    {
+        // The event type goes on the wire in the short PascalCase form, not the EVENT_TYPE_
+        // prefixed proto name. Decoders accept both, so only an assertion on the emitted URI
+        // catches a change here.
+        var evt = new Api.Common.V1.Link.Types.WorkflowEvent
+        {
+            Namespace = "my-ns",
+            WorkflowId = "my-wid",
+            RunId = "my-run",
+            EventRef = new() { EventId = 1, EventType = Api.Enums.V1.EventType.WorkflowExecutionStarted },
+        };
+        var nexusLink = evt.ToNexusLink();
+
+        Assert.Equal("/namespaces/my-ns/workflows/my-wid/my-run/history", nexusLink.Uri.AbsolutePath);
+        Assert.Contains("eventType=WorkflowExecutionStarted", nexusLink.Uri.Query);
+        Assert.DoesNotContain("EVENT_TYPE_", nexusLink.Uri.Query);
+    }
+
+    [Fact]
+    public void RequestIdReference_ToNexusLink_EmitsPascalCaseEventType()
+    {
+        var evt = new Api.Common.V1.Link.Types.WorkflowEvent
+        {
+            Namespace = "my-ns",
+            WorkflowId = "my-wid",
+            RunId = "my-run",
+            RequestIdRef = new()
+            {
+                RequestId = "req-id",
+                EventType = Api.Enums.V1.EventType.WorkflowExecutionOptionsUpdated,
+            },
+        };
+        var nexusLink = evt.ToNexusLink();
+
+        Assert.Contains("eventType=WorkflowExecutionOptionsUpdated", nexusLink.Uri.Query);
+        Assert.DoesNotContain("EVENT_TYPE_", nexusLink.Uri.Query);
+    }
+
+    [Fact]
+    public void NexusOperation_ToNexusLink_BuildsExpectedUri()
+    {
+        var nexusOp = new Api.Common.V1.Link.Types.NexusOperation
+        {
+            Namespace = "my-ns",
+            OperationId = "my-op",
+            RunId = "my-run",
+        };
+        var nexusLink = nexusOp.ToNexusLink();
+
+        Assert.Equal("temporal", nexusLink.Uri.Scheme);
+        Assert.Equal(Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName, nexusLink.Type);
+        Assert.Equal(
+            "/namespaces/my-ns/nexus-operations/my-op/my-run/details",
+            nexusLink.Uri.AbsolutePath);
+    }
+
+    [Fact]
+    public void ToNexusLink_EscapesIdsInEveryLinkType()
+    {
+        // IDs are user supplied, so a slash in one must not add a path segment. Asserted for each
+        // link type because they now share one URI builder.
+        Assert.Equal(
+            "/namespaces/ns/workflows/a%2Fb/r/history",
+            new Api.Common.V1.Link.Types.WorkflowEvent
+            {
+                Namespace = "ns",
+                WorkflowId = "a/b",
+                RunId = "r",
+                EventRef = new() { EventType = Api.Enums.V1.EventType.WorkflowExecutionStarted },
+            }.ToNexusLink().Uri.AbsolutePath);
+        Assert.Equal(
+            "/namespaces/ns/workflows/a%2Fb/r",
+            new Api.Common.V1.Link.Types.Workflow { Namespace = "ns", WorkflowId = "a/b", RunId = "r" }.
+                ToNexusLink().Uri.AbsolutePath);
+        Assert.Equal(
+            "/namespaces/ns/nexus-operations/a%2Fb/r/details",
+            new Api.Common.V1.Link.Types.NexusOperation { Namespace = "ns", OperationId = "a/b", RunId = "r" }.
+                ToNexusLink().Uri.AbsolutePath);
+        Assert.Equal(
+            "/namespaces/ns/activities/a%2Fb/r/details",
+            new Api.Common.V1.Link.Types.Activity { Namespace = "ns", ActivityId = "a/b", RunId = "r" }.
+                ToNexusLink().Uri.AbsolutePath);
+    }
+
+    [Fact]
+    public void ToWorkflowEvent_AcceptsBothEventTypeSpellings()
+    {
+        // Links are emitted with the short PascalCase name, but the EVENT_TYPE_ prefixed form is
+        // still produced by older versions of this SDK and must keep decoding.
+        foreach (var spelling in new[] { "WorkflowExecutionStarted", "EVENT_TYPE_WORKFLOW_EXECUTION_STARTED" })
+        {
+            var link = new NexusLink(
+                new Uri(
+                    "temporal:///namespaces/ns/workflows/wf-id/run-id/history" +
+                    $"?referenceType=EventReference&eventID=1&eventType={spelling}"),
+                Api.Common.V1.Link.Types.WorkflowEvent.Descriptor.FullName);
+            var evt = link.ToWorkflowEvent();
+            Assert.Equal(Api.Enums.V1.EventType.WorkflowExecutionStarted, evt.EventRef.EventType);
+            Assert.Equal(1, evt.EventRef.EventId);
+        }
+    }
 }
