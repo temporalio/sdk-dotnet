@@ -19,6 +19,12 @@ document as your quick reference when submitting pull requests.
   `.config/dotnet-tools.json`, the `[tasks.*]` blocks in `mise.toml`, and both the `updates` and
   `ignore` lists in `.github/dependabot.yml`. Insert new entries in order rather than appending
   them.
+- To change a package version, edit `Directory.Packages.props` and then run
+  `dotnet restore --force-evaluate` at the repository root to regenerate the `packages.lock.json`
+  files, since CI restores them in locked mode. Never add a `PackageReference` or
+  `VersionOverride` to a project to move a version. Dependencies of the shipped `src/*` projects
+  are deliberately held at low version floors so downstream consumers are not forced forward;
+  raise one only when asked to.
 - The build treats warnings as errors (`TreatWarningsAsErrors`) and enables the full analyzer set
   (`AnalysisMode=AllEnabledByDefault`) plus StyleCop. A build that produces analyzer warnings will
   fail. Fix the underlying issue rather than suppressing it, unless a suppression is already the

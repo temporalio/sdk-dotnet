@@ -169,12 +169,16 @@ jobs:
             src/Temporalio.Extensions.Aws.Lambda.OpenTelemetry/bin/Release/*.snupkg
             src/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/bin/Release/*.nupkg
             src/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/bin/Release/*.snupkg
+            src/Temporalio.Extensions.Gcp.CloudRun.Id/bin/Release/*.nupkg
+            src/Temporalio.Extensions.Gcp.CloudRun.Id/bin/Release/*.snupkg
             src/Temporalio.Extensions.DiagnosticSource/bin/Release/*.nupkg
             src/Temporalio.Extensions.DiagnosticSource/bin/Release/*.snupkg
             src/Temporalio.Extensions.Hosting/bin/Release/*.nupkg
             src/Temporalio.Extensions.Hosting/bin/Release/*.snupkg
             src/Temporalio.Extensions.OpenTelemetry/bin/Release/*.nupkg
             src/Temporalio.Extensions.OpenTelemetry/bin/Release/*.snupkg
+            src/Temporalio.Extensions.WorkflowStreams/bin/Release/*.nupkg
+            src/Temporalio.Extensions.WorkflowStreams/bin/Release/*.snupkg
 
   run-smoke-test:
     needs:
