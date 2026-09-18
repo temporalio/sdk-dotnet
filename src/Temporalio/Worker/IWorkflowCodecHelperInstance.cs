@@ -42,7 +42,9 @@ namespace Temporalio.Worker
         ISerializationContext.Workflow? GetPendingExternalSignalSerializationContext(uint seq);
 
         /// <summary>
-        /// Gets the pending Nexus operation serialization context for the given sequence.
+        /// Gets the pending Nexus operation serialization context for the given sequence. This is
+        /// the context the operation's converter was scoped to, which for a Temporal System Nexus
+        /// operation is the context its registry entry selected rather than a Nexus context.
         /// </summary>
         /// <param name="seq">Sequence.</param>
         /// <returns>Context.</returns>

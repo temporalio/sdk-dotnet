@@ -132,6 +132,24 @@ namespace Temporalio.Worker
             }
         }
 
+        /// <summary>
+        /// Serialization context for the operation a task is for, or null when the request variant
+        /// does not name a service and operation.
+        /// </summary>
+        private static Converters.ISerializationContext.Nexus? SerializationContextForTask(
+            PollNexusTaskQueueResponse task, string endpoint) => task.Request.VariantCase switch
+            {
+                Request.VariantOneofCase.StartOperation => new(
+                    Endpoint: endpoint,
+                    Service: task.Request.StartOperation.Service,
+                    Operation: task.Request.StartOperation.Operation),
+                Request.VariantOneofCase.CancelOperation => new(
+                    Endpoint: endpoint,
+                    Service: task.Request.CancelOperation.Service,
+                    Operation: task.Request.CancelOperation.Operation),
+                _ => null,
+            };
+
         private static void RemoveInvalidHeaders(MapField<string, string> headers)
         {
             // TODO(cretz): Duplicate other-case headers for this key are sent by server for
@@ -280,6 +298,7 @@ namespace Temporalio.Worker
                     : new ApplicationFailureException(
                         e.Message, e.InnerException, "OperationError", nonRetryable: true);
                 var opFailure = await worker.Client.Options.DataConverter
+                    .WithSerializationContext(executionContext.SerializationContext)
                     .ToFailureAsync(convertedException).ConfigureAwait(false);
                 return new() { Failure = opFailure };
             }
@@ -360,7 +379,14 @@ namespace Temporalio.Worker
             {
                 logger.LogWarning(e, "Completing Nexus {OperationType} task as failed", task.Request.VariantCase);
                 var handlerException = e as HandlerException ?? ConvertToHandlerException(e);
-                var failure = await worker.Client.Options.DataConverter.ToFailureAsync(handlerException).ConfigureAwait(false);
+                // The per-operation context has already been cleared by this point, so the context
+                // is rebuilt from the task the failure is being reported for.
+                var dataConverter = worker.Client.Options.DataConverter;
+                if (SerializationContextForTask(task, endpoint) is { } failureContext)
+                {
+                    dataConverter = dataConverter.WithSerializationContext(failureContext);
+                }
+                var failure = await dataConverter.ToFailureAsync(handlerException).ConfigureAwait(false);
                 return new()
                 {
                     TaskToken = task.TaskToken,
