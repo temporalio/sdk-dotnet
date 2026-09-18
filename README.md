@@ -1324,10 +1324,13 @@ To fix this, the `WEBSITE_LOAD_USER_PROFILE` environment can be set to `1` to lo
 Prerequisites:
 
 * [.NET SDK](https://learn.microsoft.com/en-us/dotnet/core/install/) — version pinned in [`global.json`](global.json)
-* [Rust](https://www.rust-lang.org/) (i.e. `cargo` on the `PATH`)
+* [Rust](https://www.rust-lang.org/) (i.e. `cargo` on the `PATH`) — installing via
+  [rustup](https://rustup.rs/) is recommended, since the toolchain version is pinned in
+  [`src/Temporalio/Bridge/rust-toolchain.toml`](src/Temporalio/Bridge/rust-toolchain.toml) and only
+  rustup honors that pin
 * [Protobuf Compiler](https://protobuf.dev/) (i.e. `protoc` on the `PATH`)
 * [mise](https://mise.jdx.dev/getting-started.html) — running `mise install` in the repository root installs the
-  `protoc` version pinned in [`mise.toml`](mise.toml) and puts it on the `PATH`, matching what CI uses
+  tool versions pinned in [`mise.toml`](mise.toml) and puts them on the `PATH`, matching what CI uses
 * This repository, cloned recursively
 
 With all prerequisites in place, run:
@@ -1337,6 +1340,17 @@ With all prerequisites in place, run:
 Or for release:
 
     dotnet build --configuration Release
+
+The native Rust library is built automatically as part of the above, through the Cargo workspace at
+[`src/Temporalio/Bridge/Cargo.toml`](src/Temporalio/Bridge/Cargo.toml). That workspace exists so the
+library's dependency graph is pinned by a committed
+[`Cargo.lock`](src/Temporalio/Bridge/Cargo.lock); `sdk-core` is a published Rust library and
+deliberately does not commit one of its own. Its workspace tables and toolchain channel are
+mirrored from the submodule, so after bumping `sdk-core` copy over anything that changed upstream
+and then run:
+
+    mise run bridge:check-sync  # confirm the mirrored tables match the submodule
+    mise run bridge:relock      # refresh Bridge/Cargo.lock, then commit it
 
 ### Code formatting
 
