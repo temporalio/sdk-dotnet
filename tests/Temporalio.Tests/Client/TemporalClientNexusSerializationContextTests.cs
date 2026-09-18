@@ -123,18 +123,18 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
         await RunAsync(
             async (client, codec, endpoint) =>
             {
-            var nexusClient = client.CreateNexusClient<IContextService>(endpoint);
-            var started = await nexusClient.StartNexusOperationAsync<string>(
-                svc => svc.Echo("hello"),
-                new($"op-{Guid.NewGuid()}") { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
-            await started.GetResultAsync();
-            codec.Reset();
+                var nexusClient = client.CreateNexusClient<IContextService>(endpoint);
+                var started = await nexusClient.StartNexusOperationAsync<string>(
+                    svc => svc.Echo("hello"),
+                    new($"op-{Guid.NewGuid()}") { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+                await started.GetResultAsync();
+                codec.Reset();
 
-            // A handle obtained by ID never saw a start request, so there is no endpoint, service
-            // or operation to scope its converter by. Decoding still has to work: a payload encoded
-            // under a context must stay readable without one.
-            var detached = client.GetNexusOperationHandle<string>(started.Id, started.RunId);
-            Assert.Equal("echo:hello", await detached.GetResultAsync());
+                // A handle obtained by ID never saw a start request, so there is no endpoint, service
+                // or operation to scope its converter by. Decoding still has to work: a payload encoded
+                // under a context must stay readable without one.
+                var detached = client.GetNexusOperationHandle<string>(started.Id, started.RunId);
+                Assert.Equal("echo:hello", await detached.GetResultAsync());
             },
             allowContextlessDecodeOfSignedPayload: true);
     }
