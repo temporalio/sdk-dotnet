@@ -86,6 +86,9 @@ to docs, or any other relevant information.
 
 ### Fixed
 
+- Fixed unexpected errors (e.g. failure conversion errors while resolving a child workflow) in
+  workflow-internal tasks for child workflows, updates, and queries being silently lost. They now
+  fail the workflow task like other unexpected workflow errors.
 - Fixed workflow-side `SignalWithStartWorkflowAsync` to participate in outbound workflow
   interception, propagate tracing headers, and apply the target workflow serialization context.
 - Fixed workflow-side `SignalWithStartWorkflowAsync` payload codecs to apply the target workflow

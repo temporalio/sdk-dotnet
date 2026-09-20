@@ -1245,18 +1245,28 @@ namespace Temporalio.Worker
             // Queue it up so it can run in workflow environment
             _ = QueueNewTaskAsync(() =>
             {
-                // Make sure we have loaded the instance which may invoke the constructor thereby
-                // letting the constructor register update handlers at runtime
-                var ignored = Instance;
-
-                // Set the current update for the life of this task
-                var updateInfo = new WorkflowUpdateInfo(Id: update.Id, Name: update.Name);
-                CurrentUpdateInfoLocal.Value = updateInfo;
-
-                // Put the entire update in the log scope
-                using (logger.BeginScope(updateInfo.CreateLoggerScope()))
+                try
                 {
-                    return ApplyDoUpdateAsync(update);
+                    // Make sure we have loaded the instance which may invoke the constructor thereby
+                    // letting the constructor register update handlers at runtime
+                    var ignored = Instance;
+
+                    // Set the current update for the life of this task
+                    var updateInfo = new WorkflowUpdateInfo(Id: update.Id, Name: update.Name);
+                    CurrentUpdateInfoLocal.Value = updateInfo;
+
+                    // Put the entire update in the log scope
+                    using (logger.BeginScope(updateInfo.CreateLoggerScope()))
+                    {
+                        return ApplyDoUpdateAsync(update);
+                    }
+                }
+                catch (Exception e)
+                {
+                    // Nothing observes this task, so e.g. a failure converter error while
+                    // rejecting the update would be lost without failing the activation here
+                    currentActivationException ??= e;
+                    return Task.CompletedTask;
                 }
             });
         }
@@ -1497,97 +1507,108 @@ namespace Temporalio.Worker
             // Queue it up so it can run in workflow environment
             _ = QueueNewTaskAsync(() =>
             {
-                // Make sure we have loaded the instance which may invoke the constructor thereby
-                // letting the constructor register query handlers at runtime
-                var ignored = Instance;
-
-                var origCmdCount = completion?.Successful?.Commands?.Count;
                 try
                 {
-                    inQueryOrValidator = true;
-                    WorkflowQueryDefinition? queryDefn;
-                    object? resultObj;
+                    // Make sure we have loaded the instance which may invoke the constructor thereby
+                    // letting the constructor register query handlers at runtime
+                    var ignored = Instance;
 
-                    if (query.QueryType == "__stack_trace")
+                    var origCmdCount = completion?.Successful?.Commands?.Count;
+                    try
                     {
-                        // Use raw value built from default converter because we don't want to use
-                        // user-conversion
-                        resultObj = new RawValue(DataConverter.Default.PayloadConverter.ToPayload(
-                            GetStackTrace()));
-                    }
-                    else if (query.QueryType == "__temporal_workflow_metadata")
-                    {
-                        // Use raw value built from default converter because we don't want to use
-                        // user-conversion
-                        resultObj = new RawValue(DataConverter.Default.PayloadConverter.ToPayload(
-                            GetWorkflowMetadata()));
-                    }
-                    else
-                    {
-                        // Find definition or fail
-                        var queries = mutableQueries.IsValueCreated ? mutableQueries.Value : Definition.Queries;
-                        if (!queries.TryGetValue(query.QueryType, out queryDefn))
+                        inQueryOrValidator = true;
+                        WorkflowQueryDefinition? queryDefn;
+                        object? resultObj;
+
+                        if (query.QueryType == "__stack_trace")
                         {
-                            // Do not fall back onto dynamic query if using the reserved prefix
-                            if (!query.QueryType.StartsWith(TemporalRuntime.ReservedNamePrefix))
-                            {
-                                queryDefn = DynamicQuery;
-                            }
-                            if (queryDefn == null)
-                            {
-                                var knownQueries = queries.Keys.OrderBy(k => k);
-                                throw new InvalidOperationException(
-                                    $"Query handler for {query.QueryType} expected but not found, " +
-                                    $"known queries: [{string.Join(" ", knownQueries)}]");
-                            }
+                            // Use raw value built from default converter because we don't want to use
+                            // user-conversion
+                            resultObj = new RawValue(DataConverter.Default.PayloadConverter.ToPayload(
+                                GetStackTrace()));
                         }
-                        resultObj = inbound.Value.HandleQuery(new(
-                            Id: query.QueryId,
-                            Query: query.QueryType,
-                            Definition: queryDefn,
-                            Args: DecodeArgs(
-                                method: queryDefn.Method ?? queryDefn.Delegate!.Method,
-                                payloads: query.Arguments,
-                                itemName: $"Query {query.QueryType}",
-                                dynamic: queryDefn.Dynamic,
-                                dynamicArgPrepend: query.QueryType),
-                            Headers: query.Headers));
-                    }
-                    AddCommand(new()
-                    {
-                        RespondToQuery = new()
+                        else if (query.QueryType == "__temporal_workflow_metadata")
                         {
-                            QueryId = query.QueryId,
-                            Succeeded = new() { Response = payloadConverterWorkflowContext.ToPayload(resultObj) },
-                        },
-                    });
+                            // Use raw value built from default converter because we don't want to use
+                            // user-conversion
+                            resultObj = new RawValue(DataConverter.Default.PayloadConverter.ToPayload(
+                                GetWorkflowMetadata()));
+                        }
+                        else
+                        {
+                            // Find definition or fail
+                            var queries = mutableQueries.IsValueCreated ? mutableQueries.Value : Definition.Queries;
+                            if (!queries.TryGetValue(query.QueryType, out queryDefn))
+                            {
+                                // Do not fall back onto dynamic query if using the reserved prefix
+                                if (!query.QueryType.StartsWith(TemporalRuntime.ReservedNamePrefix))
+                                {
+                                    queryDefn = DynamicQuery;
+                                }
+                                if (queryDefn == null)
+                                {
+                                    var knownQueries = queries.Keys.OrderBy(k => k);
+                                    throw new InvalidOperationException(
+                                        $"Query handler for {query.QueryType} expected but not found, " +
+                                        $"known queries: [{string.Join(" ", knownQueries)}]");
+                                }
+                            }
+                            resultObj = inbound.Value.HandleQuery(new(
+                                Id: query.QueryId,
+                                Query: query.QueryType,
+                                Definition: queryDefn,
+                                Args: DecodeArgs(
+                                    method: queryDefn.Method ?? queryDefn.Delegate!.Method,
+                                    payloads: query.Arguments,
+                                    itemName: $"Query {query.QueryType}",
+                                    dynamic: queryDefn.Dynamic,
+                                    dynamicArgPrepend: query.QueryType),
+                                Headers: query.Headers));
+                        }
+                        AddCommand(new()
+                        {
+                            RespondToQuery = new()
+                            {
+                                QueryId = query.QueryId,
+                                Succeeded = new() { Response = payloadConverterWorkflowContext.ToPayload(resultObj) },
+                            },
+                        });
+                    }
+                    catch (Exception e)
+                    {
+                        AddCommand(new()
+                        {
+                            RespondToQuery = new()
+                            {
+                                QueryId = query.QueryId,
+                                Failed = failureConverterWorkflowContext.ToFailure(
+                                    e, payloadConverterWorkflowContext),
+                            },
+                        });
+                        return Task.CompletedTask;
+                    }
+                    finally
+                    {
+                        inQueryOrValidator = false;
+                    }
+                    // Check for commands but don't include null counts in check since Successful is
+                    // unset by other completion failures
+                    var newCmdCount = completion?.Successful?.Commands?.Count;
+                    if (origCmdCount != null && newCmdCount != null && origCmdCount! + 1 != newCmdCount)
+                    {
+                        currentActivationException = new InvalidOperationException(
+                            $"Query handler for {query.QueryType} created workflow commands");
+                    }
+                    return Task.CompletedTask;
                 }
                 catch (Exception e)
                 {
-                    AddCommand(new()
-                    {
-                        RespondToQuery = new()
-                        {
-                            QueryId = query.QueryId,
-                            Failed = failureConverterWorkflowContext.ToFailure(
-                                e, payloadConverterWorkflowContext),
-                        },
-                    });
+                    // Nothing observes this task, so e.g. a failure converter error while
+                    // responding with the query failure would be lost without failing the
+                    // activation here
+                    currentActivationException ??= e;
                     return Task.CompletedTask;
                 }
-                finally
-                {
-                    inQueryOrValidator = false;
-                }
-                // Check for commands but don't include null counts in check since Successful is
-                // unset by other completion failures
-                var newCmdCount = completion?.Successful?.Commands?.Count;
-                if (origCmdCount != null && newCmdCount != null && origCmdCount! + 1 != newCmdCount)
-                {
-                    currentActivationException = new InvalidOperationException(
-                        $"Query handler for {query.QueryType} created workflow commands");
-                }
-                return Task.CompletedTask;
             });
         }
 
@@ -2664,6 +2685,12 @@ namespace Temporalio.Worker
                                     throw new InvalidOperationException("Unrecognized child complete case");
                             }
                         }
+                    }
+                    catch (Exception e)
+                    {
+                        // Nothing observes this task, so e.g. a failure converter error would be
+                        // lost without failing the activation here
+                        instance.SetCurrentActivationException(e);
                     }
                     finally
                     {
