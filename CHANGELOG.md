@@ -31,13 +31,6 @@ to docs, or any other relevant information.
   offset-based publish/subscribe streams hosted by workflows, interoperable with other Temporal
   SDK Workflow Streams implementations.
 
-### Fixed
-
-- Fixed workflow-side `SignalWithStartWorkflowAsync` payload codecs to apply the target workflow
-  serialization context to System Nexus request payloads.
-- Fixed the `Summary` on a scheduled Nexus operation to be converted with the Nexus operation
-  serialization context instead of the context-free payload converter.
-
 ## [1.19.0] - 2026-09-14
 
 ### :boom: Breaking Changes
