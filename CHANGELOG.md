@@ -19,6 +19,8 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+## [1.20.0] - 2026-09-28
+
 ### Added
 
 - Added the experimental `Temporalio.Extensions.Gcp.CloudRun.Id` package for long-lived
