@@ -31,11 +31,6 @@ to docs, or any other relevant information.
 
 ### Fixed
 
-- Fixed a non-determinism error affecting a workflow that completes a workflow task without
-  issuing any commands and then receives an update while not in the worker's cache. Such a run was
-  replayed from the start with replay reported as already finished, so commands it recorded during
-  that activation (for example a `Workflow.Patched` marker) could not be reproduced on later
-  replays, leaving the run failing every subsequent workflow task.
 - A failing workflow task is now reported to the server only on its first attempt, with later
   attempts left to time out. Previously `PayloadsTooLarge` failures and history fetch failures were
   re-reported on every attempt.
