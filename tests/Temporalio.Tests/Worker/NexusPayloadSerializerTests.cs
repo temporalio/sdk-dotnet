@@ -125,6 +125,52 @@ public class NexusPayloadSerializerTests
         Assert.Equal("decoded-input", Assert.Single(result.Args!)?.ToString());
     }
 
+    [Fact]
+    public async Task DeserializeAsync_SystemPayload_UsesDataConverterOnlyForNestedPayloads()
+    {
+        var request = new SignalWithStartWorkflowRequest(
+            workflow: "test-workflow",
+            id: "target-workflow-id",
+            taskQueue: "target-task-queue",
+            signal: "test-signal",
+            @namespace: "target-namespace")
+        {
+            Args = new object?[] { "workflow-input" },
+        };
+        var payload = new SystemNexusPayloadConverter(
+            DataConverter.Default.PayloadConverter,
+            DataConverter.Default.FailureConverter).ToPayload(request);
+        var converter = new ReplacingPayloadConverter();
+        var serializer = new NexusPayloadSerializer(DataConverter.Default with
+        {
+            PayloadConverter = converter,
+        });
+
+        var result = Assert.IsType<SignalWithStartWorkflowRequest>(
+            await serializer.DeserializeAsync(
+                new(payload.ToByteArray()), typeof(SignalWithStartWorkflowRequest)));
+
+        Assert.Equal("converted-workflow-input", Assert.Single(result.Args!));
+        Assert.Equal(1, converter.DecodeCount);
+    }
+
+    private class ReplacingPayloadConverter : IPayloadConverter
+    {
+        private readonly IPayloadConverter inner = DataConverter.Default.PayloadConverter;
+
+        public int DecodeCount { get; private set; }
+
+        public Payload ToPayload(object? value) => inner.ToPayload(value);
+
+        public object? ToValue(Payload payload, Type type)
+        {
+            Assert.False(SystemNexusPayloadVisitor.IsSystemPayload(payload));
+            Assert.Equal(typeof(object), type);
+            DecodeCount++;
+            return $"converted-{inner.ToValue(payload, type)}";
+        }
+    }
+
     private class ReplacingPayloadCodec : IPayloadCodec
     {
         public int DecodeCount { get; private set; }
