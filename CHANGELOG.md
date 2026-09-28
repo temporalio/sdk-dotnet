@@ -19,6 +19,8 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+## [1.20.0] - 2026-09-28
+
 ### Added
 
 - Added the experimental `Temporalio.Extensions.Gcp.CloudRun.Id` package for long-lived
@@ -28,6 +30,13 @@ to docs, or any other relevant information.
 - Added the experimental `Temporalio.Extensions.WorkflowStreams` package for durable, batched,
   offset-based publish/subscribe streams hosted by workflows, interoperable with other Temporal
   SDK Workflow Streams implementations.
+
+### Fixed
+
+- Fixed workflow-side `SignalWithStartWorkflowAsync` payload codecs to apply the target workflow
+  serialization context to System Nexus request payloads.
+- Fixed the `Summary` on a scheduled Nexus operation to be converted with the Nexus operation
+  serialization context instead of the context-free payload converter.
 
 ## [1.19.0] - 2026-09-14
 
@@ -88,8 +97,6 @@ to docs, or any other relevant information.
 
 - Fixed workflow-side `SignalWithStartWorkflowAsync` to participate in outbound workflow
   interception, propagate tracing headers, and apply the target workflow serialization context.
-- Fixed workflow-side `SignalWithStartWorkflowAsync` payload codecs to apply the target workflow
-  serialization context to System Nexus request payloads.
 - Worker shutdown now drains activity completions that are still flushing their result to the
   server before finishing. Previously such a completion — typically one whose final heartbeat RPC
   was still in flight — could be permanently stranded by shutdown, so the activity's result was
