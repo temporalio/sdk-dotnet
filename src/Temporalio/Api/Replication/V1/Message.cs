@@ -25,24 +25,26 @@ namespace Temporalio.Api.Replication.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cil0ZW1wb3JhbC9hcGkvcmVwbGljYXRpb24vdjEvbWVzc2FnZS5wcm90bxIb",
-            "dGVtcG9yYWwuYXBpLnJlcGxpY2F0aW9uLnYxGh9nb29nbGUvcHJvdG9idWYv",
-            "dGltZXN0YW1wLnByb3RvGiV0ZW1wb3JhbC9hcGkvZW51bXMvdjEvbmFtZXNw",
-            "YWNlLnByb3RvIjAKGENsdXN0ZXJSZXBsaWNhdGlvbkNvbmZpZxIUCgxjbHVz",
-            "dGVyX25hbWUYASABKAkiugEKGk5hbWVzcGFjZVJlcGxpY2F0aW9uQ29uZmln",
-            "EhsKE2FjdGl2ZV9jbHVzdGVyX25hbWUYASABKAkSRwoIY2x1c3RlcnMYAiAD",
-            "KAsyNS50ZW1wb3JhbC5hcGkucmVwbGljYXRpb24udjEuQ2x1c3RlclJlcGxp",
-            "Y2F0aW9uQ29uZmlnEjYKBXN0YXRlGAMgASgOMicudGVtcG9yYWwuYXBpLmVu",
-            "dW1zLnYxLlJlcGxpY2F0aW9uU3RhdGUiXQoORmFpbG92ZXJTdGF0dXMSMQoN",
-            "ZmFpbG92ZXJfdGltZRgBIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3Rh",
-            "bXASGAoQZmFpbG92ZXJfdmVyc2lvbhgCIAEoA0KiAQoeaW8udGVtcG9yYWwu",
-            "YXBpLnJlcGxpY2F0aW9uLnYxQgxNZXNzYWdlUHJvdG9QAVotZ28udGVtcG9y",
-            "YWwuaW8vYXBpL3JlcGxpY2F0aW9uL3YxO3JlcGxpY2F0aW9uqgIdVGVtcG9y",
-            "YWxpby5BcGkuUmVwbGljYXRpb24uVjHqAiBUZW1wb3JhbGlvOjpBcGk6OlJl",
-            "cGxpY2F0aW9uOjpWMWIGcHJvdG8z"));
+            "dGVtcG9yYWwuYXBpLnJlcGxpY2F0aW9uLnYxGh5nb29nbGUvcHJvdG9idWYv",
+            "ZHVyYXRpb24ucHJvdG8aH2dvb2dsZS9wcm90b2J1Zi90aW1lc3RhbXAucHJv",
+            "dG8aJXRlbXBvcmFsL2FwaS9lbnVtcy92MS9uYW1lc3BhY2UucHJvdG8ibgoY",
+            "Q2x1c3RlclJlcGxpY2F0aW9uQ29uZmlnEhQKDGNsdXN0ZXJfbmFtZRgBIAEo",
+            "CRI8ChlyZXBsaWNhdGlvbl9yYW1wX2R1cmF0aW9uGAIgASgLMhkuZ29vZ2xl",
+            "LnByb3RvYnVmLkR1cmF0aW9uIroBChpOYW1lc3BhY2VSZXBsaWNhdGlvbkNv",
+            "bmZpZxIbChNhY3RpdmVfY2x1c3Rlcl9uYW1lGAEgASgJEkcKCGNsdXN0ZXJz",
+            "GAIgAygLMjUudGVtcG9yYWwuYXBpLnJlcGxpY2F0aW9uLnYxLkNsdXN0ZXJS",
+            "ZXBsaWNhdGlvbkNvbmZpZxI2CgVzdGF0ZRgDIAEoDjInLnRlbXBvcmFsLmFw",
+            "aS5lbnVtcy52MS5SZXBsaWNhdGlvblN0YXRlIl0KDkZhaWxvdmVyU3RhdHVz",
+            "EjEKDWZhaWxvdmVyX3RpbWUYASABKAsyGi5nb29nbGUucHJvdG9idWYuVGlt",
+            "ZXN0YW1wEhgKEGZhaWxvdmVyX3ZlcnNpb24YAiABKANCogEKHmlvLnRlbXBv",
+            "cmFsLmFwaS5yZXBsaWNhdGlvbi52MUIMTWVzc2FnZVByb3RvUAFaLWdvLnRl",
+            "bXBvcmFsLmlvL2FwaS9yZXBsaWNhdGlvbi92MTtyZXBsaWNhdGlvbqoCHVRl",
+            "bXBvcmFsaW8uQXBpLlJlcGxpY2F0aW9uLlYx6gIgVGVtcG9yYWxpbzo6QXBp",
+            "OjpSZXBsaWNhdGlvbjo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Enums.V1.NamespaceReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Enums.V1.NamespaceReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Replication.V1.ClusterReplicationConfig), global::Temporalio.Api.Replication.V1.ClusterReplicationConfig.Parser, new[]{ "ClusterName" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Replication.V1.ClusterReplicationConfig), global::Temporalio.Api.Replication.V1.ClusterReplicationConfig.Parser, new[]{ "ClusterName", "ReplicationRampDuration" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Replication.V1.NamespaceReplicationConfig), global::Temporalio.Api.Replication.V1.NamespaceReplicationConfig.Parser, new[]{ "ActiveClusterName", "Clusters", "State" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Replication.V1.FailoverStatus), global::Temporalio.Api.Replication.V1.FailoverStatus.Parser, new[]{ "FailoverTime", "FailoverVersion" }, null, null, null, null)
           }));
@@ -86,6 +88,7 @@ namespace Temporalio.Api.Replication.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public ClusterReplicationConfig(ClusterReplicationConfig other) : this() {
       clusterName_ = other.clusterName_;
+      replicationRampDuration_ = other.replicationRampDuration_ != null ? other.replicationRampDuration_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -107,6 +110,22 @@ namespace Temporalio.Api.Replication.V1 {
       }
     }
 
+    /// <summary>Field number for the "replication_ramp_duration" field.</summary>
+    public const int ReplicationRampDurationFieldNumber = 2;
+    private global::Google.Protobuf.WellKnownTypes.Duration replicationRampDuration_;
+    /// <summary>
+    /// Ramp duration when this cluster is added as passive by UpdateNamespace; unset or non-positive disables gradual connect.
+    /// This field is not persisted and is omitted from namespace responses.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Duration ReplicationRampDuration {
+      get { return replicationRampDuration_; }
+      set {
+        replicationRampDuration_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -123,6 +142,7 @@ namespace Temporalio.Api.Replication.V1 {
         return true;
       }
       if (ClusterName != other.ClusterName) return false;
+      if (!object.Equals(ReplicationRampDuration, other.ReplicationRampDuration)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -131,6 +151,7 @@ namespace Temporalio.Api.Replication.V1 {
     public override int GetHashCode() {
       int hash = 1;
       if (ClusterName.Length != 0) hash ^= ClusterName.GetHashCode();
+      if (replicationRampDuration_ != null) hash ^= ReplicationRampDuration.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -153,6 +174,10 @@ namespace Temporalio.Api.Replication.V1 {
         output.WriteRawTag(10);
         output.WriteString(ClusterName);
       }
+      if (replicationRampDuration_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(ReplicationRampDuration);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -167,6 +192,10 @@ namespace Temporalio.Api.Replication.V1 {
         output.WriteRawTag(10);
         output.WriteString(ClusterName);
       }
+      if (replicationRampDuration_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(ReplicationRampDuration);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -179,6 +208,9 @@ namespace Temporalio.Api.Replication.V1 {
       int size = 0;
       if (ClusterName.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ClusterName);
+      }
+      if (replicationRampDuration_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ReplicationRampDuration);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -194,6 +226,12 @@ namespace Temporalio.Api.Replication.V1 {
       }
       if (other.ClusterName.Length != 0) {
         ClusterName = other.ClusterName;
+      }
+      if (other.replicationRampDuration_ != null) {
+        if (replicationRampDuration_ == null) {
+          ReplicationRampDuration = new global::Google.Protobuf.WellKnownTypes.Duration();
+        }
+        ReplicationRampDuration.MergeFrom(other.ReplicationRampDuration);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -214,6 +252,13 @@ namespace Temporalio.Api.Replication.V1 {
             ClusterName = input.ReadString();
             break;
           }
+          case 18: {
+            if (replicationRampDuration_ == null) {
+              ReplicationRampDuration = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(ReplicationRampDuration);
+            break;
+          }
         }
       }
     #endif
@@ -231,6 +276,13 @@ namespace Temporalio.Api.Replication.V1 {
             break;
           case 10: {
             ClusterName = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (replicationRampDuration_ == null) {
+              ReplicationRampDuration = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(ReplicationRampDuration);
             break;
           }
         }

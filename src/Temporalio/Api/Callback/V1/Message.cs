@@ -28,7 +28,7 @@ namespace Temporalio.Api.Callback.V1 {
             "cG9yYWwuYXBpLmNhbGxiYWNrLnYxGh9nb29nbGUvcHJvdG9idWYvdGltZXN0",
             "YW1wLnByb3RvGiR0ZW1wb3JhbC9hcGkvY29tbW9uL3YxL21lc3NhZ2UucHJv",
             "dG8aInRlbXBvcmFsL2FwaS9lbnVtcy92MS9jb21tb24ucHJvdG8aJXRlbXBv",
-            "cmFsL2FwaS9mYWlsdXJlL3YxL21lc3NhZ2UucHJvdG8ilwMKDENhbGxiYWNr",
+            "cmFsL2FwaS9mYWlsdXJlL3YxL21lc3NhZ2UucHJvdG8iqwMKDENhbGxiYWNr",
             "SW5mbxIyCghjYWxsYmFjaxgBIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21tb24u",
             "djEuQ2FsbGJhY2sSNQoRcmVnaXN0cmF0aW9uX3RpbWUYAiABKAsyGi5nb29n",
             "bGUucHJvdG9idWYuVGltZXN0YW1wEjMKBXN0YXRlGAMgASgOMiQudGVtcG9y",
@@ -37,15 +37,15 @@ namespace Temporalio.Api.Callback.V1 {
             "ZS5wcm90b2J1Zi5UaW1lc3RhbXASPgoUbGFzdF9hdHRlbXB0X2ZhaWx1cmUY",
             "BiABKAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlEj4KGm5l",
             "eHRfYXR0ZW1wdF9zY2hlZHVsZV90aW1lGAcgASgLMhouZ29vZ2xlLnByb3Rv",
-            "YnVmLlRpbWVzdGFtcBIWCg5ibG9ja2VkX3JlYXNvbhgIIAEoCUKTAQobaW8u",
-            "dGVtcG9yYWwuYXBpLmNhbGxiYWNrLnYxQgxNZXNzYWdlUHJvdG9QAVonZ28u",
-            "dGVtcG9yYWwuaW8vYXBpL2NhbGxiYWNrL3YxO2NhbGxiYWNrqgIaVGVtcG9y",
-            "YWxpby5BcGkuQ2FsbGJhY2suVjHqAh1UZW1wb3JhbGlvOjpBcGk6OkNhbGxi",
-            "YWNrOjpWMWIGcHJvdG8z"));
+            "YnVmLlRpbWVzdGFtcBIWCg5ibG9ja2VkX3JlYXNvbhgIIAEoCRISCgpyZXF1",
+            "ZXN0X2lkGAkgASgJQpMBChtpby50ZW1wb3JhbC5hcGkuY2FsbGJhY2sudjFC",
+            "DE1lc3NhZ2VQcm90b1ABWidnby50ZW1wb3JhbC5pby9hcGkvY2FsbGJhY2sv",
+            "djE7Y2FsbGJhY2uqAhpUZW1wb3JhbGlvLkFwaS5DYWxsYmFjay5WMeoCHVRl",
+            "bXBvcmFsaW86OkFwaTo6Q2FsbGJhY2s6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Callback.V1.CallbackInfo), global::Temporalio.Api.Callback.V1.CallbackInfo.Parser, new[]{ "Callback", "RegistrationTime", "State", "Attempt", "LastAttemptCompleteTime", "LastAttemptFailure", "NextAttemptScheduleTime", "BlockedReason" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Callback.V1.CallbackInfo), global::Temporalio.Api.Callback.V1.CallbackInfo.Parser, new[]{ "Callback", "RegistrationTime", "State", "Attempt", "LastAttemptCompleteTime", "LastAttemptFailure", "NextAttemptScheduleTime", "BlockedReason", "RequestId" }, null, null, null, null)
           }));
     }
     #endregion
@@ -97,6 +97,7 @@ namespace Temporalio.Api.Callback.V1 {
       lastAttemptFailure_ = other.lastAttemptFailure_ != null ? other.lastAttemptFailure_.Clone() : null;
       nextAttemptScheduleTime_ = other.nextAttemptScheduleTime_ != null ? other.nextAttemptScheduleTime_.Clone() : null;
       blockedReason_ = other.blockedReason_;
+      requestId_ = other.requestId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -227,6 +228,22 @@ namespace Temporalio.Api.Callback.V1 {
       }
     }
 
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 9;
+    private string requestId_ = "";
+    /// <summary>
+    /// Server-generated request ID used as an idempotency token when invoking callbacks.
+    /// It has no relation to caller-side request_id sent in operations like StartNexusOperationExecutionRequest.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RequestId {
+      get { return requestId_; }
+      set {
+        requestId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -250,6 +267,7 @@ namespace Temporalio.Api.Callback.V1 {
       if (!object.Equals(LastAttemptFailure, other.LastAttemptFailure)) return false;
       if (!object.Equals(NextAttemptScheduleTime, other.NextAttemptScheduleTime)) return false;
       if (BlockedReason != other.BlockedReason) return false;
+      if (RequestId != other.RequestId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -265,6 +283,7 @@ namespace Temporalio.Api.Callback.V1 {
       if (lastAttemptFailure_ != null) hash ^= LastAttemptFailure.GetHashCode();
       if (nextAttemptScheduleTime_ != null) hash ^= NextAttemptScheduleTime.GetHashCode();
       if (BlockedReason.Length != 0) hash ^= BlockedReason.GetHashCode();
+      if (RequestId.Length != 0) hash ^= RequestId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -315,6 +334,10 @@ namespace Temporalio.Api.Callback.V1 {
         output.WriteRawTag(66);
         output.WriteString(BlockedReason);
       }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(74);
+        output.WriteString(RequestId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -357,6 +380,10 @@ namespace Temporalio.Api.Callback.V1 {
         output.WriteRawTag(66);
         output.WriteString(BlockedReason);
       }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(74);
+        output.WriteString(RequestId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -390,6 +417,9 @@ namespace Temporalio.Api.Callback.V1 {
       }
       if (BlockedReason.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(BlockedReason);
+      }
+      if (RequestId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RequestId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -441,6 +471,9 @@ namespace Temporalio.Api.Callback.V1 {
       }
       if (other.BlockedReason.Length != 0) {
         BlockedReason = other.BlockedReason;
+      }
+      if (other.RequestId.Length != 0) {
+        RequestId = other.RequestId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -504,6 +537,10 @@ namespace Temporalio.Api.Callback.V1 {
             BlockedReason = input.ReadString();
             break;
           }
+          case 74: {
+            RequestId = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -564,6 +601,10 @@ namespace Temporalio.Api.Callback.V1 {
           }
           case 66: {
             BlockedReason = input.ReadString();
+            break;
+          }
+          case 74: {
+            RequestId = input.ReadString();
             break;
           }
         }

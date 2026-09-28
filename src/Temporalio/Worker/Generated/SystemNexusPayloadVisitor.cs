@@ -550,6 +550,28 @@ namespace Temporalio.Worker
             }
         }
 
+        private static async Task Visit_temporal_api_common_v1_Callback_NexusHandler(
+            global::Temporalio.Api.Common.V1.Callback.Types.NexusHandler value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            if (value.SourceContext != null)
+            {
+                await visitPayload(value.SourceContext).ConfigureAwait(false);
+            }
+        }
+
+        private static async Task Visit_temporal_api_common_v1_Callback(
+            global::Temporalio.Api.Common.V1.Callback value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            if (value.NexusHandler != null)
+            {
+                await Visit_temporal_api_common_v1_Callback_NexusHandler(value.NexusHandler, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
+        }
+
         private static async Task Visit_temporal_api_sdk_v1_UserMetadata(
             global::Temporalio.Api.Sdk.V1.UserMetadata value,
             PayloadVisitor visitPayload,
@@ -589,6 +611,10 @@ namespace Temporalio.Worker
             if (value.LastCompletionResult != null)
             {
                 await visitPayloads(value.LastCompletionResult.Payloads_).ConfigureAwait(false);
+            }
+            foreach (var item_temporal_api_workflowservice_v1_StartWorkflowExecutionRequest_21 in value.CompletionCallbacks)
+            {
+                await Visit_temporal_api_common_v1_Callback(item_temporal_api_workflowservice_v1_StartWorkflowExecutionRequest_21, visitPayload, visitPayloads).ConfigureAwait(false);
             }
             if (value.UserMetadata != null)
             {
@@ -642,6 +668,10 @@ namespace Temporalio.Worker
             if (value.Header != null)
             {
                 await Visit_temporal_api_common_v1_Header(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
+            foreach (var item_temporal_api_history_v1_WorkflowExecutionStartedEventAttributes_30 in value.CompletionCallbacks)
+            {
+                await Visit_temporal_api_common_v1_Callback(item_temporal_api_history_v1_WorkflowExecutionStartedEventAttributes_30, visitPayload, visitPayloads).ConfigureAwait(false);
             }
         }
 
@@ -947,6 +977,10 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_update_v1_Input(value.Input, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+            foreach (var item_temporal_api_update_v1_Request_4 in value.CompletionCallbacks)
+            {
+                await Visit_temporal_api_common_v1_Callback(item_temporal_api_update_v1_Request_4, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
         }
 
         private static async Task Visit_temporal_api_history_v1_WorkflowExecutionUpdateAcceptedEventAttributes(
@@ -1086,6 +1120,32 @@ namespace Temporalio.Worker
             if (value.Failure != null)
             {
                 await Visit_temporal_api_failure_v1_Failure(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
+        }
+
+        private static async Task Visit_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_WorkflowUpdateOptionsUpdate(
+            global::Temporalio.Api.History.V1.WorkflowExecutionOptionsUpdatedEventAttributes.Types.WorkflowUpdateOptionsUpdate value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            foreach (var item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_WorkflowUpdateOptionsUpdate_3 in value.AttachedCompletionCallbacks)
+            {
+                await Visit_temporal_api_common_v1_Callback(item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_WorkflowUpdateOptionsUpdate_3, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
+        }
+
+        private static async Task Visit_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes(
+            global::Temporalio.Api.History.V1.WorkflowExecutionOptionsUpdatedEventAttributes value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            foreach (var item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_4 in value.AttachedCompletionCallbacks)
+            {
+                await Visit_temporal_api_common_v1_Callback(item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_4, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
+            foreach (var item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_8 in value.WorkflowUpdateOptions)
+            {
+                await Visit_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_WorkflowUpdateOptionsUpdate(item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_8, visitPayload, visitPayloads).ConfigureAwait(false);
             }
         }
 
@@ -1240,6 +1300,10 @@ namespace Temporalio.Worker
             if (value.NexusOperationTimedOutEventAttributes != null)
             {
                 await Visit_temporal_api_history_v1_NexusOperationTimedOutEventAttributes(value.NexusOperationTimedOutEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
+            if (value.WorkflowExecutionOptionsUpdatedEventAttributes != null)
+            {
+                await Visit_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes(value.WorkflowExecutionOptionsUpdatedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
             }
             if (value.NexusOperationCancelRequestFailedEventAttributes != null)
             {
@@ -2052,6 +2116,10 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
+            if (value.Callback != null)
+            {
+                await Visit_temporal_api_common_v1_Callback(value.Callback, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
             if (value.LastAttemptFailure != null)
             {
                 await Visit_temporal_api_failure_v1_Failure(value.LastAttemptFailure, visitPayload, visitPayloads).ConfigureAwait(false);
@@ -2674,6 +2742,10 @@ namespace Temporalio.Worker
             {
                 await Visit_temporal_api_sdk_v1_UserMetadata(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
             }
+            foreach (var item_temporal_api_workflowservice_v1_StartActivityExecutionRequest_19 in value.CompletionCallbacks)
+            {
+                await Visit_temporal_api_common_v1_Callback(item_temporal_api_workflowservice_v1_StartActivityExecutionRequest_19, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
         }
 
         private static async Task Visit_temporal_api_workflowservice_v1_StartNexusOperationExecutionRequest(
@@ -2688,6 +2760,10 @@ namespace Temporalio.Worker
             if (value.UserMetadata != null)
             {
                 await Visit_temporal_api_sdk_v1_UserMetadata(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
+            foreach (var item_temporal_api_workflowservice_v1_StartNexusOperationExecutionRequest_18 in value.CompletionCallbacks)
+            {
+                await Visit_temporal_api_common_v1_Callback(item_temporal_api_workflowservice_v1_StartNexusOperationExecutionRequest_18, visitPayload, visitPayloads).ConfigureAwait(false);
             }
         }
 
@@ -2734,6 +2810,10 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
+            if (value.Callback != null)
+            {
+                await Visit_temporal_api_common_v1_Callback(value.Callback, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
             if (value.LastAttemptFailure != null)
             {
                 await Visit_temporal_api_failure_v1_Failure(value.LastAttemptFailure, visitPayload, visitPayloads).ConfigureAwait(false);
@@ -2804,6 +2884,17 @@ namespace Temporalio.Worker
             }
         }
 
+        private static async Task Visit_temporal_api_nexusoperation_v1_CallbackInfo(
+            global::Temporalio.Api.NexusOperation.V1.CallbackInfo value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            if (value.Info != null)
+            {
+                await Visit_temporal_api_callback_v1_CallbackInfo(value.Info, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
+        }
+
         private static async Task Visit_temporal_api_workflowservice_v1_DescribeNexusOperationExecutionResponse(
             global::Temporalio.Api.WorkflowService.V1.DescribeNexusOperationExecutionResponse value,
             PayloadVisitor visitPayload,
@@ -2824,6 +2915,10 @@ namespace Temporalio.Worker
             if (value.Failure != null)
             {
                 await Visit_temporal_api_failure_v1_Failure(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
+            foreach (var item_temporal_api_workflowservice_v1_DescribeNexusOperationExecutionResponse_7 in value.CompletionCallbacks)
+            {
+                await Visit_temporal_api_nexusoperation_v1_CallbackInfo(item_temporal_api_workflowservice_v1_DescribeNexusOperationExecutionResponse_7, visitPayload, visitPayloads).ConfigureAwait(false);
             }
         }
 
