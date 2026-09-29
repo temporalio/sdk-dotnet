@@ -38,6 +38,16 @@ public class ActivityDefinitionTests
     }
 
     [Fact]
+    public void Create_NameOnDynamic_ErrorIncludesMethod()
+    {
+        [Activity("CustomName", Dynamic = true)]
+        static Task DoThingAsync(IRawValue[] args) => throw new NotImplementedException();
+        var exc = Assert.ThrowsAny<Exception>(() => ActivityDefinition.Create(DoThingAsync));
+        Assert.Contains("DoThingAsync", exc.Message);
+        Assert.DoesNotContain("${method}", exc.Message);
+    }
+
+    [Fact]
     public void Create_DynamicInvalidArgs_Throws()
     {
         [Activity(Dynamic = true)]
