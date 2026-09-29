@@ -8,12 +8,6 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <!--
-      This package has no published baseline yet, so there is nothing for package
-      validation to compare against. Remove this override once the first release
-      publishes a baseline (then it inherits PackageValidationBaselineVersion).
-    -->
-    <PackageValidationBaselineVersion></PackageValidationBaselineVersion>
   </PropertyGroup>
 
   <ItemGroup>
