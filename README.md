@@ -351,6 +351,25 @@ var client = await TemporalClient.ConnectAsync(new()
 });
 ```
 
+Payload codecs have a couple of requirements beyond the interface itself. A codec must never mutate the payloads given
+to `EncodeAsync`/`DecodeAsync` and must never retain references to them after the call returns, because those payloads
+are live objects that the SDK may still use or overwrite afterwards. Every altered payload must be returned as a newly
+created instance. Usually the cleanest way to create it is to serialize the entire given payload into the data of the
+new payload on encode and do the inverse on decode, as the
+[encryption sample](https://github.com/temporalio/samples-dotnet/blob/main/src/Encryption/Codec/EncryptionCodec.cs)
+does. Cloning the given payload works too, but a clone also carries over the previous payload's metadata which is
+rarely wanted.
+
+A codec can also decline to alter a payload, say a compression codec that leaves already-small payloads alone. To do
+so, return the given payload instance unchanged and the SDK will leave it as it is. This is decided per payload, so
+some payloads can be passed through while others are replaced. Codecs that do this have to be able to tell on decode
+which payloads they encoded, usually from metadata set on the payloads they created.
+
+A codec must also be stateless with regards to individual payloads, because the same logical payload can pass through a
+codec more than once. For example, failure details are decoded when an activity failure reaches a workflow and then
+encoded again when that failure propagates out of the workflow, and any payload can be decoded repeatedly during
+workflow replay or when reading history on the client.
+
 ### Workers
 
 Workers host workflows, activities, and Nexus services. Here's how to run a worker:
