@@ -47,6 +47,11 @@ to docs, or any other relevant information.
 - Poller autoscaling no longer lowers its target after a poll is cancelled or times out, and a
   poller in backoff keeps its slot. Resource-exhaustion errors still lower the target.
 
+### Changed
+
+- Unified the Nexus link converters. The `eventType` query parameter on a link is now the short
+  PascalCase name, matching the other SDKs.
+
 ## [1.19.0] - 2026-09-14
 
 ### :boom: Breaking Changes
