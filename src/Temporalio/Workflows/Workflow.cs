@@ -347,7 +347,7 @@ namespace Temporalio.Workflows
         public static EventGroup CreateEventGroup(string id, EventGroupOptions? options = null)
         {
             _ = Context;
-            return EventGroup.Create(id, (options ?? new()).Label);
+            return EventGroup.Create(id, options?.Label);
         }
 
         /// <summary>
@@ -1152,8 +1152,7 @@ namespace Temporalio.Workflows
         /// queried again. The old code path can be removed at that time too.
         /// </para>
         /// </remarks>
-        public static bool Patched(string patchId) =>
-            Context.Patch(patchId, deprecated: false);
+        public static bool Patched(string patchId) => Context.Patch(patchId, deprecated: false);
 
         /// <summary>
         /// Patch a workflow.
@@ -1403,11 +1402,8 @@ namespace Temporalio.Workflows
         /// <see cref="CreateEventGroup" />. Nested scopes compose; the same ID overwrites.
         /// </param>
         /// <returns>A disposable scope. Dispose (typically via <c>using</c>) to restore the previous
-        /// ambient Event Groups.</returns>
-        /// <remarks>
-        /// Only usable from within a workflow. Commands issued after the scope is disposed are
-        /// unaffected. Coroutines started inside the scope inherit it via <see cref="AsyncLocal{T}" />.
-        /// </remarks>
+        /// ambient Event Groups. Disposing a scope that is not the active one throws
+        /// <see cref="InvalidOperationException" />.</returns>
         /// <remarks>WARNING: Event Groups are experimental.</remarks>
         public static EventGroupScope WithEventGroups(params EventGroup[] groups)
         {

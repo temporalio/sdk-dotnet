@@ -21,10 +21,6 @@ to docs, or any other relevant information.
 
 ### Added
 
-- Added the experimental `Temporalio.Extensions.Gcp.CloudRun.Id` package for long-lived
-  Temporal workers on Google Cloud Run worker pools and services. Register a single `CloudRunIdPlugin`
-  on your client's `Plugins`; it sets the worker identity from the Cloud Run instance at connect
-  time (unless one is already configured), and workers created from that client inherit it.
 - Added experimental Event Groups support. Event Groups are workflow-level metadata that group
   related history events for UI and observability. `Workflow.CreateEventGroup` takes a required ID
   (used verbatim; do not put secrets in it) and an optional label that is stored as a codec-encoded

@@ -38,12 +38,13 @@ namespace Temporalio.Workflows
                 var explicitGroup = (EventGroup.Explicit)group;
                 nextExplicit[explicitGroup.Id] = explicitGroup;
             }
-            Current.Value = new State
+            var installed = new State
             {
                 Implicit = previousState.Implicit,
                 Explicit = nextExplicit,
             };
-            return new EventGroupScope(() => Current.Value = previous);
+            Current.Value = installed;
+            return new EventGroupScope(() => Restore(installed, previous));
         }
 
         /// <summary>
@@ -56,12 +57,13 @@ namespace Temporalio.Workflows
         internal static EventGroupScope PushImplicit(EventGroup group)
         {
             var previous = Current.Value;
-            Current.Value = new State
+            var installed = new State
             {
                 Implicit = group as EventGroup.Implicit,
                 Explicit = new Dictionary<string, EventGroup.Explicit>(),
             };
-            return new EventGroupScope(() => Current.Value = previous);
+            Current.Value = installed;
+            return new EventGroupScope(() => Restore(installed, previous));
         }
 
         /// <summary>
@@ -99,6 +101,21 @@ namespace Temporalio.Workflows
                 markers.Add(group.ToMarker());
             }
             return markers;
+        }
+
+        /// <summary>
+        /// Restore a scope only when it is still the active one on this flow. An earlier scope is
+        /// still referenced by the nested scope that replaced it, so restoring it would drop that
+        /// nested scope.
+        /// </summary>
+        private static void Restore(State installed, State? previous)
+        {
+            if (!ReferenceEquals(Current.Value, installed))
+            {
+                throw new InvalidOperationException(
+                    "Event group scope is not the active scope. Dispose nested scopes first.");
+            }
+            Current.Value = previous;
         }
 
         /// <summary>

@@ -509,6 +509,120 @@ public class WorkflowEventGroupsTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public class OutOfOrderDisposeWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            var outerGroup = Workflow.CreateEventGroup("outer");
+            var innerGroup = Workflow.CreateEventGroup("inner");
+            var outer = Workflow.WithEventGroups(outerGroup);
+            var inner = Workflow.WithEventGroups(innerGroup);
+            await ActivityAsync("both");
+            try
+            {
+                outer.Dispose();
+                throw new ApplicationFailureException("out-of-order dispose was accepted");
+            }
+            catch (InvalidOperationException)
+            {
+                // Expected exception
+            }
+            await ActivityAsync("still-both");
+            inner.Dispose();
+            await ActivityAsync("outer-only");
+            outer.Dispose();
+            await ActivityAsync("outside");
+            outer.Dispose(); // Double dispose isn't an error
+            await ActivityAsync("outside-again");
+        }
+    }
+
+    [Fact]
+    public async Task OutOfOrderDispose_ThrowsAndLeavesActiveScope()
+    {
+        await ExecuteAsync<OutOfOrderDisposeWorkflow>(async worker =>
+        {
+            var handle = await StartAsync((OutOfOrderDisposeWorkflow wf) => wf.RunAsync(), worker);
+            await handle.GetResultAsync();
+            var events = await FetchEventsAsync(handle);
+            var outer = LabelId("outer");
+            var inner = LabelId("inner");
+            AssertMarkers(ActivityEvent(events, "both"), outer, inner);
+            AssertMarkers(ActivityEvent(events, "still-both"), outer, inner);
+            AssertMarkers(ActivityEvent(events, "outer-only"), outer);
+            AssertMarkers(ActivityEvent(events, "outside"));
+            AssertMarkers(ActivityEvent(events, "outside-again"));
+        });
+    }
+
+    [Workflow]
+    public class DisposeOnAnotherTaskWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            var pushedA = Workflow.CreateEventGroup("pushedA");
+            var pushedB = Workflow.CreateEventGroup("pushedB");
+            var other = Workflow.CreateEventGroup("other");
+            var scopeReady = false;
+            var releasePusher = false;
+            EventGroupScope? pushedScopeA = null;
+            EventGroupScope? pushedScopeB = null;
+            var pusher = Workflow.RunTaskAsync(async () =>
+            {
+                pushedScopeA = Workflow.WithEventGroups(pushedA);
+                pushedScopeB = Workflow.WithEventGroups(pushedB);
+                scopeReady = true;
+                await ActivityAsync("pusher-before");
+                await Workflow.WaitConditionAsync(() => releasePusher);
+                await ActivityAsync("pusher-after");
+            });
+            await Workflow.WaitConditionAsync(() => scopeReady);
+            using (Workflow.WithEventGroups(other))
+            {
+                await ActivityAsync("disposer-before");
+                try
+                {
+                    pushedScopeB!.Dispose();
+                    throw new ApplicationFailureException("dispose from another task was accepted");
+                }
+                catch (InvalidOperationException)
+                {
+                }
+                await ActivityAsync("disposer-after");
+            }
+            releasePusher = true;
+            await pusher;
+            try
+            {
+                pushedScopeA!.Dispose();
+                throw new ApplicationFailureException("dispose of inactive scope was accepted");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+        }
+    }
+
+    [Fact]
+    public async Task DisposeOnAnotherTask_ThrowsAndLeavesBothTasksUnchanged()
+    {
+        await ExecuteAsync<DisposeOnAnotherTaskWorkflow>(async worker =>
+        {
+            var handle = await StartAsync((DisposeOnAnotherTaskWorkflow wf) => wf.RunAsync(), worker);
+            await handle.GetResultAsync();
+            var events = await FetchEventsAsync(handle);
+            var pushedA = LabelId("pushedA");
+            var pushedB = LabelId("pushedB");
+            AssertMarkers(ActivityEvent(events, "pusher-before"), pushedA, pushedB);
+            AssertMarkers(ActivityEvent(events, "pusher-after"), pushedA, pushedB);
+            AssertMarkers(ActivityEvent(events, "disposer-before"), LabelId("other"));
+            AssertMarkers(ActivityEvent(events, "disposer-after"), LabelId("other"));
+        });
+    }
+
+    [Workflow]
     public class ScopeThrowWorkflow
     {
         [WorkflowRun]
