@@ -613,31 +613,46 @@ public class ProtoLinkExtensionsTests
     }
 
     [Fact]
-    public void ToNexusLink_EscapesIdsInEveryLinkType()
+    public void ToNexusLink_EscapesIdsInEveryLinkTypeAndParsesThemBack()
     {
-        // IDs are user supplied, so a slash in one must not add a path segment. Asserted for each
-        // link type because they now share one URI builder.
-        Assert.Equal(
-            "/namespaces/ns/workflows/a%2Fb/r/history",
-            new Api.Common.V1.Link.Types.WorkflowEvent
-            {
-                Namespace = "ns",
-                WorkflowId = "a/b",
-                RunId = "r",
-                EventRef = new() { EventType = Api.Enums.V1.EventType.WorkflowExecutionStarted },
-            }.ToNexusLink().Uri.AbsolutePath);
-        Assert.Equal(
-            "/namespaces/ns/workflows/a%2Fb/r",
-            new Api.Common.V1.Link.Types.Workflow { Namespace = "ns", WorkflowId = "a/b", RunId = "r" }.
-                ToNexusLink().Uri.AbsolutePath);
-        Assert.Equal(
-            "/namespaces/ns/nexus-operations/a%2Fb/r/details",
-            new Api.Common.V1.Link.Types.NexusOperation { Namespace = "ns", OperationId = "a/b", RunId = "r" }.
-                ToNexusLink().Uri.AbsolutePath);
-        Assert.Equal(
-            "/namespaces/ns/activities/a%2Fb/r/details",
-            new Api.Common.V1.Link.Types.Activity { Namespace = "ns", ActivityId = "a/b", RunId = "r" }.
-                ToNexusLink().Uri.AbsolutePath);
+        // All four link types share one URI builder and one path parser, so each is checked against
+        // both: the exact path pins the encoding, and the round trip pins that the parser reads it
+        // back. A slash must stay inside its segment, and a space must be %20 rather than "+", which
+        // a path decoder reads as a literal plus.
+        const string id = "a/b c+d%e";
+        const string escaped = "a%2Fb%20c%2Bd%25e";
+        var cases = new (Api.Common.V1.Link Link, string Path)[]
+        {
+            (
+                new()
+                {
+                    WorkflowEvent = new()
+                    {
+                        Namespace = id,
+                        WorkflowId = id,
+                        RunId = id,
+                        EventRef = new() { EventType = Api.Enums.V1.EventType.WorkflowExecutionStarted },
+                    },
+                },
+                $"/namespaces/{escaped}/workflows/{escaped}/{escaped}/history"),
+            (
+                new() { Workflow = new() { Namespace = id, WorkflowId = id, RunId = id } },
+                $"/namespaces/{escaped}/workflows/{escaped}/{escaped}"),
+            (
+                new() { NexusOperation = new() { Namespace = id, OperationId = id, RunId = id } },
+                $"/namespaces/{escaped}/nexus-operations/{escaped}/{escaped}/details"),
+            (
+                new() { Activity = new() { Namespace = id, ActivityId = id, RunId = id } },
+                $"/namespaces/{escaped}/activities/{escaped}/{escaped}/details"),
+        };
+
+        foreach (var (link, path) in cases)
+        {
+            var nexusLink = link.ToNexusLink();
+            Assert.NotNull(nexusLink);
+            Assert.Equal(path, nexusLink.Uri.AbsolutePath);
+            Assert.Equal(link, nexusLink.ToProtoLink());
+        }
     }
 
     [Fact]
