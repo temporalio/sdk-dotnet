@@ -86,7 +86,7 @@
 
   <!-- Pack the README and targets file -->
   <ItemGroup>
-    <None Include="../../README.md" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
     <Content Include="build/net462/Temporalio.targets">
       <PackagePath>build/net462/</PackagePath>
       <Pack>true</Pack>
