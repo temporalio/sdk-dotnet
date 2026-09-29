@@ -3,6 +3,8 @@
     <AnalysisLevel>latest</AnalysisLevel>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <Authors>Temporal</Authors>
+    <!-- Generated sources under obj/ are not in the repository, so Source Link URLs for them would 404. -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <!--
     TODO(cretz): Reenable when https://github.com/dotnet/format/issues/1800 fixed

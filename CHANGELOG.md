@@ -19,6 +19,11 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### Fixed
+
+- Source Link in the published symbol packages now resolves every source file, and packages are
+  built with normalized paths so they are reproducible.
+
 ## [1.20.0] - 2026-09-28
 
 ### Added
