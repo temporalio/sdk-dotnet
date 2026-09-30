@@ -110,6 +110,23 @@ public class NexusSerializationContextTests
         Assert.Equal(new[] { expected }, codec.NexusContexts);
     }
 
+    [Fact]
+    public async Task Handle_PartiallyIdentifiedOperation_Throws()
+    {
+        // A partially set handle must not be treated as one obtained by operation ID, which has
+        // no context.
+        var handle = new Temporalio.Client.NexusOperationHandle<string>(
+            Client: null!, Id: "op-1")
+        {
+            Endpoint = Endpoint,
+            Operation = Operation,
+        };
+
+        var exc = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => handle.GetResultAsync());
+        Assert.Contains("must all be set or all be null", exc.Message);
+    }
+
     // Awaits inside the scope so the context has to survive the continuation, not just the
     // synchronous prologue of the call.
     private static async Task<T> WithOperationInScopeAsync<T>(

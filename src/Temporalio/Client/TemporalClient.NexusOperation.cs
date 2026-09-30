@@ -63,12 +63,11 @@ namespace Temporalio.Client
                     // The handler does not see the caller, so Nexus payloads are contextualized by
                     // the endpoint, service and operation instead. User metadata is included, the
                     // same way workflow and activity user metadata is serialized with theirs.
-                    var serializationContext = new ISerializationContext.Nexus(
-                        Endpoint: input.Endpoint,
-                        Service: input.Service,
-                        Operation: input.Operation);
-                    var dataConverter =
-                        Client.Options.DataConverter.WithSerializationContext(serializationContext);
+                    var dataConverter = Client.Options.DataConverter.WithSerializationContext(
+                        new ISerializationContext.Nexus(
+                            Endpoint: input.Endpoint,
+                            Service: input.Service,
+                            Operation: input.Operation));
 
                     var req = new StartNexusOperationExecutionRequest()
                     {
@@ -105,30 +104,17 @@ namespace Temporalio.Client
 
                     var resp = await Client.Connection.WorkflowService.StartNexusOperationExecutionAsync(
                         req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
-                    // An already-running operation reused by ID may have been started with a
-                    // different endpoint, service or operation than this request names. The start
-                    // response does not say which, so describe it.
-                    if (!resp.Started)
-                    {
-                        var info = (await Client.Connection.WorkflowService.DescribeNexusOperationExecutionAsync(
-                            new()
-                            {
-                                Namespace = Client.Options.Namespace,
-                                OperationId = input.Options.Id!,
-                                RunId = resp.RunId,
-                            },
-                            DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false)).Info;
-                        serializationContext = new(
-                            Endpoint: info.Endpoint,
-                            Service: info.Service,
-                            Operation: info.Operation);
-                    }
+                    // The response does not name the endpoint, service or operation, so these come
+                    // from the request, including when the server returned an already-running
+                    // operation.
                     return new NexusOperationHandle<TResult>(
                         Client: Client,
                         Id: input.Options.Id!,
                         RunId: string.IsNullOrEmpty(resp.RunId) ? null : resp.RunId)
                     {
-                        SerializationContext = serializationContext,
+                        Endpoint = input.Endpoint,
+                        Service = input.Service,
+                        Operation = input.Operation,
                     };
                 }
                 catch (RpcException e) when (

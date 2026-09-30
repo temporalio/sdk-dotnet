@@ -1,7 +1,6 @@
 namespace Temporalio.Tests.Client;
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ using Google.Protobuf;
 using NexusRpc;
 using NexusRpc.Handlers;
 using Temporalio.Api.Common.V1;
-using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
@@ -38,9 +36,6 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
     {
         [NexusOperation]
         string Echo(string input);
-
-        [NexusOperation]
-        string Hold(string input);
     }
 
     [NexusServiceHandler(typeof(IContextService))]
@@ -48,20 +43,6 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
     {
         public const string FailInput = "please-fail";
         public const string HandlerFailInput = "please-fail-handler";
-
-        private static readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> Holds = new();
-
-        public static TaskCompletionSource<bool> HoldRelease(string input) =>
-            Holds.GetOrAdd(
-                input, _ => new(TaskCreationOptions.RunContinuationsAsynchronously));
-
-        [NexusOperationHandler]
-        public IOperationHandler<string, string> Hold() =>
-            OperationHandler.Sync<string, string>(async (ctx, input) =>
-            {
-                await HoldRelease(input).Task;
-                return $"held:{input}";
-            });
 
         [NexusOperationHandler]
         public IOperationHandler<string, string> Echo() =>
@@ -101,35 +82,6 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
 
             Assert.Equal("echo:hello", result);
             Assert.Contains(Expected(endpoint), codec.NexusContexts);
-        });
-    }
-
-    [Fact]
-    public async Task StartedHandle_UseExistingOperation_UsesTheRunningOperationsContext()
-    {
-        await RunAsync(async (client, codec, endpoint) =>
-        {
-            var nexusClient = client.CreateNexusClient<IContextService>(endpoint);
-            var id = $"op-{Guid.NewGuid()}";
-            var input = $"hold-{Guid.NewGuid()}";
-            var release = ContextServiceHandler.HoldRelease(input);
-            var running = await nexusClient.StartNexusOperationAsync<string>(
-                svc => svc.Hold(input),
-                new(id) { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
-
-            // Reusing the ID returns the running Hold operation, not a new Echo one.
-            var reused = await nexusClient.StartNexusOperationAsync<string>(
-                svc => svc.Echo(input),
-                new(id)
-                {
-                    ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
-                    IdConflictPolicy = NexusOperationIdConflictPolicy.UseExisting,
-                });
-            release.SetResult(true);
-
-            Assert.Equal(running.RunId, reused.RunId);
-            Assert.Equal(nameof(IContextService.Hold), reused.Operation);
-            Assert.Equal($"held:{input}", await reused.GetResultAsync());
         });
     }
 
