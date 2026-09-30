@@ -4,10 +4,11 @@ using System.Collections.Generic;
 namespace Temporalio.Testing
 {
     /// <summary>
-    /// <b>Unstable</b> options for a local workflow environment.
+    /// Options for the dev server that backs a local workflow environment.
     /// </summary>
     /// <remarks>
-    /// <b>WARNING: This API is subject to change/removal</b>
+    /// These options are specific to the Temporal CLI dev server implementation. If that
+    /// implementation changes, these options and their values may no longer be valid.
     /// </remarks>
     public class DevServerOptions : ICloneable
     {
@@ -47,7 +48,8 @@ namespace Temporalio.Testing
         /// Gets or sets the extra arguments for the dev server.
         /// </summary>
         /// <remarks>
-        /// Newlines are not allowed in values.
+        /// Newlines are not allowed in values. If the dev server implementation changes, there is
+        /// no guarantee these arguments will continue to be supported.
         /// </remarks>
         public IReadOnlyCollection<string>? ExtraArgs { get; set; }
 

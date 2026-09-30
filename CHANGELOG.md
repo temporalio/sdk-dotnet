@@ -19,6 +19,11 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### Changed
+
+- `DevServerOptions` and `TestServerOptions` are no longer marked unstable. They remain specific to
+  the dev server and test server implementations and may no longer be valid if those change.
+
 ### Fixed
 
 - Source Link in the published symbol packages now resolves every source file, and packages are
