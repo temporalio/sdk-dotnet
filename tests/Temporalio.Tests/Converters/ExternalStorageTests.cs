@@ -211,6 +211,18 @@ public class ExternalStorageTests : TestBase
     }
 
     [Fact]
+    public void Claim_SameKeysAndValuesPairedDifferently_DoNotShareAHashCode()
+    {
+        // Folding key and value hashes in separately would make these collide, since both claims
+        // hold the same keys and the same values and differ only in how they are paired.
+        var first = new StorageDriverClaim(new Dictionary<string, string> { ["a"] = "b", ["c"] = "d" });
+        var second = new StorageDriverClaim(new Dictionary<string, string> { ["a"] = "d", ["c"] = "b" });
+
+        Assert.NotEqual(first, second);
+        Assert.NotEqual(first.GetHashCode(), second.GetHashCode());
+    }
+
+    [Fact]
     public void Claim_DifferentClaimData_IsNotEqual()
     {
         var claim = new StorageDriverClaim(new Dictionary<string, string> { ["key"] = "k" });
