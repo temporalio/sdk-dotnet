@@ -77,6 +77,14 @@ public class ExternalStorageTests : TestBase
             new ExternalStorage(new StubStorageDriver()) { Concurrency = null! });
 
     [Fact]
+    public void NewExternalStorage_NullSingleDriver_NamesTheParameterTheCallerUsed()
+    {
+        var err = Assert.Throws<ArgumentNullException>(() => new ExternalStorage(null!));
+
+        Assert.Equal("driver", err.ParamName);
+    }
+
+    [Fact]
     public void NewExternalStorage_NoDrivers_Throws()
     {
         var err = Assert.Throws<ArgumentException>(
@@ -191,11 +199,27 @@ public class ExternalStorageTests : TestBase
     }
 
     [Fact]
-    public void Claim_SameClaimData_IsEqual()
+    public void Claim_EqualContentInSeparateDictionaries_IsEqual()
     {
-        var claimData = new Dictionary<string, string> { ["key"] = "k" };
+        // Separate dictionary instances: the generated record equality would compare these by
+        // reference and report them unequal.
+        var first = new StorageDriverClaim(new Dictionary<string, string> { ["a"] = "1", ["b"] = "2" });
+        var second = new StorageDriverClaim(new Dictionary<string, string> { ["b"] = "2", ["a"] = "1" });
 
-        Assert.Equal(new StorageDriverClaim(claimData), new StorageDriverClaim(claimData));
+        Assert.Equal(first, second);
+        Assert.Equal(first.GetHashCode(), second.GetHashCode());
+    }
+
+    [Fact]
+    public void Claim_DifferentClaimData_IsNotEqual()
+    {
+        var claim = new StorageDriverClaim(new Dictionary<string, string> { ["key"] = "k" });
+
+        Assert.NotEqual(claim, new StorageDriverClaim(new Dictionary<string, string> { ["key"] = "other" }));
+        Assert.NotEqual(claim, new StorageDriverClaim(new Dictionary<string, string> { ["another"] = "k" }));
+        Assert.NotEqual(
+            claim,
+            new StorageDriverClaim(new Dictionary<string, string> { ["key"] = "k", ["extra"] = "e" }));
     }
 
     private class PassThroughLimiter<TItem> : IStorageDriverLimiter<TItem>

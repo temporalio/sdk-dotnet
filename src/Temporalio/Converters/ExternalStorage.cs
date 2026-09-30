@@ -35,7 +35,9 @@ namespace Temporalio.Converters
         /// as long as any payload it stored can still be read.
         /// </remarks>
         public ExternalStorage(IStorageDriver driver)
-            : this(new[] { driver }, (context, payload) => driver)
+            : this(
+                new[] { driver ?? throw new ArgumentNullException(nameof(driver)) },
+                (context, payload) => driver)
         {
         }
 
