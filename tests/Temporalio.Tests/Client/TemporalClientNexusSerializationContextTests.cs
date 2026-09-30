@@ -42,6 +42,7 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
     public class ContextServiceHandler
     {
         public const string FailInput = "please-fail";
+        public const string HandlerFailInput = "please-fail-handler";
 
         [NexusOperationHandler]
         public IOperationHandler<string, string> Echo() =>
@@ -53,6 +54,15 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
                     // the codec is never consulted.
                     ? throw OperationException.CreateFailed(
                         "operation failed on purpose",
+                        new ApplicationFailureException(
+                            "root cause",
+                            errorType: "ContextFailure",
+                            details: new object?[] { "failure-detail" }))
+                    : input == HandlerFailInput
+                    // Non-retryable, so the operation fails rather than retrying the task.
+                    ? throw new HandlerException(
+                        HandlerErrorType.BadRequest,
+                        "handler failed on purpose",
                         new ApplicationFailureException(
                             "root cause",
                             errorType: "ContextFailure",
@@ -96,6 +106,27 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
     }
 
     [Fact]
+    public async Task HandlerFailure_UsesTheOperationsContext()
+    {
+        await RunAsync(async (client, codec, endpoint) =>
+        {
+            var nexusClient = client.CreateNexusClient<IContextService>(endpoint);
+            var handle = await nexusClient.StartNexusOperationAsync<string>(
+                svc => svc.Echo(ContextServiceHandler.HandlerFailInput),
+                new($"op-{Guid.NewGuid()}") { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+
+            // The worker encodes this failure after the handler has returned, outside the
+            // operation's scope. The strict codec fails the caller's decode if the worker used a
+            // different context.
+            var exc = await Assert.ThrowsAsync<NexusOperationFailedException>(
+                () => handle.GetResultAsync());
+            var appFailure = Assert.IsType<ApplicationFailureException>(
+                exc.InnerException?.InnerException);
+            Assert.Equal("failure-detail", appFailure.Details.ElementAt<string>(0));
+        });
+    }
+
+    [Fact]
     public async Task Describe_ReadsTheSummaryUnderTheOperationsContext()
     {
         await RunAsync(async (client, codec, endpoint) =>
@@ -129,11 +160,16 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
                     new($"op-{Guid.NewGuid()}") { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
                 await started.GetResultAsync();
                 codec.Reset();
+                Assert.Equal(endpoint, started.Endpoint);
+                Assert.Equal("ContextService", started.Service);
+                Assert.Equal(nameof(IContextService.Echo), started.Operation);
 
-                // A handle obtained by ID never saw a start request, so there is no endpoint, service
-                // or operation to scope its converter by. Decoding still has to work: a payload encoded
-                // under a context must stay readable without one.
+                // A handle obtained by ID has no endpoint, service or operation, so it decodes the
+                // context-encoded result without a context, which this codec is told to accept.
                 var detached = client.GetNexusOperationHandle<string>(started.Id, started.RunId);
+                Assert.Null(detached.Endpoint);
+                Assert.Null(detached.Service);
+                Assert.Null(detached.Operation);
                 Assert.Equal("echo:hello", await detached.GetResultAsync());
             },
             allowContextlessDecodeOfSignedPayload: true);

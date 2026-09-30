@@ -111,10 +111,7 @@ namespace Temporalio.Converters
         /// <para>
         /// The context is not propagated to the eventual result of an asynchronous operation,
         /// because the operation is completed out of band rather than by the task the handler was
-        /// invoked for. A standalone operation handle uses the context of its start request,
-        /// including when the start request returns an already-running operation; a handle obtained
-        /// by operation ID without starting an operation has no endpoint, service, or operation to
-        /// build a context from and therefore serializes without one.
+        /// invoked for.
         /// </para>
         /// <para>
         /// Failure conversion is not symmetric: a failure is encoded by the handler and decoded by

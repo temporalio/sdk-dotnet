@@ -40,8 +40,7 @@ public class NexusSerializationContextTests
     public async Task SerializationContext_TaskWithoutAnEndpoint_IsScopedByAnEmptyEndpoint()
     {
         // Servers before 1.30.0 do not report the endpoint a Nexus task was addressed to. The
-        // handler still scopes by service and operation, with an empty endpoint, which will not
-        // agree with the caller's context but is a Nexus context rather than an absent one.
+        // handler still uses a Nexus context there, with an empty endpoint, rather than none.
         var expected = new ISerializationContext.Nexus(string.Empty, Service, Operation);
         Assert.Equal(expected, NewExecutionContext(string.Empty).SerializationContext);
 
@@ -109,23 +108,6 @@ public class NexusSerializationContextTests
 
         Assert.Equal("handler-input", result);
         Assert.Equal(new[] { expected }, codec.NexusContexts);
-    }
-
-    [Fact]
-    public async Task Handle_PartiallyIdentifiedOperation_Throws()
-    {
-        // A partially identified operation would decode without a Nexus context, which for a
-        // converter that varies by context means reading the payload the wrong way, not failing.
-        var handle = new Temporalio.Client.NexusOperationHandle<string>(
-            Client: null!, Id: "op-1")
-        {
-            Endpoint = Endpoint,
-            Operation = Operation,
-        };
-
-        var exc = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => handle.GetResultAsync());
-        Assert.Contains("must all be set or all be null", exc.Message);
     }
 
     // Awaits inside the scope so the context has to survive the continuation, not just the

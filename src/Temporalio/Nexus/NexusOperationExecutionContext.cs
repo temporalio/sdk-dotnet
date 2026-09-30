@@ -107,14 +107,11 @@ namespace Temporalio.Nexus
         internal OperationContext HandlerContext { get; private init; }
 
         /// <summary>
-        /// Gets the serialization context for the operation this task is for, so that the data
-        /// converter used for its input, result and failures is scoped to the endpoint, service and
-        /// operation the request names.
+        /// Gets the serialization context for this task's endpoint, service and operation.
         /// </summary>
         /// <remarks>
-        /// Servers before 1.30.0 do not report the endpoint the task was addressed to, so the
-        /// context is scoped by an empty endpoint there and does not agree with the caller's.
-        /// Nexus serialization context on the handler side requires server 1.30.0 or later.
+        /// The endpoint is empty on servers before 1.30.0, which do not report the endpoint a task
+        /// was addressed to.
         /// </remarks>
         internal Converters.ISerializationContext.Nexus SerializationContext =>
             new(

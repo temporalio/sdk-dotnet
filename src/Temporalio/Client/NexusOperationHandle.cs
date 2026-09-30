@@ -22,52 +22,31 @@ namespace Temporalio.Client
         string? RunId = null)
     {
         /// <summary>
-        /// Gets the Nexus endpoint the operation was started on, used with <see cref="Service"/>
-        /// and <see cref="Operation"/> to decode the operation's result and failure the way they
-        /// were encoded. Null for a handle obtained by operation ID, which never saw a start
-        /// request and therefore decodes without a Nexus context.
+        /// Gets the endpoint name, or null for a handle obtained by operation ID rather than by
+        /// starting one.
         /// </summary>
         /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
-        public string? Endpoint { get; init; }
+        public string? Endpoint => SerializationContext?.Endpoint;
 
         /// <summary>
-        /// Gets the Nexus service the operation was started on, or null. Set exactly when
-        /// <see cref="Endpoint"/> is set.
+        /// Gets the service name, or null for a handle obtained by operation ID rather than by
+        /// starting one.
         /// </summary>
         /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
-        public string? Service { get; init; }
+        public string? Service => SerializationContext?.Service;
 
         /// <summary>
-        /// Gets the Nexus operation that was started, or null. Set exactly when
-        /// <see cref="Endpoint"/> is set.
+        /// Gets the operation name, or null for a handle obtained by operation ID rather than by
+        /// starting one.
         /// </summary>
         /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
-        public string? Operation { get; init; }
+        public string? Operation => SerializationContext?.Operation;
 
         /// <summary>
-        /// Gets the serialization context for this operation, or null when the operation is not
-        /// identified.
+        /// Gets the serialization context of the start request, or null for a handle obtained by
+        /// operation ID rather than by starting one.
         /// </summary>
-        /// <remarks>
-        /// These are init-only properties that can be set independently, so the all-or-nothing
-        /// invariant is checked here rather than in a constructor. A partially identified operation
-        /// would silently decode without a context, which for a converter that varies by context
-        /// means reading the payload the wrong way rather than failing.
-        /// </remarks>
-        /// <exception cref="InvalidOperationException">
-        /// If only some of <see cref="Endpoint"/>, <see cref="Service"/> and
-        /// <see cref="Operation"/> are set.
-        /// </exception>
-        private ISerializationContext.Nexus? NexusSerializationContext =>
-            (Endpoint, Service, Operation) switch
-            {
-                (null, null, null) => null,
-                (string endpoint, string service, string operation) =>
-                    new(endpoint, service, operation),
-                _ => throw new InvalidOperationException(
-                    "Endpoint, Service and Operation must all be set or all be null, got " +
-                    $"Endpoint={Endpoint}, Service={Service}, Operation={Operation}"),
-            };
+        internal ISerializationContext.Nexus? SerializationContext { get; init; }
 
         /// <summary>
         /// Wait for the result of the operation, discarding the return value.
@@ -96,9 +75,7 @@ namespace Temporalio.Client
         public virtual async Task<TResult> GetResultAsync<TResult>(
             RpcOptions? rpcOptions = null)
         {
-            // Decode the result and failure with the context the operation was started with, so
-            // they are decoded the way they were encoded.
-            var dataConverter = NexusSerializationContext is { } context ?
+            var dataConverter = SerializationContext is { } context ?
                 Client.Options.DataConverter.WithSerializationContext(context) :
                 Client.Options.DataConverter;
 

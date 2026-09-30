@@ -24,19 +24,6 @@ namespace Temporalio.Worker
         public NexusPayloadSerializer(DataConverter dataConverter) =>
             this.dataConverter = dataConverter;
 
-        /// <summary>
-        /// Gets the data converter scoped to the operation currently being handled.
-        /// </summary>
-        /// <remarks>
-        /// A single serializer is shared by every operation the worker handles, so the context is
-        /// resolved per call from the task being handled rather than captured once. Falls back to
-        /// the uncontextualized converter when there is no Nexus operation in scope, which is the
-        /// case when this serializer is used directly rather than by the worker.
-        /// </remarks>
-        private DataConverter ContextualDataConverter =>
-            Temporalio.Nexus.NexusOperationExecutionContext.AsyncLocalCurrent.Value is { } ctx ?
-                dataConverter.WithSerializationContext(ctx.SerializationContext) : dataConverter;
-
         /// <inheritdoc/>
         public async Task<ISerializer.Content> SerializeAsync(object? value)
         {
@@ -45,7 +32,8 @@ namespace Temporalio.Worker
             {
                 value = null;
             }
-            var payload = await ContextualDataConverter.ToPayloadAsync(value).ConfigureAwait(false);
+            var payload = await CreateContextualDataConverter().ToPayloadAsync(value)
+                .ConfigureAwait(false);
             return new(payload.ToByteArray());
         }
 
@@ -57,7 +45,7 @@ namespace Temporalio.Worker
             // .NET "unit" type is a struct that cannot support this natively, so we change the type
             // just for the deserializer to support it, but we will ignore the result anyways later
             // in this method.
-            var contextualDataConverter = ContextualDataConverter;
+            var contextualDataConverter = CreateContextualDataConverter();
             var noValueType = type == typeof(NoValue);
             if (noValueType)
             {
@@ -150,5 +138,18 @@ namespace Temporalio.Worker
             }
             return result;
         }
+
+        /// <summary>
+        /// Creates a data converter scoped to the operation currently being handled.
+        /// </summary>
+        /// <remarks>
+        /// A single serializer is shared by every operation the worker handles, so the context is
+        /// resolved per call from the task being handled rather than captured once. Falls back to
+        /// the uncontextualized converter when there is no Nexus operation in scope, which is the
+        /// case when this serializer is used directly rather than by the worker.
+        /// </remarks>
+        private DataConverter CreateContextualDataConverter() =>
+            Temporalio.Nexus.NexusOperationExecutionContext.AsyncLocalCurrent.Value is { } ctx ?
+                dataConverter.WithSerializationContext(ctx.SerializationContext) : dataConverter;
     }
 }

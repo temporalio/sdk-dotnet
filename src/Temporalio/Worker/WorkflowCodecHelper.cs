@@ -117,8 +117,8 @@ namespace Temporalio.Worker
                         }
                         break;
                     case WorkflowActivationJob.VariantOneofCase.ResolveNexusOperation:
-                        // Apply the context the operation was scheduled with, so a result that
-                        // arrives later is decoded the way it was encoded.
+                        // The job carries only the sequence, so the context is the one the
+                        // operation was scheduled with.
                         var nexusCodec = context.CodecNoContext;
                         if (nexusCodec is IWithSerializationContext<IPayloadCodec> withNexus &&
                             context.Instance?.GetPendingNexusOperationSerializationContext(
@@ -156,8 +156,8 @@ namespace Temporalio.Worker
                         }
                         break;
                     case WorkflowActivationJob.VariantOneofCase.ResolveNexusOperationStart:
-                        // Apply the context the operation was scheduled with, so a start failure is
-                        // decoded the way the handler encoded it.
+                        // The job carries only the sequence, so the context is the one the
+                        // operation was scheduled with.
                         var nexusStartCodec = context.CodecNoContext;
                         if (nexusStartCodec is IWithSerializationContext<IPayloadCodec> withNexusStart &&
                             context.Instance?.GetPendingNexusOperationSerializationContext(

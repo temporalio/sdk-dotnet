@@ -23,6 +23,17 @@ to docs, or any other relevant information.
 
 - `DevServerOptions` and `TestServerOptions` are no longer marked unstable. They remain specific to
   the dev server and test server implementations and may no longer be valid if those change.
+### Added
+
+- Added experimental `ISerializationContext.Nexus` support for Nexus callers and handlers. Callers
+  use it for inputs, results, and failures; handlers use it for inputs, synchronous results, and
+  failures. Asynchronous handler results and detached standalone handles are not yet supported.
+  Standalone `UseExisting` handles use their start request's context. A Nexus operation's user
+  metadata is serialized with this context, the same way workflow and activity user metadata are
+  serialized with theirs: the static summary sent when starting an operation, and the summary and
+  details read back from a description.
+- Added experimental `NexusOperationHandle.Endpoint`, `.Service`, and `.Operation`, identifying the
+  operation a started handle is for.
 
 ### Fixed
 
@@ -62,17 +73,6 @@ to docs, or any other relevant information.
 
 - Unified the Nexus link converters. The `eventType` query parameter on a link is now the short
   PascalCase name, matching the other SDKs.
-
-## [1.19.0] - 2026-09-14
-- Added experimental `ISerializationContext.Nexus` support for Nexus callers and handlers. Callers
-  use it for inputs, results, and failures; handlers use it for inputs, synchronous results, and
-  failures. Asynchronous handler results and detached standalone handles are not yet supported.
-  Standalone `UseExisting` handles use their start request's context. A Nexus operation's user
-  metadata is serialized with this context, the same way workflow and activity user metadata are
-  serialized with theirs: the static summary sent when starting an operation, and the summary and
-  details read back from a description.
-- Added experimental `NexusOperationHandle.Endpoint`, `.Service`, and `.Operation`, identifying the
-  operation a started handle is for.
 
 ## [1.19.0] - 2026-09-14
 
