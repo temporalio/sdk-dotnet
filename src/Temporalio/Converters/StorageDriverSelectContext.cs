@@ -6,6 +6,9 @@ namespace Temporalio.Converters
     /// <param name="Target">The execution the payload is being stored on behalf of, or null if
     /// there is no associated execution.</param>
     /// <remarks>
+    /// WARNING: This API is experimental and may change in the future.
+    /// </remarks>
+    /// <remarks>
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
     /// constructor, only use "with" clauses.
     /// </remarks>

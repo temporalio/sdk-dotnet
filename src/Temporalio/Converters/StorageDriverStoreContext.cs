@@ -10,6 +10,9 @@ namespace Temporalio.Converters
     /// <param name="Limiter">Limiter the driver must run each individual store request through, so
     /// that its fan-out counts against the configured limits.</param>
     /// <remarks>
+    /// WARNING: This API is experimental and may change in the future.
+    /// </remarks>
+    /// <remarks>
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
     /// constructor, only use "with" clauses.
     /// </remarks>

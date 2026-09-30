@@ -11,6 +11,9 @@ namespace Temporalio.Converters
     /// execution than the one that stored it.
     /// </remarks>
     /// <remarks>
+    /// WARNING: This API is experimental and may change in the future.
+    /// </remarks>
+    /// <remarks>
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
     /// constructor, only use "with" clauses.
     /// </remarks>
