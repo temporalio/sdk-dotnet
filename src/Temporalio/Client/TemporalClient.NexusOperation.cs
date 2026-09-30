@@ -105,9 +105,24 @@ namespace Temporalio.Client
 
                     var resp = await Client.Connection.WorkflowService.StartNexusOperationExecutionAsync(
                         req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
-                    // The response does not name the endpoint, service or operation, so the context
-                    // comes from the request, including when the server returned an already-running
-                    // operation.
+                    // An already-running operation reused by ID may have been started with a
+                    // different endpoint, service or operation than this request names. The start
+                    // response does not say which, so describe it.
+                    if (!resp.Started)
+                    {
+                        var info = (await Client.Connection.WorkflowService.DescribeNexusOperationExecutionAsync(
+                            new()
+                            {
+                                Namespace = Client.Options.Namespace,
+                                OperationId = input.Options.Id!,
+                                RunId = resp.RunId,
+                            },
+                            DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false)).Info;
+                        serializationContext = new(
+                            Endpoint: info.Endpoint,
+                            Service: info.Service,
+                            Operation: info.Operation);
+                    }
                     return new NexusOperationHandle<TResult>(
                         Client: Client,
                         Id: input.Options.Id!,
