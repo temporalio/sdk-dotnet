@@ -1,1 +1,4 @@
+# Source Link checksums are taken over the bytes the compiler reads, and GitHub serves the committed
+# LF bytes, so Windows checkouts must not convert to CRLF.
+* text=auto eol=lf
 CHANGELOG.md merge=union

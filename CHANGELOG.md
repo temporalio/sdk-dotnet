@@ -19,6 +19,13 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### Fixed
+
+- Source Link in the published symbol packages now resolves every source file, and packages are
+  built with normalized paths so they are reproducible.
+
+## [1.20.0] - 2026-09-28
+
 ### Added
 
 - Added the experimental `Temporalio.Extensions.Gcp.CloudRun.Id` package for long-lived
@@ -28,6 +35,27 @@ to docs, or any other relevant information.
 - Added the experimental `Temporalio.Extensions.WorkflowStreams` package for durable, batched,
   offset-based publish/subscribe streams hosted by workflows, interoperable with other Temporal
   SDK Workflow Streams implementations.
+- Nexus workers now decode marked Temporal System Nexus operation inputs with the System Nexus converter.
+- NexusPayloadSerializer now preserves marked System Nexus envelopes while applying payload codecs only to their embedded user payloads.
+
+### Fixed
+
+- A failing workflow task is now reported to the server only on its first attempt, with later
+  attempts left to time out. Previously `PayloadsTooLarge` failures and history fetch failures were
+  re-reported on every attempt.
+- The `temporal_workflow_task_execution_failed` metric is now recorded for every failed workflow
+  task attempt, including attempts whose failure was not reported to the server. Its
+  `failure_reason` attribute now distinguishes `GrpcMessageTooLarge`, `PayloadsTooLarge`, and
+  `RequestTooLarge` on every path.
+- Non-sticky workflow task polling can now use spare capacity once sticky pollers have reached
+  their configured or autoscaled polling limit.
+- Poller autoscaling no longer lowers its target after a poll is cancelled or times out, and a
+  poller in backoff keeps its slot. Resource-exhaustion errors still lower the target.
+
+### Changed
+
+- Unified the Nexus link converters. The `eventType` query parameter on a link is now the short
+  PascalCase name, matching the other SDKs.
 
 ## [1.19.0] - 2026-09-14
 

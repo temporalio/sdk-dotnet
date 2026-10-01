@@ -1,0 +1,5 @@
+# rustup resolves this file from the working directory, not from the Cargo manifest, so sdk-core's
+# own pin only applies when cargo runs from inside the submodule and never to our build. Keep the
+# channel matching sdk-core/rust-toolchain.toml; `mise run bridge:check-sync` fails if it drifts.
+[toolchain]
+channel = "1.94"

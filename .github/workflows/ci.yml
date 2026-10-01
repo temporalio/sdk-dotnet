@@ -38,6 +38,13 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
+      # A core bump that changes sdk-core's workspace tables would otherwise build the bridge
+      # against different versions than upstream tests with, which --locked cannot detect.
+      - name: Confirm bridge workspace in sync with sdk-core
+        # Compares two checked-in files, so running on one OS is sufficient.
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: mise run bridge:check-sync
+
       - name: Regen confirm unchanged
         if: ${{ matrix.checkTarget }}
         shell: bash
@@ -94,10 +101,10 @@ jobs:
           if-no-files-found: error
           overwrite: true
           path: |
-            src/Temporalio/Bridge/sdk-core/target/debug/*.dll
-            src/Temporalio/Bridge/sdk-core/target/debug/*.dylib
-            src/Temporalio/Bridge/sdk-core/target/debug/*.pdb
-            src/Temporalio/Bridge/sdk-core/target/debug/*.so
+            src/Temporalio/Bridge/target/debug/*.dll
+            src/Temporalio/Bridge/target/debug/*.dylib
+            src/Temporalio/Bridge/target/debug/*.pdb
+            src/Temporalio/Bridge/target/debug/*.so
 
       - name: Upload managed symbols
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

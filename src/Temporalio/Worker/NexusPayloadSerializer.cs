@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using NexusRpc;
@@ -7,6 +6,7 @@ using NexusRpc.Handlers;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
+using Temporalio.Nexus;
 
 namespace Temporalio.Worker
 {
@@ -51,6 +51,16 @@ namespace Temporalio.Worker
             }
 
             var payload = Payload.Parser.ParseFrom(content.Data);
+            var isSystemPayload = SystemNexusPayloadVisitor.IsSystemPayload(payload);
+
+            if (isSystemPayload &&
+                !SystemNexusPayloadVisitor.TryGetVisitor(payload, out var messageType, out _))
+            {
+                throw new HandlerException(
+                    HandlerErrorType.Internal,
+                    $"Unrecognized System Nexus envelope message type: {messageType}",
+                    errorRetryBehavior: HandlerErrorRetryBehavior.Retryable);
+            }
 
             // Decode with payload codec if configured. Codec failures are treated as
             // retryable INTERNAL errors since they are typically transient (e.g. a remote
@@ -62,13 +72,8 @@ namespace Temporalio.Worker
             {
                 try
                 {
-                    var decoded = await dataConverter.PayloadCodec.DecodeAsync(
-                        new Payload[] { payload }).ConfigureAwait(false);
-                    if (decoded.Count != 1)
-                    {
-                        throw new ArgumentException($"Expected 1 payload, found {decoded.Count}");
-                    }
-                    payload = decoded.First();
+                    await PayloadCodecHelper.DecodeAsync(
+                        dataConverter.PayloadCodec, payload).ConfigureAwait(false);
                 }
                 catch (Exception e) when (PayloadValidationError.IsException(e))
                 {
@@ -97,7 +102,11 @@ namespace Temporalio.Worker
             object? result;
             try
             {
-                result = dataConverter.PayloadConverter.ToValue(payload, type);
+                var payloadConverter = isSystemPayload ?
+                    new SystemNexusPayloadConverter(
+                        dataConverter.PayloadConverter, dataConverter.FailureConverter) :
+                    dataConverter.PayloadConverter;
+                result = payloadConverter.ToValue(payload, type);
             }
             catch (Exception e) when (PayloadValidationError.IsException(e))
             {

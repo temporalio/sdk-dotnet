@@ -16,8 +16,15 @@ document as your quick reference when submitting pull requests.
   tests.
 - Declaration lists in config files are kept alphabetized, case-insensitively and ignoring any
   quoting. This covers `Directory.Packages.props`, each `ItemGroup` in `Directory.Build.props`,
-  `.config/dotnet-tools.json`, the `[tasks.*]` blocks in `mise.toml`, and the Dependabot `ignore`
-  list. Insert new entries in order rather than appending them.
+  `.config/dotnet-tools.json`, the `[tasks.*]` blocks in `mise.toml`, and both the `updates` and
+  `ignore` lists in `.github/dependabot.yml`. Insert new entries in order rather than appending
+  them.
+- To change a package version, edit `Directory.Packages.props` and then run
+  `dotnet restore --force-evaluate` at the repository root to regenerate the `packages.lock.json`
+  files, since CI restores them in locked mode. Never add a `PackageReference` or
+  `VersionOverride` to a project to move a version. Dependencies of the shipped `src/*` projects
+  are deliberately held at low version floors so downstream consumers are not forced forward;
+  raise one only when asked to.
 - The build treats warnings as errors (`TreatWarningsAsErrors`) and enables the full analyzer set
   (`AnalysisMode=AllEnabledByDefault`) plus StyleCop. A build that produces analyzer warnings will
   fail. Fix the underlying issue rather than suppressing it, unless a suppression is already the
@@ -41,7 +48,9 @@ document as your quick reference when submitting pull requests.
 
 Building requires a recent .NET 10 SDK, Rust (`cargo` on the `PATH`), and the Protobuf compiler
 (`protoc` on the `PATH`), since the native bridge is built from the `sdk-core` Rust submodule. Clone
-the repository recursively so the submodule is present.
+the repository recursively so the submodule is present. Install Rust via
+[rustup](https://rustup.rs/) rather than a package manager: the toolchain version is pinned in
+`src/Temporalio/Bridge/rust-toolchain.toml`, and only rustup honors that pin.
 
 The following are enforced for each pull request (see `README.md`):
 
@@ -50,6 +59,7 @@ dotnet build                       # build all projects (also builds the Rust br
 dotnet format --verify-no-changes  # ensure code is formatted (StyleCop + .editorconfig rules)
 dotnet test                        # run unit and integration tests
 dotnet pack -c Debug               # validate the public API surface (runs in the Pack target)
+mise run bridge:check-sync         # confirm Bridge/Cargo.toml still mirrors the sdk-core submodule
 ```
 
 To run the tests as an in-proc program (helpful for debugging native pieces and seeing full
@@ -109,7 +119,8 @@ Reviewers will look for:
 ## Where Things Are
 
 - `src/` – libraries and tooling projects.
-  - `src/Temporalio/` – the main SDK. Notable areas:
+  - `src/Temporalio/` – the main SDK; its `README.md` is the user-facing usage guide and the NuGet
+    package page. Notable areas:
     - `Client/` – clients for communicating with Temporal clusters
     - `Worker/` – the Worker that runs Workflows, Activities, and Nexus Operations
     - `Workflows/` – Workflow authoring API (attributes, `Workflow` static, determinism support)
@@ -120,7 +131,8 @@ Reviewers will look for:
     - `Testing/` – `WorkflowEnvironment` test server support
     - `Exceptions/` – Temporal exception types
     - `Api/` – generated protobuf types (do not edit by hand; see "Regenerating protos")
-    - `Bridge/` – C# interop layer over the Rust core; `Bridge/sdk-core` is the Rust submodule
+    - `Bridge/` – C# interop layer over the Rust core; `Bridge/sdk-core` is the Rust submodule, and
+      `Bridge/Cargo.toml` is the Cargo workspace the native library is built through
   - `src/Temporalio.Api.Generator/` – tool that regenerates the `Temporalio.Api.*` proto types
   - `src/Temporalio.ApiDoc/` – docfx config for API docs
   - `src/Temporalio.Extensions.DiagnosticSource/` – `System.Diagnostics.Metrics` support
@@ -132,7 +144,8 @@ Reviewers will look for:
 - `Directory.Build.props` – shared MSBuild properties
 - `Directory.Packages.props` – central package versions (this repo uses central package management).
 - `.config/dotnet-tools.json` – pinned .NET codegen tools (ClangSharpPInvokeGenerator, docfx).
-- `mise.toml` – pinned `protoc` and `nex-gen`, plus the `gen`/`docs` tasks CI runs.
+- `mise.toml` – pinned `protoc`, `nex-gen`, and `yq`, plus the `gen`/`docs`/`bridge:check-sync`
+  tasks CI runs and the `apicompat:baseline`/`bridge:relock` maintenance tasks.
 - `.editorconfig` – analyzer/StyleCop rule configuration and Temporal-specific overrides.
 - `README.md`, `CONTRIBUTING.md` – contributor and development guide.
 - `bin/`, `obj/`, `target/` – compiled output. You never need to look in here.
@@ -141,9 +154,9 @@ Reviewers will look for:
 
 - The native Rust DLL is built automatically when the project is built. `protoc` may need to be on
   the `PATH` for the Rust DLL to build.
-- Workflow code must be deterministic. The README's "Workflow Logic Constraints" section (including
-  ".NET Task Determinism") explains the rules and the Workflow-specific `.editorconfig` overrides —
-  read it before changing Workflow internals.
+- Workflow code must be deterministic. The "Workflow Logic Constraints" section of
+  `src/Temporalio/README.md` (including ".NET Task Determinism") explains the rules and the
+  Workflow-specific `.editorconfig` overrides — read it before changing Workflow internals.
 - Generated code is regenerated with [mise](https://mise.jdx.dev/) tasks, which install their pinned
   tools on first run: `mise run gen` for everything, or `mise run gen:api`
   (`Temporalio.Api.*` protobuf types), `mise run gen:nexus` (system Nexus service bindings), and
@@ -153,3 +166,12 @@ Reviewers will look for:
 - `src/Temporalio/Bridge/sdk-core` is a git submodule pointing at
   [`sdk-rust`](https://github.com/temporalio/sdk-rust); change it via the submodule, not by editing
   files in place.
+- The native library is built through `src/Temporalio/Bridge/Cargo.toml`, a Cargo workspace that
+  claims the submodule's `sdk-core-c-bridge` crate as a member, so that its ~500-crate dependency
+  graph is pinned by `Bridge/Cargo.lock` (sdk-rust gitignores its own lockfile, being a published
+  library). This matches the Python, TypeScript, and Ruby SDKs. Always build with `--locked`, and
+  always run cargo from `src/Temporalio/Bridge` so `Bridge/rust-toolchain.toml` applies.
+- After bumping the sdk-core submodule: re-mirror whatever changed in `sdk-core/Cargo.toml` and
+  `sdk-core/rust-toolchain.toml` into `Bridge/Cargo.toml` and `Bridge/rust-toolchain.toml`, run
+  `mise run bridge:check-sync` to confirm, then `mise run bridge:relock` and commit the lockfile. CI
+  runs `bridge:check-sync`, and `--locked` fails the build if the lockfile is stale.

@@ -1,0 +1,54 @@
+# The `temporalio-sdk-core-c-bridge` crate is a member of the sdk-core submodule's own workspace and
+# must stay one, since sdk-rust builds it in their CI. Cargo lets a second workspace claim the same
+# package, so this manifest exists solely to give the native library a lockfile we own and commit:
+# sdk-rust gitignores its own, being a published library, so building through their workspace
+# re-resolves every transitive dependency to the newest semver-compatible version on every clone and
+# CI job.
+#
+# The tables below are mirrored verbatim from sdk-core/Cargo.toml: the member crates inherit them
+# with `workspace = true`, and inheritance resolves against *this* root. `mise run bridge:check-sync`
+# fails if they drift.
+
+[workspace]
+# Cargo adopts path dependencies under the workspace root as members automatically, so the rest of
+# the sdk-core crates reach our lockfile without being enumerated. default-members then keeps a
+# bare `cargo build` from building all of them.
+members = ["sdk-core/crates/sdk-core-c-bridge"]
+default-members = ["sdk-core/crates/sdk-core-c-bridge"]
+resolver = "2"
+
+[workspace.package]
+license = "MIT"
+# Not mirrored, and skipped by bridge:check-sync: upstream names its own LICENSE.txt.
+license-file = "../../../LICENSE"
+
+[workspace.dependencies]
+bon = { version = "3", default-features = false, features = ["alloc", "implied-bounds"] }
+derive_more = { version = "2.0", default-features = false, features = [
+    "constructor",
+    "display",
+    "from",
+    "into",
+    "debug",
+    "try_into",
+] }
+thiserror = "2"
+tonic = { version = "0.14.6", default-features = false }
+tonic-prost = "0.14.6"
+tonic-prost-build = "0.14.6"
+opentelemetry = { version = "0.32", default-features = false, features = ["metrics"] }
+prost = "0.14"
+prost-types = { version = "0.7", package = "prost-wkt-types" }
+pbjson = "0.9"
+pbjson-build = "0.9"
+serde_json = "1.0"
+
+[workspace.lints.rust]
+unreachable_pub = "warn"
+
+[workspace.lints.clippy]
+dbg_macro = "warn"
+
+[profile.release-lto]
+inherits = "release"
+lto = true

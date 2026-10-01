@@ -106,6 +106,67 @@ public class WorkflowEnvironmentTests : TestBase
         });
     }
 
+    // See https://github.com/temporalio/sdk-dotnet/issues/179. Updates used to hang on the
+    // time-skipping test server because it did not treat update calls as long polls, a test-server
+    // bug fixed in https://github.com/temporalio/sdk-java/issues/2142.
+    [Workflow]
+    public class UpdateWhileSkippingWorkflow
+    {
+        private int counter;
+
+        [WorkflowRun]
+        public async Task<int> RunAsync()
+        {
+            // A long sleep the test server must skip once we wait on the result
+            await Workflow.DelayAsync(TimeSpan.FromDays(2));
+            return counter;
+        }
+
+        // Note: no sleep in here on purpose. Time skipping does not apply while an update call
+        // is in flight, only while a client is blocked waiting on the workflow result, so a sleep
+        // here would cost real test time rather than being skipped.
+        [WorkflowUpdate]
+        public Task<int> IncrementAsync(int amount)
+        {
+            counter += amount;
+            return Task.FromResult(counter);
+        }
+    }
+
+    [OnlyIntelFact]
+    public async Task StartTimeSkippingAsync_UpdateDuringWorkflow_DoesNotHang()
+    {
+        await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
+        using var worker = new TemporalWorker(
+            env.Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddWorkflow<UpdateWhileSkippingWorkflow>());
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await env.Client.StartWorkflowAsync(
+                (UpdateWhileSkippingWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+            // Several sequential updates, each returning the accumulated value. Previously the
+            // first of these never returned.
+            Assert.Equal(1, await handle.ExecuteUpdateAsync(wf => wf.IncrementAsync(1)));
+            Assert.Equal(3, await handle.ExecuteUpdateAsync(wf => wf.IncrementAsync(2)));
+
+            // Same via the start-then-wait form
+            var updateHandle = await handle.StartUpdateAsync(
+                wf => wf.IncrementAsync(3), new(WorkflowUpdateStage.Accepted));
+            Assert.Equal(6, await updateHandle.GetResultAsync());
+
+            // The workflow must still be running with its update state intact, i.e. the server
+            // must not have reported it complete early after the first update
+            Assert.Equal(6, await handle.GetResultAsync());
+
+            // Time skipping must still work after updates: the 2 day timer is skipped rather than
+            // really waited on, so server time is ~2 days ahead while the test took seconds
+            AssertMore.DateTimeFromUtcNow(await env.GetCurrentTimeAsync(), TimeSpan.FromDays(2));
+        });
+    }
+
     public class ActivityWaitActivities
     {
         private readonly WorkflowEnvironment env;

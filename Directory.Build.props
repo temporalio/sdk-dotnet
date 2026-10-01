@@ -3,6 +3,8 @@
     <AnalysisLevel>latest</AnalysisLevel>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <Authors>Temporal</Authors>
+    <!-- Generated sources under obj/ are not in the repository, so Source Link URLs for them would 404. -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <!--
     TODO(cretz): Reenable when https://github.com/dotnet/format/issues/1800 fixed
@@ -21,7 +23,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.19.0</Version>
+    <Version>1.20.0</Version>
     <!--
       .NET does not allow the above version format for AssemblyVersion, and this
       is the version used in gRPC headers. The format is
@@ -36,7 +38,7 @@
       and 0.2.0 then is 0.2.0.5. But if there is no prerelease version, just
       leave revision off.
     -->
-    <AssemblyVersion>1.19.0</AssemblyVersion>
+    <AssemblyVersion>1.20.0</AssemblyVersion>
 
     <!--
       Validate the public API surface of every packable project against the
@@ -44,7 +46,7 @@
       Bump PackageValidationBaselineVersion when releasing.
     -->
     <EnablePackageValidation>true</EnablePackageValidation>
-    <PackageValidationBaselineVersion>1.19.0</PackageValidationBaselineVersion>
+    <PackageValidationBaselineVersion>1.20.0</PackageValidationBaselineVersion>
     <ApiCompatPermitUnnecessarySuppressions>false</ApiCompatPermitUnnecessarySuppressions>
   </PropertyGroup>
 
