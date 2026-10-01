@@ -1,3 +1,5 @@
+using System;
+
 namespace Temporalio.Exceptions
 {
     /// <summary>
@@ -40,7 +42,7 @@ namespace Temporalio.Exceptions
         /// </summary>
         /// <param name="message">Message for the exception.</param>
         /// <param name="inner">Cause of the exception.</param>
-        public ExternalStorageNotConfiguredException(string message, System.Exception? inner)
+        public ExternalStorageNotConfiguredException(string message, Exception? inner)
             : base(message, inner)
         {
         }

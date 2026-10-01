@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -44,7 +45,7 @@ namespace Temporalio.Converters
         /// Claims identifying the stored payloads. This must return exactly one claim per given
         /// payload, in the same order.
         /// </returns>
-        /// <exception cref="System.OperationCanceledException">Cancellation requested.</exception>
+        /// <exception cref="OperationCanceledException">Cancellation requested.</exception>
         Task<IReadOnlyCollection<StorageDriverClaim>> StoreAsync(
             StorageDriverStoreContext context,
             IReadOnlyCollection<Payload> payloads,
@@ -61,7 +62,7 @@ namespace Temporalio.Converters
         /// The stored payloads. This must return exactly one payload per given claim, in the same
         /// order.
         /// </returns>
-        /// <exception cref="System.OperationCanceledException">Cancellation requested.</exception>
+        /// <exception cref="OperationCanceledException">Cancellation requested.</exception>
         Task<IReadOnlyCollection<Payload>> RetrieveAsync(
             StorageDriverRetrieveContext context,
             IReadOnlyCollection<StorageDriverClaim> claims,
