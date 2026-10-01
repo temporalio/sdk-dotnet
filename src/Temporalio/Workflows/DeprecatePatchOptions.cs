@@ -4,10 +4,10 @@ using System.Collections.Generic;
 namespace Temporalio.Workflows
 {
     /// <summary>
-    /// Options for <see cref="Workflow.Patched(string, PatchOptions)" />.
+    /// Options for <see cref="Workflow.DeprecatePatch(string, DeprecatePatchOptions)" />.
     /// </summary>
     /// <remarks>WARNING: This API is experimental.</remarks>
-    public class PatchOptions : ICloneable
+    public class DeprecatePatchOptions : ICloneable
     {
         /// <summary>
         /// Gets or sets Event Groups to attach to the patch marker, in addition to those active in
