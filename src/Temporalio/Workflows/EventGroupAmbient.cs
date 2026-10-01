@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Temporalio.Api.Sdk.V1;
 
@@ -16,7 +17,7 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Gets the Event Groups active in the current asynchronous flow.
         /// </summary>
-        internal static State CurrentState => Current.Value ?? new State();
+        internal static State CurrentState => Current.Value ?? State.Empty;
 
         /// <summary>
         /// Push user-created Event Groups onto the explicit set, keeping any implicit inbound
@@ -26,44 +27,45 @@ namespace Temporalio.Workflows
         /// <returns>Scope that restores the previous ambient set on dispose.</returns>
         internal static EventGroupScope PushExplicit(IReadOnlyCollection<EventGroup> groups)
         {
-            var previous = Current.Value;
-            var previousState = previous ?? new State();
-            var nextExplicit = new Dictionary<string, EventGroup.Explicit>(previousState.Explicit);
+            var previous = CurrentState;
+            var nextExplicit = new Dictionary<string, EventGroup>(previous.Explicit.Count);
+            foreach (var entry in previous.Explicit)
+            {
+                nextExplicit.Add(entry.Key, entry.Value);
+            }
             foreach (var group in groups)
             {
                 if (group == null)
                 {
                     throw new ArgumentException("Event group cannot be null", nameof(groups));
                 }
-                var explicitGroup = (EventGroup.Explicit)group;
-                nextExplicit[explicitGroup.Id] = explicitGroup;
+                nextExplicit[group.Id] = group;
             }
             var installed = new State
             {
-                Implicit = previousState.Implicit,
+                Implicit = previous.Implicit,
                 Explicit = nextExplicit,
             };
             Current.Value = installed;
-            return new EventGroupScope(() => Restore(installed, previous));
+            return new EventGroupScope(installed, previous);
         }
 
         /// <summary>
         /// Enter an isolating implicit inbound scope. A handler must not inherit an explicit scope
         /// that happened to be active at registration or dispatch.
         /// </summary>
-        /// <param name="group">Implicit inbound group, or <see cref="EventGroup.Stub" />.
-        /// </param>
+        /// <param name="group">Implicit inbound group.</param>
         /// <returns>Scope that restores the previous ambient set on dispose.</returns>
         internal static EventGroupScope PushImplicit(EventGroup group)
         {
-            var previous = Current.Value;
+            var previous = CurrentState;
             var installed = new State
             {
-                Implicit = group as EventGroup.Implicit,
-                Explicit = new Dictionary<string, EventGroup.Explicit>(),
+                Implicit = group,
+                Explicit = State.NoExplicitGroups,
             };
             Current.Value = installed;
-            return new EventGroupScope(() => Restore(installed, previous));
+            return new EventGroupScope(installed, previous);
         }
 
         /// <summary>
@@ -76,29 +78,56 @@ namespace Temporalio.Workflows
             IReadOnlyCollection<EventGroup>? directs)
         {
             var state = CurrentState;
-            var explicitGroups = state.Explicit;
-            if (directs != null && directs.Count > 0)
+            IReadOnlyDictionary<string, EventGroup> mergedGroups;
+            if (directs == null || directs.Count == 0)
             {
-                explicitGroups = new Dictionary<string, EventGroup.Explicit>(state.Explicit);
+                mergedGroups = state.Explicit;
+            }
+            else if (state.Explicit.Count == 0 && directs.Count == 1)
+            {
+                // One direct group and no ambient explicit groups needs no merge dictionary.
+                var group = directs.Single();
+                if (group == null)
+                {
+                    throw new ArgumentException("Event group cannot be null", nameof(directs));
+                }
+                return state.Implicit == null
+                    ? new[] { group.ToMarker() }
+                    : new[] { state.Implicit.ToMarker(), group.ToMarker() };
+            }
+            else
+            {
+                var merged = new Dictionary<string, EventGroup>(state.Explicit.Count);
+                foreach (var entry in state.Explicit)
+                {
+                    merged.Add(entry.Key, entry.Value);
+                }
                 foreach (var group in directs)
                 {
                     if (group == null)
                     {
                         throw new ArgumentException("Event group cannot be null", nameof(directs));
                     }
-                    var explicitGroup = (EventGroup.Explicit)group;
-                    explicitGroups[explicitGroup.Id] = explicitGroup;
+                    merged[group.Id] = group;
                 }
+                mergedGroups = merged;
             }
-            var markers = new List<EventGroupMarker>(
-                explicitGroups.Count + (state.Implicit != null ? 1 : 0));
+
+            var count = mergedGroups.Count + (state.Implicit != null ? 1 : 0);
+            if (count == 0)
+            {
+                return Array.Empty<EventGroupMarker>();
+            }
+
+            var markers = new EventGroupMarker[count];
+            var index = 0;
             if (state.Implicit != null)
             {
-                markers.Add(state.Implicit.ToMarker());
+                markers[index++] = state.Implicit.ToMarker();
             }
-            foreach (var group in explicitGroups.Values)
+            foreach (var group in mergedGroups.Values)
             {
-                markers.Add(group.ToMarker());
+                markers[index++] = group.ToMarker();
             }
             return markers;
         }
@@ -108,14 +137,16 @@ namespace Temporalio.Workflows
         /// still referenced by the nested scope that replaced it, so restoring it would drop that
         /// nested scope.
         /// </summary>
-        private static void Restore(State installed, State? previous)
+        /// <param name="installed">State the disposing scope installed.</param>
+        /// <param name="previous">State to restore.</param>
+        internal static void Restore(State installed, State previous)
         {
             if (!ReferenceEquals(Current.Value, installed))
             {
                 throw new InvalidOperationException(
                     "Event group scope is not the active scope. Dispose nested scopes first.");
             }
-            Current.Value = previous;
+            Current.Value = (previous == State.Empty) ? null : previous;
         }
 
         /// <summary>
@@ -124,15 +155,27 @@ namespace Temporalio.Workflows
         internal sealed class State
         {
             /// <summary>
+            /// A shared empty state. Callers must not mutate <see cref="Explicit" />.
+            /// </summary>
+            public static readonly State Empty = new();
+
+            /// <summary>
+            /// Shared explicit set for <see cref="Empty" /> and implicit scopes, so those paths do
+            /// not allocate.
+            /// </summary>
+            internal static readonly IReadOnlyDictionary<string, EventGroup> NoExplicitGroups =
+                new Dictionary<string, EventGroup>();
+
+            /// <summary>
             /// Gets the implicit inbound signal or update group, if any.
             /// </summary>
-            internal EventGroup.Implicit? Implicit { get; init; }
+            internal EventGroup? Implicit { get; init; }
 
             /// <summary>
             /// Gets user-created groups keyed by ID. Later scopes overwrite the same ID.
             /// </summary>
-            internal Dictionary<string, EventGroup.Explicit> Explicit { get; init; } =
-                new Dictionary<string, EventGroup.Explicit>();
+            internal IReadOnlyDictionary<string, EventGroup> Explicit { get; init; } =
+                NoExplicitGroups;
         }
     }
 }

@@ -8,34 +8,42 @@ namespace Temporalio.Workflows
     /// enclosing scopes.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Dispose nested scopes in reverse order of creation. Disposing a scope that is not the
     /// active one throws <see cref="InvalidOperationException" /> and leaves the active scope
     /// in place.
+    /// </para>
+    /// <para>WARNING: Event Groups are experimental.</para>
     /// </remarks>
-    /// <remarks>WARNING: Event Groups are experimental.</remarks>
     public sealed class EventGroupScope : IDisposable
     {
-        private readonly Action restore;
+        private readonly EventGroupAmbient.State installed;
+        private readonly EventGroupAmbient.State previous;
         private bool disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventGroupScope"/> class.
         /// </summary>
-        /// <param name="restore">Action that restores the previous ambient Event Groups.</param>
-        internal EventGroupScope(Action restore) => this.restore = restore;
+        /// <param name="installed">State this scope installed.</param>
+        /// <param name="previous">State to restore on dispose.</param>
+        internal EventGroupScope(EventGroupAmbient.State installed, EventGroupAmbient.State previous)
+        {
+            this.installed = installed;
+            this.previous = previous;
+        }
 
         /// <summary>
         /// Restores the Event Groups that were active when this scope was created.
         /// </summary>
         /// <exception cref="InvalidOperationException">
-        /// This scope is not the active scope. Nested scopes must be disposed first. The active
-        /// scope is left unchanged, and this scope can be disposed after them.
+        /// This scope is not the active scope. Nested scopes must be disposed first.
+        /// The active scope is left unchanged, and this scope can be disposed after them.
         /// </exception>
         public void Dispose()
         {
             if (!disposed)
             {
-                restore();
+                EventGroupAmbient.Restore(installed, previous);
                 disposed = true;
             }
         }

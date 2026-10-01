@@ -347,7 +347,7 @@ namespace Temporalio.Workflows
         public static EventGroup CreateEventGroup(string id, EventGroupOptions? options = null)
         {
             _ = Context;
-            return EventGroup.Create(id, options?.Label);
+            return EventGroup.CreateExplicit(id, options?.Label);
         }
 
         /// <summary>
@@ -455,13 +455,15 @@ namespace Temporalio.Workflows
         /// <param name="patchId">Patch ID.</param>
         /// <param name="options">Patch options.</param>
         /// <remarks>
+        /// <para>
         /// This marks a workflow that had <see cref="Patched(string)" /> in a previous version of
         /// the code as no longer applicable because all workflows that use the old code path are
         /// done and will never be queried again. Therefore the old code path is removed as well.
+        /// </para>
+        /// <para>WARNING: This API is experimental.</para>
         /// </remarks>
-        /// <remarks>WARNING: This API is experimental.</remarks>
-        public static void DeprecatePatch(string patchId, PatchOptions options) =>
-            Context.Patch(patchId, deprecated: true, options.EventGroups);
+        public static void DeprecatePatch(string patchId, PatchOptions? options = null) =>
+            Context.Patch(patchId, deprecated: true, options?.EventGroups);
 
         /// <summary>
         /// Execute a static non-async activity with result via lambda.
@@ -1171,10 +1173,10 @@ namespace Temporalio.Workflows
         /// Use <see cref="DeprecatePatch(string)" /> when all workflows are done and will never be
         /// queried again. The old code path can be removed at that time too.
         /// </para>
+        /// <para>WARNING: This API is experimental.</para>
         /// </remarks>
-        /// <remarks>WARNING: This API is experimental.</remarks>
-        public static bool Patched(string patchId, PatchOptions options) =>
-            Context.Patch(patchId, deprecated: false, options.EventGroups);
+        public static bool Patched(string patchId, PatchOptions? options = null) =>
+            Context.Patch(patchId, deprecated: false, options?.EventGroups);
 
         /// <summary>
         /// Workflow-safe form of <see cref="Task.Run(Func{Task}, CancellationToken)" />.

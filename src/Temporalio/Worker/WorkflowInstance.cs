@@ -56,7 +56,7 @@ namespace Temporalio.Worker
         private readonly Lazy<SearchAttributeCollection> typedSearchAttributes;
         private readonly LinkedList<Task> scheduledTasks = new();
         private readonly Dictionary<Task, LinkedListNode<Task>> scheduledTaskNodes = new();
-        private readonly Dictionary<uint, PendingTimerInfo> timersPending = new();
+        private readonly Dictionary<uint, TaskCompletionSource<object?>> timersPending = new();
         private readonly Dictionary<uint, PendingActivityInfo> activitiesPending = new();
         private readonly Dictionary<uint, PendingChildInfo> childWorkflowsPending = new();
         private readonly Dictionary<uint, PendingExternalSignal> externalSignalsPending = new();
@@ -653,11 +653,10 @@ namespace Temporalio.Worker
                         {
 #pragma warning disable VSTHRD003 // Awaiting our own completion source's task
                             var completedTask = await Task.WhenAny(source.Task, DelayWithOptionsAsync(
-                                new(
-                                    delay: options.Timeout.GetValueOrDefault(),
-                                    summary: options.TimeoutSummary,
-                                    cancellationToken: delayCancelSource.Token,
-                                    eventGroups: options.EventGroups))).ConfigureAwait(true);
+                                new(options.Timeout.GetValueOrDefault(), options.TimeoutSummary, delayCancelSource.Token)
+                                {
+                                    EventGroups = options.EventGroups,
+                                })).ConfigureAwait(true);
 #pragma warning restore VSTHRD003
                             // Do not timeout
                             if (completedTask == source.Task)
@@ -1019,7 +1018,7 @@ namespace Temporalio.Worker
         }
 
         private void AddCommand(
-            WorkflowCommand cmd, IReadOnlyCollection<EventGroupMarker>? eventGroupMarkers = null)
+            WorkflowCommand cmd, IReadOnlyCollection<EventGroupMarker>? eventGroupMarkers)
         {
             ThrowIfContextFrozen("issue workflow commands");
             if (completion == null)
@@ -1172,7 +1171,7 @@ namespace Temporalio.Worker
                     // workflow as cancelled. But this is a Temporal limitation in that cancellation
                     // is a state not an event.
                     logger.LogDebug(e, "Workflow raised cancel with run ID {RunId}", Info.RunId);
-                    AddCommand(new() { CancelWorkflowExecution = new() });
+                    AddCommand(new() { CancelWorkflowExecution = new() }, eventGroupMarkers: null);
                 }
                 catch (Exception e) when (IsWorkflowFailureException(e))
                 {
@@ -1180,7 +1179,7 @@ namespace Temporalio.Worker
                     logger.LogDebug(e, "Workflow raised failure with run ID {RunId}", Info.RunId);
                     var failure = failureConverterWorkflowContext.ToFailure(
                         e, payloadConverterWorkflowContext);
-                    AddCommand(new() { FailWorkflowExecution = new() { Failure = failure } });
+                    AddCommand(new() { FailWorkflowExecution = new() { Failure = failure } }, eventGroupMarkers: null);
                 }
             }
             catch (Exception e)
@@ -1302,15 +1301,17 @@ namespace Temporalio.Worker
                     var failure = new InvalidOperationException(
                         $"Update handler for {update.Name} expected but not found, " +
                         $"known updates: [{string.Join(" ", knownUpdates)}]");
-                    AddCommand(new()
-                    {
-                        UpdateResponse = new()
+                    AddCommand(
+                        new()
                         {
-                            ProtocolInstanceId = update.ProtocolInstanceId,
-                            Rejected = failureConverterWorkflowContext.ToFailure(
-                                failure, payloadConverterWorkflowContext),
+                            UpdateResponse = new()
+                            {
+                                ProtocolInstanceId = update.ProtocolInstanceId,
+                                Rejected = failureConverterWorkflowContext.ToFailure(
+                                    failure, payloadConverterWorkflowContext),
+                            },
                         },
-                    });
+                        eventGroupMarkers: null);
                     return Task.CompletedTask;
                 }
             }
@@ -1371,27 +1372,31 @@ namespace Temporalio.Worker
                 }
 
                 // Send accepted
-                AddCommand(new()
-                {
-                    UpdateResponse = new()
+                AddCommand(
+                    new()
                     {
-                        ProtocolInstanceId = update.ProtocolInstanceId,
-                        Accepted = new(),
+                        UpdateResponse = new()
+                        {
+                            ProtocolInstanceId = update.ProtocolInstanceId,
+                            Accepted = new(),
+                        },
                     },
-                });
+                    eventGroupMarkers: null);
             }
             catch (Exception e)
             {
                 // Send rejected
-                AddCommand(new()
-                {
-                    UpdateResponse = new()
+                AddCommand(
+                    new()
                     {
-                        ProtocolInstanceId = update.ProtocolInstanceId,
-                        Rejected = failureConverterWorkflowContext.ToFailure(
-                            e, payloadConverterWorkflowContext),
+                        UpdateResponse = new()
+                        {
+                            ProtocolInstanceId = update.ProtocolInstanceId,
+                            Rejected = failureConverterWorkflowContext.ToFailure(
+                                e, payloadConverterWorkflowContext),
+                        },
                     },
-                });
+                    eventGroupMarkers: null);
                 return Task.CompletedTask;
             }
 
@@ -1406,7 +1411,7 @@ namespace Temporalio.Worker
 
                 async Task<object?> InvokeUpdateAsync()
                 {
-                    using (EventGroupAmbient.PushImplicit(EventGroup.ForInboundUpdate(update.Id)))
+                    using (EventGroupAmbient.PushImplicit(EventGroup.CreateInboundUpdate(update.Id)))
                     {
                         return await inbound.Value.HandleUpdateAsync(new(
                             Id: update.Id,
@@ -1439,15 +1444,17 @@ namespace Temporalio.Worker
                             }
                             if (exc != null && IsWorkflowFailureException(exc))
                             {
-                                AddCommand(new()
-                                {
-                                    UpdateResponse = new()
+                                AddCommand(
+                                    new()
                                     {
-                                        ProtocolInstanceId = update.ProtocolInstanceId,
-                                        Rejected = failureConverterWorkflowContext.ToFailure(
-                                            exc, payloadConverterWorkflowContext),
+                                        UpdateResponse = new()
+                                        {
+                                            ProtocolInstanceId = update.ProtocolInstanceId,
+                                            Rejected = failureConverterWorkflowContext.ToFailure(
+                                                exc, payloadConverterWorkflowContext),
+                                        },
                                     },
-                                });
+                                    eventGroupMarkers: null);
                             }
                             else if (task.Exception is { } taskExc)
                             {
@@ -1463,29 +1470,33 @@ namespace Temporalio.Worker
                                     var taskType = task.GetType();
                                     var result = taskType.IsGenericType ?
                                         taskType.GetProperty("Result")!.GetValue(task) : ValueTuple.Create();
-                                    AddCommand(new()
-                                    {
-                                        UpdateResponse = new()
+                                    AddCommand(
+                                        new()
                                         {
-                                            ProtocolInstanceId = update.ProtocolInstanceId,
-                                            Completed = payloadConverterWorkflowContext.ToPayload(result),
+                                            UpdateResponse = new()
+                                            {
+                                                ProtocolInstanceId = update.ProtocolInstanceId,
+                                                Completed = payloadConverterWorkflowContext.ToPayload(result),
+                                            },
                                         },
-                                    });
+                                        eventGroupMarkers: null);
                                 }
                                 catch (Exception e) when (IsWorkflowFailureException(e))
                                 {
                                     // Payload conversion can fail with a fail-update exception
                                     // instead of a fail-task exception. Any failure here does
                                     // bubble to outer catch as task failure.
-                                    AddCommand(new()
-                                    {
-                                        UpdateResponse = new()
+                                    AddCommand(
+                                        new()
                                         {
-                                            ProtocolInstanceId = update.ProtocolInstanceId,
-                                            Rejected = failureConverterWorkflowContext.ToFailure(
-                                                e, payloadConverterWorkflowContext),
+                                            UpdateResponse = new()
+                                            {
+                                                ProtocolInstanceId = update.ProtocolInstanceId,
+                                                Rejected = failureConverterWorkflowContext.ToFailure(
+                                                    e, payloadConverterWorkflowContext),
+                                            },
                                         },
-                                    });
+                                        eventGroupMarkers: null);
                                 }
                             }
                         }
@@ -1499,25 +1510,27 @@ namespace Temporalio.Worker
             }
             catch (FailureException e)
             {
-                AddCommand(new()
-                {
-                    UpdateResponse = new()
+                AddCommand(
+                    new()
                     {
-                        ProtocolInstanceId = update.ProtocolInstanceId,
-                        Rejected = failureConverterWorkflowContext.ToFailure(
-                            e, payloadConverterWorkflowContext),
+                        UpdateResponse = new()
+                        {
+                            ProtocolInstanceId = update.ProtocolInstanceId,
+                            Rejected = failureConverterWorkflowContext.ToFailure(
+                                e, payloadConverterWorkflowContext),
+                        },
                     },
-                });
+                    eventGroupMarkers: null);
                 return Task.CompletedTask;
             }
         }
 
         private void ApplyFireTimer(FireTimer fireTimer)
         {
-            if (timersPending.TryGetValue(fireTimer.Seq, out var pending))
+            if (timersPending.TryGetValue(fireTimer.Seq, out var source))
             {
                 timersPending.Remove(fireTimer.Seq);
-                pending.CompletionSource.TrySetResult(null);
+                source.TrySetResult(null);
             }
         }
 
@@ -1585,26 +1598,30 @@ namespace Temporalio.Worker
                                 dynamicArgPrepend: query.QueryType),
                             Headers: query.Headers));
                     }
-                    AddCommand(new()
-                    {
-                        RespondToQuery = new()
+                    AddCommand(
+                        new()
                         {
-                            QueryId = query.QueryId,
-                            Succeeded = new() { Response = payloadConverterWorkflowContext.ToPayload(resultObj) },
+                            RespondToQuery = new()
+                            {
+                                QueryId = query.QueryId,
+                                Succeeded = new() { Response = payloadConverterWorkflowContext.ToPayload(resultObj) },
+                            },
                         },
-                    });
+                        eventGroupMarkers: null);
                 }
                 catch (Exception e)
                 {
-                    AddCommand(new()
-                    {
-                        RespondToQuery = new()
+                    AddCommand(
+                        new()
                         {
-                            QueryId = query.QueryId,
-                            Failed = failureConverterWorkflowContext.ToFailure(
-                                e, payloadConverterWorkflowContext),
+                            RespondToQuery = new()
+                            {
+                                QueryId = query.QueryId,
+                                Failed = failureConverterWorkflowContext.ToFailure(
+                                    e, payloadConverterWorkflowContext),
+                            },
                         },
-                    });
+                        eventGroupMarkers: null);
                     return Task.CompletedTask;
                 }
                 finally
@@ -1697,6 +1714,12 @@ namespace Temporalio.Worker
 
         private void ApplySignalWorkflow(SignalWorkflow signal)
         {
+            if (signal.OriginatingEventId <= 0)
+            {
+                throw new InvalidOperationException(
+                    $"Signal {signal.SignalName} has invalid originating event ID {signal.OriginatingEventId}");
+            }
+
             // Find applicable definition or buffer
             var signals = mutableSignals.IsValueCreated ? mutableSignals.Value : Definition.Signals;
             if (!signals.TryGetValue(signal.SignalName, out var signalDefn))
@@ -1742,7 +1765,7 @@ namespace Temporalio.Worker
                     signal.SignalName, null, signalDefn.UnfinishedPolicy));
                 try
                 {
-                    using (EventGroupAmbient.PushImplicit(EventGroup.ForInboundEvent(signal.OriginatingEventId)))
+                    using (EventGroupAmbient.PushImplicit(EventGroup.CreateInboundEvent(signal.OriginatingEventId)))
                     {
                         await inbound.Value.HandleSignalAsync(new(
                             Signal: signal.SignalName,
@@ -1778,7 +1801,7 @@ namespace Temporalio.Worker
                 startArgs = null;
                 var resultObj = await inbound.Value.ExecuteWorkflowAsync(input).ConfigureAwait(true);
                 var result = payloadConverterWorkflowContext.ToPayload(resultObj);
-                AddCommand(new() { CompleteWorkflowExecution = new() { Result = result } });
+                AddCommand(new() { CompleteWorkflowExecution = new() { Result = result } }, eventGroupMarkers: null);
             }));
         }
 
@@ -2238,7 +2261,7 @@ namespace Temporalio.Worker
                 if (delay != Timeout.InfiniteTimeSpan)
                 {
                     seq = ++instance.timerCounter;
-                    instance.timersPending[seq] = new(source, markers);
+                    instance.timersPending[seq] = source;
                     instance.AddCommand(
                         new()
                         {
@@ -2259,14 +2282,13 @@ namespace Temporalio.Worker
                 {
                     using (token.Register(() =>
                     {
-                        // Try cancel, then send cancel if was able to remove
-                        if (source.TrySetCanceled(token) &&
-                            instance.timersPending.TryGetValue(seq, out var pendingTimer))
+                        // Try cancel, then send cancel if was able to remove.
+                        if (source.TrySetCanceled(token) && instance.timersPending.Remove(seq))
                         {
-                            instance.timersPending.Remove(seq);
+                            // Omit markers; Core inherits them from the timer.
                             instance.AddCommand(
                                 new() { CancelTimer = new() { Seq = seq } },
-                                pendingTimer.EventGroupMarkers);
+                                eventGroupMarkers: null);
                         }
                     }))
                     {
@@ -2619,8 +2641,7 @@ namespace Temporalio.Worker
                 var pending = new PendingChildInfo(
                     SerializationContext: serializationContext,
                     StartCompletionSource: new(),
-                    ResultCompletionSource: new(),
-                    EventGroupMarkers: markers);
+                    ResultCompletionSource: new());
                 instance.childWorkflowsPending[seq] = pending;
                 _ = instance.QueueNewTaskAsync(async () =>
                 {
@@ -2628,15 +2649,16 @@ namespace Temporalio.Worker
                     {
                         using (token.Register(() =>
                         {
-                            // Send cancel if it's pending
+                            // Send cancel if it's pending.
                             if (instance.childWorkflowsPending.ContainsKey(seq))
                             {
+                                // Omit markers; Core inherits them from the child start.
                                 instance.AddCommand(
                                     new()
                                     {
                                         CancelChildWorkflowExecution = new() { ChildWorkflowSeq = seq },
                                     },
-                                    pending.EventGroupMarkers);
+                                    eventGroupMarkers: null);
                             }
                         }))
                         {
@@ -2817,8 +2839,7 @@ namespace Temporalio.Worker
                 var pending = new PendingNexusOperationInfo(
                     SerializationContext: serializationContext,
                     StartCompletionSource: new(),
-                    ResultCompletionSource: new(),
-                    EventGroupMarkers: markers);
+                    ResultCompletionSource: new());
                 instance.nexusOperationsPending[seq] = pending;
 
                 // Wait for start and result inside of task
@@ -2826,15 +2847,16 @@ namespace Temporalio.Worker
                 {
                     using (token.Register(() =>
                     {
-                        // Send cancel if pending
+                        // Send cancel if pending.
                         if (instance.nexusOperationsPending.ContainsKey(seq))
                         {
+                            // Omit markers; Core inherits them from the Nexus operation.
                             instance.AddCommand(
                                 new()
                                 {
                                     RequestCancelNexusOperation = new() { Seq = seq },
                                 },
-                                pending.EventGroupMarkers);
+                                eventGroupMarkers: null);
                         }
                     }))
                     {
@@ -2929,7 +2951,8 @@ namespace Temporalio.Worker
                             // itself is never transcribed to history, so Event Groups (and user
                             // metadata) on it would never be visible.
                             instance.AddCommand(
-                                new() { CancelSignalWorkflow = new() { Seq = cmd.Seq } });
+                                new() { CancelSignalWorkflow = new() { Seq = cmd.Seq } },
+                                eventGroupMarkers: null);
                         }
                     }))
                     {
@@ -2973,8 +2996,7 @@ namespace Temporalio.Worker
                 var seq = applyScheduleCommand(null);
                 var pending = new PendingActivityInfo(
                     SerializationContext: serializationContext,
-                    CompletionSource: new(),
-                    EventGroupMarkers: eventGroupMarkers);
+                    CompletionSource: new());
                 instance.activitiesPending[seq] = pending;
                 return instance.QueueNewTaskAsync(async () =>
                 {
@@ -2985,20 +3007,22 @@ namespace Temporalio.Worker
                         ActivityResolution res;
                         using (cancellationToken.Register(() =>
                         {
-                            // Send cancel if activity present
+                            // Send cancel if activity present.
                             if (instance.activitiesPending.ContainsKey(seq))
                             {
                                 if (serializationContext.IsLocal)
                                 {
+                                    // Omit markers; Core inherits them from the activity.
                                     instance.AddCommand(
                                         new() { RequestCancelLocalActivity = new() { Seq = seq } },
-                                        eventGroupMarkers);
+                                        eventGroupMarkers: null);
                                 }
                                 else
                                 {
+                                    // Omit markers; Core inherits them from the activity.
                                     instance.AddCommand(
                                         new() { RequestCancelActivity = new() { Seq = seq } },
-                                        eventGroupMarkers);
+                                        eventGroupMarkers: null);
                                 }
                             }
                         }))
@@ -3303,20 +3327,14 @@ namespace Temporalio.Worker
             }
         }
 
-        private record PendingTimerInfo(
-            TaskCompletionSource<object?> CompletionSource,
-            IReadOnlyCollection<EventGroupMarker> EventGroupMarkers);
-
         private record PendingActivityInfo(
             ISerializationContext.Activity SerializationContext,
-            TaskCompletionSource<ActivityResolution> CompletionSource,
-            IReadOnlyCollection<EventGroupMarker> EventGroupMarkers);
+            TaskCompletionSource<ActivityResolution> CompletionSource);
 
         private record PendingChildInfo(
             ISerializationContext.Workflow SerializationContext,
             TaskCompletionSource<ResolveChildWorkflowExecutionStart> StartCompletionSource,
-            TaskCompletionSource<ChildWorkflowResult> ResultCompletionSource,
-            IReadOnlyCollection<EventGroupMarker> EventGroupMarkers);
+            TaskCompletionSource<ChildWorkflowResult> ResultCompletionSource);
 
         private record PendingExternalSignal(
             ISerializationContext.Workflow SerializationContext,
@@ -3329,8 +3347,7 @@ namespace Temporalio.Worker
         private record PendingNexusOperationInfo(
             ISerializationContext? SerializationContext,
             TaskCompletionSource<ResolveNexusOperationStart> StartCompletionSource,
-            TaskCompletionSource<NexusOperationResult> ResultCompletionSource,
-            IReadOnlyCollection<EventGroupMarker> EventGroupMarkers);
+            TaskCompletionSource<NexusOperationResult> ResultCompletionSource);
 
         private class Handlers : LinkedList<Handlers.Handler>
         {
