@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Google.Protobuf;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Sdk.V1;
+using Temporalio.Exceptions;
 
 namespace Temporalio.Converters
 {
@@ -47,31 +49,28 @@ namespace Temporalio.Converters
             ReferenceMessageTypeBytes.Equals(messageType);
 
         /// <summary>
-        /// Parse the reference from the given payload if it is one.
+        /// Parse the reference from the given payload, which must be one.
         /// </summary>
-        /// <param name="payload">Payload to parse.</param>
-        /// <param name="reference">The parsed reference, or null if the payload is not one.</param>
-        /// <returns>True if the payload is a reference and was parsed.</returns>
-        /// <exception cref="InvalidJsonException">
-        /// If the payload is a reference but its data is not valid JSON.
+        /// <param name="payload">Payload to parse. Check <see cref="IsReference" /> first.</param>
+        /// <returns>The parsed reference.</returns>
+        /// <exception cref="InvalidExternalStorageReferenceException">
+        /// If the payload is not a reference, or its data cannot be read as one.
         /// </exception>
-        /// <exception cref="InvalidProtocolBufferException">
-        /// If the payload is a reference but its data is not a valid reference.
-        /// </exception>
-        /// <remarks>
-        /// Unparseable reference data is corrupt rather than an ordinary payload, so it is surfaced
-        /// instead of being silently passed through as if it were user data.
-        /// </remarks>
-        internal static bool TryParseReference(
-            Payload payload, out ExternalStorageReference reference)
+        internal static ExternalStorageReference ParseReference(Payload payload)
         {
-            reference = null!;
             if (!IsReference(payload))
             {
-                return false;
+                throw new InvalidExternalStorageReferenceException(inner: null);
             }
-            reference = ProtoJsonParser.Parse<ExternalStorageReference>(payload.Data.ToStringUtf8());
-            return true;
+            try
+            {
+                return ProtoJsonParser.Parse<ExternalStorageReference>(payload.Data.ToStringUtf8());
+            }
+            catch (Exception e) when (
+                e is InvalidJsonException || e is InvalidProtocolBufferException)
+            {
+                throw new InvalidExternalStorageReferenceException(e);
+            }
         }
 
         /// <summary>

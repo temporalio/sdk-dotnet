@@ -5,6 +5,7 @@ using Google.Protobuf;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Sdk.V1;
 using Temporalio.Converters;
+using Temporalio.Exceptions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -51,30 +52,30 @@ public class ExternalStorageReferencesTests : TestBase
     }
 
     [Fact]
-    public void TryParseReference_CreatedReference_RoundTrips()
+    public void ParseReference_CreatedReference_RoundTrips()
     {
         var payload = ExternalStorageReferences.CreateReferencePayload(
             "my-driver", new Dictionary<string, string> { ["key"] = "k" }, originalSizeBytes: 1);
 
         Assert.True(ExternalStorageReferences.IsReference(payload));
-        Assert.True(ExternalStorageReferences.TryParseReference(payload, out var reference));
+        var reference = ExternalStorageReferences.ParseReference(payload);
         Assert.Equal("my-driver", reference.DriverName);
         Assert.Equal("k", reference.ClaimData["key"]);
     }
 
     [Fact]
-    public void TryParseReference_EmptyClaimData_RoundTrips()
+    public void ParseReference_EmptyClaimData_RoundTrips()
     {
         var payload = ExternalStorageReferences.CreateReferencePayload(
             "my-driver", new Dictionary<string, string>(), originalSizeBytes: 0);
 
-        Assert.True(ExternalStorageReferences.TryParseReference(payload, out var reference));
+        var reference = ExternalStorageReferences.ParseReference(payload);
         Assert.Equal("my-driver", reference.DriverName);
         Assert.Empty(reference.ClaimData);
     }
 
     [Fact]
-    public void TryParseReference_OtherSdkProtoJson_Parses()
+    public void ParseReference_OtherSdkProtoJson_Parses()
     {
         // Taken verbatim from the Go SDK's TestClaimDeserialization_OtherSdk_ProtoJSON. Note the
         // compact, differently-ordered data JSON and the string-encoded sizeBytes: this is what
@@ -95,7 +96,7 @@ public class ExternalStorageReferencesTests : TestBase
         var payload = ProtoJsonParser.Parse<Payload>(RawPayloadJson);
 
         Assert.True(ExternalStorageReferences.IsReference(payload));
-        Assert.True(ExternalStorageReferences.TryParseReference(payload, out var reference));
+        var reference = ExternalStorageReferences.ParseReference(payload);
         Assert.Equal("aws.s3driver", reference.DriverName);
         Assert.Equal("test-bucket", reference.ClaimData["bucket"]);
         Assert.Equal("sha256", reference.ClaimData["hash_algorithm"]);
@@ -108,7 +109,7 @@ public class ExternalStorageReferencesTests : TestBase
     }
 
     [Fact]
-    public void TryParseReference_UnknownJsonField_Parses()
+    public void ParseReference_UnknownJsonField_Parses()
     {
         var payload = new Payload()
         {
@@ -119,21 +120,25 @@ public class ExternalStorageReferencesTests : TestBase
         payload.Metadata["messageType"] =
             ByteString.CopyFromUtf8("temporal.api.sdk.v1.ExternalStorageReference");
 
-        Assert.True(ExternalStorageReferences.TryParseReference(payload, out var reference));
+        var reference = ExternalStorageReferences.ParseReference(payload);
         Assert.Equal("my-driver", reference.DriverName);
         Assert.Equal("k", reference.ClaimData["key"]);
     }
 
     [Fact]
-    public void TryParseReference_MalformedReferenceData_Throws()
+    public void ParseReference_MalformedReferenceData_Throws()
     {
         var payload = new Payload() { Data = ByteString.CopyFromUtf8("not json") };
         payload.Metadata["encoding"] = ByteString.CopyFromUtf8("json/protobuf");
         payload.Metadata["messageType"] =
             ByteString.CopyFromUtf8("temporal.api.sdk.v1.ExternalStorageReference");
 
-        Assert.ThrowsAny<InvalidJsonException>(() =>
-            ExternalStorageReferences.TryParseReference(payload, out _));
+        var err = Assert.Throws<InvalidExternalStorageReferenceException>(() =>
+            ExternalStorageReferences.ParseReference(payload));
+
+        // The raw protobuf failure is wrapped, because malformed JSON and valid JSON of the wrong
+        // shape throw two unrelated exception types.
+        Assert.IsAssignableFrom<Exception>(err.InnerException);
     }
 
     [Theory]
@@ -156,6 +161,7 @@ public class ExternalStorageReferencesTests : TestBase
         }
 
         Assert.False(ExternalStorageReferences.IsReference(payload));
-        Assert.False(ExternalStorageReferences.TryParseReference(payload, out _));
+        Assert.Throws<InvalidExternalStorageReferenceException>(() =>
+            ExternalStorageReferences.ParseReference(payload));
     }
 }
