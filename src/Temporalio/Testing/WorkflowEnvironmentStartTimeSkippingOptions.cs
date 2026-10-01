@@ -14,11 +14,8 @@ namespace Temporalio.Testing
         public string? DownloadDirectory { get; set; }
 
         /// <summary>
-        /// Gets or sets <b>unstable</b> test server options.
+        /// Gets or sets test server options.
         /// </summary>
-        /// <remarks>
-        /// <b>WARNING: This API is subject to change/removal</b>
-        /// </remarks>
         public TestServerOptions TestServer { get; set; } = new();
 
         /// <inheritdoc />

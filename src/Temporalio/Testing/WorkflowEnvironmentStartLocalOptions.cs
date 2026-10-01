@@ -32,11 +32,8 @@ namespace Temporalio.Testing
         public IReadOnlyCollection<SearchAttributeKey>? SearchAttributes { get; set; }
 
         /// <summary>
-        /// Gets or sets <b>unstable</b> dev server options.
+        /// Gets or sets dev server options.
         /// </summary>
-        /// <remarks>
-        /// <b>WARNING: This API is subject to change/removal</b>
-        /// </remarks>
         public DevServerOptions DevServerOptions { get; set; } = new();
 
         /// <inheritdoc />
