@@ -19,6 +19,10 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### :boom: Breaking Changes
+
+- `SchedulePolicy.CatchupWindow` is now nullable and defaults to `null`. An unspecified window uses the server configured default.
+
 ### Changed
 
 - `DevServerOptions` and `TestServerOptions` are no longer marked unstable. They remain specific to
