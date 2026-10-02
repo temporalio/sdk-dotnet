@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Temporalio.Workflows
@@ -62,6 +63,14 @@ namespace Temporalio.Workflows
         /// <see cref="Workflow.CancellationToken" />.
         /// </summary>
         public CancellationToken? CancellationToken { get; set; }
+
+        /// <summary>
+        /// Gets or sets Event Groups to attach to the timeout timer, in addition to those active in
+        /// the current <see cref="Workflow.WithEventGroups" /> scope. Has no effect when
+        /// <see cref="Timeout" /> is unset.
+        /// </summary>
+        /// <remarks>WARNING: Event Groups are experimental.</remarks>
+        public IReadOnlyCollection<EventGroup>? EventGroups { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.
