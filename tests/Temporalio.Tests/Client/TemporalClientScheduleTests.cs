@@ -9,11 +9,25 @@ using Temporalio.Exceptions;
 using Xunit;
 using Xunit.Abstractions;
 
-public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
+public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase, IAsyncLifetime
 {
+    private readonly List<ScheduleHandle> createdSchedules = new();
+
     public TemporalClientScheduleTests(ITestOutputHelper output, WorkflowEnvironment env)
         : base(output, env)
     {
+    }
+
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    // Deleting in teardown rather than at the end of each test ensures a failed assertion
+    // cannot leak a schedule into the shared namespace.
+    public async Task DisposeAsync()
+    {
+        foreach (var handle in createdSchedules)
+        {
+            await handle.DeleteAsync();
+        }
     }
 
     [Fact]
@@ -22,8 +36,6 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         "Relies on schedule state and visibility becoming immediately consistent.")]
     public async Task CreateScheduleAsync_Basics_Succeeds()
     {
-        await TestUtils.AssertNoSchedulesAsync(Client);
-
         // Create a schedule with a lot of stuff
         var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
         var action = ScheduleActionStartWorkflow.Create(
@@ -77,7 +89,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
                 RemainingActions = 30,
             },
         };
-        var handle = await Client.CreateScheduleAsync(
+        var handle = await CreateScheduleAsync(
             $"schedule-{Guid.NewGuid()}",
             schedule,
             new() { Memo = new Dictionary<string, object> { ["memokey2"] = "memoval2" } });
@@ -193,20 +205,20 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
             TypedSearchAttributes = new SearchAttributeCollection.Builder().
                 Set(AttrKeyword, "SomeKeyword").Set(AttrLong, 1234).ToSearchAttributeCollection(),
         };
-        var expectedIds = new List<string>
-        {
-            handle.Id,
-            (await Client.CreateScheduleAsync($"{handle.Id}-1", newSched)).Id,
-            (await Client.CreateScheduleAsync($"{handle.Id}-2", newSched)).Id,
-            (await Client.CreateScheduleAsync($"{handle.Id}-3", newSched, optsWithAttrs)).Id,
-            (await Client.CreateScheduleAsync($"{handle.Id}-4", newSched, optsWithAttrs)).Id,
-        };
+        var handle1 = await CreateScheduleAsync($"{handle.Id}-1", newSched);
+        var handle2 = await CreateScheduleAsync($"{handle.Id}-2", newSched);
+        var handle3 = await CreateScheduleAsync($"{handle.Id}-3", newSched, optsWithAttrs);
+        var handle4 = await CreateScheduleAsync($"{handle.Id}-4", newSched, optsWithAttrs);
+        var expectedIds = new List<string> { handle.Id, handle1.Id, handle2.Id, handle3.Id, handle4.Id };
         await AssertMore.EqualEventuallyAsync(expectedIds, async () =>
         {
             var actualIds = new List<string>();
             await foreach (var sched in Client.ListSchedulesAsync())
             {
-                actualIds.Add(sched.Id);
+                if (expectedIds.Contains(sched.Id))
+                {
+                    actualIds.Add(sched.Id);
+                }
             }
             actualIds.Sort();
             return actualIds;
@@ -220,12 +232,10 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
             actualIds.Add(sched.Id);
         }
         actualIds.Sort();
-        Assert.Equal(new List<string> { $"{handle.Id}-3", $"{handle.Id}-4" }, actualIds);
+        Assert.Equal(new List<string> { handle3.Id, handle4.Id }, actualIds);
 
         // Update the SAs of the 3rd schedule, wipe out the SAs of the 4th, confirm they
         // are no longer in the list with 'SomeKeyword'
-        var handle3 = Client.GetScheduleHandle($"{handle.Id}-3");
-        var handle4 = Client.GetScheduleHandle($"{handle.Id}-4");
         await handle3.UpdateAsync(input =>
         {
             var existing = input.Description.TypedSearchAttributes;
@@ -256,7 +266,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         });
         // Verify that 3 is still present and 4 is not with the long attribute
         await AssertMore.EqualEventuallyAsync(
-            new List<string> { $"{handle.Id}-3" }, async () =>
+            new List<string> { handle3.Id }, async () =>
         {
             actualIds = new List<string>();
             await foreach (var sched in Client.ListSchedulesAsync(
@@ -286,18 +296,13 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
             }
             return actualIds.Count;
         });
-
-        // Delete when done
-        await TestUtils.DeleteAllSchedulesAsync(Client);
     }
 
     [Fact]
     public async Task CreateScheduleAsync_CalendarSpecDefaults_AreProper()
     {
-        await TestUtils.AssertNoSchedulesAsync(Client);
-
         var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
-        var handle = await Client.CreateScheduleAsync(
+        var handle = await CreateScheduleAsync(
             $"schedule-{Guid.NewGuid()}",
             new(
                 Action: ScheduleActionStartWorkflow.Create(
@@ -325,19 +330,14 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
                     nextTime);
             }
         }
-
-        // Delete when done
-        await TestUtils.DeleteAllSchedulesAsync(Client);
     }
 
     [Fact]
     public async Task CreateScheduleAsync_TriggerImmediately_Succeeds()
     {
-        await TestUtils.AssertNoSchedulesAsync(Client);
-
         // Create paused schedule that triggers immediately
         var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
-        var handle = await Client.CreateScheduleAsync(
+        var handle = await CreateScheduleAsync(
             $"schedule-{Guid.NewGuid()}",
             new(
                 Action: ScheduleActionStartWorkflow.Create(
@@ -356,9 +356,6 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         Assert.Equal(
             "some result",
             await Client.GetWorkflowHandle(exec.WorkflowId, exec.FirstExecutionRunId).GetResultAsync<string>());
-
-        // Delete when done
-        await TestUtils.DeleteAllSchedulesAsync(Client);
     }
 
     [Fact]
@@ -367,14 +364,12 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         "Relies on backfill action counts becoming immediately consistent.")]
     public async Task CreateScheduleAsync_Backfill_CreatesProperActions()
     {
-        await TestUtils.AssertNoSchedulesAsync(Client);
-
         // Create paused schedule that runs every minute and has two backfills
         var now = DateTime.UtcNow;
         // Intervals align to the epoch boundary, so trim off seconds
         now = now.AddTicks(-(now.Ticks % TimeSpan.TicksPerMinute));
         var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
-        var handle = await Client.CreateScheduleAsync(
+        var handle = await CreateScheduleAsync(
             $"schedule-{Guid.NewGuid()}",
             new(
                 Action: ScheduleActionStartWorkflow.Create(
@@ -415,8 +410,13 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         // Servers < 1.24 this is 6, servers >= 1.24 this is 7
         var numActions = (await handle.DescribeAsync()).Info.NumActions;
         Assert.True(numActions == 6 || numActions == 7, $"Invalid num actions: {numActions}");
+    }
 
-        // Delete when done
-        await TestUtils.DeleteAllSchedulesAsync(Client);
+    private async Task<ScheduleHandle> CreateScheduleAsync(
+        string id, Schedule schedule, ScheduleOptions? options = null)
+    {
+        var handle = await Client.CreateScheduleAsync(id, schedule, options);
+        createdSchedules.Add(handle);
+        return handle;
     }
 }
