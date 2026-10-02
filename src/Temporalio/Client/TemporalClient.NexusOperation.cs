@@ -60,9 +60,6 @@ namespace Temporalio.Client
             {
                 try
                 {
-                    // The handler does not see the caller, so Nexus payloads are contextualized by
-                    // the endpoint, service and operation instead. User metadata is included, the
-                    // same way workflow and activity user metadata is serialized with theirs.
                     var dataConverter = Client.Options.DataConverter.WithSerializationContext(
                         new ISerializationContext.Nexus(
                             Endpoint: input.Endpoint,
@@ -112,9 +109,10 @@ namespace Temporalio.Client
                         Id: input.Options.Id!,
                         RunId: string.IsNullOrEmpty(resp.RunId) ? null : resp.RunId)
                     {
-                        Endpoint = input.Endpoint,
-                        Service = input.Service,
-                        Operation = input.Operation,
+                        SerializationContext = new(
+                            Endpoint: input.Endpoint,
+                            Service: input.Service,
+                            Operation: input.Operation),
                     };
                 }
                 catch (RpcException e) when (
@@ -147,8 +145,6 @@ namespace Temporalio.Client
                 };
                 var resp = await Client.Connection.WorkflowService.DescribeNexusOperationExecutionAsync(
                     req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
-                // The response names the endpoint, service and operation, so its payloads,
-                // including the static summary and details, use that context.
                 var dataConverter = Client.Options.DataConverter.WithSerializationContext(
                     new ISerializationContext.Nexus(
                         Endpoint: resp.Info.Endpoint,

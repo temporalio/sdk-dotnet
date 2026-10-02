@@ -117,8 +117,6 @@ namespace Temporalio.Worker
                         }
                         break;
                     case WorkflowActivationJob.VariantOneofCase.ResolveNexusOperation:
-                        // The job carries only the sequence, so the context is the one the
-                        // operation was scheduled with.
                         var nexusCodec = context.CodecNoContext;
                         if (nexusCodec is IWithSerializationContext<IPayloadCodec> withNexus &&
                             context.Instance?.GetPendingNexusOperationSerializationContext(
@@ -156,8 +154,6 @@ namespace Temporalio.Worker
                         }
                         break;
                     case WorkflowActivationJob.VariantOneofCase.ResolveNexusOperationStart:
-                        // The job carries only the sequence, so the context is the one the
-                        // operation was scheduled with.
                         var nexusStartCodec = context.CodecNoContext;
                         if (nexusStartCodec is IWithSerializationContext<IPayloadCodec> withNexusStart &&
                             context.Instance?.GetPendingNexusOperationSerializationContext(
@@ -357,13 +353,6 @@ namespace Temporalio.Worker
                     }
                     break;
                 case WorkflowCommand.VariantOneofCase.ScheduleNexusOperation:
-                    // Apply the context the operation's converter was scoped to, rather than
-                    // rebuilding one here. For a Temporal System Nexus operation that context comes
-                    // from the operation's registry entry and is not a Nexus context, and the
-                    // nested payloads this encodes are read by the operation's real target. With no
-                    // pending entry there is nothing to scope by, so the input and this command's
-                    // user metadata are both encoded without a context rather than under a guessed
-                    // one.
                     codec = context.CodecNoContext;
                     if (codec is IWithSerializationContext<IPayloadCodec> withNexus &&
                         context.Instance?.GetPendingNexusOperationSerializationContext(
@@ -415,9 +404,6 @@ namespace Temporalio.Worker
                     codec = context.CodecWorkflowContext;
                     break;
             }
-            // Deliberately uses whatever codec the switch above selected for this command, so a
-            // command's user metadata is serialized with the same context as the rest of it. For
-            // ScheduleNexusOperation that is the operation's context.
             if (cmd.UserMetadata != null && codec != null)
             {
                 if (cmd.UserMetadata.Summary != null)

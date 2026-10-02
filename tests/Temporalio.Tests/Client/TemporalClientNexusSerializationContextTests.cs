@@ -59,7 +59,6 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
                             errorType: "ContextFailure",
                             details: new object?[] { "failure-detail" }))
                     : input == HandlerFailInput
-                    // Non-retryable, so the operation fails rather than retrying the task.
                     ? throw new HandlerException(
                         HandlerErrorType.BadRequest,
                         "handler failed on purpose",
@@ -179,21 +178,21 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
         new(endpoint, "ContextService", nameof(IContextService.Echo));
 
     private Task RunAsync(
-        Func<ITemporalClient, RecordingCodec, string, Task> testFunc,
+        Func<ITemporalClient, SigningRecordingCodec, string, Task> testFunc,
         bool allowContextlessDecodeOfSignedPayload = false) =>
         RunAsync(
             (client, codec, endpoint, _) => testFunc(client, codec, endpoint),
             allowContextlessDecodeOfSignedPayload);
 
     private async Task RunAsync(
-        Func<ITemporalClient, RecordingCodec, string, RecordingFailureConverter, Task> testFunc,
+        Func<ITemporalClient, SigningRecordingCodec, string, RecordingFailureConverter, Task> testFunc,
         bool allowContextlessDecodeOfSignedPayload = false)
     {
         // Both sides share the codec so a signature written by one is checked by the other. Any
         // payload the SDK encodes and decodes under different contexts therefore fails the decode,
         // the way a codec keyed on the context would. Only the client gets the recording failure
         // converter, so the contexts it records are the client's.
-        var codec = new RecordingCodec(allowContextlessDecodeOfSignedPayload);
+        var codec = new SigningRecordingCodec(allowContextlessDecodeOfSignedPayload);
         var failureConverter = new RecordingFailureConverter();
         var clientOptions = (TemporalClientOptions)Client.Options.Clone();
         clientOptions.DataConverter = DataConverter.Default with
@@ -286,58 +285,34 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
     /// Records every serialization context it is handed and tags each payload it encodes with the
     /// context used, refusing to decode a payload under a different context than encoded it.
     /// </summary>
-    private class RecordingCodec : IPayloadCodec, IWithSerializationContext<IPayloadCodec>
+    private class SigningRecordingCodec : RecordingPayloadCodec
     {
         private const string SignatureKey = "ser-ctx-signature";
 
-        private readonly List<ISerializationContext?> seen;
-        private readonly ISerializationContext? context;
         // A handle obtained by operation ID decodes a context-encoded payload without a context,
         // so that direction is only an error when a test says it should be.
         private readonly bool allowContextlessDecodeOfSignedPayload;
 
-        public RecordingCodec(bool allowContextlessDecodeOfSignedPayload = false)
+        public SigningRecordingCodec(bool allowContextlessDecodeOfSignedPayload = false)
             : this(new List<ISerializationContext?>(), null, allowContextlessDecodeOfSignedPayload)
         {
         }
 
-        private RecordingCodec(
+        private SigningRecordingCodec(
             List<ISerializationContext?> seen,
             ISerializationContext? context,
             bool allowContextlessDecodeOfSignedPayload)
-        {
-            this.seen = seen;
-            this.context = context;
+            : base(seen, context) =>
             this.allowContextlessDecodeOfSignedPayload = allowContextlessDecodeOfSignedPayload;
-        }
 
-        // Shared by every instance derived via WithSerializationContext, so a test sees them all.
-        public IReadOnlyList<ISerializationContext.Nexus> NexusContexts
-        {
-            get
-            {
-                lock (seen)
-                {
-                    return seen.OfType<ISerializationContext.Nexus>().ToList();
-                }
-            }
-        }
+        public override IPayloadCodec WithSerializationContext(ISerializationContext context) =>
+            new SigningRecordingCodec(Seen, context, allowContextlessDecodeOfSignedPayload);
 
-        public void Reset()
-        {
-            lock (seen)
-            {
-                seen.Clear();
-            }
-        }
-
-        public IPayloadCodec WithSerializationContext(ISerializationContext context) =>
-            new RecordingCodec(seen, context, allowContextlessDecodeOfSignedPayload);
-
-        public Task<IReadOnlyCollection<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads)
+        public override Task<IReadOnlyCollection<Payload>> EncodeAsync(
+            IReadOnlyCollection<Payload> payloads)
         {
             Record();
-            if (context is not ISerializationContext.Nexus nexus)
+            if (Context is not ISerializationContext.Nexus nexus)
             {
                 return Task.FromResult(payloads);
             }
@@ -350,7 +325,8 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
             }).ToList());
         }
 
-        public Task<IReadOnlyCollection<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads)
+        public override Task<IReadOnlyCollection<Payload>> DecodeAsync(
+            IReadOnlyCollection<Payload> payloads)
         {
             Record();
             return Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(p =>
@@ -362,11 +338,11 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
                     // keyed on the context (e.g. a per-endpoint encryption key) could not recover
                     // this payload.
                     Assert.False(
-                        context is ISerializationContext.Nexus,
-                        $"payload encoded without a context was decoded under {context}");
+                        Context is ISerializationContext.Nexus,
+                        $"payload encoded without a context was decoded under {Context}");
                     return p;
                 }
-                if (context is ISerializationContext.Nexus nexus)
+                if (Context is ISerializationContext.Nexus nexus)
                 {
                     Assert.Equal(Signature(nexus), signature.ToStringUtf8());
                 }
@@ -375,7 +351,7 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
                     // The reverse mismatch: encoded under a context, decoded without one.
                     Assert.True(
                         allowContextlessDecodeOfSignedPayload,
-                        $"payload encoded under a Nexus context was decoded under {context}");
+                        $"payload encoded under a Nexus context was decoded under {Context}");
                 }
                 var copy = p.Clone();
                 copy.Metadata.Remove(SignatureKey);
@@ -385,13 +361,5 @@ public class TemporalClientNexusSerializationContextTests : WorkflowEnvironmentT
 
         private static string Signature(ISerializationContext.Nexus nexus) =>
             $"{nexus.Endpoint}:{nexus.Service}:{nexus.Operation}";
-
-        private void Record()
-        {
-            lock (seen)
-            {
-                seen.Add(context);
-            }
-        }
     }
 }

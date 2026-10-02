@@ -1,15 +1,12 @@
 namespace Temporalio.Tests.Nexus;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging.Abstractions;
 using NexusRpc;
 using NexusRpc.Handlers;
-using Temporalio.Api.Common.V1;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Nexus;
@@ -44,7 +41,7 @@ public class NexusSerializationContextTests
         var expected = new ISerializationContext.Nexus(string.Empty, Service, Operation);
         Assert.Equal(expected, NewExecutionContext(string.Empty).SerializationContext);
 
-        var codec = new RecordingCodec();
+        var codec = new RecordingPayloadCodec();
         var serializer = new NexusPayloadSerializer(DataConverter.Default with
         {
             PayloadCodec = codec,
@@ -59,7 +56,7 @@ public class NexusSerializationContextTests
     [Fact]
     public async Task SerializeAsync_WithOperationInScope_UsesOperationContext()
     {
-        var codec = new RecordingCodec();
+        var codec = new RecordingPayloadCodec();
         var serializer = new NexusPayloadSerializer(DataConverter.Default with
         {
             PayloadCodec = codec,
@@ -73,11 +70,22 @@ public class NexusSerializationContextTests
     }
 
     [Fact]
+    public async Task AsyncLocalCurrent_DoesNotEscapeTheAsyncScopeThatSetIt()
+    {
+        // Why WithOperationInScopeAsync does not have to restore the previous value itself.
+        NexusOperationExecutionContext.AsyncLocalCurrent.Value = null;
+
+        await WithOperationInScopeAsync(() => Task.FromResult(string.Empty));
+
+        Assert.Null(NexusOperationExecutionContext.AsyncLocalCurrent.Value);
+    }
+
+    [Fact]
     public async Task SerializeAsync_WithNoOperationInScope_UsesNoContext()
     {
         // The serializer is shared by the whole worker and is reachable outside a Nexus task, where
         // there is no endpoint, service or operation to scope it by.
-        var codec = new RecordingCodec();
+        var codec = new RecordingPayloadCodec();
         var serializer = new NexusPayloadSerializer(DataConverter.Default with
         {
             PayloadCodec = codec,
@@ -91,7 +99,7 @@ public class NexusSerializationContextTests
     [Fact]
     public async Task DeserializeAsync_WithOperationInScope_UsesOperationContext()
     {
-        var codec = new RecordingCodec();
+        var codec = new RecordingPayloadCodec();
         var converter = DataConverter.Default with { PayloadCodec = codec };
         var serializer = new NexusPayloadSerializer(converter);
 
@@ -110,37 +118,13 @@ public class NexusSerializationContextTests
         Assert.Equal(new[] { expected }, codec.NexusContexts);
     }
 
-    [Fact]
-    public async Task Handle_PartiallyIdentifiedOperation_Throws()
-    {
-        // A partially set handle must not be treated as one obtained by operation ID, which has
-        // no context.
-        var handle = new Temporalio.Client.NexusOperationHandle<string>(
-            Client: null!, Id: "op-1")
-        {
-            Endpoint = Endpoint,
-            Operation = Operation,
-        };
-
-        var exc = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => handle.GetResultAsync());
-        Assert.Contains("must all be set or all be null", exc.Message);
-    }
-
     // Awaits inside the scope so the context has to survive the continuation, not just the
     // synchronous prologue of the call.
     private static async Task<T> WithOperationInScopeAsync<T>(
         Func<Task<T>> action, string endpoint = Endpoint)
     {
         NexusOperationExecutionContext.AsyncLocalCurrent.Value = NewExecutionContext(endpoint);
-        try
-        {
-            return await action().ConfigureAwait(false);
-        }
-        finally
-        {
-            NexusOperationExecutionContext.AsyncLocalCurrent.Value = null;
-        }
+        return await action().ConfigureAwait(false);
     }
 
     private static NexusOperationExecutionContext NewExecutionContext(
@@ -156,76 +140,4 @@ public class NexusSerializationContextTests
             runtimeMetricMeter: new Lazy<MetricMeter>(
                 () => throw new InvalidOperationException("metric meter not expected in test")),
             temporalClient: null);
-
-    /// <summary>
-    /// Records every serialization context it is handed, so a test can assert which contexts the
-    /// SDK scoped a conversion by.
-    /// </summary>
-    private class RecordingCodec : IPayloadCodec, IWithSerializationContext<IPayloadCodec>
-    {
-        private readonly List<ISerializationContext?> seen;
-        private readonly ISerializationContext? context;
-
-        public RecordingCodec()
-            : this(new List<ISerializationContext?>(), null)
-        {
-        }
-
-        private RecordingCodec(List<ISerializationContext?> seen, ISerializationContext? context)
-        {
-            this.seen = seen;
-            this.context = context;
-        }
-
-        // Shared by every instance derived via WithSerializationContext, so a test sees them all.
-        public IReadOnlyList<ISerializationContext?> Contexts
-        {
-            get
-            {
-                lock (seen)
-                {
-                    return seen.ToList();
-                }
-            }
-        }
-
-        public IReadOnlyList<ISerializationContext.Nexus> NexusContexts =>
-            Contexts.OfType<ISerializationContext.Nexus>().ToList();
-
-        public void Reset()
-        {
-            lock (seen)
-            {
-                seen.Clear();
-            }
-        }
-
-        public IPayloadCodec WithSerializationContext(ISerializationContext context) =>
-            new RecordingCodec(seen, context);
-
-        public async Task<IReadOnlyCollection<Payload>> EncodeAsync(
-            IReadOnlyCollection<Payload> payloads)
-        {
-            // Yield first so the recorded context is the one that survived the continuation.
-            await Task.Yield();
-            Record();
-            return payloads;
-        }
-
-        public async Task<IReadOnlyCollection<Payload>> DecodeAsync(
-            IReadOnlyCollection<Payload> payloads)
-        {
-            await Task.Yield();
-            Record();
-            return payloads;
-        }
-
-        private void Record()
-        {
-            lock (seen)
-            {
-                seen.Add(context);
-            }
-        }
-    }
 }

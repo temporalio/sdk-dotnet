@@ -164,17 +164,14 @@ namespace Temporalio.Worker
         }
 
         private async Task<StartOperationResponse> HandleStartOperationAsync(
-            RunningTask running,
-            PollNexusTaskQueueResponse task,
-            DateTime? requestDeadline,
-            Converters.ISerializationContext.Nexus serializationContext)
+            RunningTask running, PollNexusTaskQueueResponse task, DateTime? requestDeadline, string endpoint)
         {
             // Create context
             RemoveInvalidHeaders(task.Request.Header);
             var startOp = task.Request.StartOperation;
             var context = new OperationStartContext(
-                Service: serializationContext.Service,
-                Operation: serializationContext.Operation,
+                Service: startOp.Service,
+                Operation: startOp.Operation,
                 CancellationToken: running.CancellationTokenSource.Token,
                 RequestId: startOp.RequestId)
             {
@@ -202,7 +199,7 @@ namespace Temporalio.Worker
             running.OnCancelReason = reason => context.CancellationReason = reason;
 
             // Start operation
-            var executionContext = NewExecutionContext(context, serializationContext);
+            var executionContext = NewExecutionContext(context, endpoint);
             NexusOperationExecutionContext.AsyncLocalCurrent.Value = executionContext;
             // Stash the inbound links in common.v1.Link form on the operation context so the RPCs
             // the handler issues (e.g. signal, signalWithStart, start) can attach them to their
@@ -298,17 +295,14 @@ namespace Temporalio.Worker
         }
 
         private async Task<CancelOperationResponse> HandleCancelOperationAsync(
-            RunningTask running,
-            PollNexusTaskQueueResponse task,
-            DateTime? requestDeadline,
-            Converters.ISerializationContext.Nexus serializationContext)
+            RunningTask running, PollNexusTaskQueueResponse task, DateTime? requestDeadline, string endpoint)
         {
             // Create context
             RemoveInvalidHeaders(task.Request.Header);
             var cancelOp = task.Request.CancelOperation;
             var context = new OperationCancelContext(
-                Service: serializationContext.Service,
-                Operation: serializationContext.Operation,
+                Service: cancelOp.Service,
+                Operation: cancelOp.Operation,
                 CancellationToken: running.CancellationTokenSource.Token,
                 OperationToken: cancelOp.OperationToken)
             {
@@ -319,8 +313,7 @@ namespace Temporalio.Worker
             running.OnCancelReason = reason => context.CancellationReason = reason;
 
             // Cancel operation
-            NexusOperationExecutionContext.AsyncLocalCurrent.Value =
-                NewExecutionContext(context, serializationContext);
+            NexusOperationExecutionContext.AsyncLocalCurrent.Value = NewExecutionContext(context, endpoint);
             try
             {
                 await handler.CancelOperationAsync(context).ConfigureAwait(false);
@@ -339,8 +332,8 @@ namespace Temporalio.Worker
         private async Task<NexusTaskCompletion> HandlePollTaskInternalAsync(
             RunningTask running, PollNexusTaskQueueResponse task, DateTime? requestDeadline, string endpoint)
         {
-            // Built once per task and declared outside the try so a failure is encoded with the
-            // same context the handler used.
+            // Declared outside the try so the catch can encode the failure with the same context
+            // the handler used; the handler derives its own from NexusOperationExecutionContext.
             Converters.ISerializationContext.Nexus? serializationContext = null;
             try
             {
@@ -353,7 +346,7 @@ namespace Temporalio.Worker
                             Service: task.Request.StartOperation.Service,
                             Operation: task.Request.StartOperation.Operation);
                         var startResp = await HandleStartOperationAsync(
-                            running, task, requestDeadline, serializationContext).ConfigureAwait(false);
+                            running, task, requestDeadline, endpoint).ConfigureAwait(false);
                         return new()
                         {
                             TaskToken = task.TaskToken,
@@ -365,7 +358,7 @@ namespace Temporalio.Worker
                             Service: task.Request.CancelOperation.Service,
                             Operation: task.Request.CancelOperation.Operation);
                         var cancelResp = await HandleCancelOperationAsync(
-                            running, task, requestDeadline, serializationContext).ConfigureAwait(false);
+                            running, task, requestDeadline, endpoint).ConfigureAwait(false);
                         return new()
                         {
                             TaskToken = task.TaskToken,
@@ -395,14 +388,10 @@ namespace Temporalio.Worker
             }
         }
 
-        private NexusOperationExecutionContext NewExecutionContext(
-            OperationContext handlerContext, Converters.ISerializationContext.Nexus serializationContext) =>
+        private NexusOperationExecutionContext NewExecutionContext(OperationContext handlerContext, string endpoint) =>
             new(
                 handlerContext: handlerContext,
-                info: new(
-                    worker.Client.Options.Namespace,
-                    worker.Options.TaskQueue!,
-                    serializationContext.Endpoint),
+                info: new(worker.Client.Options.Namespace, worker.Options.TaskQueue!, endpoint),
                 logger: worker.LoggerFactory.CreateLogger($"Temporalio.Nexus:{handlerContext.Operation}"),
                 runtimeMetricMeter: worker.MetricMeter,
                 temporalClient: worker.Client as ITemporalClient);

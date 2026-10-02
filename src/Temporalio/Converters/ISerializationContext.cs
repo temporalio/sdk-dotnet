@@ -121,6 +121,9 @@ namespace Temporalio.Converters
         /// encoded without a context.
         /// </para>
         /// <para>
+        /// WARNING: This API is experimental and may change in the future.
+        /// </para>
+        /// <para>
         /// WARNING: This constructor may have required properties added and is not guaranteed to
         /// remain compatible from one version to the next.
         /// </para>

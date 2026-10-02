@@ -26,46 +26,27 @@ namespace Temporalio.Client
         /// starting one.
         /// </summary>
         /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
-        public string? Endpoint { get; init; }
+        public string? Endpoint => SerializationContext?.Endpoint;
 
         /// <summary>
         /// Gets the service name, or null for a handle obtained by operation ID rather than by
         /// starting one.
         /// </summary>
         /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
-        public string? Service { get; init; }
+        public string? Service => SerializationContext?.Service;
 
         /// <summary>
         /// Gets the operation name, or null for a handle obtained by operation ID rather than by
         /// starting one.
         /// </summary>
         /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
-        public string? Operation { get; init; }
+        public string? Operation => SerializationContext?.Operation;
 
         /// <summary>
-        /// Gets the serialization context for this operation, or null when the operation is not
-        /// identified.
+        /// Gets the serialization context naming the operation, or null for a handle obtained by
+        /// operation ID rather than by starting one.
         /// </summary>
-        /// <remarks>
-        /// These are init-only properties that can be set independently, so the all-or-nothing
-        /// invariant is checked here rather than in a constructor. A partially set handle throws
-        /// rather than returning null, so a mistake in setting them is not treated as a handle
-        /// obtained by operation ID.
-        /// </remarks>
-        /// <exception cref="InvalidOperationException">
-        /// If only some of <see cref="Endpoint"/>, <see cref="Service"/> and
-        /// <see cref="Operation"/> are set.
-        /// </exception>
-        private ISerializationContext.Nexus? NexusSerializationContext =>
-            (Endpoint, Service, Operation) switch
-            {
-                (null, null, null) => null,
-                (string endpoint, string service, string operation) =>
-                    new(endpoint, service, operation),
-                _ => throw new InvalidOperationException(
-                    "Endpoint, Service and Operation must all be set or all be null, got " +
-                    $"Endpoint={Endpoint}, Service={Service}, Operation={Operation}"),
-            };
+        internal ISerializationContext.Nexus? SerializationContext { get; init; }
 
         /// <summary>
         /// Wait for the result of the operation, discarding the return value.
@@ -94,7 +75,7 @@ namespace Temporalio.Client
         public virtual async Task<TResult> GetResultAsync<TResult>(
             RpcOptions? rpcOptions = null)
         {
-            var dataConverter = NexusSerializationContext is { } context ?
+            var dataConverter = SerializationContext is { } context ?
                 Client.Options.DataConverter.WithSerializationContext(context) :
                 Client.Options.DataConverter;
 
