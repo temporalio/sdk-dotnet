@@ -70,7 +70,8 @@ Prerequisites:
   rustup honors that pin
 * [Protobuf Compiler](https://protobuf.dev/) (i.e. `protoc` on the `PATH`)
 * [mise](https://mise.jdx.dev/getting-started.html) — running `mise install` in the repository root installs the
-  tool versions pinned in [`mise.toml`](mise.toml) and puts them on the `PATH`, matching what CI uses
+  tool versions pinned in [`mise.toml`](mise.toml) and puts them on the `PATH`, matching what CI uses.
+  It also installs the .NET SDK pinned in `global.json`, so installing .NET separately is optional
 * This repository, cloned recursively
 
 With all prerequisites in place, run:
