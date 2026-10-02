@@ -2255,9 +2255,7 @@ namespace Temporalio.Worker
                 var source = new TaskCompletionSource<object?>();
                 // Only create the command if not infinite. We use seq 0 to represent uncreated.
                 uint seq = 0;
-                IReadOnlyCollection<EventGroupMarker> markers =
-                    input.CapturedEventGroupMarkers ??
-                    EventGroupAmbient.CaptureMarkers(input.EventGroups);
+                var markers = EventGroupAmbient.CaptureMarkers(input.EventGroups);
                 if (delay != Timeout.InfiniteTimeSpan)
                 {
                     seq = ++instance.timerCounter;
@@ -2383,7 +2381,7 @@ namespace Temporalio.Worker
                         instance.AddCommand(workflowCommand, markers);
                         return seq;
                     },
-                    markers,
+                    input.Options.EventGroups,
                     input.Options.CancellationToken ?? instance.CancellationToken);
             }
 
@@ -2474,7 +2472,7 @@ namespace Temporalio.Worker
                         instance.AddCommand(workflowCommand, markers);
                         return seq;
                     },
-                    markers,
+                    input.Options.EventGroups,
                     input.Options.CancellationToken ?? instance.CancellationToken);
             }
 
@@ -2979,7 +2977,7 @@ namespace Temporalio.Worker
                 IPayloadConverter payloadConverter,
                 ISerializationContext.Activity serializationContext,
                 Func<DoBackoff?, uint> applyScheduleCommand,
-                IReadOnlyCollection<EventGroupMarker> eventGroupMarkers,
+                IReadOnlyCollection<EventGroup>? eventGroups,
                 CancellationToken cancellationToken)
             {
                 // We do not even want to schedule if the cancellation token is already cancelled.
@@ -3071,10 +3069,7 @@ namespace Temporalio.Worker
                                     Delay: res.Backoff.BackoffDuration.ToTimeSpan(),
                                     CancellationToken: cancellationToken,
                                     Summary: "LocalActivityBackoff",
-                                    EventGroups: null)
-                                {
-                                    CapturedEventGroupMarkers = eventGroupMarkers,
-                                }).ConfigureAwait(true);
+                                    EventGroups: eventGroups)).ConfigureAwait(true);
                                 // Re-schedule with backoff info
                                 seq = applyScheduleCommand(res.Backoff);
                                 pending = pending with { CompletionSource = new TaskCompletionSource<ActivityResolution>() };

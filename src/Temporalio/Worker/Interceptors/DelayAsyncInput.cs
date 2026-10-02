@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Temporalio.Api.Sdk.V1;
 using Temporalio.Workflows;
 
 namespace Temporalio.Worker.Interceptors
@@ -32,11 +31,5 @@ namespace Temporalio.Worker.Interceptors
             : this(options.Delay, options.CancellationToken, options.Summary, options.EventGroups)
         {
         }
-
-        /// <summary>
-        /// Gets a request-time marker snapshot. When set, Delay uses it instead of recapturing
-        /// ambient Event Groups (local-activity backoff timers).
-        /// </summary>
-        internal IReadOnlyCollection<EventGroupMarker>? CapturedEventGroupMarkers { get; init; }
     }
 }

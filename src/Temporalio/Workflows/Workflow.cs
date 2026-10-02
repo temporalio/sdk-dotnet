@@ -462,7 +462,7 @@ namespace Temporalio.Workflows
         /// </para>
         /// <para>WARNING: This API is experimental.</para>
         /// </remarks>
-        public static void DeprecatePatch(string patchId, DeprecatePatchOptions? options = null) =>
+        public static void DeprecatePatch(string patchId, DeprecatePatchOptions? options) =>
             Context.Patch(patchId, deprecated: true, options?.EventGroups);
 
         /// <summary>
@@ -1175,7 +1175,7 @@ namespace Temporalio.Workflows
         /// </para>
         /// <para>WARNING: This API is experimental.</para>
         /// </remarks>
-        public static bool Patched(string patchId, PatchOptions? options = null) =>
+        public static bool Patched(string patchId, PatchOptions? options) =>
             Context.Patch(patchId, deprecated: false, options?.EventGroups);
 
         /// <summary>

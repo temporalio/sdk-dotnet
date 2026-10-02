@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Temporalio.Workflows
 {
     /// <summary>
-    /// Options for <see cref="ExternalWorkflowHandle.CancelAsync()" />.
+    /// Options for <see cref="ExternalWorkflowHandle.CancelAsync(ExternalWorkflowCancelOptions)" />.
     /// </summary>
     /// <remarks>WARNING: This API is experimental.</remarks>
     public class ExternalWorkflowCancelOptions : ICloneable

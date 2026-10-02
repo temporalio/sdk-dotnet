@@ -28,7 +28,7 @@ namespace Temporalio.Workflows
         internal static EventGroupScope PushExplicit(IReadOnlyCollection<EventGroup> groups)
         {
             var previous = CurrentState;
-            var nextExplicit = new Dictionary<string, EventGroup>(previous.Explicit.Count);
+            var nextExplicit = new Dictionary<string, EventGroup>(previous.Explicit.Count + groups.Count);
             foreach (var entry in previous.Explicit)
             {
                 nextExplicit.Add(entry.Key, entry.Value);
@@ -62,7 +62,7 @@ namespace Temporalio.Workflows
             var installed = new State
             {
                 Implicit = group,
-                Explicit = State.NoExplicitGroups,
+                Explicit = State.Empty.Explicit,
             };
             Current.Value = installed;
             return new EventGroupScope(installed, previous);
@@ -97,7 +97,7 @@ namespace Temporalio.Workflows
             }
             else
             {
-                var merged = new Dictionary<string, EventGroup>(state.Explicit.Count);
+                var merged = new Dictionary<string, EventGroup>(state.Explicit.Count + directs.Count);
                 foreach (var entry in state.Explicit)
                 {
                     merged.Add(entry.Key, entry.Value);
@@ -155,16 +155,15 @@ namespace Temporalio.Workflows
         internal sealed class State
         {
             /// <summary>
-            /// A shared empty state. Callers must not mutate <see cref="Explicit" />.
+            /// Shared empty set of explicit Event Groups.
             /// </summary>
-            public static readonly State Empty = new();
+            public static readonly IReadOnlyDictionary<string, EventGroup> NoExplicitGroups =
+                new Dictionary<string, EventGroup>(0);
 
             /// <summary>
-            /// Shared explicit set for <see cref="Empty" /> and implicit scopes, so those paths do
-            /// not allocate.
+            /// Shared empty state.
             /// </summary>
-            internal static readonly IReadOnlyDictionary<string, EventGroup> NoExplicitGroups =
-                new Dictionary<string, EventGroup>();
+            public static readonly State Empty = new();
 
             /// <summary>
             /// Gets the implicit inbound signal or update group, if any.
