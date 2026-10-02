@@ -6760,6 +6760,57 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public class ChildFailToFailParentWorkflow
+    {
+        [WorkflowRun]
+        public Task RunAsync() =>
+            Workflow.ExecuteChildWorkflowAsync(
+                (ChildFailToFailChildWorkflow wf) => wf.RunAsync(), new());
+    }
+
+    [Workflow]
+    public class ChildFailToFailChildWorkflow
+    {
+        [WorkflowRun]
+        public Task RunAsync() =>
+            throw new ApplicationFailureException("Intentional child failure");
+    }
+
+    public class CannotDeserializeIntentionalFailureConverter : DefaultFailureConverter
+    {
+        public override Exception ToException(Failure failure, IPayloadConverter payloadConverter)
+        {
+            if (failure.Message == "Intentional child failure")
+            {
+                throw new InvalidOperationException("Intentional conversion failure");
+            }
+            return base.ToException(failure, payloadConverter);
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_ChildFailToFail_FailsTask()
+    {
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            FailureConverter = new CannotDeserializeIntentionalFailureConverter(),
+        };
+        var client = new TemporalClient(Client.Connection, newOptions);
+        await ExecuteWorkerAsync<ChildFailToFailParentWorkflow>(
+            async worker =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (ChildFailToFailParentWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                // Previously the conversion error was swallowed and the workflow hung
+                await AssertTaskFailureContainsEventuallyAsync(handle, "Intentional conversion failure");
+            },
+            new TemporalWorkerOptions().AddWorkflow<ChildFailToFailChildWorkflow>(),
+            client);
+    }
+
+    [Workflow]
     public class DetachedCancellationWorkflow
     {
         public class Activities
