@@ -60,11 +60,12 @@ namespace Temporalio.Client
             {
                 try
                 {
+                    var serializationContext = new ISerializationContext.Nexus(
+                        Endpoint: input.Endpoint,
+                        Service: input.Service,
+                        Operation: input.Operation);
                     var dataConverter = Client.Options.DataConverter.WithSerializationContext(
-                        new ISerializationContext.Nexus(
-                            Endpoint: input.Endpoint,
-                            Service: input.Service,
-                            Operation: input.Operation));
+                        serializationContext);
 
                     var req = new StartNexusOperationExecutionRequest()
                     {
@@ -109,10 +110,7 @@ namespace Temporalio.Client
                         Id: input.Options.Id!,
                         RunId: string.IsNullOrEmpty(resp.RunId) ? null : resp.RunId)
                     {
-                        SerializationContext = new(
-                            Endpoint: input.Endpoint,
-                            Service: input.Service,
-                            Operation: input.Operation),
+                        SerializationContext = serializationContext,
                     };
                 }
                 catch (RpcException e) when (
