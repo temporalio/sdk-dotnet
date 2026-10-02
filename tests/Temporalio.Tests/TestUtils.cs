@@ -26,53 +26,6 @@ public static class TestUtils
         return port;
     }
 
-    public static async Task DeleteAllSchedulesAsync(ITemporalClient client)
-    {
-        // We will try this 3 times
-        var tries = 0;
-        while (true)
-        {
-            await foreach (var sched in client.ListSchedulesAsync())
-            {
-                try
-                {
-                    await client.GetScheduleHandle(sched.Id).DeleteAsync();
-                }
-                catch (RpcException e) when (e.Code == RpcException.StatusCode.NotFound)
-                {
-                    // Ignore not-found errors
-                }
-            }
-            try
-            {
-                await AssertNoSchedulesAsync(client);
-                return;
-            }
-            catch
-            {
-                if (++tries >= 3)
-                {
-                    throw;
-                }
-            }
-        }
-    }
-
-    public static async Task AssertNoSchedulesAsync(ITemporalClient client)
-    {
-        await AssertMore.EqualEventuallyAsync(
-            0,
-            async () =>
-            {
-                var count = 0;
-                await foreach (var sched in client.ListSchedulesAsync())
-                {
-                    count++;
-                }
-                return count;
-            });
-    }
-
     public record LogEntry(
         LogLevel Level,
         EventId EventId,
