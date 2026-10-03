@@ -2689,9 +2689,17 @@ namespace Temporalio.Worker
                         new CanceledFailureException("Nexus operation cancelled before scheduled"));
                 }
 
+                var isSystemEndpoint = SystemNexusPayloadVisitor.IsSystemEndpoint(
+                    input.ClientOptions.Endpoint);
                 ISerializationContext? serializationContext = null;
-                if (SystemNexusPayloadVisitor.IsSystemEndpoint(input.ClientOptions.Endpoint) &&
-                    input.Arg is { } arg &&
+                if (!isSystemEndpoint)
+                {
+                    serializationContext = new ISerializationContext.Nexus(
+                        Endpoint: input.ClientOptions.Endpoint!,
+                        Service: input.Service,
+                        Operation: input.OperationName);
+                }
+                else if (input.Arg is { } arg &&
                     NexgenOperationRegistry.Operations.TryGetValue(
                         (input.Service, input.OperationName), out var operationInfo))
                 {
@@ -2700,20 +2708,21 @@ namespace Temporalio.Worker
 
                 var payloadConverter = instance.payloadConverterNoContext;
                 var failureConverter = instance.failureConverterNoContext;
-                if (serializationContext != null)
+                if (serializationContext is { } context)
                 {
                     if (payloadConverter is IWithSerializationContext<IPayloadConverter> payloadWithContext)
                     {
-                        payloadConverter = payloadWithContext.WithSerializationContext(serializationContext);
+                        payloadConverter =
+                            payloadWithContext.WithSerializationContext(context);
                     }
                     if (failureConverter is IWithSerializationContext<IFailureConverter> failureWithContext)
                     {
-                        failureConverter = failureWithContext.WithSerializationContext(serializationContext);
+                        failureConverter =
+                            failureWithContext.WithSerializationContext(context);
                     }
                 }
 
-                var systemNexusPayloadConverter = SystemNexusPayloadVisitor.IsSystemEndpoint(
-                    input.ClientOptions.Endpoint) ?
+                var systemNexusPayloadConverter = isSystemEndpoint ?
                     new SystemNexusPayloadConverter(payloadConverter, failureConverter) : null;
                 var operationPayloadConverter =
                     systemNexusPayloadConverter ?? payloadConverter;

@@ -24,6 +24,17 @@ to docs, or any other relevant information.
 - `DevServerOptions` and `TestServerOptions` are no longer marked unstable. They remain specific to
   the dev server and test server implementations and may no longer be valid if those change.
 
+### Added
+
+- Added experimental `ISerializationContext.Nexus` support for Nexus callers and handlers. Callers
+  use it for operation inputs, results, failures, and user metadata; handlers use it for inputs,
+  synchronous results, and failures. Standalone handles created by starting an operation use their
+  start request's context, including when the start returned an already-running operation. It is
+  not applied to the result of an asynchronous operation, or to a handle obtained from
+  `GetNexusOperationHandle` with only an operation ID.
+- Add experimental `Endpoint`, `Operation`, and `Service` properties to the `NexusOperationHandle`
+  class.
+
 ### Fixed
 
 - Source Link in the published symbol packages now resolves every source file, and packages are
