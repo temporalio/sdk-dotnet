@@ -29,6 +29,9 @@ to docs, or any other relevant information.
 - Source Link in the published symbol packages now resolves every source file, and packages are
   built with normalized paths so they are reproducible.
 - Removed possiblity of a use-after-free in Temporalio.Bridge.ByteArray because of an early finalization.
+- `DefaultFailureConverter.WithEncodedCommonAttributes` now also encodes the message and stack trace
+  of nested causes when a previously received failure exception is thrown again. Previously the
+  decoded cause messages were sent in plain text.
 
 ## [1.20.0] - 2026-09-28
 
