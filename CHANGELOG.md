@@ -29,6 +29,8 @@ to docs, or any other relevant information.
 - Source Link in the published symbol packages now resolves every source file, and packages are
   built with normalized paths so they are reproducible.
 - Removed possiblity of a use-after-free in Temporalio.Bridge.ByteArray because of an early finalization.
+- `Temporalio.Extensions.DiagnosticSource.CustomMetricMeter` no longer throws when a tag is appended
+  with a key that the tag set already has. The appended value now replaces the existing one.
 
 ## [1.20.0] - 2026-09-28
 
