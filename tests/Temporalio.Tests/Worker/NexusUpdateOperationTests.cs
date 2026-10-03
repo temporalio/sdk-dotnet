@@ -302,12 +302,19 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
         // the latest run.
         await RunWithCounterAsync(async (endpoint, taskQueue, counter) =>
         {
+            // Keep the update in flight until the asynchronous-start marker is observable. Without
+            // this gate, a fast update can complete before its history is inspected.
+            await counter.SignalAsync(wf => wf.SetHoldAsync(true));
+
             var runId = counter.ResultRunId!;
             var caller = await RunCallerAsync(
                 taskQueue,
                 endpoint,
                 new(counter.Id, Amount: 5, UpdateId: "runid-update", RunId: runId));
-            Assert.Equal(5, await caller.GetResultAsync<int>());
+
+            await AssertMore.HasEventEventuallyAsync(
+                caller, e => e.EventType == EventType.NexusOperationStarted);
+            await counter.SignalAsync(wf => wf.SetHoldAsync(false));
 
             // Capture the operation token off the caller's NexusOperationStarted event (the async
             // start marker) and decode it: the run ID (rid) must be the counter workflow's run.
@@ -320,6 +327,7 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
             Assert.Equal(runId, handle.RunId);
             Assert.Equal(counter.Id, handle.WorkflowId);
             Assert.Equal("runid-update", handle.UpdateId);
+            Assert.Equal(5, await caller.GetResultAsync<int>());
         });
     }
 
