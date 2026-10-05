@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Google.Protobuf;
 using Google.Protobuf.Collections;
 using Temporalio.Api.Common.V1;
 using Temporalio.Bridge.Api.ActivityResult;
@@ -61,13 +58,15 @@ namespace Temporalio.Worker
                         if (context.CodecWorkflowContext != null)
                         {
                             await DecodeAsync(context.CodecWorkflowContext, job.DoUpdate.Headers).ConfigureAwait(false);
-                            await DecodeAsync(context.CodecWorkflowContext, job.DoUpdate.Input).ConfigureAwait(false);
+                            await PayloadCodecHelper.DecodeAsync(
+                                context.CodecWorkflowContext, job.DoUpdate.Input).ConfigureAwait(false);
                         }
                         break;
                     case WorkflowActivationJob.VariantOneofCase.QueryWorkflow:
                         if (context.CodecWorkflowContext != null)
                         {
-                            await DecodeAsync(context.CodecWorkflowContext, job.QueryWorkflow.Arguments).ConfigureAwait(false);
+                            await PayloadCodecHelper.DecodeAsync(
+                                context.CodecWorkflowContext, job.QueryWorkflow.Arguments).ConfigureAwait(false);
                             await DecodeAsync(context.CodecWorkflowContext, job.QueryWorkflow.Headers).ConfigureAwait(false);
                         }
                         break;
@@ -131,7 +130,7 @@ namespace Temporalio.Worker
                         }
                         if (job.ResolveNexusOperation.Result.Completed != null)
                         {
-                            await DecodeAsync(
+                            await PayloadCodecHelper.DecodeAsync(
                                 nexusCodec, job.ResolveNexusOperation.Result.Completed).
                                 ConfigureAwait(false);
                         }
@@ -208,7 +207,8 @@ namespace Temporalio.Worker
                     case WorkflowActivationJob.VariantOneofCase.SignalWorkflow:
                         if (context.CodecWorkflowContext != null)
                         {
-                            await DecodeAsync(context.CodecWorkflowContext, job.SignalWorkflow.Input).ConfigureAwait(false);
+                            await PayloadCodecHelper.DecodeAsync(
+                                context.CodecWorkflowContext, job.SignalWorkflow.Input).ConfigureAwait(false);
                             await DecodeAsync(context.CodecWorkflowContext, job.SignalWorkflow.Headers).ConfigureAwait(false);
                         }
                         break;
@@ -232,7 +232,7 @@ namespace Temporalio.Worker
                     codec = context.CodecWorkflowContext;
                     if (cmd.CancelWorkflowExecution.Details != null && codec != null)
                     {
-                        await EncodeAsync(
+                        await PayloadCodecHelper.EncodeAsync(
                             codec,
                             cmd.CancelWorkflowExecution.Details.Payloads_).ConfigureAwait(false);
                     }
@@ -241,7 +241,7 @@ namespace Temporalio.Worker
                     codec = context.CodecWorkflowContext;
                     if (cmd.CompleteWorkflowExecution.Result != null && codec != null)
                     {
-                        await EncodeAsync(
+                        await PayloadCodecHelper.EncodeAsync(
                             codec, cmd.CompleteWorkflowExecution.Result).ConfigureAwait(false);
                     }
                     break;
@@ -249,7 +249,7 @@ namespace Temporalio.Worker
                     codec = context.CodecWorkflowContext;
                     if (codec != null)
                     {
-                        await EncodeAsync(
+                        await PayloadCodecHelper.EncodeAsync(
                                 codec, cmd.ContinueAsNewWorkflowExecution.Arguments).ConfigureAwait(false);
                         await EncodeAsync(
                             codec, cmd.ContinueAsNewWorkflowExecution.Memo).ConfigureAwait(false);
@@ -282,7 +282,7 @@ namespace Temporalio.Worker
                     }
                     else if (cmd.RespondToQuery.Succeeded?.Response != null && codec != null)
                     {
-                        await EncodeAsync(
+                        await PayloadCodecHelper.EncodeAsync(
                             codec, cmd.RespondToQuery.Succeeded.Response).ConfigureAwait(false);
                     }
                     break;
@@ -303,7 +303,8 @@ namespace Temporalio.Worker
                     }
                     if (codec != null)
                     {
-                        await EncodeAsync(codec, cmd.ScheduleActivity.Arguments).ConfigureAwait(false);
+                        await PayloadCodecHelper.EncodeAsync(
+                            codec, cmd.ScheduleActivity.Arguments).ConfigureAwait(false);
                         await EncodeAsync(codec, cmd.ScheduleActivity.Headers).ConfigureAwait(false);
                     }
                     break;
@@ -324,7 +325,7 @@ namespace Temporalio.Worker
                     }
                     if (codec != null)
                     {
-                        await EncodeAsync(
+                        await PayloadCodecHelper.EncodeAsync(
                             codec, cmd.ScheduleLocalActivity.Arguments).ConfigureAwait(false);
                         await EncodeAsync(
                             codec, cmd.ScheduleLocalActivity.Headers).ConfigureAwait(false);
@@ -345,7 +346,7 @@ namespace Temporalio.Worker
                     }
                     if (codec != null)
                     {
-                        await EncodeAsync(
+                        await PayloadCodecHelper.EncodeAsync(
                             codec, cmd.SignalExternalWorkflowExecution.Args).ConfigureAwait(false);
                         await EncodeAsync(
                             codec, cmd.SignalExternalWorkflowExecution.Headers).ConfigureAwait(false);
@@ -361,7 +362,8 @@ namespace Temporalio.Worker
                     }
                     if (cmd.ScheduleNexusOperation.Input != null && codec != null)
                     {
-                        await EncodeAsync(codec, cmd.ScheduleNexusOperation.Input).ConfigureAwait(false);
+                        await PayloadCodecHelper.EncodeAsync(
+                            codec, cmd.ScheduleNexusOperation.Input).ConfigureAwait(false);
                     }
                     break;
                 case WorkflowCommand.VariantOneofCase.StartChildWorkflowExecution:
@@ -376,7 +378,7 @@ namespace Temporalio.Worker
                     }
                     if (codec != null)
                     {
-                        await EncodeAsync(
+                        await PayloadCodecHelper.EncodeAsync(
                             codec, cmd.StartChildWorkflowExecution.Input).ConfigureAwait(false);
                         await EncodeAsync(
                             codec, cmd.StartChildWorkflowExecution.Memo).ConfigureAwait(false);
@@ -391,7 +393,7 @@ namespace Temporalio.Worker
                     codec = context.CodecWorkflowContext;
                     if (cmd.UpdateResponse.Completed is { } updateCompleted && codec != null)
                     {
-                        await EncodeAsync(codec, updateCompleted).ConfigureAwait(false);
+                        await PayloadCodecHelper.EncodeAsync(codec, updateCompleted).ConfigureAwait(false);
                     }
                     else if (cmd.UpdateResponse.Rejected is { } updateRejected && codec != null)
                     {
@@ -406,11 +408,13 @@ namespace Temporalio.Worker
             {
                 if (cmd.UserMetadata.Summary != null)
                 {
-                    await EncodeAsync(codec, cmd.UserMetadata.Summary).ConfigureAwait(false);
+                    await PayloadCodecHelper.EncodeAsync(
+                        codec, cmd.UserMetadata.Summary).ConfigureAwait(false);
                 }
                 if (cmd.UserMetadata.Details != null)
                 {
-                    await EncodeAsync(codec, cmd.UserMetadata.Details).ConfigureAwait(false);
+                    await PayloadCodecHelper.EncodeAsync(
+                        codec, cmd.UserMetadata.Details).ConfigureAwait(false);
                 }
             }
             if (codec != null)
@@ -419,7 +423,7 @@ namespace Temporalio.Worker
                 {
                     if (marker.Label?.Label_ is { } markerLabel)
                     {
-                        await EncodeAsync(codec, markerLabel).ConfigureAwait(false);
+                        await PayloadCodecHelper.EncodeAsync(codec, markerLabel).ConfigureAwait(false);
                     }
                 }
             }
@@ -432,66 +436,8 @@ namespace Temporalio.Worker
             {
                 if (val != null)
                 {
-                    await EncodeAsync(codec, val).ConfigureAwait(false);
+                    await PayloadCodecHelper.EncodeAsync(codec, val).ConfigureAwait(false);
                 }
-            }
-        }
-
-        private static async Task EncodeAsync(
-            IPayloadCodec codec, RepeatedField<Payload> payloads)
-        {
-            if (payloads.Count == 0)
-            {
-                return;
-            }
-            var newPayloads = new List<Payload>();
-            var codecPayloads = new List<Payload>();
-            foreach (var payload in payloads)
-            {
-                if (!await SystemNexusPayloadVisitor.TryVisitAsync(
-                        payload,
-                        payload => EncodeAsync(codec, payload),
-                        nestedPayloads => EncodeAsync(codec, nestedPayloads)).ConfigureAwait(false))
-                {
-                    codecPayloads.Add(payload);
-                    continue;
-                }
-
-                if (codecPayloads.Count > 0)
-                {
-                    newPayloads.AddRange(await codec.EncodeAsync(codecPayloads).ConfigureAwait(false));
-                    codecPayloads.Clear();
-                }
-                newPayloads.Add(payload);
-            }
-            if (codecPayloads.Count > 0)
-            {
-                newPayloads.AddRange(await codec.EncodeAsync(codecPayloads).ConfigureAwait(false));
-            }
-            payloads.Clear();
-            payloads.AddRange(newPayloads);
-        }
-
-        private static async Task EncodeAsync(IPayloadCodec codec, Payload payload)
-        {
-            if (await SystemNexusPayloadVisitor.TryVisitAsync(
-                    payload,
-                    nestedPayload => EncodeAsync(codec, nestedPayload),
-                    nestedPayloads => EncodeAsync(codec, nestedPayloads)).ConfigureAwait(false))
-            {
-                return;
-            }
-            // We are gonna require a single result here. It is important that we do Single() call
-            // before clearing out payload to merge with since underlying enumerable may be lazy.
-            // If the returned payload is literally the same object as the one sent to the codec,
-            // we leave it alone.
-            var encodedList = await codec.EncodeAsync(new Payload[] { payload }).ConfigureAwait(false);
-            var encoded = encodedList.Single();
-            if (!ReferenceEquals(encoded, payload))
-            {
-                payload.Metadata.Clear();
-                payload.Data = ByteString.Empty;
-                payload.MergeFrom(encoded);
             }
         }
 
@@ -508,7 +454,8 @@ namespace Temporalio.Worker
                 case ActivityResolution.StatusOneofCase.Completed:
                     if (res.Completed.Result != null)
                     {
-                        await DecodeAsync(codec, res.Completed.Result).ConfigureAwait(false);
+                        await PayloadCodecHelper.DecodeAsync(
+                            codec, res.Completed.Result).ConfigureAwait(false);
                     }
                     break;
                 case ActivityResolution.StatusOneofCase.Failed:
@@ -533,7 +480,8 @@ namespace Temporalio.Worker
                 case ChildWorkflowResult.StatusOneofCase.Completed:
                     if (res.Completed.Result != null)
                     {
-                        await DecodeAsync(codec, res.Completed.Result).ConfigureAwait(false);
+                        await PayloadCodecHelper.DecodeAsync(
+                            codec, res.Completed.Result).ConfigureAwait(false);
                     }
                     break;
                 case ChildWorkflowResult.StatusOneofCase.Failed:
@@ -547,7 +495,7 @@ namespace Temporalio.Worker
 
         private static async Task DecodeAsync(IPayloadCodec codec, InitializeWorkflow init)
         {
-            await DecodeAsync(codec, init.Arguments).ConfigureAwait(false);
+            await PayloadCodecHelper.DecodeAsync(codec, init.Arguments).ConfigureAwait(false);
             if (init.ContinuedFailure != null)
             {
                 await codec.DecodeFailureAsync(init.ContinuedFailure).ConfigureAwait(false);
@@ -559,7 +507,8 @@ namespace Temporalio.Worker
             await DecodeAsync(codec, init.Headers).ConfigureAwait(false);
             if (init.LastCompletionResult != null)
             {
-                await DecodeAsync(codec, init.LastCompletionResult.Payloads_).ConfigureAwait(false);
+                await PayloadCodecHelper.DecodeAsync(
+                    codec, init.LastCompletionResult.Payloads_).ConfigureAwait(false);
             }
         }
 
@@ -570,63 +519,8 @@ namespace Temporalio.Worker
             {
                 if (val != null)
                 {
-                    await DecodeAsync(codec, val).ConfigureAwait(false);
+                    await PayloadCodecHelper.DecodeAsync(codec, val).ConfigureAwait(false);
                 }
-            }
-        }
-
-        private static async Task DecodeAsync(IPayloadCodec codec, RepeatedField<Payload> payloads)
-        {
-            if (payloads.Count == 0)
-            {
-                return;
-            }
-            var newPayloads = new List<Payload>();
-            var codecPayloads = new List<Payload>();
-            foreach (var payload in payloads)
-            {
-                if (!await SystemNexusPayloadVisitor.TryVisitAsync(
-                        payload,
-                        payload => DecodeAsync(codec, payload),
-                        nestedPayloads => DecodeAsync(codec, nestedPayloads)).ConfigureAwait(false))
-                {
-                    codecPayloads.Add(payload);
-                    continue;
-                }
-
-                if (codecPayloads.Count > 0)
-                {
-                    newPayloads.AddRange(await codec.DecodeAsync(codecPayloads).ConfigureAwait(false));
-                    codecPayloads.Clear();
-                }
-                newPayloads.Add(payload);
-            }
-            if (codecPayloads.Count > 0)
-            {
-                newPayloads.AddRange(await codec.DecodeAsync(codecPayloads).ConfigureAwait(false));
-            }
-            payloads.Clear();
-            payloads.AddRange(newPayloads);
-        }
-
-        private static async Task DecodeAsync(IPayloadCodec codec, Payload payload)
-        {
-            if (await SystemNexusPayloadVisitor.TryVisitAsync(
-                    payload,
-                    nestedPayload => DecodeAsync(codec, nestedPayload),
-                    nestedPayloads => DecodeAsync(codec, nestedPayloads)).ConfigureAwait(false))
-            {
-                return;
-            }
-            // We are gonna require a single result here.
-            // Similarly with encode, we leave the payload alone if it's exactly the same object as the original.
-            var decoded = await codec.DecodeAsync(new Payload[] { payload }).ConfigureAwait(false);
-            var decodedPayload = decoded.Single();
-            if (!ReferenceEquals(decodedPayload, payload))
-            {
-                payload.Metadata.Clear();
-                payload.Data = ByteString.Empty;
-                payload.MergeFrom(decodedPayload);
             }
         }
 

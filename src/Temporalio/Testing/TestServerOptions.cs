@@ -4,10 +4,11 @@ using System.Collections.Generic;
 namespace Temporalio.Testing
 {
     /// <summary>
-    /// <b>Unstable</b> options for a time-skipping workflow environment.
+    /// Options for the test server that backs a time-skipping workflow environment.
     /// </summary>
     /// <remarks>
-    /// <b>WARNING: This API is subject to change/removal</b>
+    /// These options are specific to the Temporal time-skipping test server implementation. If that
+    /// implementation changes, these options and their values may no longer be valid.
     /// </remarks>
     public class TestServerOptions : ICloneable
     {
@@ -30,7 +31,8 @@ namespace Temporalio.Testing
         /// Gets or sets the extra arguments for the test server.
         /// </summary>
         /// <remarks>
-        /// Newlines are not allowed in values.
+        /// Newlines are not allowed in values. If the test server implementation changes, there is
+        /// no guarantee these arguments will continue to be supported.
         /// </remarks>
         public IReadOnlyCollection<string>? ExtraArgs { get; set; }
 

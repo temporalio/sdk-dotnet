@@ -264,7 +264,7 @@ namespace Temporalio.Activities
                 if (attr.Name != null)
                 {
                     throw new ArgumentException(
-                        "Activity ${method} cannot be dynamic and have custom name");
+                        $"Activity {method} cannot be dynamic and have custom name");
                 }
                 return null;
             }

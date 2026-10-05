@@ -119,7 +119,8 @@ Reviewers will look for:
 ## Where Things Are
 
 - `src/` – libraries and tooling projects.
-  - `src/Temporalio/` – the main SDK. Notable areas:
+  - `src/Temporalio/` – the main SDK; its `README.md` is the user-facing usage guide and the NuGet
+    package page. Notable areas:
     - `Client/` – clients for communicating with Temporal clusters
     - `Worker/` – the Worker that runs Workflows, Activities, and Nexus Operations
     - `Workflows/` – Workflow authoring API (attributes, `Workflow` static, determinism support)
@@ -153,9 +154,9 @@ Reviewers will look for:
 
 - The native Rust DLL is built automatically when the project is built. `protoc` may need to be on
   the `PATH` for the Rust DLL to build.
-- Workflow code must be deterministic. The README's "Workflow Logic Constraints" section (including
-  ".NET Task Determinism") explains the rules and the Workflow-specific `.editorconfig` overrides —
-  read it before changing Workflow internals.
+- Workflow code must be deterministic. The "Workflow Logic Constraints" section of
+  `src/Temporalio/README.md` (including ".NET Task Determinism") explains the rules and the
+  Workflow-specific `.editorconfig` overrides — read it before changing Workflow internals.
 - Generated code is regenerated with [mise](https://mise.jdx.dev/) tasks, which install their pinned
   tools on first run: `mise run gen` for everything, or `mise run gen:api`
   (`Temporalio.Api.*` protobuf types), `mise run gen:nexus` (system Nexus service bindings), and

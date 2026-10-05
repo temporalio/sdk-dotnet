@@ -26,6 +26,50 @@ namespace Temporalio.Worker
         internal static void MarkSystemPayload(Payload payload) =>
             payload.Metadata[SystemPayloadMetadataKey] = SystemPayloadMetadataValue;
 
+        internal static bool IsSystemPayload(Payload payload) =>
+            payload.Metadata.TryGetValue(SystemPayloadMetadataKey, out var value) &&
+            value.Equals(SystemPayloadMetadataValue);
+
+        internal static bool TryGetVisitor(Payload payload, out string messageType, out Func<Payload, PayloadVisitor, PayloadsVisitor, Task>? visit)
+        {
+            if (!payload.Metadata.TryGetValue("messageType", out var messageByteString))
+            {
+                visit = null;
+                messageType = "<missing>";
+                return false;
+            }
+
+            messageType = messageByteString.ToStringUtf8();
+
+            if (!EnvelopeVisitors.TryGetValue(messageType, out visit))
+            {
+                visit = null;
+                return false;
+            }
+
+            return true;
+        }
+
+        internal static async Task<bool> TryVisitAsync(
+            Payload payload,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            if (!IsSystemPayload(payload))
+            {
+                return false;
+            }
+
+            if (!TryGetVisitor(payload, out var messageType, out var visit))
+            {
+                throw new InvalidOperationException(
+                    $"Unrecognized marked System Nexus envelope message type: {messageType}");
+            }
+
+            await visit!(payload, visitPayload, visitPayloads).ConfigureAwait(false);
+            return true;
+        }
+
         private static async Task VisitEnvelopeAsync<T>(
             Payload payload,
             Func<T, PayloadVisitor, PayloadsVisitor, Task> visitMessage,
@@ -43,9 +87,5 @@ namespace Temporalio.Worker
             MarkSystemPayload(payload);
             payload.Data = message.ToByteString();
         }
-
-        private static bool IsSystemPayload(Payload payload) =>
-            payload.Metadata.TryGetValue(SystemPayloadMetadataKey, out var value) &&
-            value.Equals(SystemPayloadMetadataValue);
     }
 }

@@ -153,5 +153,5 @@ options.ClientOptions.Runtime = new TemporalRuntime(new TemporalRuntimeOptions
 ## TLS/CA Notes
 
 Some AWS Lambda .NET images can override `SSL_CERT_FILE` in a way that prevents the SDK's Rust-based runtime from loading
-system root CAs. See the SDK root README's
-[AWS Lambda .NET CA loading workaround](https://github.com/temporalio/sdk-dotnet#aws-lambda-net-ca-loading-issues).
+system root CAs. See the SDK README's
+[AWS Lambda .NET CA loading workaround](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio#aws-lambda-net-8-ca-loading-issues).

@@ -36,7 +36,10 @@ namespace Temporalio.Bridge
         {
             unsafe
             {
-                return ByteArrayRef.StrictUTF8.GetString(byteArray->data, (int)byteArray->size);
+                var str = ByteArrayRef.StrictUTF8.GetString(byteArray->data, (int)byteArray->size);
+                // Prevent the object from being finalized and byteArray from being freed before GetString completes
+                GC.KeepAlive(this);
+                return str;
             }
         }
 
@@ -53,7 +56,10 @@ namespace Temporalio.Bridge
             {
                 using (var stream = new UnmanagedMemoryStream(byteArray->data, (long)byteArray->size))
                 {
-                    return parser.ParseFrom(stream);
+                    var message = parser.ParseFrom(stream);
+                    // Prevent the object from being finalized and byteArray from being freed before ParseFrom completes
+                    GC.KeepAlive(this);
+                    return message;
                 }
             }
         }
@@ -68,6 +74,8 @@ namespace Temporalio.Bridge
             {
                 var bytes = new byte[(int)byteArray->size];
                 Marshal.Copy((IntPtr)byteArray->data, bytes, 0, (int)byteArray->size);
+                // Prevent the object from being finalized and byteArray from being freed before Marshal.Copy completes
+                GC.KeepAlive(this);
                 return bytes;
             }
         }
