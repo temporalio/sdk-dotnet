@@ -422,6 +422,14 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public void FromProto_CatchupWindowUnspecified_Null()
+    {
+        var policy = SchedulePolicy.FromProto(new Temporalio.Api.Schedule.V1.SchedulePolicies());
+
+        Assert.Null(policy.CatchupWindow);
+    }
+
+    [Fact]
     public void ToProto_CatchupWindowUnspecified_Omitted()
     {
         var proto = new SchedulePolicy().ToProto();

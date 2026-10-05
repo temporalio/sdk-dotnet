@@ -30,6 +30,7 @@ to docs, or any other relevant information.
 
 ### Fixed
 
+- Fixed an exception when reading schedule policies with an unset catchup window.
 - Source Link in the published symbol packages now resolves every source file, and packages are
   built with normalized paths so they are reproducible.
 - Removed possiblity of a use-after-free in Temporalio.Bridge.ByteArray because of an early finalization.
