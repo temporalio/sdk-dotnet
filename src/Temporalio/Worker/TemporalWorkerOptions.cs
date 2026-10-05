@@ -387,9 +387,6 @@ namespace Temporalio.Worker
         /// <summary>
         /// Gets or sets the plugins.
         /// </summary>
-        /// <remarks>
-        /// WARNING: This API is experimental and may change in the future.
-        /// </remarks>
         public IReadOnlyCollection<ITemporalWorkerPlugin>? Plugins { get; set; }
 
         /// <summary>

@@ -15,9 +15,6 @@ namespace Temporalio.Common
     /// <summary>
     /// A simple plugin that implements both client and worker plugin interfaces.
     /// </summary>
-    /// <remarks>
-    /// WARNING: This API is experimental and may change in the future.
-    /// </remarks>
     public class SimplePlugin : ITemporalClientPlugin, ITemporalWorkerPlugin
     {
         /// <summary>
