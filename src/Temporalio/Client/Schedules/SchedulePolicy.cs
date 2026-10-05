@@ -17,7 +17,7 @@ namespace Temporalio.Client.Schedules
 
         /// <summary>
         /// Gets the amount of time in the past to execute missed actions after a Temporal server
-        /// is unavailable. If null, the server-configured default is used.
+        /// is unavailable. If null, the server-configured default is used (currently one year).
         /// </summary>
         public TimeSpan? CatchupWindow { get; init; }
 
