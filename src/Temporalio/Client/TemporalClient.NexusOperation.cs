@@ -60,7 +60,12 @@ namespace Temporalio.Client
             {
                 try
                 {
-                    var dataConverter = Client.Options.DataConverter;
+                    var serializationContext = new ISerializationContext.Nexus(
+                        Endpoint: input.Endpoint,
+                        Service: input.Service,
+                        Operation: input.Operation);
+                    var dataConverter = Client.Options.DataConverter.WithSerializationContext(
+                        serializationContext);
 
                     var req = new StartNexusOperationExecutionRequest()
                     {
@@ -97,10 +102,16 @@ namespace Temporalio.Client
 
                     var resp = await Client.Connection.WorkflowService.StartNexusOperationExecutionAsync(
                         req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
+                    // The response does not name the endpoint, service or operation, so these come
+                    // from the request, including when the server returned an already-running
+                    // operation.
                     return new NexusOperationHandle<TResult>(
                         Client: Client,
                         Id: input.Options.Id!,
-                        RunId: string.IsNullOrEmpty(resp.RunId) ? null : resp.RunId);
+                        RunId: string.IsNullOrEmpty(resp.RunId) ? null : resp.RunId)
+                    {
+                        SerializationContext = serializationContext,
+                    };
                 }
                 catch (RpcException e) when (
                     e.Code == RpcException.StatusCode.AlreadyExists)
@@ -132,7 +143,12 @@ namespace Temporalio.Client
                 };
                 var resp = await Client.Connection.WorkflowService.DescribeNexusOperationExecutionAsync(
                     req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
-                return new(resp, Client.Options.Namespace, Client.Options.DataConverter);
+                var dataConverter = Client.Options.DataConverter.WithSerializationContext(
+                    new ISerializationContext.Nexus(
+                        Endpoint: resp.Info.Endpoint,
+                        Service: resp.Info.Service,
+                        Operation: resp.Info.Operation));
+                return new(resp, Client.Options.Namespace, dataConverter);
             }
 
             /// <inheritdoc />

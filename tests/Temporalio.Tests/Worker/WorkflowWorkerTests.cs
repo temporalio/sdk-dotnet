@@ -7525,13 +7525,26 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     public record ContextInfo(
         bool Activity = false,
         bool Workflow = false,
-        string WorkflowId = "<unknown>")
+        string WorkflowId = "<unknown>",
+        bool Nexus = false,
+        string NexusEndpoint = "<unknown>",
+        string NexusService = "<unknown>",
+        string NexusOperation = "<unknown>")
     {
-        public static ContextInfo Create(ISerializationContext context) =>
-            new(
+        public static ContextInfo Create(ISerializationContext context) => context switch
+        {
+            // Nexus contexts identify an endpoint/service/operation rather than a workflow, so
+            // they carry no workflow ID to key on.
+            ISerializationContext.Nexus nexus => new(
+                Nexus: true,
+                NexusEndpoint: nexus.Endpoint,
+                NexusService: nexus.Service,
+                NexusOperation: nexus.Operation),
+            _ => new(
                 Activity: context is ISerializationContext.Activity,
                 Workflow: context is ISerializationContext.Workflow,
-                WorkflowId: ((ISerializationContext.IHasWorkflow)context).WorkflowId!);
+                WorkflowId: ((ISerializationContext.IHasWorkflow)context).WorkflowId!),
+        };
     }
 
     public class ContextJsonPlainConverter : JsonPlainConverter, IWithSerializationContext<IEncodingConverter>
@@ -7603,7 +7616,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 ["encoding"] = ByteString.CopyFromUtf8(EncodingName),
             };
-            if (contextInfo != null)
+            if (contextInfo?.Nexus == true)
+            {
+                metadata["nexus-endpoint"] = ByteString.CopyFromUtf8(contextInfo.NexusEndpoint);
+                metadata["nexus-service"] = ByteString.CopyFromUtf8(contextInfo.NexusService);
+                metadata["nexus-operation"] = ByteString.CopyFromUtf8(contextInfo.NexusOperation);
+            }
+            else if (contextInfo != null)
             {
                 metadata["activity"] = ByteString.CopyFromUtf8(contextInfo.Activity ? "true" : "false");
                 metadata["workflow-id"] = ByteString.CopyFromUtf8(contextInfo.WorkflowId);
@@ -7628,6 +7647,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 {
                     Assert.False(p.Metadata.ContainsKey("activity"));
                     Assert.False(p.Metadata.ContainsKey("workflow-id"));
+                    Assert.False(p.Metadata.ContainsKey("nexus-endpoint"));
+                }
+                else if (contextInfo.Nexus)
+                {
+                    Assert.Equal(contextInfo.NexusEndpoint, p.Metadata["nexus-endpoint"].ToStringUtf8());
+                    Assert.Equal(contextInfo.NexusService, p.Metadata["nexus-service"].ToStringUtf8());
+                    Assert.Equal(contextInfo.NexusOperation, p.Metadata["nexus-operation"].ToStringUtf8());
                 }
                 else
                 {
@@ -7647,7 +7673,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         string Name,
         Func<HistoryEvent, Payload?> Predicate,
         bool Activity = false,
-        bool NoContextMetadataExpected = false)
+        bool NoContextMetadataExpected = false,
+        string? NexusEndpoint = null)
     {
         public async Task AssertInHistoryAsync(WorkflowHistory history)
         {
@@ -7673,6 +7700,11 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 if (NoContextMetadataExpected)
                 {
                     Assert.False(payload.Metadata.ContainsKey("activity"));
+                    Assert.False(payload.Metadata.ContainsKey("workflow-id"));
+                }
+                else if (NexusEndpoint != null)
+                {
+                    Assert.Equal(NexusEndpoint, payload.Metadata["nexus-endpoint"].ToStringUtf8());
                     Assert.False(payload.Metadata.ContainsKey("workflow-id"));
                 }
                 else
@@ -7838,12 +7870,23 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [WorkflowUpdate]
         public async Task DoNexusOperationAsync(string endpoint)
         {
-            // Call Nexus and confirm no events are on the value because Nexus doesn't go through
-            // context converters at this time
+            // Nexus payloads are scoped by the endpoint, service and operation rather than by the
+            // calling workflow, so the result carries the handler's encode and the caller's decode,
+            // both under the same Nexus context.
             var res = await Workflow.CreateNexusWorkflowClient<INexusService>(endpoint).
                 ExecuteNexusOperationAsync(svc => svc.DoSomething(new("nexus-input", new())));
             Assert.Equal("nexus-result", res.Name);
-            Assert.Empty(res.Events);
+            Assert.Equal(2, res.Events.Count);
+            Assert.True(res.Events[0].Outbound);
+            Assert.False(res.Events[1].Outbound);
+            foreach (var evt in res.Events)
+            {
+                Assert.True(evt.Info.Nexus);
+                Assert.Equal(endpoint, evt.Info.NexusEndpoint);
+                // The Nexus service name drops the interface's leading "I".
+                Assert.Equal("NexusService", evt.Info.NexusService);
+                Assert.Equal(nameof(INexusService.DoSomething), evt.Info.NexusOperation);
+            }
         }
     }
 
@@ -7964,11 +8007,11 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 historyExpects.Add(new(
                     "nexus-input",
                     e => e.NexusOperationScheduledEventAttributes?.Input,
-                    NoContextMetadataExpected: true));
+                    NexusEndpoint: nexusEndpointName));
                 historyExpects.Add(new(
                     "nexus-result",
                     e => e.NexusOperationCompletedEventAttributes?.Result,
-                    NoContextMetadataExpected: true));
+                    NexusEndpoint: nexusEndpointName));
 
                 // Complete, check result
                 await handle.SignalAsync(wf => wf.CompleteAsync());
