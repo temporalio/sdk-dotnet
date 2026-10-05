@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Temporalio.Api.Sdk.V1;
+using Temporalio.Common;
 
 namespace Temporalio.Workflows
 {
@@ -155,12 +156,6 @@ namespace Temporalio.Workflows
         internal sealed class State
         {
             /// <summary>
-            /// Shared empty set of explicit Event Groups.
-            /// </summary>
-            public static readonly IReadOnlyDictionary<string, EventGroup> NoExplicitGroups =
-                new Dictionary<string, EventGroup>(0);
-
-            /// <summary>
             /// Shared empty state.
             /// </summary>
             public static readonly State Empty = new();
@@ -174,7 +169,7 @@ namespace Temporalio.Workflows
             /// Gets user-created groups keyed by ID. Later scopes overwrite the same ID.
             /// </summary>
             internal IReadOnlyDictionary<string, EventGroup> Explicit { get; init; } =
-                NoExplicitGroups;
+                EmptyReadOnlyDictionary<string, EventGroup>.Value;
         }
     }
 }
