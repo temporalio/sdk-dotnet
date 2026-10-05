@@ -420,10 +420,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         // Delete when done
         await TestUtils.DeleteAllSchedulesAsync(Client);
     }
-}
 
-public class SchedulePolicyTests
-{
     [Fact]
     public void ToProto_CatchupWindowUnspecified_Omitted()
     {
