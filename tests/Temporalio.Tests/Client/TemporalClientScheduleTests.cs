@@ -1,6 +1,7 @@
 namespace Temporalio.Tests.Client;
 
 using System.Collections.Generic;
+using Google.Protobuf.WellKnownTypes;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client.Schedules;
 using Temporalio.Common;
@@ -418,5 +419,29 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
 
         // Delete when done
         await TestUtils.DeleteAllSchedulesAsync(Client);
+    }
+
+    [Fact]
+    public void FromProto_CatchupWindowUnspecified_Null()
+    {
+        var policy = SchedulePolicy.FromProto(new Temporalio.Api.Schedule.V1.SchedulePolicies());
+
+        Assert.Null(policy.CatchupWindow);
+    }
+
+    [Fact]
+    public void ToProto_CatchupWindowUnspecified_Omitted()
+    {
+        var proto = new SchedulePolicy().ToProto();
+
+        Assert.Null(proto.CatchupWindow);
+    }
+
+    [Fact]
+    public void ToProto_CatchupWindowExplicitZero_Serialized()
+    {
+        var proto = new SchedulePolicy { CatchupWindow = TimeSpan.Zero }.ToProto();
+
+        Assert.Equal(Duration.FromTimeSpan(TimeSpan.Zero), proto.CatchupWindow);
     }
 }

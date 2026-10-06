@@ -19,6 +19,10 @@ to docs, or any other relevant information.
 
 ## [Unreleased]
 
+### :boom: Breaking Changes
+
+- `SchedulePolicy.CatchupWindow` is now nullable and defaults to `null`. An unspecified window uses the server configured default.
+
 ### Changed
 
 - Removed experimental warnings from the core plugin APIs and client/worker plugin options.
@@ -38,6 +42,7 @@ to docs, or any other relevant information.
 
 ### Fixed
 
+- Fixed an exception when reading schedule policies with an unset catchup window.
 - Source Link in the published symbol packages now resolves every source file, and packages are
   built with normalized paths so they are reproducible.
 - Removed possiblity of a use-after-free in Temporalio.Bridge.ByteArray because of an early finalization.
