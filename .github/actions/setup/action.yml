@@ -62,6 +62,13 @@ runs:
         fi
         echo "version=$version" >> "$GITHUB_OUTPUT"
 
+    # mise.toml has mise read the .NET SDK from global.json for local clones; .NET is already
+    # installed above, and later `mise run` steps would otherwise install a second copy.
+    - name: Disable mise .NET install
+      if: ${{ inputs.install != 'false' }}
+      shell: bash
+      run: echo "MISE_DISABLE_TOOLS=dotnet" >> "$GITHUB_ENV"
+
     - name: Run mise install
       if: ${{ inputs.install != 'false' }}
       uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
