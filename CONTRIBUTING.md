@@ -82,7 +82,8 @@ requires a new fragment and validates its format.
 ## Updating SDK Core
 
 Run `mise run core:update` to update the submodule to the latest Core `main` and
-import changes since the current pin into categorized fragments. To choose a
+import changes since the current pin into categorized fragments. Imported entries
+use a `Core: ` prefix to distinguish them from .NET SDK changes. To choose a
 specific fetched Core revision, use `mise run core:update -- --revision <revision>`.
 The shared tool rejects dirty submodules and backwards or divergent updates.
 
