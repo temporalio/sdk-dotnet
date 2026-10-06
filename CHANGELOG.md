@@ -1,60 +1,9 @@
 <!--
-High-level release notes.
-Loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-
-When your PR includes a user-facing change, add an entry below under the
-appropriate heading (create the heading if it does not yet exist). Within
-each heading content can be free-form. Feel free to include examples, links
-to docs, or any other relevant information.
-
-### Added                   — new features
-### Changed                 — changes in existing functionality
-### Deprecated              — soon-to-be-removed features
-### :boom: Breaking Changes — removed or backwards-incompatible features
-### Fixed                   — notable bug fixes
-### Security                — notable security fixes
+High-level release notes, loosely based on Keep a Changelog.
+Pending changes belong in changelog/; see changelog/README.md.
 -->
 
 # Changelog
-
-## [Unreleased]
-
-### :boom: Breaking Changes
-
-- `SchedulePolicy.CatchupWindow` is now nullable and defaults to `null`. An unspecified window uses the server configured default.
-
-### Changed
-
-- Removed experimental warnings from the core plugin APIs and client/worker plugin options.
-- `DevServerOptions` and `TestServerOptions` are no longer marked unstable. They remain specific to
-  the dev server and test server implementations and may no longer be valid if those change.
-
-### Added
-
-- Added experimental Event Groups support. Event Groups are workflow-level metadata that group
-  related history events for UI and observability. `Workflow.CreateEventGroup` takes a required ID
-  (used verbatim; do not put secrets in it) and an optional label that is stored as a codec-encoded
-  payload. Attach groups with `Workflow.WithEventGroups` or the `EventGroups` property on command
-  options. Signal and update handlers receive implicit inbound groups.
-- Added `WorkflowInfo.OriginalExecutionRunId`, the run ID recorded on the workflow execution
-  started event. Unlike `RunId`, this value is preserved across workflow resets.
-- Added experimental `ISerializationContext.Nexus` support for Nexus callers and handlers. Callers
-  use it for operation inputs, results, failures, and user metadata; handlers use it for inputs,
-  synchronous results, and failures. Standalone handles created by starting an operation use their
-  start request's context, including when the start returned an already-running operation. It is
-  not applied to the result of an asynchronous operation, or to a handle obtained from
-  `GetNexusOperationHandle` with only an operation ID.
-- Add experimental `Endpoint`, `Operation`, and `Service` properties to the `NexusOperationHandle`
-  class.
-
-### Fixed
-
-- Fixed an exception when reading schedule policies with an unset catchup window.
-- Source Link in the published symbol packages now resolves every source file, and packages are
-  built with normalized paths so they are reproducible.
-- Removed possiblity of a use-after-free in Temporalio.Bridge.ByteArray because of an early finalization.
-- `Temporalio.Extensions.DiagnosticSource.CustomMetricMeter` no longer throws when a tag is appended
-  with a key that the tag set already has. The appended value now replaces the existing one.
 
 ## [1.20.0] - 2026-09-28
 

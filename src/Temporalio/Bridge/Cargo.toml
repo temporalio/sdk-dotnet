@@ -13,9 +13,9 @@
 # Cargo adopts path dependencies under the workspace root as members automatically, so the rest of
 # the sdk-core crates reach our lockfile without being enumerated. default-members then keeps a
 # bare `cargo build` from building all of them.
-members = ["sdk-core/crates/sdk-core-c-bridge"]
+members = ["sdk-core/crates/changelog-release-notes", "sdk-core/crates/sdk-core-c-bridge"]
 default-members = ["sdk-core/crates/sdk-core-c-bridge"]
-resolver = "2"
+resolver = "3"
 
 [workspace.package]
 license = "MIT"

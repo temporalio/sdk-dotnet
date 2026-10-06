@@ -82,9 +82,11 @@ The following environment variables override the test environment to run against
 
 - Format and build (with analyzers clean) before submitting.
 - Ensure all tests pass locally.
-- For any user-facing change, add a high-level entry to the `## [Unreleased]` section of
-  `CHANGELOG.md`, following the guidance at the top of that file. Internal-only changes (refactors,
-  tests, CI, docs) do not need an entry.
+- For any user-facing change, add a fragment under the appropriate category in `changelog/`.
+  Choose a fun, whimsical lowercase kebab-case filename. Keep entries concise, ideally one or two
+  sentences. Each nonempty line is a separate entry; omit bullet markers and keep each entry on one
+  line. See `changelog/README.md` for categories. Internal-only changes (refactors, tests, CI, docs)
+  do not need an entry. `CHANGELOG.md` contains completed releases only.
 - Keep commit messages short and in the imperative mood.
 - Provide a clear PR description outlining what changed and why.
 - Reviewers expect new features or fixes to include corresponding tests when applicable.
@@ -114,7 +116,7 @@ Reviewers will look for:
       Only consider tests reported as failed by the harness to be a real problem.
 - New tests covering behavior changes.
 - Clear and concise code following existing style (StyleCop + `.editorconfig`).
-- Documentation comments and `CHANGELOG.md` updates for any public API changes.
+- Documentation comments and changelog fragments for any public API changes.
 
 ## Where Things Are
 
@@ -171,7 +173,9 @@ Reviewers will look for:
   graph is pinned by `Bridge/Cargo.lock` (sdk-rust gitignores its own lockfile, being a published
   library). This matches the Python, TypeScript, and Ruby SDKs. Always build with `--locked`, and
   always run cargo from `src/Temporalio/Bridge` so `Bridge/rust-toolchain.toml` applies.
-- After bumping the sdk-core submodule: re-mirror whatever changed in `sdk-core/Cargo.toml` and
+- Update the sdk-core submodule with `mise run core:update`, which also imports Core changelog
+  entries as fragments. See `CONTRIBUTING.md` for Core update and release preparation instructions.
+  After bumping the sdk-core submodule, re-mirror whatever changed in `sdk-core/Cargo.toml` and
   `sdk-core/rust-toolchain.toml` into `Bridge/Cargo.toml` and `Bridge/rust-toolchain.toml`, run
   `mise run bridge:check-sync` to confirm, then `mise run bridge:relock` and commit the lockfile. CI
   runs `bridge:check-sync`, and `--locked` fails the build if the lockfile is stale.

@@ -68,6 +68,58 @@ Good pull requests are focused and easy to review:
 Run the relevant local checks when practical. CI must pass before a pull request can
 be merged.
 
+## Changelog Entries
+
+For user-facing changes, add a fragment in the appropriate category under
+`changelog/`, following [the fragment guide](changelog/README.md). Choose a fun,
+whimsical filename and keep each entry concise, ideally one or two sentences.
+Each nonempty line becomes one bullet; omit bullet markers and keep each entry on
+one line. Do not add pending entries to `CHANGELOG.md`.
+
+Internal changes can use the `skip-changelog` pull request label. CI otherwise
+requires a new fragment and validates its format.
+
+## Updating SDK Core
+
+Run `mise run core:update` to update the submodule to the latest Core `main` and
+import changes since the current pin into categorized fragments. To choose a
+specific fetched Core revision, use `mise run core:update -- --revision <revision>`.
+The shared tool rejects dirty submodules and backwards or divergent updates.
+
+After updating, mirror any changes in `sdk-core/Cargo.toml` and
+`sdk-core/rust-toolchain.toml` into `src/Temporalio/Bridge/Cargo.toml` and
+`src/Temporalio/Bridge/rust-toolchain.toml`. Run `mise run bridge:check-sync`, then
+`mise run bridge:relock`. Regenerate code with `mise run gen` (the interop generator
+requires Windows), review the imported fragments, and commit the submodule pin,
+lockfile, generated code, and fragments together.
+
+## Preparing a Release
+
+Update `Version` and `AssemblyVersion` in `Directory.Build.props`, following the
+assembly-version guidance there. Keep `PackageValidationBaselineVersion` at the
+previously published package used for compatibility validation. Complete any
+dependency and lockfile updates before preparing the changelog.
+
+```bash
+mise run changelog:prepare -- --version 1.21.0 --date 2026-10-06
+```
+
+The shared tool prepends a dated release section to `CHANGELOG.md` and removes the
+consumed fragments. Releases with no fragments are allowed. Review and commit the
+result with the version updates; a release preparation PR can use `skip-changelog`.
+
+After the release commit and tag are ready, generate notes manually:
+
+```bash
+mise run changelog:release-notes -- --version 1.21.0 --output release-notes.md
+```
+
+This combines the completed changelog section with a `SDK Core Commits` section
+covering Core changes since the previous version tag. If needed, supply explicit
+SDK refs with `--from <previous-tag> --to <release-ref>`. The output path is relative
+to the repository root. Use the output when creating the GitHub release; the
+current NuGet publishing workflow does not create a GitHub release.
+
 ## Things to Avoid
 
 Avoid changes that make review harder without improving the contribution:
