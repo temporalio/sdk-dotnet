@@ -24,6 +24,12 @@ to docs, or any other relevant information.
 - Removed experimental warnings from the core plugin APIs and client/worker plugin options.
 - `DevServerOptions` and `TestServerOptions` are no longer marked unstable. They remain specific to
   the dev server and test server implementations and may no longer be valid if those change.
+- Nullable annotations are more precise on all target frameworks, so callers need fewer `!`
+  operators: `IEncodingConverter.TryToPayload` marks its payload non-null on success,
+  `SearchAttributeCollection.TryGetValue` marks its value possibly null on failure, and
+  `ActivityExecutionDescription.HasResult`/`HasOutcomeFailure` mark `RawOutcome` non-null when true.
+  Implementations or overrides of `TryToPayload` with nullable reference types enabled will see a
+  new CS8765/CS8767 warning until they add `[NotNullWhen(true)]` to the `payload` parameter.
 
 ### Added
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using Google.Protobuf;
@@ -114,7 +115,7 @@ namespace Temporalio.Common
         /// other SDKs that used things like lists for types, the cast can fail and
         /// <see cref="UntypedValues" /> may have to be used directly.
         /// </remarks>
-        public bool TryGetValue<T>(SearchAttributeKey<T> key, out T value)
+        public bool TryGetValue<T>(SearchAttributeKey<T> key, [MaybeNullWhen(false)] out T value)
             where T : notnull
         {
             if (values.TryGetValue(key, out var obj) && obj is T t)
@@ -122,7 +123,7 @@ namespace Temporalio.Common
                 value = t;
                 return true;
             }
-            value = default!;
+            value = default;
             return false;
         }
 

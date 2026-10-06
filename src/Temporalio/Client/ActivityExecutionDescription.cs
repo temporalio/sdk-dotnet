@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Temporalio.Api.Activity.V1;
 using Temporalio.Api.Common.V1;
@@ -131,6 +132,7 @@ namespace Temporalio.Client
         /// </remarks>
         /// <seealso cref="GetResultAsync"/>
         /// <seealso cref="HasOutcomeFailure"/>
+        [MemberNotNullWhen(true, nameof(RawOutcome))]
         public bool HasResult => RawOutcome?.Result?.Payloads_.Count == 1; // 0 means missing, more than 1 is invalid
 
         /// <summary>
@@ -142,6 +144,7 @@ namespace Temporalio.Client
         /// </remarks>
         /// <seealso cref="GetOutcomeFailureAsync"/>
         /// <seealso cref="HasResult"/>
+        [MemberNotNullWhen(true, nameof(RawOutcome))]
         public bool HasOutcomeFailure => RawOutcome?.Failure != null;
 
         /// <summary>
@@ -302,7 +305,7 @@ namespace Temporalio.Client
             {
                 return default;
             }
-            return await dataConverter.ToSingleValueAsync<T>(RawOutcome!.Result.Payloads_).ConfigureAwait(false);
+            return await dataConverter.ToSingleValueAsync<T>(RawOutcome.Result.Payloads_).ConfigureAwait(false);
         }
     }
 }

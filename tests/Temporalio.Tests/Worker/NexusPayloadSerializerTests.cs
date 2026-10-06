@@ -49,11 +49,11 @@ public class NexusPayloadSerializerTests
     {
         var transferValue = new SignalWithStartWorkflowExecutionRequest { Namespace = "test-value" };
         Assert.True(new BinaryProtoConverter().TryToPayload(transferValue, out var payload));
-        SystemNexusPayloadVisitor.MarkSystemPayload(payload!);
+        SystemNexusPayloadVisitor.MarkSystemPayload(payload);
 
         var result = Assert.IsType<TestSystemRequest>(
             await new NexusPayloadSerializer(DataConverter.Default).DeserializeAsync(
-                new(payload!.ToByteArray()), typeof(TestSystemRequest)));
+                new(payload.ToByteArray()), typeof(TestSystemRequest)));
 
         Assert.Equal(new TestSystemRequest("test-value"), result);
     }

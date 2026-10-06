@@ -3,6 +3,7 @@ namespace Temporalio.Tests.Worker;
 
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks.Dataflow;
@@ -7557,7 +7558,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public IEncodingConverter WithSerializationContext(ISerializationContext context) =>
             new ContextJsonPlainConverter(ContextInfo.Create(context));
 
-        public override bool TryToPayload(object? value, out Payload? payload)
+        public override bool TryToPayload(object? value, [NotNullWhen(true)] out Payload? payload)
         {
             // Do not add an event if we're not context specific
             if (contextInfo != null && value is ContextValue contextValue)

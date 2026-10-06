@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Temporalio.Worker
@@ -111,10 +112,10 @@ namespace Temporalio.Worker
         }
 
         /// <inheritdoc />
-        public bool TryGetValue(TKey key, out TValue value) =>
-#pragma warning disable CS8601
+#pragma warning disable CS8767 // Older BCLs do not annotate the interface the way newer ones do
+        public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value) =>
+#pragma warning restore CS8767
             dict.TryGetValue(key, out value);
-#pragma warning disable CS8601
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator() => dict.GetEnumerator();

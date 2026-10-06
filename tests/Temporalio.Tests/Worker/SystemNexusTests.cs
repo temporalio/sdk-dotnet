@@ -1,6 +1,7 @@
 namespace Temporalio.Tests.Worker;
 
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Converters;
@@ -363,7 +364,7 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
                 recordedContexts,
                 WorkflowWorkerTests.ContextInfo.Create(context));
 
-        public override bool TryToPayload(object? value, out Temporalio.Api.Common.V1.Payload? payload)
+        public override bool TryToPayload(object? value, [NotNullWhen(true)] out Temporalio.Api.Common.V1.Payload? payload)
         {
             if (context != null && value is string { } text && text.StartsWith("context-", StringComparison.Ordinal))
             {

@@ -35,7 +35,7 @@ namespace Temporalio.Exceptions
         /// <summary>
         /// Gets the type of timeout that occurred.
         /// </summary>
-        public TimeoutType TimeoutType => Failure!.TimeoutFailureInfo.TimeoutType;
+        public TimeoutType TimeoutType => Failure.TimeoutFailureInfo.TimeoutType;
 
         /// <summary>
         /// Gets the last heartbeat details of the activity if applicable.

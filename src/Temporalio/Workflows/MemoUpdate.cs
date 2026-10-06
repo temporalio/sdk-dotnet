@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Temporalio.Workflows
 {
@@ -31,6 +32,7 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Gets a value indicating whether this update has a value to set or represents an unset.
         /// </summary>
+        [MemberNotNullWhen(true, nameof(value))]
         public bool HasValue { get; private init; }
 
         /// <summary>
@@ -43,7 +45,7 @@ namespace Temporalio.Workflows
         /// </summary>
         /// <exception cref="InvalidOperationException">If there is no value.</exception>
         public object UntypedValue =>
-            HasValue ? value! : throw new InvalidOperationException("No value");
+            HasValue ? value : throw new InvalidOperationException("No value");
 
         /// <summary>
         /// Create an update to set a key.

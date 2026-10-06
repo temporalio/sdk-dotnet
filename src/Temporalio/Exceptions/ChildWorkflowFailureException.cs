@@ -31,27 +31,27 @@ namespace Temporalio.Exceptions
         /// <summary>
         /// Gets the namespace of the failed child workflow.
         /// </summary>
-        public string Namespace => Failure!.ChildWorkflowExecutionFailureInfo.Namespace;
+        public string Namespace => Failure.ChildWorkflowExecutionFailureInfo.Namespace;
 
         /// <summary>
         /// Gets the ID of the failed child workflow.
         /// </summary>
         public string WorkflowId =>
-            Failure!.ChildWorkflowExecutionFailureInfo.WorkflowExecution.WorkflowId;
+            Failure.ChildWorkflowExecutionFailureInfo.WorkflowExecution.WorkflowId;
 
         /// <summary>
         /// Gets the run ID of the failed child workflow.
         /// </summary>
-        public string RunId => Failure!.ChildWorkflowExecutionFailureInfo.WorkflowExecution.RunId;
+        public string RunId => Failure.ChildWorkflowExecutionFailureInfo.WorkflowExecution.RunId;
 
         /// <summary>
         /// Gets the child workflow name or "type" that failed.
         /// </summary>
-        public string WorkflowType => Failure!.ChildWorkflowExecutionFailureInfo.WorkflowType.Name;
+        public string WorkflowType => Failure.ChildWorkflowExecutionFailureInfo.WorkflowType.Name;
 
         /// <summary>
         /// Gets the retry state of the failure.
         /// </summary>
-        public RetryState RetryState => Failure!.ChildWorkflowExecutionFailureInfo.RetryState;
+        public RetryState RetryState => Failure.ChildWorkflowExecutionFailureInfo.RetryState;
     }
 }

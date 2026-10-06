@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Google.Protobuf;
 using Temporalio.Api.Common.V1;
 
@@ -45,7 +46,7 @@ namespace Temporalio.Converters
         protected JsonParser Parser { get; private init; }
 
         /// <inheritdoc />
-        public bool TryToPayload(object? value, out Payload? payload)
+        public bool TryToPayload(object? value, [NotNullWhen(true)] out Payload? payload)
         {
             if (value is not IMessage proto)
             {

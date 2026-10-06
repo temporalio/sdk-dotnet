@@ -1,6 +1,7 @@
 #pragma warning disable SA1600 // Internal implementation plumbing.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.Collections;
@@ -30,7 +31,7 @@ namespace Temporalio.Worker
             payload.Metadata.TryGetValue(SystemPayloadMetadataKey, out var value) &&
             value.Equals(SystemPayloadMetadataValue);
 
-        internal static bool TryGetVisitor(Payload payload, out string messageType, out Func<Payload, PayloadVisitor, PayloadsVisitor, Task>? visit)
+        internal static bool TryGetVisitor(Payload payload, out string messageType, [NotNullWhen(true)] out Func<Payload, PayloadVisitor, PayloadsVisitor, Task>? visit)
         {
             if (!payload.Metadata.TryGetValue("messageType", out var messageByteString))
             {
@@ -66,7 +67,7 @@ namespace Temporalio.Worker
                     $"Unrecognized marked System Nexus envelope message type: {messageType}");
             }
 
-            await visit!(payload, visitPayload, visitPayloads).ConfigureAwait(false);
+            await visit(payload, visitPayload, visitPayloads).ConfigureAwait(false);
             return true;
         }
 

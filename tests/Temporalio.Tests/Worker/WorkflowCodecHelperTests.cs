@@ -325,8 +325,8 @@ public class WorkflowCodecHelperTests : TestBase
     private static Payload CreateSystemEnvelope(IMessage message)
     {
         Assert.True(new BinaryProtoConverter().TryToPayload(message, out var payload));
-        SystemNexusPayloadVisitor.MarkSystemPayload(payload!);
-        return payload!;
+        SystemNexusPayloadVisitor.MarkSystemPayload(payload);
+        return payload;
     }
 
     private static WorkflowCodecHelper.WorkflowCodecContext CreateSimpleCodecContext(IPayloadCodec codec) => new(

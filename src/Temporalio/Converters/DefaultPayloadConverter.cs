@@ -115,7 +115,7 @@ namespace Temporalio.Converters
             {
                 if (enc.TryToPayload(value, out var payload))
                 {
-                    return payload!;
+                    return payload;
                 }
             }
             var vType = value == null ? "<null>" : value.GetType().ToString();

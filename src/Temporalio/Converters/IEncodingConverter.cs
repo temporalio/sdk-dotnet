@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Temporalio.Api.Common.V1;
 
 namespace Temporalio.Converters
@@ -32,7 +33,7 @@ namespace Temporalio.Converters
         /// Implementers must put the <see cref="Encoding" /> value on the "encoding" metadata of
         /// created payloads.
         /// </remarks>
-        bool TryToPayload(object? value, out Payload? payload);
+        bool TryToPayload(object? value, [NotNullWhen(true)] out Payload? payload);
 
         /// <summary>
         /// Convert the given payload to the given type or error.

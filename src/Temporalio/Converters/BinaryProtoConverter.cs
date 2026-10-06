@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Google.Protobuf;
 using Google.Protobuf.Reflection;
@@ -18,7 +19,7 @@ namespace Temporalio.Converters
         public string Encoding => "binary/protobuf";
 
         /// <inheritdoc />
-        public bool TryToPayload(object? value, out Payload? payload)
+        public bool TryToPayload(object? value, [NotNullWhen(true)] out Payload? payload)
         {
             if (value is not IMessage proto)
             {

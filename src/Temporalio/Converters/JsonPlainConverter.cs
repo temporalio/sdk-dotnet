@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Google.Protobuf;
 using Temporalio.Api.Common.V1;
@@ -29,7 +30,7 @@ namespace Temporalio.Converters
         protected JsonSerializerOptions SerializerOptions { get; private init; }
 
         /// <inheritdoc />
-        public virtual bool TryToPayload(object? value, out Payload? payload)
+        public virtual bool TryToPayload(object? value, [NotNullWhen(true)] out Payload? payload)
         {
             payload = new();
             payload.Metadata["encoding"] = EncodingByteString;

@@ -30,6 +30,6 @@ namespace Temporalio.Exceptions
         /// <summary>
         /// Gets a value indicating whether this exception is non-retryable.
         /// </summary>
-        public bool NonRetryable => Failure!.ServerFailureInfo.NonRetryable;
+        public bool NonRetryable => Failure.ServerFailureInfo.NonRetryable;
     }
 }

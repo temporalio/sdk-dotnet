@@ -35,7 +35,7 @@ namespace Temporalio.Exceptions
         {
             get
             {
-                var identity = Failure!.ActivityFailureInfo.Identity;
+                var identity = Failure.ActivityFailureInfo.Identity;
                 return identity.Length == 0 ? null : identity;
             }
         }
@@ -43,16 +43,16 @@ namespace Temporalio.Exceptions
         /// <summary>
         /// Gets the activity name or "type" that failed.
         /// </summary>
-        public string ActivityType => Failure!.ActivityFailureInfo.ActivityType.Name;
+        public string ActivityType => Failure.ActivityFailureInfo.ActivityType.Name;
 
         /// <summary>
         /// Gets the identifier of the activity that failed.
         /// </summary>
-        public string ActivityId => Failure!.ActivityFailureInfo.ActivityId;
+        public string ActivityId => Failure.ActivityFailureInfo.ActivityId;
 
         /// <summary>
         /// Gets the retry state for the failure.
         /// </summary>
-        public RetryState RetryState => Failure!.ActivityFailureInfo.RetryState;
+        public RetryState RetryState => Failure.ActivityFailureInfo.RetryState;
     }
 }
