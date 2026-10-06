@@ -429,14 +429,6 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase, IAsyncLi
         Assert.True(numActions == 6 || numActions == 7, $"Invalid num actions: {numActions}");
     }
 
-    private async Task<ScheduleHandle> CreateScheduleAsync(
-        string id, Schedule schedule, ScheduleOptions? options = null)
-    {
-        var handle = await Client.CreateScheduleAsync(id, schedule, options);
-        createdSchedules.Add(handle);
-        return handle;
-    }
-
     [Fact]
     public void FromProto_CatchupWindowUnspecified_Null()
     {
@@ -459,5 +451,13 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase, IAsyncLi
         var proto = new SchedulePolicy { CatchupWindow = TimeSpan.Zero }.ToProto();
 
         Assert.Equal(Duration.FromTimeSpan(TimeSpan.Zero), proto.CatchupWindow);
+    }
+
+    private async Task<ScheduleHandle> CreateScheduleAsync(
+        string id, Schedule schedule, ScheduleOptions? options = null)
+    {
+        var handle = await Client.CreateScheduleAsync(id, schedule, options);
+        createdSchedules.Add(handle);
+        return handle;
     }
 }
