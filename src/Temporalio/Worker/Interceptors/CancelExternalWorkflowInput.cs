@@ -1,3 +1,5 @@
+using Temporalio.Workflows;
+
 namespace Temporalio.Worker.Interceptors
 {
     /// <summary>
@@ -5,11 +7,13 @@ namespace Temporalio.Worker.Interceptors
     /// </summary>
     /// <param name="Id">Workflow ID.</param>
     /// <param name="RunId">Workflow run ID if any.</param>
+    /// <param name="Options">Cancel options if any.</param>
     /// <remarks>
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
     /// constructor, only use "with" clauses.
     /// </remarks>
     public record CancelExternalWorkflowInput(
         string Id,
-        string? RunId);
+        string? RunId,
+        ExternalWorkflowCancelOptions? Options);
 }

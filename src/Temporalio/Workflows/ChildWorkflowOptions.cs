@@ -108,6 +108,14 @@ namespace Temporalio.Workflows
         public Priority? Priority { get; set; }
 
         /// <summary>
+        /// Gets or sets Event Groups to attach to this command, in addition to those active in the
+        /// current <see cref="Workflow.WithEventGroups" /> scope. Markers describe the start event
+        /// in this workflow and do not propagate to the child.
+        /// </summary>
+        /// <remarks>WARNING: Event Groups are experimental.</remarks>
+        public IReadOnlyCollection<EventGroup>? EventGroups { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>

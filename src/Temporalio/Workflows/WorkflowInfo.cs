@@ -17,6 +17,8 @@ namespace Temporalio.Workflows
     /// <param name="LastFailure">Failure if this workflow run is a continuation of a failure.</param>
     /// <param name="LastResult">Successful result if this workflow is a continuation of a success.</param>
     /// <param name="Namespace">Namespace for the workflow.</param>
+    /// <param name="OriginalExecutionRunId">Run ID recorded on the workflow execution started
+    /// event. Unlike <paramref name="RunId"/>, this value is preserved across workflow resets.</param>
     /// <param name="Parent">Parent information for the workflow if this is a child.</param>
     /// <param name="Priority">The Priority of this workflow.</param>
     /// <param name="RetryPolicy">Retry policy for the workflow.</param>
@@ -44,6 +46,7 @@ namespace Temporalio.Workflows
         Exception? LastFailure,
         IReadOnlyCollection<IRawValue>? LastResult,
         string Namespace,
+        string OriginalExecutionRunId,
         WorkflowInfo.ParentInfo? Parent,
         Priority Priority,
         RetryPolicy? RetryPolicy,

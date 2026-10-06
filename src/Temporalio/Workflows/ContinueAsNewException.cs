@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Temporalio.Api.Sdk.V1;
 using Temporalio.Exceptions;
 using Temporalio.Worker.Interceptors;
 
@@ -13,12 +15,24 @@ namespace Temporalio.Workflows
         /// Initializes a new instance of the <see cref="ContinueAsNewException"/> class.
         /// </summary>
         /// <param name="input">Continue as new input.</param>
-        internal ContinueAsNewException(CreateContinueAsNewExceptionInput input)
-            : base("Continue as new") => Input = input;
+        /// <param name="eventGroupMarkers">Markers captured at request time.</param>
+        internal ContinueAsNewException(
+            CreateContinueAsNewExceptionInput input,
+            IReadOnlyList<EventGroupMarker> eventGroupMarkers)
+            : base("Continue as new")
+        {
+            Input = input;
+            EventGroupMarkers = eventGroupMarkers;
+        }
 
         /// <summary>
         /// Gets the continue as new input.
         /// </summary>
         internal CreateContinueAsNewExceptionInput Input { get; private init; }
+
+        /// <summary>
+        /// Gets Event Group markers captured when the continue-as-new was requested.
+        /// </summary>
+        internal IReadOnlyList<EventGroupMarker> EventGroupMarkers { get; private init; }
     }
 }

@@ -10,6 +10,48 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Worker.Interceptors.CancelExternalWorkflowInput.#ctor(System.String,System.String)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Worker.Interceptors.CancelExternalWorkflowInput.Deconstruct(System.String@,System.String@)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Worker.Interceptors.DelayAsyncInput.#ctor(System.TimeSpan,System.Nullable{System.Threading.CancellationToken},System.String)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Worker.Interceptors.DelayAsyncInput.Deconstruct(System.TimeSpan@,System.Nullable{System.Threading.CancellationToken}@,System.String@)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Workflows.WorkflowInfo.#ctor(System.Int32,System.String,System.String,System.Nullable{System.TimeSpan},System.String,System.Collections.Generic.IReadOnlyDictionary{System.String,Temporalio.Api.Common.V1.Payload},System.Exception,System.Collections.Generic.IReadOnlyCollection{Temporalio.Converters.IRawValue},System.String,Temporalio.Workflows.WorkflowInfo.ParentInfo,Temporalio.Common.Priority,Temporalio.Common.RetryPolicy,Temporalio.Workflows.WorkflowInfo.RootInfo,System.String,System.Nullable{System.TimeSpan},System.DateTime,System.String,System.TimeSpan,System.String,System.DateTime,System.String)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Workflows.WorkflowInfo.Deconstruct(System.Int32@,System.String@,System.String@,System.Nullable{System.TimeSpan}@,System.String@,System.Collections.Generic.IReadOnlyDictionary{System.String,Temporalio.Api.Common.V1.Payload}@,System.Exception@,System.Collections.Generic.IReadOnlyCollection{Temporalio.Converters.IRawValue}@,System.String@,Temporalio.Workflows.WorkflowInfo.ParentInfo@,Temporalio.Common.Priority@,Temporalio.Common.RetryPolicy@,Temporalio.Workflows.WorkflowInfo.RootInfo@,System.String@,System.Nullable{System.TimeSpan}@,System.DateTime@,System.String@,System.TimeSpan@,System.String@,System.DateTime@,System.String@)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Temporalio.Client.Schedules.SchedulePolicy.get_CatchupWindow</Target>
     <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
     <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
@@ -17,7 +59,91 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Worker.Interceptors.CancelExternalWorkflowInput.#ctor(System.String,System.String)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Worker.Interceptors.CancelExternalWorkflowInput.Deconstruct(System.String@,System.String@)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Worker.Interceptors.DelayAsyncInput.#ctor(System.TimeSpan,System.Nullable{System.Threading.CancellationToken},System.String)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Worker.Interceptors.DelayAsyncInput.Deconstruct(System.TimeSpan@,System.Nullable{System.Threading.CancellationToken}@,System.String@)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Workflows.WorkflowInfo.#ctor(System.Int32,System.String,System.String,System.Nullable{System.TimeSpan},System.String,System.Collections.Generic.IReadOnlyDictionary{System.String,Temporalio.Api.Common.V1.Payload},System.Exception,System.Collections.Generic.IReadOnlyCollection{Temporalio.Converters.IRawValue},System.String,Temporalio.Workflows.WorkflowInfo.ParentInfo,Temporalio.Common.Priority,Temporalio.Common.RetryPolicy,Temporalio.Workflows.WorkflowInfo.RootInfo,System.String,System.Nullable{System.TimeSpan},System.DateTime,System.String,System.TimeSpan,System.String,System.DateTime,System.String)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Workflows.WorkflowInfo.Deconstruct(System.Int32@,System.String@,System.String@,System.Nullable{System.TimeSpan}@,System.String@,System.Collections.Generic.IReadOnlyDictionary{System.String,Temporalio.Api.Common.V1.Payload}@,System.Exception@,System.Collections.Generic.IReadOnlyCollection{Temporalio.Converters.IRawValue}@,System.String@,Temporalio.Workflows.WorkflowInfo.ParentInfo@,Temporalio.Common.Priority@,Temporalio.Common.RetryPolicy@,Temporalio.Workflows.WorkflowInfo.RootInfo@,System.String@,System.Nullable{System.TimeSpan}@,System.DateTime@,System.String@,System.TimeSpan@,System.String@,System.DateTime@,System.String@)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Temporalio.Client.Schedules.SchedulePolicy.get_CatchupWindow</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Worker.Interceptors.CancelExternalWorkflowInput.#ctor(System.String,System.String)</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Worker.Interceptors.CancelExternalWorkflowInput.Deconstruct(System.String@,System.String@)</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Worker.Interceptors.DelayAsyncInput.#ctor(System.TimeSpan,System.Nullable{System.Threading.CancellationToken},System.String)</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Worker.Interceptors.DelayAsyncInput.Deconstruct(System.TimeSpan@,System.Nullable{System.Threading.CancellationToken}@,System.String@)</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Workflows.WorkflowInfo.#ctor(System.Int32,System.String,System.String,System.Nullable{System.TimeSpan},System.String,System.Collections.Generic.IReadOnlyDictionary{System.String,Temporalio.Api.Common.V1.Payload},System.Exception,System.Collections.Generic.IReadOnlyCollection{Temporalio.Converters.IRawValue},System.String,Temporalio.Workflows.WorkflowInfo.ParentInfo,Temporalio.Common.Priority,Temporalio.Common.RetryPolicy,Temporalio.Workflows.WorkflowInfo.RootInfo,System.String,System.Nullable{System.TimeSpan},System.DateTime,System.String,System.TimeSpan,System.String,System.DateTime,System.String)</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Workflows.WorkflowInfo.Deconstruct(System.Int32@,System.String@,System.String@,System.Nullable{System.TimeSpan}@,System.String@,System.Collections.Generic.IReadOnlyDictionary{System.String,Temporalio.Api.Common.V1.Payload}@,System.Exception@,System.Collections.Generic.IReadOnlyCollection{Temporalio.Converters.IRawValue}@,System.String@,Temporalio.Workflows.WorkflowInfo.ParentInfo@,Temporalio.Common.Priority@,Temporalio.Common.RetryPolicy@,Temporalio.Workflows.WorkflowInfo.RootInfo@,System.String@,System.Nullable{System.TimeSpan}@,System.DateTime@,System.String@,System.TimeSpan@,System.String@,System.DateTime@,System.String@)</Target>
     <Left>lib/netstandard2.0/Temporalio.dll</Left>
     <Right>lib/netstandard2.0/Temporalio.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>

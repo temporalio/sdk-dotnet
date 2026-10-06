@@ -399,6 +399,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Assert.Null(result.RetryPolicy);
             Assert.Null(result.Root);
             Assert.Equal(handle.ResultRunId, result.RunId);
+            Assert.Equal(handle.ResultRunId, result.OriginalExecutionRunId);
             Assert.Null(result.RunTimeout);
             Assert.Equal(worker.Options.TaskQueue, result.TaskQueue);
             // TODO(cretz): Can assume default 10 in all test servers?

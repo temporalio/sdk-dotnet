@@ -31,6 +31,13 @@ to docs, or any other relevant information.
 
 ### Added
 
+- Added experimental Event Groups support. Event Groups are workflow-level metadata that group
+  related history events for UI and observability. `Workflow.CreateEventGroup` takes a required ID
+  (used verbatim; do not put secrets in it) and an optional label that is stored as a codec-encoded
+  payload. Attach groups with `Workflow.WithEventGroups` or the `EventGroups` property on command
+  options. Signal and update handlers receive implicit inbound groups.
+- Added `WorkflowInfo.OriginalExecutionRunId`, the run ID recorded on the workflow execution
+  started event. Unlike `RunId`, this value is preserved across workflow resets.
 - Added experimental `ISerializationContext.Nexus` support for Nexus callers and handlers. Callers
   use it for operation inputs, results, failures, and user metadata; handlers use it for inputs,
   synchronous results, and failures. Standalone handles created by starting an operation use their

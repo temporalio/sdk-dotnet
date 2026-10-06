@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Temporalio.Workflows
@@ -14,6 +15,14 @@ namespace Temporalio.Workflows
         /// token.
         /// </summary>
         public CancellationToken? CancellationToken { get; set; }
+
+        /// <summary>
+        /// Gets or sets Event Groups to attach to this command, in addition to those active in the
+        /// current <see cref="Workflow.WithEventGroups" /> scope. Markers describe the signal event
+        /// in this workflow and do not propagate to the target.
+        /// </summary>
+        /// <remarks>WARNING: Event Groups are experimental.</remarks>
+        public IReadOnlyCollection<EventGroup>? EventGroups { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.
