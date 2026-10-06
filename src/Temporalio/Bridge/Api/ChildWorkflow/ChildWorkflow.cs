@@ -40,15 +40,19 @@ namespace Temporalio.Bridge.Api.ChildWorkflow {
             "ChFQYXJlbnRDbG9zZVBvbGljeRIjCh9QQVJFTlRfQ0xPU0VfUE9MSUNZX1VO",
             "U1BFQ0lGSUVEEAASIQodUEFSRU5UX0NMT1NFX1BPTElDWV9URVJNSU5BVEUQ",
             "ARIfChtQQVJFTlRfQ0xPU0VfUE9MSUNZX0FCQU5ET04QAhImCiJQQVJFTlRf",
-            "Q0xPU0VfUE9MSUNZX1JFUVVFU1RfQ0FOQ0VMEAMqrgEKJlN0YXJ0Q2hpbGRX",
+            "Q0xPU0VfUE9MSUNZX1JFUVVFU1RfQ0FOQ0VMEAMqwAIKJlN0YXJ0Q2hpbGRX",
             "b3JrZmxvd0V4ZWN1dGlvbkZhaWxlZENhdXNlEjsKN1NUQVJUX0NISUxEX1dP",
             "UktGTE9XX0VYRUNVVElPTl9GQUlMRURfQ0FVU0VfVU5TUEVDSUZJRUQQABJH",
             "CkNTVEFSVF9DSElMRF9XT1JLRkxPV19FWEVDVVRJT05fRkFJTEVEX0NBVVNF",
-            "X1dPUktGTE9XX0FMUkVBRFlfRVhJU1RTEAEqfgodQ2hpbGRXb3JrZmxvd0Nh",
-            "bmNlbGxhdGlvblR5cGUSCwoHQUJBTkRPThAAEg4KClRSWV9DQU5DRUwQARIf",
-            "ChtXQUlUX0NBTkNFTExBVElPTl9DT01QTEVURUQQAhIfChtXQUlUX0NBTkNF",
-            "TExBVElPTl9SRVFVRVNURUQQA0Iz6gIwVGVtcG9yYWxpbzo6SW50ZXJuYWw6",
-            "OkJyaWRnZTo6QXBpOjpDaGlsZFdvcmtmbG93YgZwcm90bzM="));
+            "X1dPUktGTE9XX0FMUkVBRFlfRVhJU1RTEAESQwo/U1RBUlRfQ0hJTERfV09S",
+            "S0ZMT1dfRVhFQ1VUSU9OX0ZBSUxFRF9DQVVTRV9OQU1FU1BBQ0VfTk9UX0ZP",
+            "VU5EEAISSwpHU1RBUlRfQ0hJTERfV09SS0ZMT1dfRVhFQ1VUSU9OX0ZBSUxF",
+            "RF9DQVVTRV9JTlZBTElEX1ZFUlNJT05JTkdfT1ZFUlJJREUQAyp+Ch1DaGls",
+            "ZFdvcmtmbG93Q2FuY2VsbGF0aW9uVHlwZRILCgdBQkFORE9OEAASDgoKVFJZ",
+            "X0NBTkNFTBABEh8KG1dBSVRfQ0FOQ0VMTEFUSU9OX0NPTVBMRVRFRBACEh8K",
+            "G1dBSVRfQ0FOQ0VMTEFUSU9OX1JFUVVFU1RFRBADQjPqAjBUZW1wb3JhbGlv",
+            "OjpJbnRlcm5hbDo6QnJpZGdlOjpBcGk6OkNoaWxkV29ya2Zsb3diBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.ChildWorkflow.ParentClosePolicy), typeof(global::Temporalio.Bridge.Api.ChildWorkflow.StartChildWorkflowExecutionFailedCause), typeof(global::Temporalio.Bridge.Api.ChildWorkflow.ChildWorkflowCancellationType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -91,6 +95,8 @@ namespace Temporalio.Bridge.Api.ChildWorkflow {
   internal enum StartChildWorkflowExecutionFailedCause {
     [pbr::OriginalName("START_CHILD_WORKFLOW_EXECUTION_FAILED_CAUSE_UNSPECIFIED")] Unspecified = 0,
     [pbr::OriginalName("START_CHILD_WORKFLOW_EXECUTION_FAILED_CAUSE_WORKFLOW_ALREADY_EXISTS")] WorkflowAlreadyExists = 1,
+    [pbr::OriginalName("START_CHILD_WORKFLOW_EXECUTION_FAILED_CAUSE_NAMESPACE_NOT_FOUND")] NamespaceNotFound = 2,
+    [pbr::OriginalName("START_CHILD_WORKFLOW_EXECUTION_FAILED_CAUSE_INVALID_VERSIONING_OVERRIDE")] InvalidVersioningOverride = 3,
   }
 
   /// <summary>

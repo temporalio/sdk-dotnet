@@ -87,8 +87,9 @@ The native Rust library is built automatically as part of the above, through the
 library's dependency graph is pinned by a committed
 [`Cargo.lock`](src/Temporalio/Bridge/Cargo.lock); `sdk-core` is a published Rust library and
 deliberately does not commit one of its own. Its workspace tables and toolchain channel are
-mirrored from the submodule, so after bumping `sdk-core` copy over anything that changed upstream
-and then run:
+mirrored from the submodule. Update Core with `mise run core:update`, which also imports its
+changelog entries as fragments. See [CONTRIBUTING.md](CONTRIBUTING.md#updating-sdk-core) for the
+full process. Copy over anything that changed upstream and then run:
 
     mise run bridge:check-sync  # confirm the mirrored tables match the submodule
     mise run bridge:relock      # refresh Bridge/Cargo.lock, then commit it

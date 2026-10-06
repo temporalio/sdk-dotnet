@@ -1,0 +1,1 @@
+Core: Replay now preserves which local activity results were delivered together for newly recorded histories. This prevents local activity scheduling which was conditional on local activity resolution order from assigning recorded results to different handles. Older markers keep their existing behavior.

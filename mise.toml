@@ -29,6 +29,26 @@ dir = "src/Temporalio/Bridge"
 # pin alone.
 run = "cargo fetch"
 
+[tasks."changelog:check"]
+description = "Validate pending changelog fragments"
+dir = "src/Temporalio/Bridge"
+run = "cargo run --locked --quiet -p changelog-release-notes --bin changelog-tool -- check --repo ../../.."
+
+[tasks."changelog:prepare"]
+description = "Collect fragments into CHANGELOG.md; pass --version and --date"
+dir = "src/Temporalio/Bridge"
+run = "cargo run --locked --quiet -p changelog-release-notes --bin changelog-tool -- prepare --repo ../../.."
+
+[tasks."changelog:release-notes"]
+description = "Generate release notes with Core commits; pass --version and optionally --output"
+dir = "src/Temporalio/Bridge"
+run = "cargo run --locked --quiet -p changelog-release-notes --bin changelog-tool -- release-notes --repo ../../.. --submodule src/Temporalio/Bridge/sdk-core"
+
+[tasks."core:update"]
+description = "Update SDK Core and import its changelog entries as fragments"
+dir = "src/Temporalio/Bridge"
+run = "cargo run --locked --quiet -p changelog-release-notes --bin changelog-tool -- update-core --repo ../../.. --submodule src/Temporalio/Bridge/sdk-core"
+
 [tasks.docs]
 description = "Build the API documentation"
 depends = ["tools:restore"]
