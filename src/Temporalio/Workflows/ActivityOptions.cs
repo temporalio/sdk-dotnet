@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Temporalio.Common;
 
@@ -110,6 +111,13 @@ namespace Temporalio.Workflows
         /// Gets or sets the priority that will be used when executing the activity.
         /// </summary>
         public Priority? Priority { get; set; }
+
+        /// <summary>
+        /// Gets or sets Event Groups to attach to this command, in addition to those active in the
+        /// current <see cref="Workflow.WithEventGroups" /> scope.
+        /// </summary>
+        /// <remarks>WARNING: Event Groups are experimental.</remarks>
+        public IReadOnlyCollection<EventGroup>? EventGroups { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.

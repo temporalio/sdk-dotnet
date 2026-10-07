@@ -241,8 +241,13 @@ namespace Temporalio.Extensions.DiagnosticSource
                 {
                     tags = newTags;
                 }
-                TagList = new(new(tags.ToDictionary(
-                    kv => kv.Key, kv => (object?)kv.Value).OrderBy(kv => kv.Key).ToArray()));
+                // Later values override earlier ones with the same key
+                var tagDict = new Dictionary<string, object?>();
+                foreach (var kv in tags)
+                {
+                    tagDict[kv.Key] = kv.Value;
+                }
+                TagList = new(new(tagDict.OrderBy(kv => kv.Key).ToArray()));
             }
 
             public TagList TagList { get; private init; }

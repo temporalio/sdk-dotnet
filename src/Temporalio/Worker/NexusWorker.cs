@@ -280,6 +280,7 @@ namespace Temporalio.Worker
                     : new ApplicationFailureException(
                         e.Message, e.InnerException, "OperationError", nonRetryable: true);
                 var opFailure = await worker.Client.Options.DataConverter
+                    .WithSerializationContext(executionContext.SerializationContext)
                     .ToFailureAsync(convertedException).ConfigureAwait(false);
                 return new() { Failure = opFailure };
             }
@@ -331,20 +332,33 @@ namespace Temporalio.Worker
         private async Task<NexusTaskCompletion> HandlePollTaskInternalAsync(
             RunningTask running, PollNexusTaskQueueResponse task, DateTime? requestDeadline, string endpoint)
         {
+            // Declared outside the try so the catch can encode the failure with the same context
+            // the handler used; the handler derives its own from NexusOperationExecutionContext.
+            Converters.ISerializationContext.Nexus? serializationContext = null;
             try
             {
                 // Handle each case
                 switch (task.Request.VariantCase)
                 {
                     case Request.VariantOneofCase.StartOperation:
-                        var startResp = await HandleStartOperationAsync(running, task, requestDeadline, endpoint).ConfigureAwait(false);
+                        serializationContext = new(
+                            Endpoint: endpoint,
+                            Service: task.Request.StartOperation.Service,
+                            Operation: task.Request.StartOperation.Operation);
+                        var startResp = await HandleStartOperationAsync(
+                            running, task, requestDeadline, endpoint).ConfigureAwait(false);
                         return new()
                         {
                             TaskToken = task.TaskToken,
                             Completed = new() { StartOperation = startResp },
                         };
                     case Request.VariantOneofCase.CancelOperation:
-                        var cancelResp = await HandleCancelOperationAsync(running, task, requestDeadline, endpoint).ConfigureAwait(false);
+                        serializationContext = new(
+                            Endpoint: endpoint,
+                            Service: task.Request.CancelOperation.Service,
+                            Operation: task.Request.CancelOperation.Operation);
+                        var cancelResp = await HandleCancelOperationAsync(
+                            running, task, requestDeadline, endpoint).ConfigureAwait(false);
                         return new()
                         {
                             TaskToken = task.TaskToken,
@@ -360,7 +374,12 @@ namespace Temporalio.Worker
             {
                 logger.LogWarning(e, "Completing Nexus {OperationType} task as failed", task.Request.VariantCase);
                 var handlerException = e as HandlerException ?? ConvertToHandlerException(e);
-                var failure = await worker.Client.Options.DataConverter.ToFailureAsync(handlerException).ConfigureAwait(false);
+                var dataConverter = worker.Client.Options.DataConverter;
+                if (serializationContext is { } failureContext)
+                {
+                    dataConverter = dataConverter.WithSerializationContext(failureContext);
+                }
+                var failure = await dataConverter.ToFailureAsync(handlerException).ConfigureAwait(false);
                 return new()
                 {
                     TaskToken = task.TaskToken,

@@ -69,6 +69,14 @@ namespace Temporalio.Workflows
         public InitialVersioningBehavior? InitialVersioningBehavior { get; set; }
 
         /// <summary>
+        /// Gets or sets Event Groups to attach to this command, in addition to those active in the
+        /// current <see cref="Workflow.WithEventGroups" /> scope. Markers describe the continue-as-new
+        /// event in this run and do not propagate to the new run.
+        /// </summary>
+        /// <remarks>WARNING: Event Groups are experimental.</remarks>
+        public IReadOnlyCollection<EventGroup>? EventGroups { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>

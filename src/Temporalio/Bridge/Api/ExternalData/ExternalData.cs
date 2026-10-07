@@ -27,19 +27,20 @@ namespace Temporalio.Bridge.Api.ExternalData {
             "CjN0ZW1wb3JhbC9zZGsvY29yZS9leHRlcm5hbF9kYXRhL2V4dGVybmFsX2Rh",
             "dGEucHJvdG8SFWNvcmVzZGsuZXh0ZXJuYWxfZGF0YRoeZ29vZ2xlL3Byb3Rv",
             "YnVmL2R1cmF0aW9uLnByb3RvGh9nb29nbGUvcHJvdG9idWYvdGltZXN0YW1w",
-            "LnByb3RvIv4BChdMb2NhbEFjdGl2aXR5TWFya2VyRGF0YRILCgNzZXEYASAB",
+            "LnByb3RvIrICChdMb2NhbEFjdGl2aXR5TWFya2VyRGF0YRILCgNzZXEYASAB",
             "KA0SDwoHYXR0ZW1wdBgCIAEoDRITCgthY3Rpdml0eV9pZBgDIAEoCRIVCg1h",
             "Y3Rpdml0eV90eXBlGAQgASgJEjEKDWNvbXBsZXRlX3RpbWUYBSABKAsyGi5n",
             "b29nbGUucHJvdG9idWYuVGltZXN0YW1wEioKB2JhY2tvZmYYBiABKAsyGS5n",
             "b29nbGUucHJvdG9idWYuRHVyYXRpb24SOgoWb3JpZ2luYWxfc2NoZWR1bGVf",
-            "dGltZRgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiMwoRUGF0",
-            "Y2hlZE1hcmtlckRhdGESCgoCaWQYASABKAkSEgoKZGVwcmVjYXRlZBgCIAEo",
-            "CEIy6gIvVGVtcG9yYWxpbzo6SW50ZXJuYWw6OkJyaWRnZTo6QXBpOjpFeHRl",
-            "cm5hbERhdGFiBnByb3RvMw=="));
+            "dGltZRgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASHQoQYWN0",
+            "aXZhdGlvbl9pbmRleBgIIAEoBEgAiAEBQhMKEV9hY3RpdmF0aW9uX2luZGV4",
+            "IjMKEVBhdGNoZWRNYXJrZXJEYXRhEgoKAmlkGAEgASgJEhIKCmRlcHJlY2F0",
+            "ZWQYAiABKAhCMuoCL1RlbXBvcmFsaW86OkludGVybmFsOjpCcmlkZ2U6OkFw",
+            "aTo6RXh0ZXJuYWxEYXRhYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ExternalData.LocalActivityMarkerData), global::Temporalio.Bridge.Api.ExternalData.LocalActivityMarkerData.Parser, new[]{ "Seq", "Attempt", "ActivityId", "ActivityType", "CompleteTime", "Backoff", "OriginalScheduleTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ExternalData.LocalActivityMarkerData), global::Temporalio.Bridge.Api.ExternalData.LocalActivityMarkerData.Parser, new[]{ "Seq", "Attempt", "ActivityId", "ActivityType", "CompleteTime", "Backoff", "OriginalScheduleTime", "ActivationIndex" }, new[]{ "ActivationIndex" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ExternalData.PatchedMarkerData), global::Temporalio.Bridge.Api.ExternalData.PatchedMarkerData.Parser, new[]{ "Id", "Deprecated" }, null, null, null, null)
           }));
     }
@@ -54,6 +55,7 @@ namespace Temporalio.Bridge.Api.ExternalData {
   {
     private static readonly pb::MessageParser<LocalActivityMarkerData> _parser = new pb::MessageParser<LocalActivityMarkerData>(() => new LocalActivityMarkerData());
     private pb::UnknownFieldSet _unknownFields;
+    private int _hasBits0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pb::MessageParser<LocalActivityMarkerData> Parser { get { return _parser; } }
@@ -81,6 +83,7 @@ namespace Temporalio.Bridge.Api.ExternalData {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public LocalActivityMarkerData(LocalActivityMarkerData other) : this() {
+      _hasBits0 = other._hasBits0;
       seq_ = other.seq_;
       attempt_ = other.attempt_;
       activityId_ = other.activityId_;
@@ -88,6 +91,7 @@ namespace Temporalio.Bridge.Api.ExternalData {
       completeTime_ = other.completeTime_ != null ? other.completeTime_.Clone() : null;
       backoff_ = other.backoff_ != null ? other.backoff_.Clone() : null;
       originalScheduleTime_ = other.originalScheduleTime_ != null ? other.originalScheduleTime_.Clone() : null;
+      activationIndex_ = other.activationIndex_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -199,6 +203,38 @@ namespace Temporalio.Bridge.Api.ExternalData {
       }
     }
 
+    /// <summary>Field number for the "activation_index" field.</summary>
+    public const int ActivationIndexFieldNumber = 8;
+    private readonly static ulong ActivationIndexDefaultValue = 0UL;
+
+    private ulong activationIndex_;
+    /// <summary>
+    /// Position, within the workflow task, of the activation this resolution was delivered in.
+    /// Replay must deliver resolutions in the same activations because workflow code can branch on
+    /// which handles are ready. Absent in markers written by Core versions that predate this field.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong ActivationIndex {
+      get { if ((_hasBits0 & 1) != 0) { return activationIndex_; } else { return ActivationIndexDefaultValue; } }
+      set {
+        _hasBits0 |= 1;
+        activationIndex_ = value;
+      }
+    }
+    /// <summary>Gets whether the "activation_index" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasActivationIndex {
+      get { return (_hasBits0 & 1) != 0; }
+    }
+    /// <summary>Clears the value of the "activation_index" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearActivationIndex() {
+      _hasBits0 &= ~1;
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -221,6 +257,7 @@ namespace Temporalio.Bridge.Api.ExternalData {
       if (!object.Equals(CompleteTime, other.CompleteTime)) return false;
       if (!object.Equals(Backoff, other.Backoff)) return false;
       if (!object.Equals(OriginalScheduleTime, other.OriginalScheduleTime)) return false;
+      if (ActivationIndex != other.ActivationIndex) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -235,6 +272,7 @@ namespace Temporalio.Bridge.Api.ExternalData {
       if (completeTime_ != null) hash ^= CompleteTime.GetHashCode();
       if (backoff_ != null) hash ^= Backoff.GetHashCode();
       if (originalScheduleTime_ != null) hash ^= OriginalScheduleTime.GetHashCode();
+      if (HasActivationIndex) hash ^= ActivationIndex.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -281,6 +319,10 @@ namespace Temporalio.Bridge.Api.ExternalData {
         output.WriteRawTag(58);
         output.WriteMessage(OriginalScheduleTime);
       }
+      if (HasActivationIndex) {
+        output.WriteRawTag(64);
+        output.WriteUInt64(ActivationIndex);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -319,6 +361,10 @@ namespace Temporalio.Bridge.Api.ExternalData {
         output.WriteRawTag(58);
         output.WriteMessage(OriginalScheduleTime);
       }
+      if (HasActivationIndex) {
+        output.WriteRawTag(64);
+        output.WriteUInt64(ActivationIndex);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -349,6 +395,9 @@ namespace Temporalio.Bridge.Api.ExternalData {
       }
       if (originalScheduleTime_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(OriginalScheduleTime);
+      }
+      if (HasActivationIndex) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(ActivationIndex);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -391,6 +440,9 @@ namespace Temporalio.Bridge.Api.ExternalData {
           OriginalScheduleTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
         }
         OriginalScheduleTime.MergeFrom(other.OriginalScheduleTime);
+      }
+      if (other.HasActivationIndex) {
+        ActivationIndex = other.ActivationIndex;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -444,6 +496,10 @@ namespace Temporalio.Bridge.Api.ExternalData {
             input.ReadMessage(OriginalScheduleTime);
             break;
           }
+          case 64: {
+            ActivationIndex = input.ReadUInt64();
+            break;
+          }
         }
       }
     #endif
@@ -494,6 +550,10 @@ namespace Temporalio.Bridge.Api.ExternalData {
               OriginalScheduleTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
             input.ReadMessage(OriginalScheduleTime);
+            break;
+          }
+          case 64: {
+            ActivationIndex = input.ReadUInt64();
             break;
           }
         }

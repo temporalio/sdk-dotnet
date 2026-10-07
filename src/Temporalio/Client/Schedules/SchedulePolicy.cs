@@ -16,10 +16,10 @@ namespace Temporalio.Client.Schedules
         public ScheduleOverlapPolicy Overlap { get; init; } = ScheduleOverlapPolicy.Skip;
 
         /// <summary>
-        /// Gets the amount of time in the past to execute misseed actions after a Temporal server
-        /// is unavailable.
+        /// Gets the amount of time in the past to execute missed actions after a Temporal server
+        /// is unavailable. If null, the server-configured default is used (currently one year).
         /// </summary>
-        public TimeSpan CatchupWindow { get; init; } = TimeSpan.FromDays(365);
+        public TimeSpan? CatchupWindow { get; init; }
 
         /// <summary>
         /// Gets a value indicating whether to pause the schedule if an action fails or times out.
@@ -34,7 +34,7 @@ namespace Temporalio.Client.Schedules
         internal static SchedulePolicy FromProto(Api.Schedule.V1.SchedulePolicies proto) => new()
         {
             Overlap = proto.OverlapPolicy,
-            CatchupWindow = proto.CatchupWindow.ToTimeSpan(),
+            CatchupWindow = proto.CatchupWindow?.ToTimeSpan(),
             PauseOnFailure = proto.PauseOnFailure,
         };
 
@@ -45,7 +45,7 @@ namespace Temporalio.Client.Schedules
         internal Api.Schedule.V1.SchedulePolicies ToProto() => new()
         {
             OverlapPolicy = Overlap,
-            CatchupWindow = Duration.FromTimeSpan(CatchupWindow),
+            CatchupWindow = CatchupWindow.HasValue ? Duration.FromTimeSpan(CatchupWindow.Value) : null,
             PauseOnFailure = PauseOnFailure,
         };
     }

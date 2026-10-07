@@ -133,8 +133,9 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task UpdateOperation_ValidUpdate_Succeeds()
     {
-        // Punch-list: async op happy path. The update result is asserted; forward/back links are
-        // checked only informationally.
+        // Punch-list: happy path. The update isn't held, so it may be completed in the same workflow
+        // task that accepts it and the operation can start either sync or async; only the result is
+        // asserted.
         await RunWithCounterAsync(async (endpoint, taskQueue, counter) =>
         {
             var caller = await RunCallerAsync(
@@ -190,33 +191,21 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public async Task UpdateOperation_ImmediateHandler_IsStillAsync()
-    {
-        // Punch-list: sync/immediately-completing handler. Per NEXUS-489, immediate returns are
-        // still async because the operation only waits for the Accepted stage, not completion.
-        await RunWithCounterAsync(async (endpoint, taskQueue, counter) =>
-        {
-            var caller = await RunCallerAsync(
-                taskQueue, endpoint, new(counter.Id, Amount: 5));
-            Assert.Equal(5, await caller.GetResultAsync<int>());
-
-            // The operation was scheduled/started asynchronously (has a scheduled event) rather than
-            // completing synchronously inline.
-            Assert.Contains(
-                (await caller.FetchHistoryAsync()).Events,
-                e => e.EventType == EventType.NexusOperationScheduled);
-        });
-    }
-
-    [Fact]
     public async Task UpdateOperation_ReusedUpdateId_IsIdempotentAndSync()
     {
         // Punch-list: reused UpdateID against an already-completed update returns a sync result and
         // does not re-apply the update.
         await RunWithCounterAsync(async (endpoint, taskQueue, counter) =>
         {
+            // An ungated update is accepted and completed in the same workflow task, so the
+            // Accepted-stage start response can already carry the outcome and the handler would
+            // return a sync result. Holding the update guarantees the first operation is async.
+            await counter.SignalAsync(wf => wf.SetHoldAsync(true));
             var first = await RunCallerAsync(
                 taskQueue, endpoint, new(counter.Id, Amount: 5, UpdateId: "reused-id"));
+            await AssertMore.HasEventEventuallyAsync(
+                first, e => e.EventType == EventType.NexusOperationStarted);
+            await counter.SignalAsync(wf => wf.SetHoldAsync(false));
             Assert.Equal(5, await first.GetResultAsync<int>());
 
             // Same update ID against the now-completed update: the counter must not increment again.
@@ -232,8 +221,8 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
             var firstEvents = (await first.FetchHistoryAsync()).Events;
             var secondEvents = (await second.FetchHistoryAsync()).Events;
 
-            // First op (fresh update ID): async. Per NEXUS-489 the operation only waits for the
-            // Accepted stage, so it starts asynchronously and carries an operation token.
+            // First op (fresh update ID): async because the update was held until it started, so it
+            // carries an operation token.
             var firstStarted = Assert.Single(
                 firstEvents, e => e.EventType == EventType.NexusOperationStarted);
             Assert.NotEmpty(firstStarted.NexusOperationStartedEventAttributes.OperationToken);
@@ -278,6 +267,12 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
             var second = await RunCallerAsync(
                 taskQueue, endpoint, new(counter.Id, Amount: 5, UpdateId: "shared"));
 
+            // Starting the caller does not mean op2 has reached the counter yet. Releasing now could
+            // let op2 dedupe onto the already-completed update instead (the sync path). Only an
+            // in-flight dedupe can start async while the update is held.
+            await AssertMore.HasEventEventuallyAsync(
+                second, e => e.EventType == EventType.NexusOperationStarted);
+
             // Release the gate so the single deduped update completes.
             await counter.SignalAsync(wf => wf.SetHoldAsync(false));
 
@@ -298,15 +293,20 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
     public async Task UpdateOperation_ExplicitRunId_TokenCarriesRunId()
     {
         // Punch-list: an explicitly targeted run ID must flow into the update-workflow operation
-        // token (rid), proving run-ID targeting works end-to-end rather than always defaulting to
-        // the latest run.
+        // token (rid).
         await RunWithCounterAsync(async (endpoint, taskQueue, counter) =>
         {
+            // The token only exists on an async start, so hold the update to keep it from being
+            // completed in the same workflow task that accepts it (which would yield a sync result).
+            await counter.SignalAsync(wf => wf.SetHoldAsync(true));
             var runId = counter.ResultRunId!;
             var caller = await RunCallerAsync(
                 taskQueue,
                 endpoint,
                 new(counter.Id, Amount: 5, UpdateId: "runid-update", RunId: runId));
+            await AssertMore.HasEventEventuallyAsync(
+                caller, e => e.EventType == EventType.NexusOperationStarted);
+            await counter.SignalAsync(wf => wf.SetHoldAsync(false));
             Assert.Equal(5, await caller.GetResultAsync<int>());
 
             // Capture the operation token off the caller's NexusOperationStarted event (the async
@@ -353,8 +353,8 @@ public class NexusUpdateOperationTests : WorkflowEnvironmentTestBase
             var caller = await RunCallerAsync(
                 taskQueue, endpointName, new(pending.Id, Amount: 5));
 
-            // The Nexus operation should remain pending (started, not failed) for a short window.
-            // This assertion passes — the failure below is purely the wedged worker shutdown.
+            // Absence of failure can only be observed over a window. The operation stays scheduled
+            // but never starts, because the update-start RPC blocks until an update is accepted.
             await Task.Delay(TimeSpan.FromSeconds(3));
             var desc = await caller.DescribeAsync();
             Assert.NotEqual(WorkflowExecutionStatus.Failed, desc.Status);

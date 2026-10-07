@@ -1,37 +1,9 @@
 <!--
-High-level release notes.
-Loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-
-When your PR includes a user-facing change, add an entry below under the
-appropriate heading (create the heading if it does not yet exist). Within
-each heading content can be free-form. Feel free to include examples, links
-to docs, or any other relevant information.
-
-### Added                   — new features
-### Changed                 — changes in existing functionality
-### Deprecated              — soon-to-be-removed features
-### :boom: Breaking Changes — removed or backwards-incompatible features
-### Fixed                   — notable bug fixes
-### Security                — notable security fixes
+High-level release notes, loosely based on Keep a Changelog.
+Pending changes belong in changelog/; see changelog/README.md.
 -->
 
 # Changelog
-
-## [Unreleased]
-
-### Changed
-
-- `DevServerOptions` and `TestServerOptions` are no longer marked unstable. They remain specific to
-  the dev server and test server implementations and may no longer be valid if those change.
-
-### Fixed
-
-- Source Link in the published symbol packages now resolves every source file, and packages are
-  built with normalized paths so they are reproducible.
-- Removed possiblity of a use-after-free in Temporalio.Bridge.ByteArray because of an early finalization.
-- `DefaultFailureConverter.WithEncodedCommonAttributes` now also encodes the message and stack trace
-  of nested causes when a previously received failure exception is thrown again. Previously the
-  decoded cause messages were sent in plain text.
 
 ## [1.20.0] - 2026-09-28
 
