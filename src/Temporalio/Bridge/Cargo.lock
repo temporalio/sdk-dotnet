@@ -2205,6 +2205,7 @@ dependencies = [
  "js-sys",
  "pin-project-lite",
  "thiserror 2.0.20",
+ "tracing",
 ]
 
 [[package]]
@@ -3576,7 +3577,7 @@ dependencies = [
 
 [[package]]
 name = "temporalio-client"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "anyhow",
  "assert_matches",
@@ -3620,7 +3621,7 @@ dependencies = [
 
 [[package]]
 name = "temporalio-common"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -3664,7 +3665,7 @@ dependencies = [
 
 [[package]]
 name = "temporalio-common-wasm"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -3693,7 +3694,7 @@ dependencies = [
 
 [[package]]
 name = "temporalio-macros"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "derive_more",
  "proc-macro2",
@@ -3704,7 +3705,7 @@ dependencies = [
 
 [[package]]
 name = "temporalio-protos"
-version = "0.9.0"
+version = "0.10.0"
 dependencies = [
  "anyhow",
  "base64 0.23.1",
@@ -3725,7 +3726,7 @@ dependencies = [
 
 [[package]]
 name = "temporalio-sdk"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -3734,6 +3735,8 @@ dependencies = [
  "futures",
  "futures-util",
  "gethostname",
+ "opentelemetry",
+ "opentelemetry_sdk",
  "parking_lot",
  "prost",
  "prost-wkt-types",
@@ -3757,7 +3760,7 @@ dependencies = [
 
 [[package]]
 name = "temporalio-sdk-core"
-version = "0.9.0"
+version = "0.10.0"
 dependencies = [
  "antithesis_sdk",
  "anyhow",
@@ -3853,7 +3856,7 @@ dependencies = [
 
 [[package]]
 name = "temporalio-workflow"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "anyhow",
  "bon",
