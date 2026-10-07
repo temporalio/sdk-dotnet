@@ -1,0 +1,1 @@
+Add experimental `ChildWorkflowOptions.VersioningOverride` to pin, auto-upgrade, or one-time route a child workflow independently of its parent, and `VersioningOverride.OneTime` for one-time routing. Child overrides require Temporal Server 1.32.0 or later; invalid overrides surface as `InvalidVersioningOverrideException` when starting the child.

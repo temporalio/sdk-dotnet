@@ -1231,6 +1231,8 @@ namespace Temporalio.Workflows
         /// to check if it's a cancellation either way.
         /// </remarks>
         /// <exception cref="Exceptions.WorkflowAlreadyStartedException">Throw if an ID is given in the options, but it is already running. This exception is stored into the returned task.</exception>
+        /// <exception cref="Exceptions.InvalidVersioningOverrideException">Thrown if the server
+        /// rejects the child's versioning override. This exception is stored into the returned task.</exception>
         public static Task<ChildWorkflowHandle<TWorkflow, TResult>> StartChildWorkflowAsync<TWorkflow, TResult>(
             Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall,
             ChildWorkflowOptions? options = null)
@@ -1253,6 +1255,8 @@ namespace Temporalio.Workflows
         /// to check if it's a cancellation either way.
         /// </remarks>
         /// <exception cref="Exceptions.WorkflowAlreadyStartedException">Throw if an ID is given in the options, but it is already running. This exception is stored into the returned task.</exception>
+        /// <exception cref="Exceptions.InvalidVersioningOverrideException">Thrown if the server
+        /// rejects the child's versioning override. This exception is stored into the returned task.</exception>
         public static async Task<ChildWorkflowHandle<TWorkflow>> StartChildWorkflowAsync<TWorkflow>(
             Expression<Func<TWorkflow, Task>> workflowRunCall, ChildWorkflowOptions? options = null)
         {
@@ -1275,6 +1279,8 @@ namespace Temporalio.Workflows
         /// to check if it's a cancellation either way.
         /// </remarks>
         /// <exception cref="Exceptions.WorkflowAlreadyStartedException">Throw if an ID is given in the options, but it is already running. This exception is stored into the returned task.</exception>
+        /// <exception cref="Exceptions.InvalidVersioningOverrideException">Thrown if the server
+        /// rejects the child's versioning override. This exception is stored into the returned task.</exception>
         public static async Task<ChildWorkflowHandle> StartChildWorkflowAsync(
             string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions? options = null) =>
             await Context.StartChildWorkflowAsync<ValueTuple, ValueTuple>(
