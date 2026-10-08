@@ -1,22 +1,30 @@
 name: Release Publish
 run-name: Release ${{ github.ref_name }}
 
-# Automated NuGet publishing and smoke testing.
+# Both galleries consume the same verified packages; only successful production
+# smoke tests can create the GitHub release draft.
 
 on:
   workflow_dispatch: {}
+
+concurrency:
+  group: release-publish
+  cancel-in-progress: false
 
 permissions:
   contents: read
 
 jobs:
   build:
+    needs: read-version
     uses: ./.github/workflows/nuget-package.yml
     permissions:
       contents: read
 
   read-version:
     runs-on: ubuntu-latest
+    env:
+      RestoreLockedMode: true
     permissions:
       contents: read
     outputs:
@@ -24,21 +32,82 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          submodules: recursive
 
-      - name: Read version
+      - name: Require main
+        env:
+          RELEASE_REF: ${{ github.ref }}
+        run: |
+          if [ "$RELEASE_REF" != "refs/heads/main" ]; then
+            echo "Release publishing must be dispatched from main" >&2
+            exit 1
+          fi
+
+      - name: Setup release tooling
+        uses: ./.github/actions/setup
+
+      - name: Validate versions
         id: read
         run: |
-          version=$(grep -oPm1 '(?<=<Version>)[^<]+' Directory.Build.props)
-          if [ -z "$version" ]; then
-            echo "Could not read <Version> from Directory.Build.props" >&2
+          version=$(dotnet run --file scripts/release-verify.cs -- version)
+          if git show-ref --verify --quiet "refs/tags/$version"; then
+            echo "Version $version already has a release tag" >&2
             exit 1
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "Releasing version: $version"
 
-  publish-int:
+      - name: Validate release notes
+        env:
+          VERSION: ${{ steps.read.outputs.version }}
+        run: mise run changelog:release-notes -- --version "$VERSION" --output release-notes.md
+
+      - name: Upload release notes
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: release-notes
+          path: release-notes.md
+          if-no-files-found: error
+
+  verify-packages:
     needs:
       - build
+      - read-version
+    runs-on: ubuntu-latest
+    env:
+      RestoreLockedMode: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+
+      - name: Download NuGet artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: nuget-package
+          path: nuget-package
+
+      - name: Validate packages and symbols
+        env:
+          VERSION: ${{ needs.read-version.outputs.version }}
+        run: dotnet run --file scripts/release-verify.cs -- packages nuget-package "$VERSION" > nuget-package/package-ids.txt
+
+      - name: Upload verified packages
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: release-package
+          path: nuget-package
+          if-no-files-found: error
+
+  publish-int:
+    needs:
+      - verify-packages
       - read-version
     permissions:
       contents: read
@@ -50,6 +119,7 @@ jobs:
       token-service-url: https://int.nugettest.org/api/v2/token
       audience: https://int.nugettest.org
       version: ${{ needs.read-version.outputs.version }}
+      artifact-name: release-package
 
   smoke-int:
     needs:
@@ -84,6 +154,7 @@ jobs:
       index-url: https://api.nuget.org/v3/index.json
       token-service-url: https://www.nuget.org/api/v2/token
       version: ${{ needs.read-version.outputs.version }}
+      artifact-name: release-package
 
   smoke-prod:
     needs:
@@ -103,3 +174,32 @@ jobs:
           package-source: "https://api.nuget.org/v3/index.json"
           version: ${{ needs.read-version.outputs.version }}
           run-dotnet-framework: true
+
+  create-release-draft:
+    needs:
+      - smoke-prod
+      - read-version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Download validated release notes
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: release-notes
+
+      - name: Create GitHub release draft
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.read-version.outputs.version }}
+          RELEASE_SHA: ${{ github.sha }}
+        run: |
+          prerelease=()
+          if [[ "$VERSION" == *-* ]]; then
+            prerelease=(--prerelease)
+          fi
+          gh release create "$VERSION" --target "$RELEASE_SHA" --draft --title "$VERSION" \
+            --notes-file release-notes.md --generate-notes "${prerelease[@]}"
