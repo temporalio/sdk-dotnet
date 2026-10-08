@@ -85,7 +85,7 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
         [WorkflowRun]
         public async Task RunAsync()
         {
-            await Assert.ThrowsAsync<InvalidVersioningOverrideException>(() =>
+            var exception = await Assert.ThrowsAsync<InvalidVersioningOverrideException>(() =>
                 Workflow.StartChildWorkflowAsync(
                     "ChildWorkflow",
                     Array.Empty<object?>(),
@@ -95,6 +95,8 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
                         VersioningOverride = new VersioningOverride.Pinned(
                             new WorkerDeploymentVersion("deployment", "build")),
                     }));
+            Assert.Equal($"{Workflow.Info.WorkflowId}-child", exception.WorkflowId);
+            Assert.Equal("ChildWorkflow", exception.WorkflowType);
         }
     }
 

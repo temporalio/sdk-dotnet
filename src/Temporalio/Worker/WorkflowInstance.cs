@@ -2687,7 +2687,9 @@ namespace Temporalio.Worker
                                             return;
                                         case StartChildWorkflowExecutionFailedCause.InvalidVersioningOverride:
                                             handleSource.SetException(new InvalidVersioningOverrideException(
-                                                "Child workflow versioning override is invalid"));
+                                                "Child workflow versioning override is invalid",
+                                                workflowId: startRes.Failed.WorkflowId,
+                                                workflowType: startRes.Failed.WorkflowType));
                                             return;
                                         default:
                                             handleSource.SetException(new InvalidOperationException(
