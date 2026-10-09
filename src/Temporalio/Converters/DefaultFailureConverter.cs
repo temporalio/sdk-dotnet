@@ -87,14 +87,7 @@ namespace Temporalio.Converters
             // part of the restored proto from the serialized details.
             if (Options.EncodeCommonAttributes)
             {
-                failure.EncodedAttributes = payloadConverter.ToPayload(
-                    new Dictionary<string, string>
-                    {
-                        ["message"] = failure.Message,
-                        ["stack_trace"] = failure.StackTrace,
-                    });
-                failure.Message = "Encoded failure";
-                failure.StackTrace = string.Empty;
+                EncodeCommonAttributes(failure, payloadConverter);
             }
             return failure;
         }
@@ -285,6 +278,18 @@ namespace Temporalio.Converters
             };
         }
 
+        private static void EncodeCommonAttributes(Failure failure, IPayloadConverter conv)
+        {
+            failure.EncodedAttributes = conv.ToPayload(
+                new Dictionary<string, string>
+                {
+                    ["message"] = failure.Message,
+                    ["stack_trace"] = failure.StackTrace,
+                });
+            failure.Message = "Encoded failure";
+            failure.StackTrace = string.Empty;
+        }
+
         private Failure CreateFailureFromException(
             FailureException exc,
             string? stackTrace,
@@ -293,7 +298,17 @@ namespace Temporalio.Converters
             // Copy existing failure if already there
             if (exc.Failure != null)
             {
-                return new(exc.Failure);
+                var copy = new Failure(exc.Failure);
+                // The copied causes were decoded when the exception was created, so they have to be
+                // encoded again. The top-level failure is encoded by the caller.
+                if (Options.EncodeCommonAttributes)
+                {
+                    for (var cause = copy.Cause; cause != null; cause = cause.Cause)
+                    {
+                        EncodeCommonAttributes(cause, conv);
+                    }
+                }
+                return copy;
             }
             var failure = new Failure()
             {
