@@ -39,7 +39,7 @@ on:
         description: "Run artifact containing the .nupkg/.snupkg files to publish."
         required: false
         type: string
-        default: nuget-package
+        default: release-package
 
 permissions:
   contents: read
@@ -86,8 +86,7 @@ jobs:
         run: |
           dotnet nuget push "$GITHUB_WORKSPACE/nuget-package/**/*.nupkg" \
             --api-key "$NUGET_API_KEY" \
-            --source "$INDEX_URL" \
-            --skip-duplicate
+            --source "$INDEX_URL"
 
   wait:
     needs: publish
@@ -95,16 +94,27 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Download verified package manifest
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: nuget-package
+
       - name: Wait for packages to be available
         env:
           VERSION: ${{ inputs.version }}
           INDEX_URL: ${{ inputs.index-url }}
         run: |
           set -euo pipefail
+          VERSION=$(printf '%s' "$VERSION" | tr '[:upper:]' '[:lower:]')
           # Flat-container is served from the same host as the V3 index.
           host="${INDEX_URL#https://}"
           host="${host%%/*}"
-          remaining="temporalio temporalio.extensions.diagnosticsource temporalio.extensions.hosting temporalio.extensions.opentelemetry"
+          remaining=$(tr '[:upper:]' '[:lower:]' < nuget-package/package-ids.txt)
+          if [ -z "$remaining" ]; then
+            echo "Verified package manifest is empty" >&2
+            exit 1
+          fi
           deadline=$(( $(date +%s) + 1800 )) # 30 minutes
           while true; do
             pending=""
