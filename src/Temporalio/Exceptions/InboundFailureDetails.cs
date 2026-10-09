@@ -27,7 +27,7 @@ namespace Temporalio.Exceptions
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
-            return Converter.ToValue<T>(Payloads.ElementAt(index));
+            return Converter.ToValue<T>(Payloads!.ElementAt(index));
         }
     }
 }
