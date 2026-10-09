@@ -539,6 +539,136 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Workflow(VersioningBehavior = VersioningBehavior.Pinned)]
+    public class ChildVersioningOverrideWorkflow
+    {
+        private bool finish;
+
+        [WorkflowRun]
+        public async Task<string> RunAsync(string overrideKind, WorkerDeploymentVersion targetVersion)
+        {
+            VersioningOverride? versioningOverride = overrideKind switch
+            {
+                "none" => null,
+                "pinned" => new VersioningOverride.Pinned(targetVersion),
+                "auto-upgrade" => new VersioningOverride.AutoUpgrade(),
+                "one-time" => new VersioningOverride.OneTime(targetVersion),
+                _ => throw new ArgumentException("Unknown override kind", nameof(overrideKind)),
+            };
+            var child = await Workflow.StartChildWorkflowAsync(
+                (DeploymentVersioningWorkflowV1AutoUpgrade wf) => wf.RunAsync(),
+                new()
+                {
+                    Id = $"{Workflow.Info.WorkflowId}-child",
+                    VersioningOverride = versioningOverride,
+                });
+            await Workflow.WaitConditionAsync(() => finish);
+            await child.SignalAsync(wf => wf.DoFinishAsync());
+            return await child.GetResultAsync();
+        }
+
+        [WorkflowSignal]
+        public async Task FinishAsync() => finish = true;
+    }
+
+    [Theory]
+    [InlineData("none", "1.0", "version-v1")]
+    [InlineData("pinned", "2.0", "version-v2")]
+    [InlineData("auto-upgrade", "2.0", "version-v1")]
+    [InlineData("one-time", "2.0", "version-v2")]
+    public async Task ChildWorkflowVersioningOverride_RoutesIndependentlyOfParent(
+        string overrideKind, string expectedBuildId, string expectedResult)
+    {
+        var deploymentName = $"deployment-child-override-{Guid.NewGuid()}";
+        var v1 = new WorkerDeploymentVersion(deploymentName, "1.0");
+        var v2 = new WorkerDeploymentVersion(deploymentName, "2.0");
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+
+        using var worker1 = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue)
+            {
+                DeploymentOptions = new(v1, true),
+            }.AddWorkflow<ChildVersioningOverrideWorkflow>().
+                AddWorkflow<DeploymentVersioningWorkflowV1AutoUpgrade>());
+        using var worker2 = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue)
+            {
+                DeploymentOptions = new(v2, true),
+            }.AddWorkflow<ChildVersioningOverrideWorkflow>().
+                AddWorkflow<DeploymentVersioningWorkflowV2Pinned>());
+
+        var testTask = ExecuteTest();
+        await Task.WhenAll(
+            worker1.ExecuteAsync(() => testTask),
+            worker2.ExecuteAsync(() => testTask));
+
+        async Task ExecuteTest()
+        {
+            await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, v1);
+            var describe = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, v2);
+            await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe.ConflictToken, v2);
+            await TestUtils.WaitForRoutingConfigPropagationAsync(Client, deploymentName, v2.BuildId);
+
+            var parent = await Client.StartWorkflowAsync(
+                (ChildVersioningOverrideWorkflow wf) => wf.RunAsync(overrideKind, v2),
+                new(id: $"child-override-{Guid.NewGuid()}", taskQueue: taskQueue)
+                {
+                    VersioningOverride = new VersioningOverride.Pinned(v1),
+                });
+            await TestUtils.WaitForWorkflowRunningOnVersionAsync(Client, parent.Id, v1.BuildId);
+            await AssertMore.ChildStartedEventuallyAsync(parent);
+            var child = Client.GetWorkflowHandle($"{parent.Id}-child");
+            await TestUtils.WaitForWorkflowRunningOnVersionAsync(Client, child.Id, expectedBuildId);
+
+            var childDescription = await child.DescribeAsync();
+            var childVersioning = childDescription.RawDescription.WorkflowExecutionInfo.VersioningInfo;
+            if (overrideKind == "one-time")
+            {
+                Assert.Null(childVersioning.VersioningOverride);
+                Assert.Equal(Temporalio.Api.Enums.V1.VersioningBehavior.Pinned, childVersioning.Behavior);
+            }
+            else if (overrideKind == "pinned")
+            {
+                Assert.Equal(v2.ToProto(), childVersioning.VersioningOverride.Pinned.Version);
+            }
+            else if (overrideKind == "auto-upgrade")
+            {
+                Assert.True(childVersioning.VersioningOverride.AutoUpgrade);
+            }
+
+            var history = await parent.FetchHistoryAsync();
+            var initiated = Assert.Single(
+                history.Events, evt => evt.StartChildWorkflowExecutionInitiatedEventAttributes != null).
+                    StartChildWorkflowExecutionInitiatedEventAttributes;
+            VersioningOverride? expectedOverride = overrideKind switch
+            {
+                "pinned" => new VersioningOverride.Pinned(v2),
+                "auto-upgrade" => new VersioningOverride.AutoUpgrade(),
+                "one-time" => new VersioningOverride.OneTime(v2),
+                _ => null,
+            };
+            // The server normalizes deprecated fields, so compare only the modern representation.
+            var expectedProto = expectedOverride?.ToProto();
+            Assert.Equal(expectedProto?.OverrideCase, initiated.VersioningOverride?.OverrideCase);
+            Assert.Equal(expectedProto?.Pinned, initiated.VersioningOverride?.Pinned);
+            Assert.Equal(expectedProto?.AutoUpgrade, initiated.VersioningOverride?.AutoUpgrade);
+            Assert.Equal(expectedProto?.OneTime, initiated.VersioningOverride?.OneTime);
+
+            describe = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, v1);
+            await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe.ConflictToken, v1);
+            await TestUtils.WaitForRoutingConfigPropagationAsync(Client, deploymentName, v1.BuildId);
+
+            await parent.SignalAsync(wf => wf.FinishAsync());
+            Assert.Equal(expectedResult, await parent.GetResultAsync());
+            var replay = await new WorkflowReplayer(
+                new WorkflowReplayerOptions().AddWorkflow<ChildVersioningOverrideWorkflow>()).
+                    ReplayWorkflowAsync(await parent.FetchHistoryAsync());
+            Assert.Null(replay.ReplayFailure);
+        }
+    }
+
     [Workflow("CanVersionUpgradeWorkflow", VersioningBehavior = VersioningBehavior.Pinned)]
     public class CanVersionUpgradeWorkflowV1
     {
