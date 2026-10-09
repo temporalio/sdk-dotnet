@@ -152,7 +152,7 @@ This is a simple workflow that executes the `SayHello` activity.
 
 ### Running a Worker
 
-To run this in a worker, put the following in `Program.cs`:
+To run this in a worker on .NET 6 or later, put the following in `Program.cs`:
 
 ```csharp
 using MyNamespace;
@@ -161,14 +161,6 @@ using Temporalio.Worker;
 
 // Create a client to localhost on "default" namespace
 var client = await TemporalClient.ConnectAsync(new("localhost:7233"));
-
-// Cancellation token to shutdown worker on ctrl+c
-using var tokenSource = new CancellationTokenSource();
-Console.CancelKeyPress += (_, eventArgs) =>
-{
-    tokenSource.Cancel();
-    eventArgs.Cancel = true;
-};
 
 // Create an activity instance since we have instance activities. If we had
 // all static activities, we could just reference those directly.
@@ -181,11 +173,11 @@ using var worker = new TemporalWorker(
         AddActivity(activities.SayHello).
         AddWorkflow<SayHelloWorkflow>());
 
-// Run worker until cancelled
+// Run worker until Ctrl+C or SIGTERM on Unix
 Console.WriteLine("Running worker");
 try
 {
-    await worker.ExecuteAsync(tokenSource.Token);
+    await worker.ExecuteAsync();
 }
 catch (OperationCanceledException)
 {
@@ -395,20 +387,26 @@ using var worker = new TemporalWorker(
         AddActivity(MyActivities.MyActivity).
         AddWorkflow<MyWorkflow>());
 
-// Run worker until Ctrl+C
-using var cts = new CancellationTokenSource();
-Console.CancelKeyPress += (sender, eventArgs) =>
+// Run worker until Ctrl+C or SIGTERM on Unix (.NET 6 or later)
+try
 {
-    eventArgs.Cancel = true;
-    cts.Cancel();
-};
-await worker.ExecuteAsync(cts.Token);
+    await worker.ExecuteAsync();
+}
+catch (OperationCanceledException)
+{
+    Console.WriteLine("Worker cancelled");
+}
 ```
 
 Notes about the above code:
 
-* This shows how to run a worker from C# using top-level statements. Of course this can be part of a larger program and
-  `ExecuteAsync` can be used like any other task call with a cancellation token.
+* This shows how to run a worker from C# using top-level statements. This can also be part of a larger program.
+  On .NET 6 and later, parameterless `ExecuteAsync()` registers handlers for Ctrl+C and, on Unix, SIGTERM for the
+  duration of the call. Both signals initiate graceful shutdown, honoring `GracefulShutdownTimeout` and waiting for
+  in-flight activities to finish before throwing `OperationCanceledException`.
+* Applications that manage their own signals, including Generic Host applications, should pass their cancellation
+  token to `ExecuteAsync(stoppingToken)`. That overload does not register signal handlers. On older .NET versions,
+  use this overload and arrange cancellation in your application, or use Generic Host.
 * The worker uses the same client that is used for all other Temporal tasks (e.g. starting workflows).
 * Workers can have many more options not shown here (e.g. data converters and interceptors).
 

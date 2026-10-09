@@ -315,7 +315,7 @@ namespace Temporalio.Converters
                         Details =
                             appDet.Count == 0
                                 ? null
-                                : new() { Payloads_ = { appDet.Details.Select(conv.ToPayload) } },
+                                : new() { Payloads_ = { appDet.Details!.Select(conv.ToPayload) } },
                         Category = appExc.Category,
                     };
                     if (appExc.NextRetryDelay != null)
@@ -334,7 +334,7 @@ namespace Temporalio.Converters
                         Details =
                             canDet.Count == 0
                                 ? null
-                                : new() { Payloads_ = { canDet.Details.Select(conv.ToPayload) } },
+                                : new() { Payloads_ = { canDet.Details!.Select(conv.ToPayload) } },
                     };
                     break;
                 case WorkflowAlreadyStartedException:

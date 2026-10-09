@@ -28,8 +28,14 @@ dotnet_diagnostic.CA1307.severity = none
 dotnet_diagnostic.CA1310.severity = none
 dotnet_diagnostic.CA1311.severity = none
 
+# ArgumentNullException.ThrowIfNull does not exist on older targets
+dotnet_diagnostic.CA1510.severity = none
+
 # For many of our properties like task tokens, we're ok returning byte arrays
 dotnet_diagnostic.CA1819.severity = none
+
+# Environment.ProcessId does not exist on older targets
+dotnet_diagnostic.CA1837.severity = none
 
 # ReadOnlySpan conversion errors whing using string.Concat
 dotnet_diagnostic.CA1845.severity = none
@@ -46,6 +52,9 @@ dotnet_diagnostic.CA1873.severity = none
 # Do not want to make all exceptions [Serializable], we don't support
 # cross-AppDomain currently
 dotnet_diagnostic.CA2237.severity = none
+
+# Generic Enum.GetValues and Enum.GetName do not exist on older targets
+dotnet_diagnostic.CA2263.severity = none
 
 # Warn on unused imports
 dotnet_diagnostic.IDE0005.severity = warning
