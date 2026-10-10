@@ -164,38 +164,32 @@ namespace Temporalio.Workflows
             // waiter's turn.
             var me = waiters.AddLast(SemaphoreUnit);
 
-            // We don't expose an overload for a nullable timeout on wait condition, so we have to
-            // differentiate
+            // The timeout overload keeps its existing timer summary, and the options form of the
+            // non-timeout overload gives us a Task<bool> so both branches can share a continuation
             var task = timeout is { } timeoutNonNull ?
                 Workflow.WaitConditionAsync(
                     () => CurrentCount > 0 && waiters.Count > 0 && waiters.First == me,
                     timeoutNonNull,
                     cancellationToken) :
-                Workflow.WaitConditionAsync(
+                Workflow.WaitConditionWithOptionsAsync(new(
                     () => CurrentCount > 0 && waiters.Count > 0 && waiters.First == me,
-                    cancellationToken);
+                    cancellationToken: cancellationToken));
 
-            // Have a continue with that only runs on success that decrements current count on
-            // success. Then have a continue with that runs always that removes the waiter. Both
-            // must run synchronously.
+            // This must run synchronously so the permit is taken before any other workflow code
+            // can observe the count. It runs regardless of outcome and hands back the original
+            // task, because an only-on-success continuation would turn a faulted wait into a
+            // cancellation and lose the exception.
             return task.
                 ContinueWith(
                     task =>
                     {
-                        if (task is not Task<bool> timeoutTask || timeoutTask.Result)
+                        waiters.Remove(me);
+#pragma warning disable CA1849, VSTHRD103 // We know it's completed
+                        if (task.Status == TaskStatus.RanToCompletion && task.Result)
+#pragma warning restore CA1849, VSTHRD103
                         {
                             CurrentCount--;
-                            return true;
                         }
-                        return false;
-                    },
-                    default,
-                    TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.ExecuteSynchronously,
-                    TaskScheduler.Current).
-                ContinueWith(
-                    task =>
-                    {
-                        waiters.Remove(me);
 #pragma warning disable VSTHRD003 // This is safe to reuse tasks for our case
                         return task;
 #pragma warning restore VSTHRD003
