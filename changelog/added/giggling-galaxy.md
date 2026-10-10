@@ -1,0 +1,1 @@
+Added experimental Event Groups: `Workflow.CreateEventGroup` groups related history events for UI and observability using a required ID (used verbatim; omit secrets) and an optional codec-encoded label. Attach groups with `Workflow.WithEventGroups` or command-option `EventGroups`; signal and update handlers receive implicit inbound groups.

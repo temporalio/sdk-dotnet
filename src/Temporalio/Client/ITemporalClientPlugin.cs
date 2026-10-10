@@ -6,9 +6,6 @@ namespace Temporalio.Client
     /// <summary>
     /// Interface for temporal client plugins.
     /// </summary>
-    /// <remarks>
-    /// WARNING: This API is experimental and may change in the future.
-    /// </remarks>
     public interface ITemporalClientPlugin
     {
         /// <summary>

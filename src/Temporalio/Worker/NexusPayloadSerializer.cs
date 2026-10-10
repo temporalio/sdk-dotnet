@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using NexusRpc;
@@ -7,6 +6,7 @@ using NexusRpc.Handlers;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
+using Temporalio.Nexus;
 
 namespace Temporalio.Worker
 {
@@ -32,7 +32,8 @@ namespace Temporalio.Worker
             {
                 value = null;
             }
-            var payload = await dataConverter.ToPayloadAsync(value).ConfigureAwait(false);
+            var payload = await CreateContextualDataConverter().ToPayloadAsync(value)
+                .ConfigureAwait(false);
             return new(payload.ToByteArray());
         }
 
@@ -44,6 +45,7 @@ namespace Temporalio.Worker
             // .NET "unit" type is a struct that cannot support this natively, so we change the type
             // just for the deserializer to support it, but we will ignore the result anyways later
             // in this method.
+            var contextualDataConverter = CreateContextualDataConverter();
             var noValueType = type == typeof(NoValue);
             if (noValueType)
             {
@@ -51,6 +53,16 @@ namespace Temporalio.Worker
             }
 
             var payload = Payload.Parser.ParseFrom(content.Data);
+            var isSystemPayload = SystemNexusPayloadVisitor.IsSystemPayload(payload);
+
+            if (isSystemPayload &&
+                !SystemNexusPayloadVisitor.TryGetVisitor(payload, out var messageType, out _))
+            {
+                throw new HandlerException(
+                    HandlerErrorType.Internal,
+                    $"Unrecognized System Nexus envelope message type: {messageType}",
+                    errorRetryBehavior: HandlerErrorRetryBehavior.Retryable);
+            }
 
             // Decode with payload codec if configured. Codec failures are treated as
             // retryable INTERNAL errors since they are typically transient (e.g. a remote
@@ -58,17 +70,12 @@ namespace Temporalio.Worker
             // exceptions are passed through untouched so users can control the resulting
             // Nexus error, except non-retryable payload validation failures which report
             // invalid input and therefore become non-retryable BAD_REQUEST errors.
-            if (dataConverter.PayloadCodec != null)
+            if (contextualDataConverter.PayloadCodec != null)
             {
                 try
                 {
-                    var decoded = await dataConverter.PayloadCodec.DecodeAsync(
-                        new Payload[] { payload }).ConfigureAwait(false);
-                    if (decoded.Count != 1)
-                    {
-                        throw new ArgumentException($"Expected 1 payload, found {decoded.Count}");
-                    }
-                    payload = decoded.First();
+                    await PayloadCodecHelper.DecodeAsync(
+                        contextualDataConverter.PayloadCodec, payload).ConfigureAwait(false);
                 }
                 catch (Exception e) when (PayloadValidationError.IsException(e))
                 {
@@ -97,7 +104,12 @@ namespace Temporalio.Worker
             object? result;
             try
             {
-                result = dataConverter.PayloadConverter.ToValue(payload, type);
+                var payloadConverter = isSystemPayload ?
+                    new SystemNexusPayloadConverter(
+                        contextualDataConverter.PayloadConverter,
+                        contextualDataConverter.FailureConverter) :
+                    contextualDataConverter.PayloadConverter;
+                result = payloadConverter.ToValue(payload, type);
             }
             catch (Exception e) when (PayloadValidationError.IsException(e))
             {
@@ -126,5 +138,18 @@ namespace Temporalio.Worker
             }
             return result;
         }
+
+        /// <summary>
+        /// Creates a data converter scoped to the operation currently being handled.
+        /// </summary>
+        /// <remarks>
+        /// A single serializer is shared by every operation the worker handles, so the context is
+        /// resolved per call from the task being handled rather than captured once. Falls back to
+        /// the uncontextualized converter when there is no Nexus operation in scope, which is the
+        /// case when this serializer is used directly rather than by the worker.
+        /// </remarks>
+        private DataConverter CreateContextualDataConverter() =>
+            Temporalio.Nexus.NexusOperationExecutionContext.AsyncLocalCurrent.Value is { } ctx ?
+                dataConverter.WithSerializationContext(ctx.SerializationContext) : dataConverter;
     }
 }

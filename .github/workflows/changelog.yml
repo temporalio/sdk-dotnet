@@ -11,4 +11,6 @@ permissions:
 jobs:
   changelog-check:
     name: Changelog checkpoint
-    uses: temporalio/.github/.github/workflows/changelog.yml@d8129c755fbd1d3f18c5a7a5420d5754acc63e3f
+    uses: temporalio/.github/.github/workflows/changelog-fragments.yml@b87e4183c4b74b7f6d4a2a7f3e77150da55cf733
+    with:
+      sdk-rust-path: src/Temporalio/Bridge/sdk-core

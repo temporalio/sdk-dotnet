@@ -103,9 +103,27 @@ namespace Temporalio.Workflows
         public VersioningIntent VersioningIntent { get; set; } = VersioningIntent.Unspecified;
 
         /// <summary>
+        /// Gets or sets an explicit versioning configuration for the child workflow. When set,
+        /// this takes precedence over versioning inherited from the parent workflow. If unset,
+        /// no override is applied.
+        /// </summary>
+        /// <remarks>
+        /// WARNING: This is experimental and requires Temporal Server 1.32.0 or later.
+        /// </remarks>
+        public VersioningOverride? VersioningOverride { get; set; }
+
+        /// <summary>
         /// Gets or sets the priority that should be used for this Child Workflow.
         /// </summary>
         public Priority? Priority { get; set; }
+
+        /// <summary>
+        /// Gets or sets Event Groups to attach to this command, in addition to those active in the
+        /// current <see cref="Workflow.WithEventGroups" /> scope. Markers describe the start event
+        /// in this workflow and do not propagate to the child.
+        /// </summary>
+        /// <remarks>WARNING: Event Groups are experimental.</remarks>
+        public IReadOnlyCollection<EventGroup>? EventGroups { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.

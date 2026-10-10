@@ -13,9 +13,6 @@ namespace Temporalio.Common
     /// <summary>
     /// Configuration options for simple plugins.
     /// </summary>
-    /// <remarks>
-    /// WARNING: This API is experimental and may change in the future.
-    /// </remarks>
     public class SimplePluginOptions : ICloneable
     {
         /// <summary>

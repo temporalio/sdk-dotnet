@@ -83,6 +83,9 @@ dotnet_diagnostic.SA1633.severity = none
 #use soft tabs (spaces) for indentation
 indent_style = space
 
+#must match the eol in .gitattributes
+end_of_line = lf
+
 #Formatting - indentation options
 
 #indent switch case contents.

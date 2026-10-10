@@ -399,6 +399,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Assert.Null(result.RetryPolicy);
             Assert.Null(result.Root);
             Assert.Equal(handle.ResultRunId, result.RunId);
+            Assert.Equal(handle.ResultRunId, result.OriginalExecutionRunId);
             Assert.Null(result.RunTimeout);
             Assert.Equal(worker.Options.TaskQueue, result.TaskQueue);
             // TODO(cretz): Can assume default 10 in all test servers?
@@ -2538,6 +2539,36 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Assert.Contains("already started", wfExc.InnerException.Message);
             },
             new TemporalWorkerOptions().AddWorkflow<AlreadyStartedChildWorkflow.ChildWorkflow>());
+    }
+
+    [Workflow]
+    public class InvalidVersioningOverrideChildWorkflow
+    {
+        [WorkflowRun]
+        public Task RunAsync() =>
+            Workflow.StartChildWorkflowAsync(
+                "ChildWorkflow",
+                Array.Empty<object?>(),
+                new()
+                {
+                    VersioningOverride = new VersioningOverride.Pinned(
+                        new WorkerDeploymentVersion("deployment", "build")),
+                });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_InvalidVersioningOverrideChild_FailsProperly()
+    {
+        await ExecuteWorkerAsync<InvalidVersioningOverrideChildWorkflow>(
+            async worker =>
+            {
+                var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                    Env.Client.ExecuteWorkflowAsync(
+                        (InvalidVersioningOverrideChildWorkflow wf) => wf.RunAsync(),
+                        new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
+                Assert.IsType<FailureException>(wfExc.InnerException);
+                Assert.Equal("Child workflow versioning override is invalid", wfExc.InnerException.Message);
+            });
     }
 
     [Workflow]
@@ -6759,6 +6790,33 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             client);
     }
 
+    public class IntentionallyUnconvertibleFailureConverter : DefaultFailureConverter
+    {
+        public const string UnconvertibleMessage = "Intentionally unconvertible";
+
+        public bool FailToException { get; init; }
+
+        public bool FailToFailure { get; init; }
+
+        public override Exception ToException(Failure failure, IPayloadConverter payloadConverter)
+        {
+            if (FailToException && failure.Message == UnconvertibleMessage)
+            {
+                throw new InvalidOperationException("Intentional conversion failure");
+            }
+            return base.ToException(failure, payloadConverter);
+        }
+
+        public override Failure ToFailure(Exception exception, IPayloadConverter payloadConverter)
+        {
+            if (FailToFailure && exception.Message == UnconvertibleMessage)
+            {
+                throw new InvalidOperationException("Intentional conversion failure");
+            }
+            return base.ToFailure(exception, payloadConverter);
+        }
+    }
+
     [Workflow]
     public class ChildFailToFailParentWorkflow
     {
@@ -6773,19 +6831,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     {
         [WorkflowRun]
         public Task RunAsync() =>
-            throw new ApplicationFailureException("Intentional child failure");
-    }
-
-    public class CannotDeserializeIntentionalFailureConverter : DefaultFailureConverter
-    {
-        public override Exception ToException(Failure failure, IPayloadConverter payloadConverter)
-        {
-            if (failure.Message == "Intentional child failure")
-            {
-                throw new InvalidOperationException("Intentional conversion failure");
-            }
-            return base.ToException(failure, payloadConverter);
-        }
+            throw new ApplicationFailureException(
+                IntentionallyUnconvertibleFailureConverter.UnconvertibleMessage);
     }
 
     [Fact]
@@ -6794,7 +6841,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         var newOptions = (TemporalClientOptions)Client.Options.Clone();
         newOptions.DataConverter = DataConverter.Default with
         {
-            FailureConverter = new CannotDeserializeIntentionalFailureConverter(),
+            // The child must still be able to convert its own failure
+            FailureConverter = new IntentionallyUnconvertibleFailureConverter { FailToException = true },
         };
         var client = new TemporalClient(Client.Connection, newOptions);
         await ExecuteWorkerAsync<ChildFailToFailParentWorkflow>(
@@ -6808,6 +6856,76 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             },
             new TemporalWorkerOptions().AddWorkflow<ChildFailToFailChildWorkflow>(),
             client);
+    }
+
+    [Workflow]
+    public class HandlerFailToFailWorkflow
+    {
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.WaitConditionAsync(() => false);
+
+        [WorkflowQuery]
+        public string FailingQuery() =>
+            throw new ApplicationFailureException(
+                IntentionallyUnconvertibleFailureConverter.UnconvertibleMessage);
+
+        [WorkflowUpdateValidator(nameof(DoUpdateAsync))]
+        public void ValidateDoUpdate() =>
+            throw new ApplicationFailureException(
+                IntentionallyUnconvertibleFailureConverter.UnconvertibleMessage);
+
+        [WorkflowUpdate]
+        public Task DoUpdateAsync() => Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_UpdateFailToFail_FailsTask()
+    {
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            FailureConverter = new IntentionallyUnconvertibleFailureConverter { FailToFailure = true },
+        };
+        var client = new TemporalClient(Client.Connection, newOptions);
+        await ExecuteWorkerAsync<HandlerFailToFailWorkflow>(
+            async worker =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (HandlerFailToFailWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                // The update never completes because the task fails, so don't wait on it
+                _ = Task.Run(() => handle.ExecuteUpdateAsync(wf => wf.DoUpdateAsync()));
+                // Previously the conversion error was swallowed and the update was never rejected
+                await AssertTaskFailureContainsEventuallyAsync(handle, "Intentional conversion failure");
+            },
+            client: client);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_QueryFailToFail_FailsQuery()
+    {
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            FailureConverter = new IntentionallyUnconvertibleFailureConverter { FailToFailure = true },
+        };
+        var client = new TemporalClient(Client.Connection, newOptions);
+        await ExecuteWorkerAsync<HandlerFailToFailWorkflow>(
+            async worker =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (HandlerFailToFailWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                // A query delivered alongside the first workflow task would fail that task
+                // instead of the query, so wait until the query is delivered on its own
+                await AssertMore.HasEventEventuallyAsync(
+                    handle, e => e.WorkflowTaskCompletedEventAttributes != null);
+                // Previously the conversion error was swallowed and the query was never answered
+                var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
+                    () => handle.QueryAsync(wf => wf.FailingQuery()));
+                Assert.Contains("Intentional conversion failure", exc.Message);
+            },
+            client: client);
     }
 
     [Workflow]
@@ -7576,13 +7694,26 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     public record ContextInfo(
         bool Activity = false,
         bool Workflow = false,
-        string WorkflowId = "<unknown>")
+        string WorkflowId = "<unknown>",
+        bool Nexus = false,
+        string NexusEndpoint = "<unknown>",
+        string NexusService = "<unknown>",
+        string NexusOperation = "<unknown>")
     {
-        public static ContextInfo Create(ISerializationContext context) =>
-            new(
+        public static ContextInfo Create(ISerializationContext context) => context switch
+        {
+            // Nexus contexts identify an endpoint/service/operation rather than a workflow, so
+            // they carry no workflow ID to key on.
+            ISerializationContext.Nexus nexus => new(
+                Nexus: true,
+                NexusEndpoint: nexus.Endpoint,
+                NexusService: nexus.Service,
+                NexusOperation: nexus.Operation),
+            _ => new(
                 Activity: context is ISerializationContext.Activity,
                 Workflow: context is ISerializationContext.Workflow,
-                WorkflowId: ((ISerializationContext.IHasWorkflow)context).WorkflowId!);
+                WorkflowId: ((ISerializationContext.IHasWorkflow)context).WorkflowId!),
+        };
     }
 
     public class ContextJsonPlainConverter : JsonPlainConverter, IWithSerializationContext<IEncodingConverter>
@@ -7654,7 +7785,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 ["encoding"] = ByteString.CopyFromUtf8(EncodingName),
             };
-            if (contextInfo != null)
+            if (contextInfo?.Nexus == true)
+            {
+                metadata["nexus-endpoint"] = ByteString.CopyFromUtf8(contextInfo.NexusEndpoint);
+                metadata["nexus-service"] = ByteString.CopyFromUtf8(contextInfo.NexusService);
+                metadata["nexus-operation"] = ByteString.CopyFromUtf8(contextInfo.NexusOperation);
+            }
+            else if (contextInfo != null)
             {
                 metadata["activity"] = ByteString.CopyFromUtf8(contextInfo.Activity ? "true" : "false");
                 metadata["workflow-id"] = ByteString.CopyFromUtf8(contextInfo.WorkflowId);
@@ -7679,6 +7816,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 {
                     Assert.False(p.Metadata.ContainsKey("activity"));
                     Assert.False(p.Metadata.ContainsKey("workflow-id"));
+                    Assert.False(p.Metadata.ContainsKey("nexus-endpoint"));
+                }
+                else if (contextInfo.Nexus)
+                {
+                    Assert.Equal(contextInfo.NexusEndpoint, p.Metadata["nexus-endpoint"].ToStringUtf8());
+                    Assert.Equal(contextInfo.NexusService, p.Metadata["nexus-service"].ToStringUtf8());
+                    Assert.Equal(contextInfo.NexusOperation, p.Metadata["nexus-operation"].ToStringUtf8());
                 }
                 else
                 {
@@ -7698,7 +7842,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         string Name,
         Func<HistoryEvent, Payload?> Predicate,
         bool Activity = false,
-        bool NoContextMetadataExpected = false)
+        bool NoContextMetadataExpected = false,
+        string? NexusEndpoint = null)
     {
         public async Task AssertInHistoryAsync(WorkflowHistory history)
         {
@@ -7724,6 +7869,11 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 if (NoContextMetadataExpected)
                 {
                     Assert.False(payload.Metadata.ContainsKey("activity"));
+                    Assert.False(payload.Metadata.ContainsKey("workflow-id"));
+                }
+                else if (NexusEndpoint != null)
+                {
+                    Assert.Equal(NexusEndpoint, payload.Metadata["nexus-endpoint"].ToStringUtf8());
                     Assert.False(payload.Metadata.ContainsKey("workflow-id"));
                 }
                 else
@@ -7889,12 +8039,23 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [WorkflowUpdate]
         public async Task DoNexusOperationAsync(string endpoint)
         {
-            // Call Nexus and confirm no events are on the value because Nexus doesn't go through
-            // context converters at this time
+            // Nexus payloads are scoped by the endpoint, service and operation rather than by the
+            // calling workflow, so the result carries the handler's encode and the caller's decode,
+            // both under the same Nexus context.
             var res = await Workflow.CreateNexusWorkflowClient<INexusService>(endpoint).
                 ExecuteNexusOperationAsync(svc => svc.DoSomething(new("nexus-input", new())));
             Assert.Equal("nexus-result", res.Name);
-            Assert.Empty(res.Events);
+            Assert.Equal(2, res.Events.Count);
+            Assert.True(res.Events[0].Outbound);
+            Assert.False(res.Events[1].Outbound);
+            foreach (var evt in res.Events)
+            {
+                Assert.True(evt.Info.Nexus);
+                Assert.Equal(endpoint, evt.Info.NexusEndpoint);
+                // The Nexus service name drops the interface's leading "I".
+                Assert.Equal("NexusService", evt.Info.NexusService);
+                Assert.Equal(nameof(INexusService.DoSomething), evt.Info.NexusOperation);
+            }
         }
     }
 
@@ -8015,11 +8176,11 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 historyExpects.Add(new(
                     "nexus-input",
                     e => e.NexusOperationScheduledEventAttributes?.Input,
-                    NoContextMetadataExpected: true));
+                    NexusEndpoint: nexusEndpointName));
                 historyExpects.Add(new(
                     "nexus-result",
                     e => e.NexusOperationCompletedEventAttributes?.Result,
-                    NoContextMetadataExpected: true));
+                    NexusEndpoint: nexusEndpointName));
 
                 // Complete, check result
                 await handle.SignalAsync(wf => wf.CompleteAsync());

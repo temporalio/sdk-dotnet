@@ -92,7 +92,7 @@ jobs:
         if: ${{ matrix.container && matrix.os != 'alpine-latest' && matrix.os != 'alpine-arm' }}
         run: |
           # MISE_INSTALL_MUSL forces the static musl mise; its gnu build needs glibc 2.18, newer than manylinux2014's 2.17.
-          docker run --rm -v "$(pwd):/workspace" -w /workspace \
+          docker run --rm -v "$(pwd):/workspace" -w /workspace -e MISE_DISABLE_TOOLS=dotnet \
             ${{ matrix.container }} \
             sh -c ' \
                 curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y \
@@ -109,7 +109,7 @@ jobs:
       - name: Build (Docker Alpine)
         if: ${{ matrix.container && (matrix.os == 'alpine-latest' || matrix.os == 'alpine-arm') }}
         run: |
-          docker run --rm -v "$(pwd):/workspace" -w /workspace \
+          docker run --rm -v "$(pwd):/workspace" -w /workspace -e MISE_DISABLE_TOOLS=dotnet \
             ${{ matrix.container }} \
             sh -c ' \
                 curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y \
@@ -153,8 +153,11 @@ jobs:
         with:
           global-json-file: global.json
 
+      # ContinuousIntegrationBuild is set only here, not in Directory.Build.props, because the
+      # normalized /_/ source paths it produces are needed for reproducible packages but break
+      # local debugging.
       - name: Build package
-        run: dotnet pack -c Release /p:BridgeLibraryRoot=${{ github.workspace }}/bridge-libraries
+        run: dotnet pack -c Release /p:ContinuousIntegrationBuild=true /p:BridgeLibraryRoot=${{ github.workspace }}/bridge-libraries
 
       - name: Upload NuGet artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

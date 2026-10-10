@@ -9,7 +9,6 @@ using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Workflows;
 using ApiCommon = Temporalio.Api.Common.V1;
-using ApiDeployment = Temporalio.Api.Deployment.V1;
 using ApiFailure = Temporalio.Api.Failure.V1;
 using ApiTaskQueue = Temporalio.Api.TaskQueue.V1;
 using ApiWorkflow = Temporalio.Api.Workflow.V1;
@@ -191,7 +190,7 @@ namespace Nexgen.Support
                 value.FairnessWeight == 0 ? null : (float)value.FairnessWeight);
 
         internal static ApiWorkflow.VersioningOverride ToProto(this Temporalio.Common.VersioningOverride value) =>
-            ToVersioningOverride(value);
+            value.ToProto();
 
         internal static Temporalio.Common.SearchAttributeCollection FromSearchAttributesProto(
             ApiCommon.SearchAttributes value) =>
@@ -207,10 +206,13 @@ namespace Nexgen.Support
             if (versioningOverride.Pinned is { } pinned)
             {
                 return new Temporalio.Common.VersioningOverride.Pinned(
-                    new Temporalio.Common.WorkerDeploymentVersion(
-                        pinned.Version.DeploymentName,
-                        pinned.Version.BuildId),
+                    Temporalio.Common.WorkerDeploymentVersion.FromProto(pinned.Version),
                     (Temporalio.Common.VersioningOverride.PinnedOverrideBehavior)pinned.Behavior);
+            }
+            if (versioningOverride.OneTime is { } oneTime)
+            {
+                return new Temporalio.Common.VersioningOverride.OneTime(
+                    Temporalio.Common.WorkerDeploymentVersion.FromProto(oneTime.TargetDeploymentVersion));
             }
             return null;
         }
@@ -273,34 +275,5 @@ namespace Nexgen.Support
             FairnessKey = priority.FairnessKey ?? string.Empty,
             FairnessWeight = priority.FairnessWeight ?? 0f,
         };
-
-        private static ApiWorkflow.VersioningOverride ToVersioningOverride(Temporalio.Common.VersioningOverride versioningOverride) =>
-            versioningOverride switch
-            {
-                Temporalio.Common.VersioningOverride.Pinned pinned => new ApiWorkflow.VersioningOverride
-                {
-#pragma warning disable CS0612
-                    Behavior = Temporalio.Api.Enums.V1.VersioningBehavior.Pinned,
-                    PinnedVersion = pinned.Version.ToCanonicalString(),
-#pragma warning restore CS0612
-                    Pinned = new ApiWorkflow.VersioningOverride.Types.PinnedOverride
-                    {
-                        Version = new ApiDeployment.WorkerDeploymentVersion
-                        {
-                            DeploymentName = pinned.Version.DeploymentName,
-                            BuildId = pinned.Version.BuildId,
-                        },
-                        Behavior = (ApiWorkflow.VersioningOverride.Types.PinnedOverrideBehavior)pinned.Behavior,
-                    },
-                },
-                Temporalio.Common.VersioningOverride.AutoUpgrade _ => new ApiWorkflow.VersioningOverride
-                {
-#pragma warning disable CS0612
-                    Behavior = Temporalio.Api.Enums.V1.VersioningBehavior.AutoUpgrade,
-#pragma warning restore CS0612
-                    AutoUpgrade = true,
-                },
-                _ => throw new ArgumentException("Unknown versioning override type", nameof(versioningOverride)),
-            };
     }
 }

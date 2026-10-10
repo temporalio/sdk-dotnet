@@ -107,6 +107,19 @@ namespace Temporalio.Nexus
         internal OperationContext HandlerContext { get; private init; }
 
         /// <summary>
+        /// Gets the serialization context for this task's endpoint, service and operation.
+        /// </summary>
+        /// <remarks>
+        /// The endpoint is empty on servers before 1.30.0, which do not report the endpoint a task
+        /// was addressed to.
+        /// </remarks>
+        internal Converters.ISerializationContext.Nexus SerializationContext =>
+            new(
+                Endpoint: Info.Endpoint,
+                Service: HandlerContext.Service,
+                Operation: HandlerContext.Operation);
+
+        /// <summary>
         /// Gets or sets the <c>common.v1.Link</c>s extracted from the inbound Nexus task so they can
         /// be attached to RPCs issued by the operation handler. Empty if none. Links whose variant
         /// cannot be converted by <see cref="ProtoLinkExtensions"/> are dropped during inbound

@@ -22,6 +22,33 @@ namespace Temporalio.Client
         string? RunId = null)
     {
         /// <summary>
+        /// Gets the endpoint name, or null for a handle obtained by operation ID rather than by
+        /// starting one.
+        /// </summary>
+        /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
+        public string? Endpoint => SerializationContext?.Endpoint;
+
+        /// <summary>
+        /// Gets the service name, or null for a handle obtained by operation ID rather than by
+        /// starting one.
+        /// </summary>
+        /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
+        public string? Service => SerializationContext?.Service;
+
+        /// <summary>
+        /// Gets the operation name, or null for a handle obtained by operation ID rather than by
+        /// starting one.
+        /// </summary>
+        /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
+        public string? Operation => SerializationContext?.Operation;
+
+        /// <summary>
+        /// Gets the serialization context naming the operation, or null for a handle obtained by
+        /// operation ID rather than by starting one.
+        /// </summary>
+        internal ISerializationContext.Nexus? SerializationContext { get; init; }
+
+        /// <summary>
         /// Wait for the result of the operation, discarding the return value.
         /// </summary>
         /// <param name="rpcOptions">RPC options for the call.</param>
@@ -48,7 +75,9 @@ namespace Temporalio.Client
         public virtual async Task<TResult> GetResultAsync<TResult>(
             RpcOptions? rpcOptions = null)
         {
-            var dataConverter = Client.Options.DataConverter;
+            var dataConverter = SerializationContext is { } context ?
+                Client.Options.DataConverter.WithSerializationContext(context) :
+                Client.Options.DataConverter;
 
             // Continually poll until outcome is available
             var req = new PollNexusOperationExecutionRequest()
