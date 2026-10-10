@@ -42,25 +42,21 @@ namespace Temporalio.Nexus
             // Build the callback-header token without a run ID (we don't have it yet).
             var callbackToken = NexusActivityExecutionToken.Create(namespace_, activityId, runId: null);
 
-            if (options.IdConflictPolicy == Api.Enums.V1.ActivityIdConflictPolicy.UseExisting)
-            {
-                options.OnConflictOptions = new()
-                {
-                    AttachLinks = true,
-                    AttachCompletionCallbacks = true,
-                    AttachRequestId = true,
-                };
-            }
-            if (NexusOperationStartHelper.CreateInboundLinks(
-                    nexusStartContext, temporalContext) is { } links)
+            var links = NexusOperationStartHelper.CreateInboundLinks(nexusStartContext, temporalContext);
+            if (links != null)
             {
                 options.Links = links;
             }
-            if (NexusOperationStartHelper.CreateCallback(
-                    nexusStartContext, callbackToken, options.Links) is { } callback)
+            var callback = NexusOperationStartHelper.CreateCallback(
+                nexusStartContext, callbackToken, options.Links);
+            if (callback != null)
             {
                 options.CompletionCallbacks = new[] { callback };
             }
+            options.OnConflictOptions = NexusOperationStartHelper.CreateActivityOnConflictOptions(
+                options.IdConflictPolicy,
+                hasLinks: options.Links is { Count: > 0 },
+                hasCompletionCallback: callback != null);
             options.RequestId = nexusStartContext.RequestId;
 
             // Do the start call

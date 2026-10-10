@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+using NexusRpc.Handlers;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.TaskQueue.V1;
 using Temporalio.Api.WorkflowService.V1;
@@ -96,6 +97,7 @@ namespace Temporalio.Client
                 {
                     throw new ArgumentException("StartDelay must be non-negative");
                 }
+                input = ApplyNexusWiringForRawActivityStart(input);
                 try
                 {
                     // Activity-specific data converter
@@ -304,6 +306,32 @@ namespace Temporalio.Client
                         .ToList()
                         .AsReadOnly(),
                     NextPageToken: resp.NextPageToken.IsEmpty ? null : resp.NextPageToken.ToByteArray());
+            }
+
+            // Give a raw start the same request ID and inbound links a guarded start already gets.
+            private static StartActivityInput ApplyNexusWiringForRawActivityStart(StartActivityInput input)
+            {
+                if (!NexusOperationExecutionContext.HasCurrent ||
+                    input.Options.RequestId != null ||
+                    NexusOperationExecutionContext.Current.HandlerContext is not
+                        OperationStartContext nexusStartContext)
+                {
+                    return input;
+                }
+                var options = (StartActivityOptions)input.Options.Clone();
+                var links = NexusOperationStartHelper.CreateInboundLinks(
+                    nexusStartContext, NexusOperationExecutionContext.Current);
+                if (links != null)
+                {
+                    options.Links = options.Links is { } existingLinks ?
+                        existingLinks.Concat(links).ToList() : links;
+                }
+                options.OnConflictOptions = NexusOperationStartHelper.CreateActivityOnConflictOptions(
+                    options.IdConflictPolicy,
+                    hasLinks: options.Links is { Count: > 0 },
+                    hasCompletionCallback: false);
+                options.RequestId = nexusStartContext.RequestId;
+                return input with { Options = options };
             }
 
 #if NETCOREAPP3_0_OR_GREATER
