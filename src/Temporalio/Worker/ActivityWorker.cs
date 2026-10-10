@@ -156,6 +156,15 @@ namespace Temporalio.Worker
             }
         }
 
+        /// <summary>
+        /// Waits for activities that may outlive Core's cancellation bookkeeping.
+        /// </summary>
+        /// <returns>A task that completes when all running activities have finished.</returns>
+#pragma warning disable VSTHRD003 // These tasks use the configured activity task factory and must be drained during shutdown.
+        public Task WaitAllAsync() =>
+            Task.WhenAll(runningActivities.Values.Select(activity => activity.Task!));
+#pragma warning restore VSTHRD003
+
         /// <inheritdoc/>
         public void Dispose()
         {
