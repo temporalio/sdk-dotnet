@@ -41,6 +41,10 @@ internal static class CloudNamespaceCommand
             {
                 Name = namespaceName,
                 RetentionDays = 1,
+                ApiKeyAuth = new()
+                {
+                    Enabled = true,
+                },
                 MtlsAuth = new()
                 {
                     AcceptedClientCa = ByteString.CopyFrom(

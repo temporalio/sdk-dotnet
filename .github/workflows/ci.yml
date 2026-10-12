@@ -188,19 +188,6 @@ jobs:
             --results-directory tests/Temporalio.Tests/CloudTestResults \
             --blame-crash -v n --blame-hang-timeout 10m
 
-      - name: Delete Cloud namespace
-        id: delete-cloud-namespace
-        if: ${{ always() && steps.create-cloud-namespace.outputs.namespace != '' }}
-        continue-on-error: true
-        env:
-          TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
-        run: dotnet run --project tests/Temporalio.Tests -- cloud-namespace delete "${{ steps.create-cloud-namespace.outputs.namespace }}"
-
-      - name: Report Cloud namespace cleanup failure
-        if: ${{ always() && steps.delete-cloud-namespace.outcome == 'failure' }}
-        shell: bash
-        run: echo "::warning title=Cloud namespace cleanup failed::Failed to delete Cloud namespace ${{ steps.create-cloud-namespace.outputs.namespace }}"
-
       - name: Upload Cloud test results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -214,15 +201,28 @@ jobs:
         # Uses API key auth to test auto-TLS feature (TLS auto-enabled when API key provided).
         env:
           TEMPORAL_TEST_CLIENT_TARGET_HOST: ca-central-1.aws.api.temporal.io:7233
-          TEMPORAL_TEST_CLIENT_NAMESPACE: ${{ vars.TEMPORAL_CLIENT_NAMESPACE }}
+          TEMPORAL_TEST_CLIENT_NAMESPACE: ${{ steps.create-cloud-namespace.outputs.namespace }}
           TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
         run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.ExecuteWorkflowAsync_Simple_Succeeds"
 
       - name: Test cloud operations client
         env:
-          TEMPORAL_CLIENT_CLOUD_NAMESPACE: sdk-ci.a2dd6
+          TEMPORAL_CLIENT_CLOUD_NAMESPACE: ${{ steps.create-cloud-namespace.outputs.namespace }}
           TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
         run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.TemporalCloudOperationsClientTests.*"
+
+      - name: Delete Cloud namespace
+        id: delete-cloud-namespace
+        if: ${{ always() && steps.create-cloud-namespace.outputs.namespace != '' }}
+        continue-on-error: true
+        env:
+          TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
+        run: dotnet run --project tests/Temporalio.Tests -- cloud-namespace delete "${{ steps.create-cloud-namespace.outputs.namespace }}"
+
+      - name: Report Cloud namespace cleanup failure
+        if: ${{ always() && steps.delete-cloud-namespace.outcome == 'failure' }}
+        shell: bash
+        run: echo "::warning title=Cloud namespace cleanup failed::Failed to delete Cloud namespace ${{ steps.create-cloud-namespace.outputs.namespace }}"
 
   # Runs the sdk features repo tests with this repo's current SDK code
   features-tests:
