@@ -70,12 +70,11 @@ jobs:
 
       - name: Check release script format
         if: ${{ matrix.checkTarget }}
-        run: dotnet format whitespace --folder --include scripts/prepare-release.cs scripts/release-verify.cs --verify-no-changes
+        run: dotnet format whitespace --folder --include scripts/release.cs --verify-no-changes
 
-      - name: Test release scripts
-        run: |
-          dotnet run --file scripts/prepare-release.cs -- --self-test
-          dotnet run --file scripts/release-verify.cs -- --self-test
+      - name: Test release tooling
+        if: ${{ matrix.checkTarget }}
+        run: dotnet run --file scripts/release.cs -- test
 
       - name: Build
         run: dotnet build

@@ -86,7 +86,14 @@ jobs:
         run: |
           dotnet nuget push "$GITHUB_WORKSPACE/nuget-package/**/*.nupkg" \
             --api-key "$NUGET_API_KEY" \
-            --source "$INDEX_URL"
+            --source "$INDEX_URL" \
+            --no-symbols \
+            --skip-duplicate
+
+          dotnet nuget push "$GITHUB_WORKSPACE/nuget-package/**/*.snupkg" \
+            --api-key "$NUGET_API_KEY" \
+            --source "$INDEX_URL" \
+            --skip-duplicate
 
   wait:
     needs: publish

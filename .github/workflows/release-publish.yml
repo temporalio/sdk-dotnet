@@ -22,6 +22,7 @@ jobs:
       contents: read
 
   read-version:
+    name: Release preflight
     runs-on: ubuntu-latest
     env:
       RestoreLockedMode: true
@@ -51,13 +52,18 @@ jobs:
       - name: Validate versions
         id: read
         run: |
-          version=$(dotnet run --file scripts/release-verify.cs -- version)
+          version=$(dotnet run --file scripts/release.cs -- verify-version)
           if git show-ref --verify --quiet "refs/tags/$version"; then
             echo "Version $version already has a release tag" >&2
             exit 1
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "Releasing version: $version"
+
+      - name: Require unpublished package versions
+        env:
+          VERSION: ${{ steps.read.outputs.version }}
+        run: dotnet run --file scripts/release.cs -- check-unpublished "$VERSION"
 
       - name: Validate release notes
         env:
@@ -96,7 +102,7 @@ jobs:
       - name: Validate packages and symbols
         env:
           VERSION: ${{ needs.read-version.outputs.version }}
-        run: dotnet run --file scripts/release-verify.cs -- packages nuget-package "$VERSION" > nuget-package/package-ids.txt
+        run: dotnet run --file scripts/release.cs -- verify-packages nuget-package "$VERSION" > nuget-package/package-ids.txt
 
       - name: Upload verified packages
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

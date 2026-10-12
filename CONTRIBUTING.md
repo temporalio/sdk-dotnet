@@ -104,7 +104,7 @@ needed. Ensure `origin` points to the intended GitHub repository and your accoun
 can push branches and open pull requests there.
 
 ```bash
-dotnet run --file scripts/prepare-release.cs -- 1.21.0 --date 2026-10-06
+dotnet run --file scripts/release.cs -- prepare 1.21.0 --date 2026-10-06
 ```
 
 **This command publishes a branch and opens a pull request.** The date defaults to
@@ -124,7 +124,7 @@ Prereleases require an explicit positive revision, matching the conventions in
 `Directory.Build.props`:
 
 ```bash
-dotnet run --file scripts/prepare-release.cs -- 1.21.0-alpha.1 --assembly-version 1.21.0.1
+dotnet run --file scripts/release.cs -- prepare 1.21.0-alpha.1 --assembly-version 1.21.0.1
 ```
 
 Increment the revision for each prerelease. The final stable release after a
@@ -148,24 +148,28 @@ retrying: the script does not undo changes, delete branches, or force-push.
 If pushing succeeded but PR creation failed, create the PR manually with
 `skip-changelog` rather than rerunning preparation.
 
-To test preparation and package verification without fetching, creating branches,
-pushing, or contacting GitHub:
+The same file-based tool provides `verify-version`, `verify-packages`, and
+`check-unpublished` subcommands for the release workflow. Run `--help` or
+`<subcommand> --help` for their arguments. To test preparation, package verification,
+and gallery checks without fetching, creating branches, pushing, or contacting
+GitHub or either gallery:
 
 ```bash
-dotnet run --file scripts/prepare-release.cs -- --self-test
-dotnet run --file scripts/release-verify.cs -- --self-test
+dotnet run --file scripts/release.cs -- test
 ```
 
-CI runs these checks on each supported runner platform. Package verification tests
-use temporary synthetic packages, not published packages.
+CI runs these checks on the designated `matrix.checkTarget` runner. Tests use
+temporary synthetic packages and simulated HTTP responses, not published packages.
 
 ## Publishing a Release
 
 After the preparation PR merges, dispatch **Release Publish**
 (`.github/workflows/release-publish.yml`) from `main`. Confirm the selected commit
 contains the intended versions and completed changelog section. The workflow
-validates release metadata before building, verifies that the artifact contains
-every packable SDK project at that version with matching symbol packages, then
+validates release metadata and requires the version to be absent for every packable
+package in both galleries before building. Gallery errors fail preflight rather
+than being treated as missing versions. It then verifies that the artifact contains
+every packable SDK project at that version with matching symbol packages and
 publishes the same verified artifact to the integration and production galleries.
 Integration smoke tests must pass before production publishing, and production
 smoke tests must pass before draft release creation.
@@ -180,16 +184,22 @@ API. NuGet publishing has already happened at this point; editing or deleting th
 draft does not roll back packages. Do not move the release tag or overwrite
 published packages to recover from a failure.
 
-Publishing fails on duplicate versions rather than silently accepting packages
-from a different commit. If a batch fails after some uploads, retain the verified
-`release-package` artifact and reconcile the gallery using those exact files;
-complete any missing runtime or symbol uploads through the gallery's owner UI.
-An automatic full rerun is not a recovery mechanism for a partially published
-batch: rerunning its failed publish job will still reject the already-published
-packages. Complete the remaining smoke checks and draft release manually in that
-case. If publishing succeeded but a later smoke test or draft creation failed,
-rerun only the failed downstream jobs after diagnosing the failure; do not rebuild
-or republish.
+After a transient failure, use GitHub's **Re-run failed jobs** for the original
+workflow run. Successful preflight and build jobs are retained, so publishing
+retries use the same verified `release-package` artifact and skip runtime packages
+already uploaded by that run. Symbol uploads are performed separately so they can
+be retried even when their runtime package is already present. If only a smoke
+test or draft creation failed, retry that failed downstream job without rebuilding
+or republishing.
+
+Do not use **Re-run all jobs** or dispatch a new release run to recover a partially
+published batch: preflight would run again and reject its existing package versions.
+Retain the original verified artifacts. If they or the successful upstream jobs
+are no longer available, reconcile the galleries and complete the remaining checks
+manually rather than rebuilding different packages at the same version.
+
+Preflight is not a reservation of a NuGet version. Keep release runs serialized
+and avoid independent manual uploads of that version while a run is in progress.
 
 For local review or recovery, generate notes manually:
 
