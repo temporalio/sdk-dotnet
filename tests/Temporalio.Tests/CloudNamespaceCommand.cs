@@ -41,10 +41,6 @@ internal static class CloudNamespaceCommand
             {
                 Name = namespaceName,
                 RetentionDays = 1,
-                ApiKeyAuth = new()
-                {
-                    Enabled = true,
-                },
                 MtlsAuth = new()
                 {
                     AcceptedClientCa = ByteString.CopyFrom(
@@ -64,6 +60,21 @@ internal static class CloudNamespaceCommand
             RequiredEnv("GITHUB_OUTPUT"),
             $"namespace={result.Namespace}{Environment.NewLine}");
         await WaitForOperationAsync(client, result.AsyncOperation);
+
+        // Cloud rejects creating a namespace with both mTLS and API key auth, so API key auth
+        // is enabled afterward for the API key test steps.
+        var existing = await client.CloudService.GetNamespaceAsync(new() { Namespace = result.Namespace });
+        var spec = existing.Namespace?.Spec ??
+            throw new InvalidOperationException($"Cloud namespace {result.Namespace} did not include a spec");
+        spec.ApiKeyAuth = new() { Enabled = true };
+        var update = await client.CloudService.UpdateNamespaceAsync(new()
+        {
+            Namespace = result.Namespace,
+            Spec = spec,
+            ResourceVersion = existing.Namespace.ResourceVersion,
+            AsyncOperationId = Guid.NewGuid().ToString(),
+        });
+        await WaitForOperationAsync(client, update.AsyncOperation);
     }
 
     private static async Task DeleteAsync(string namespaceName)
