@@ -1,4 +1,5 @@
 #:property PublishAot=false
+#:package System.CommandLine
 
 using System.CommandLine;
 using System.Diagnostics;
@@ -472,8 +473,8 @@ static async Task<HashSet<string>> DiscoverPackageIdsAsync(string sourceDirector
 
 static async Task ValidatePackagesAsync(string artifactDirectory, string version, HashSet<string> expectedIds)
 {
-    var packages = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-    var symbols = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    var packages = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    var symbols = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     foreach (var path in Directory.EnumerateFiles(artifactDirectory, "*", SearchOption.AllDirectories)
         .Where(path => path.EndsWith(".nupkg", StringComparison.OrdinalIgnoreCase) ||
             path.EndsWith(".snupkg", StringComparison.OrdinalIgnoreCase)))
@@ -494,28 +495,19 @@ static async Task ValidatePackagesAsync(string artifactDirectory, string version
             throw new InvalidOperationException($"Unexpected package {id} {packageVersion} in {path}.");
         }
 
-        var paths = path.EndsWith(".snupkg", StringComparison.Ordinal) ? symbols : packages;
-        if (!paths.TryAdd(id, path))
+        var ids = path.EndsWith(".snupkg", StringComparison.Ordinal) ? symbols : packages;
+        if (!ids.Add(id))
         {
             throw new InvalidOperationException($"Duplicate package {id} in {path}.");
         }
     }
 
-    if (!expectedIds.SetEquals(packages.Keys) || !expectedIds.SetEquals(symbols.Keys))
+    if (!expectedIds.SetEquals(packages) || !expectedIds.SetEquals(symbols))
     {
         throw new InvalidOperationException(
             $"Expected a package and symbols for every packable project. " +
-            $"Missing packages: {string.Join(", ", expectedIds.Except(packages.Keys))}. " +
-            $"Missing symbols: {string.Join(", ", expectedIds.Except(symbols.Keys))}.");
-    }
-
-    foreach (var id in expectedIds)
-    {
-        // NuGet push discovers symbols by adjacent filename, not nuspec metadata.
-        if (Path.ChangeExtension(packages[id], ".snupkg") != symbols[id])
-        {
-            throw new InvalidOperationException($"Symbols for {id} must have the same basename and directory as its package.");
-        }
+            $"Missing packages: {string.Join(", ", expectedIds.Where(id => !packages.Contains(id)))}. " +
+            $"Missing symbols: {string.Join(", ", expectedIds.Where(id => !symbols.Contains(id)))}.");
     }
 }
 
@@ -608,12 +600,29 @@ static async Task SelfTestAsync()
             tests++;
         }
 
+        foreach (var scenario in new[] { "renamed symbols", "separate symbols directory" })
+        {
+            var artifacts = Directory.CreateDirectory(Path.Combine(root, scenario)).FullName;
+            const string version = "1.2.3";
+            foreach (var id in expectedIds)
+            {
+                await WritePackageAsync(Path.Combine(artifacts, $"{id}.nupkg"), id, version).ConfigureAwait(false);
+                var symbolsPath = scenario == "renamed symbols"
+                    ? Path.Combine(artifacts, $"{id}-symbols.snupkg")
+                    : Path.Combine(Directory.CreateDirectory(Path.Combine(artifacts, "symbols")).FullName, $"{id}.snupkg");
+                await WritePackageAsync(symbolsPath, id, version).ConfigureAwait(false);
+            }
+
+            await ValidatePackagesAsync(artifacts, version, expectedIds).ConfigureAwait(false);
+            tests++;
+        }
+
         foreach (var scenario in new[]
         {
             "duplicate package", "duplicate symbols", "wrong version", "wrong symbols version", "unexpected package",
             "missing package", "missing symbols", "empty artifacts", "missing nuspec",
             "duplicate nuspec", "invalid XML", "missing metadata", "missing id", "missing version",
-            "duplicate id", "duplicate version", "misnamed symbols", "misplaced symbols", "uppercase extension",
+            "duplicate id", "duplicate version", "uppercase extension",
         })
         {
             var artifacts = Directory.CreateDirectory(Path.Combine(root, scenario)).FullName;
@@ -645,14 +654,11 @@ static async Task SelfTestAsync()
                     scenario == "unexpected package" ? "Unexpected" : "Package.First",
                     scenario == "unexpected package" ? version : "1.2.4").ConfigureAwait(false);
             }
-            else if (scenario is "misnamed symbols" or "misplaced symbols" or "uppercase extension")
+            else if (scenario == "uppercase extension")
             {
-                var destination = scenario == "misplaced symbols"
-                    ? Path.Combine(Directory.CreateDirectory(Path.Combine(artifacts, "symbols")).FullName, "Package.First.snupkg")
-                    : Path.Combine(artifacts, scenario == "misnamed symbols" ? "renamed.snupkg" : "uppercase.NUPKG");
                 File.Move(
-                    Path.Combine(artifacts, scenario == "uppercase extension" ? "Package.First.nupkg" : "Package.First.snupkg"),
-                    destination);
+                    Path.Combine(artifacts, "Package.First.nupkg"),
+                    Path.Combine(artifacts, "uppercase.NUPKG"));
             }
             else if (scenario is not ("missing package" or "missing symbols" or "empty artifacts"))
             {
@@ -680,7 +686,6 @@ static async Task SelfTestAsync()
                 "duplicate package" or "duplicate symbols" => "Duplicate package",
                 "wrong version" or "wrong symbols version" or "unexpected package" => "Unexpected package",
                 "missing package" or "missing symbols" or "empty artifacts" => "Missing",
-                "misnamed symbols" or "misplaced symbols" => "same basename and directory",
                 "uppercase extension" => "lowercase",
                 _ => null,
             };

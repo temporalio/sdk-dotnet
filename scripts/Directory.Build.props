@@ -1,6 +1,0 @@
-<Project>
-  <Import Project="../Directory.Build.props" />
-  <ItemGroup>
-    <PackageReference Include="System.CommandLine" />
-  </ItemGroup>
-</Project>
