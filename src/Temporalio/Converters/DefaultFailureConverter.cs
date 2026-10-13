@@ -338,8 +338,8 @@ namespace Temporalio.Converters
                     };
                     break;
                 case WorkflowAlreadyStartedException:
-                    // We don't need to do anything special for this, but we also don't require it
-                    // already have a faiure proto
+                case InvalidVersioningOverrideException:
+                    // These start failures have no dedicated failure-info variant to serialize.
                     break;
                 default:
                     throw new ArgumentException(

@@ -625,6 +625,9 @@ Some things to note about the above code:
   * Cancellation token is defaulted as the workflow cancellation token, but an alternative can be given in options.
     When the token is cancelled, a cancellation request is sent to the child workflow. How that is handled depends on
     cancellation type.
+  * The experimental `VersioningOverride` option can pin, auto-upgrade, or one-time route a child independently of its
+    parent's versioning. Use `Temporalio.Common.VersioningOverride.Pinned`, `AutoUpgrade`, or `OneTime`; this requires
+    Temporal Server 1.32.0 or later. An invalid override can cause child start to throw `InvalidVersioningOverrideException`.
 * Result of a child workflow starting is a `ChildWorkflowHandle` which has the `ID`, `GetResultAsync` for getting the
   result, and `SignalAsync` for signalling the child.
 * The task for starting a child workflow does not complete until the start has been accepted by the server.

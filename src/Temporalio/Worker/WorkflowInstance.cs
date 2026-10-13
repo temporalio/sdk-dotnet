@@ -2584,6 +2584,7 @@ namespace Temporalio.Worker
                     RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                     CronSchedule = input.Options.CronSchedule ?? string.Empty,
                     CancellationType = (Bridge.Api.ChildWorkflow.ChildWorkflowCancellationType)input.Options.CancellationType,
+                    VersioningOverride = input.Options.VersioningOverride?.ToProto(),
                 };
                 if (input.Options.ExecutionTimeout is TimeSpan execTimeout)
                 {
@@ -2683,6 +2684,12 @@ namespace Temporalio.Worker
                                                     workflowType: startRes.Failed.WorkflowType,
                                                     // Pending https://github.com/temporalio/temporal/issues/6961
                                                     runId: "<unknown>"));
+                                            return;
+                                        case StartChildWorkflowExecutionFailedCause.InvalidVersioningOverride:
+                                            handleSource.SetException(new InvalidVersioningOverrideException(
+                                                "Child workflow versioning override is invalid",
+                                                workflowId: startRes.Failed.WorkflowId,
+                                                workflowType: startRes.Failed.WorkflowType));
                                             return;
                                         default:
                                             handleSource.SetException(new InvalidOperationException(

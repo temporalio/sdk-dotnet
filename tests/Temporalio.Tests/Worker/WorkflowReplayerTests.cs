@@ -79,6 +79,55 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
             Task.FromResult(value.Value);
     }
 
+    [Workflow]
+    public class InvalidChildVersioningOverrideWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            var exception = await Assert.ThrowsAsync<InvalidVersioningOverrideException>(() =>
+                Workflow.StartChildWorkflowAsync(
+                    "ChildWorkflow",
+                    Array.Empty<object?>(),
+                    new()
+                    {
+                        Id = $"{Workflow.Info.WorkflowId}-child",
+                        VersioningOverride = new VersioningOverride.Pinned(
+                            new WorkerDeploymentVersion("deployment", "build")),
+                    }));
+            Assert.Equal($"{Workflow.Info.WorkflowId}-child", exception.WorkflowId);
+            Assert.Equal("ChildWorkflow", exception.WorkflowType);
+        }
+    }
+
+    [Fact]
+    public async Task ReplayWorkflowAsync_InvalidChildVersioningOverrideFromServer_ThrowsTypedException()
+    {
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddWorkflow<InvalidChildVersioningOverrideWorkflow>());
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (InvalidChildVersioningOverrideWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            await handle.GetResultAsync();
+
+            var history = await handle.FetchHistoryAsync();
+            var failure = Assert.Single(
+                history.Events, evt => evt.StartChildWorkflowExecutionFailedEventAttributes != null).
+                    StartChildWorkflowExecutionFailedEventAttributes;
+            Assert.Equal(
+                Temporalio.Api.Enums.V1.StartChildWorkflowExecutionFailedCause.InvalidVersioningOverride,
+                failure.Cause);
+            var result = await new WorkflowReplayer(
+                new WorkflowReplayerOptions().AddWorkflow<InvalidChildVersioningOverrideWorkflow>()).
+                    ReplayWorkflowAsync(history);
+            Assert.Null(result.ReplayFailure);
+        });
+    }
+
     [Fact]
     public async Task ReplayWorkflowAsync_TransferTypeConvertibleInput_Succeeds()
     {

@@ -2542,6 +2542,36 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public class InvalidVersioningOverrideChildWorkflow
+    {
+        [WorkflowRun]
+        public Task RunAsync() =>
+            Workflow.StartChildWorkflowAsync(
+                "ChildWorkflow",
+                Array.Empty<object?>(),
+                new()
+                {
+                    VersioningOverride = new VersioningOverride.Pinned(
+                        new WorkerDeploymentVersion("deployment", "build")),
+                });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_InvalidVersioningOverrideChild_FailsProperly()
+    {
+        await ExecuteWorkerAsync<InvalidVersioningOverrideChildWorkflow>(
+            async worker =>
+            {
+                var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                    Env.Client.ExecuteWorkflowAsync(
+                        (InvalidVersioningOverrideChildWorkflow wf) => wf.RunAsync(),
+                        new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
+                Assert.IsType<FailureException>(wfExc.InnerException);
+                Assert.Equal("Child workflow versioning override is invalid", wfExc.InnerException.Message);
+            });
+    }
+
+    [Workflow]
     public class ExternalWorkflow
     {
         [Workflow]
