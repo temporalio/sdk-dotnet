@@ -13,9 +13,9 @@ internal static class CloudNamespaceCommand
 
     public static async Task<int> RunAsync(string[] args)
     {
-        if (args.Length == 1 && args[0] == "create")
+        if (args.Length == 2 && args[0] == "create" && args[1] is "mtls" or "api-key")
         {
-            await CreateAsync();
+            await CreateAsync(args[1]);
         }
         else if (args.Length == 2 && args[0] == "delete")
         {
@@ -24,31 +24,40 @@ internal static class CloudNamespaceCommand
         else
         {
             throw new ArgumentException(
-                "Usage: Temporalio.Tests cloud-namespace create | delete <namespace>",
+                "Usage: Temporalio.Tests cloud-namespace create mtls|api-key | delete <namespace>",
                 nameof(args));
         }
         return 0;
     }
 
-    private static async Task CreateAsync()
+    private static async Task CreateAsync(string authMethod)
     {
         var client = await ConnectAsync();
-        var namespaceName = $"sdk-dotnet-ci-{RequiredEnv("GITHUB_RUN_ID")}-{RequiredEnv("GITHUB_RUN_ATTEMPT")}";
+        var spec = new NamespaceSpec
+        {
+            Name = $"sdk-dotnet-ci-{RequiredEnv("GITHUB_RUN_ID")}-{RequiredEnv("GITHUB_RUN_ATTEMPT")}-{authMethod}",
+            RetentionDays = 1,
+            Replicas = { new ReplicaSpec { Region = CloudRegion } },
+        };
+        // Cloud fixes a namespace's auth method at creation and rejects enabling both, so each
+        // auth method needs its own namespace.
+        if (authMethod == "mtls")
+        {
+            spec.MtlsAuth = new()
+            {
+                AcceptedClientCa = ByteString.CopyFrom(
+                    await File.ReadAllBytesAsync(RequiredEnv("TEMPORAL_CLOUD_CLIENT_CA_PATH"))),
+                Enabled = true,
+            };
+        }
+        else
+        {
+            spec.ApiKeyAuth = new() { Enabled = true };
+        }
         var result = await client.CloudService.CreateNamespaceAsync(new()
         {
             AsyncOperationId = Guid.NewGuid().ToString(),
-            Spec = new NamespaceSpec
-            {
-                Name = namespaceName,
-                RetentionDays = 1,
-                MtlsAuth = new()
-                {
-                    AcceptedClientCa = ByteString.CopyFrom(
-                        await File.ReadAllBytesAsync(RequiredEnv("TEMPORAL_CLOUD_CLIENT_CA_PATH"))),
-                    Enabled = true,
-                },
-                Replicas = { new ReplicaSpec { Region = CloudRegion } },
-            },
+            Spec = spec,
         });
         if (string.IsNullOrEmpty(result.Namespace))
         {
