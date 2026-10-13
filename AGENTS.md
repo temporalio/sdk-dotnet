@@ -20,7 +20,8 @@ document as your quick reference when submitting pull requests.
   `ignore` lists in `.github/dependabot.yml`. Insert new entries in order rather than appending
   them.
 - To change a package version, edit `Directory.Packages.props` and then run
-  `dotnet restore --force-evaluate` at the repository root to regenerate the `packages.lock.json`
+  `dotnet restore --force-evaluate` and `dotnet restore --force-evaluate scripts/release.cs`
+  at the repository root to regenerate the solution and release tool `packages.lock.json`
   files, since CI restores them in locked mode. Never add a `PackageReference` or
   `VersionOverride` to a project to move a version. Dependencies of the shipped `src/*` projects
   are deliberately held at low version floors so downstream consumers are not forced forward;

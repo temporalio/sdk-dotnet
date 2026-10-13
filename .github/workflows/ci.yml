@@ -68,6 +68,14 @@ jobs:
         if: ${{ matrix.checkTarget }}
         run: dotnet format --verify-no-changes
 
+      - name: Check release script format
+        if: ${{ matrix.checkTarget }}
+        run: dotnet format whitespace --folder --include scripts/release.cs --verify-no-changes
+
+      - name: Test release tooling
+        if: ${{ matrix.checkTarget }}
+        run: dotnet run --file scripts/release.cs -- test
+
       - name: Build
         run: dotnet build
 
