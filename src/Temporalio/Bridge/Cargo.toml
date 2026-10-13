@@ -12,8 +12,13 @@
 [workspace]
 # Cargo adopts path dependencies under the workspace root as members automatically, so the rest of
 # the sdk-core crates reach our lockfile without being enumerated. default-members then keeps a
-# bare `cargo build` from building all of them.
-members = ["sdk-core/crates/changelog-release-notes", "sdk-core/crates/sdk-core-c-bridge"]
+# bare `cargo build` from building all of them. `protos` is listed anyway because Dependabot only
+# stubs out build.rs for listed members, and without one Cargo rejects its `links` key.
+members = [
+    "sdk-core/crates/changelog-release-notes",
+    "sdk-core/crates/protos",
+    "sdk-core/crates/sdk-core-c-bridge",
+]
 default-members = ["sdk-core/crates/sdk-core-c-bridge"]
 resolver = "3"
 
