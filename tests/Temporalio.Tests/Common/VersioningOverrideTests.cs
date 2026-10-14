@@ -3,7 +3,7 @@ namespace Temporalio.Tests.Common;
 using Temporalio.Common;
 using Xunit;
 using ApiWorkflow = Temporalio.Api.Workflow.V1;
-using ProtoExtensions = Temporalio.Workflows.ProtoExtensions;
+using ProtoExtensions = Temporalio.Nexus.SystemNexus.ProtoExtensions;
 
 public class VersioningOverrideTests
 {
