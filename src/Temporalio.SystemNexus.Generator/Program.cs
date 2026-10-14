@@ -9,17 +9,22 @@ var generatorDir = Path.Join(projectDir, "src/Temporalio.SystemNexus.Generator")
 var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/crates/protos/protos");
 var apiProtoDir = Path.Join(protoDir, "api_upstream");
 var workflowServiceWitPath = Path.Join(apiProtoDir, "nexus/workflow-service.wit");
+var notificationServiceWitPath = Path.Join(apiProtoDir, "nexus/notification-service.wit");
 var descriptorPath = Path.Join(generatorDir, "obj/SystemNexus/temporal_api.bin");
-var stagingOutputDir = Path.Join(generatorDir, "obj/SystemNexus/Generated");
+var stagingOutputDir = Path.Join(generatorDir, "obj/SystemNexus/Generated/Workflows");
+var notificationsStagingOutputDir = Path.Join(generatorDir, "obj/SystemNexus/Generated/Notifications");
 var workflowsGeneratedDir = Path.Join(projectDir, "src/Temporalio/Workflows/Generated");
+var notificationsGeneratedDir = Path.Join(projectDir, "src/Temporalio/Nexus/Notifications/Generated");
 var workerGeneratedDir = Path.Join(projectDir, "src/Temporalio/Worker/Generated");
 var obsoleteOutputDir = Path.Join(projectDir, "src/Temporalio/SystemNexus/Generated");
 
 EnsureNexGen();
 BuildDescriptor();
-GenerateNexusApi();
+GenerateNexusApi(workflowServiceWitPath, stagingOutputDir, nativeApi: true);
+GenerateNexusApi(notificationServiceWitPath, notificationsStagingOutputDir, nativeApi: false);
 PostProcessGeneratedNexusApi();
-GeneratePayloadVisitor(descriptorPath, workflowServiceWitPath, workerGeneratedDir);
+GeneratePayloadVisitor(
+    descriptorPath, new[] { workflowServiceWitPath, notificationServiceWitPath }, workerGeneratedDir);
 return 0;
 
 void EnsureNexGen()
@@ -45,37 +50,39 @@ void BuildDescriptor()
             "--include_imports",
             "--descriptor_set_out=" + descriptorPath,
             Path.Join(apiProtoDir, "temporal/api/workflowservice/v1/service.proto"),
+            Path.Join(apiProtoDir, "temporal/api/notificationservice/v1/request_response.proto"),
         });
 }
 
-void GenerateNexusApi()
+void GenerateNexusApi(string witPath, string outputDir, bool nativeApi)
 {
-    if (Directory.Exists(stagingOutputDir))
+    RecreateDirectory(outputDir);
+    var arguments = new List<string> { "dotnet" };
+    if (nativeApi)
     {
-        new DirectoryInfo(stagingOutputDir).Delete(true);
+        arguments.Add("--native-api");
     }
 
-    Directory.CreateDirectory(stagingOutputDir);
-    RunNexGen(
+    arguments.AddRange(
         new[]
         {
-            "dotnet",
-            "--native-api",
             "--system-nexus",
-            Path.Join(apiProtoDir, "nexus/workflow-service.wit"),
+            witPath,
             Path.Join(apiProtoDir, "nexus/deps"),
             "--support-package",
             "Temporalio.Nexus.SystemNexus",
             "--descriptors",
             descriptorPath,
             "--output",
-            stagingOutputDir,
+            outputDir,
         });
+    RunNexGen(arguments);
 }
 
 void PostProcessGeneratedNexusApi()
 {
     RecreateDirectory(workflowsGeneratedDir);
+    RecreateDirectory(notificationsGeneratedDir);
     RecreateDirectory(workerGeneratedDir);
 
     if (Directory.Exists(obsoleteOutputDir))
@@ -87,6 +94,14 @@ void PostProcessGeneratedNexusApi()
     WriteWorkflowGeneratedFile("Operations.cs");
     WriteWorkflowGeneratedFile("Services.cs");
     WriteWorkerGeneratedFile("SystemNexusWorkflowOutboundInterceptor.cs");
+
+    var notificationModels = File.ReadAllText(Path.Join(notificationsStagingOutputDir, "Models.cs"));
+    notificationModels = notificationModels.Replace(
+        "namespace Temporalio.Workflows", "namespace Temporalio.Nexus.Notifications");
+    notificationModels = notificationModels.Replace(
+        "#nullable enable",
+        "#nullable enable\n#pragma warning disable CS1591 // Notification WIT does not yet supply public API documentation.");
+    File.WriteAllText(Path.Join(notificationsGeneratedDir, "Models.cs"), notificationModels);
 }
 
 void WriteWorkflowGeneratedFile(string stagingRelativePath)
@@ -124,12 +139,13 @@ static void RecreateDirectory(string path)
 
 static void GeneratePayloadVisitor(
     string descriptorPath,
-    string witPath,
+    IReadOnlyCollection<string> witPaths,
     string outputDir)
 {
     var messages = LoadMessages(descriptorPath);
     var operationMessages = LoadWorkflowServiceOperationMessages(descriptorPath, messages);
-    var systemNexusMessages = LoadSystemNexusMessages(witPath, messages);
+    var systemNexusMessages = witPaths.SelectMany(path => LoadSystemNexusMessages(path, messages))
+        .DistinctBy(message => message.FullName).ToList();
     var containsPayloadMemo = new Dictionary<string, bool>();
     var emittedVisitors = new HashSet<string>();
     var emittedMethods = new HashSet<string>();
@@ -160,8 +176,7 @@ static void GeneratePayloadVisitor(
         EmitEnvelopeVisitor(builder, operation.Input, messages, containsPayloadMemo, emittedVisitors);
         EmitEnvelopeVisitor(builder, operation.Output, messages, containsPayloadMemo, emittedVisitors);
     }
-    foreach (var message in systemNexusMessages.Where(message =>
-        !ContainsPayload(message, messages, containsPayloadMemo)))
+    foreach (var message in systemNexusMessages)
     {
         EmitEnvelopeVisitor(
             builder, message, messages, containsPayloadMemo, emittedVisitors, force: true);
@@ -178,6 +193,10 @@ static void GeneratePayloadVisitor(
     {
         EmitVisitMethod(builder, operation.Input, messages, containsPayloadMemo, emittedMethods);
         EmitVisitMethod(builder, operation.Output, messages, containsPayloadMemo, emittedMethods);
+    }
+    foreach (var message in systemNexusMessages)
+    {
+        EmitVisitMethod(builder, message, messages, containsPayloadMemo, emittedMethods);
     }
     builder.AppendLine("    }");
     builder.AppendLine("}");
@@ -232,7 +251,24 @@ static IReadOnlyList<MessageInfo> LoadSystemNexusMessages(
     string witPath,
     IReadOnlyDictionary<string, MessageInfo> messages) =>
     Regex.Matches(File.ReadAllText(witPath), "@nexus\\.proto\\s+\\\"(?<message>[^\\\"]+)\\\"")
-        .Select(match => GetMessage(messages, match.Groups["message"].Value))
+        .Select(match =>
+        {
+            var name = match.Groups["message"].Value;
+            if (TryGetMessage(name, messages, out var message))
+            {
+                return message;
+            }
+
+            var separator = name.LastIndexOf('.');
+            var parent = GetMessage(messages, name[..separator]);
+            var oneof = name[(separator + 1)..];
+            if (!parent.Descriptor.OneofDecl.Any(declaration => declaration.Name == oneof))
+            {
+                throw new InvalidOperationException($"No message or oneof descriptor found for {name}");
+            }
+
+            return parent;
+        })
         .DistinctBy(message => message.FullName)
         .ToList();
 

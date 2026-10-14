@@ -425,6 +425,18 @@ namespace Temporalio.Worker
                         VisitNoPayloadEnvelopeAsync,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.notificationservice.v1.OnCompleteRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.NotificationService.V1.OnCompleteRequest>(
+                        payload,
+                        Visit_temporal_api_notificationservice_v1_OnCompleteRequest,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.notificationservice.v1.OnCompleteResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.NotificationService.V1.OnCompleteResponse>(
+                        payload,
+                        VisitNoPayloadEnvelopeAsync,
+                        visitPayload,
+                        visitPayloads),
             };
 
         private static Task VisitNoPayloadEnvelopeAsync<T>(
@@ -2985,6 +2997,25 @@ namespace Temporalio.Worker
             foreach (var item_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_2 in value.Groups)
             {
                 await Visit_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_AggregationGroup(item_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_2, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
+        }
+
+        private static async Task Visit_temporal_api_notificationservice_v1_OnCompleteRequest(
+            global::Temporalio.Api.NotificationService.V1.OnCompleteRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            if (value.Success != null)
+            {
+                await visitPayload(value.Success).ConfigureAwait(false);
+            }
+            if (value.Failure != null)
+            {
+                await Visit_temporal_api_failure_v1_Failure(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
+            if (value.SourceContext != null)
+            {
+                await visitPayload(value.SourceContext).ConfigureAwait(false);
             }
         }
 
