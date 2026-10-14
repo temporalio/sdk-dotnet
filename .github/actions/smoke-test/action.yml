@@ -74,7 +74,7 @@ runs:
         PACKAGE_SOURCE: ${{ inputs.package-source }}
         VERSION: ${{ inputs.version }}
       run: |
-        $versionArg = if ($env:VERSION) { @("--version", $env:VERSION) } else { @("--prerelease") }
+        $versionArg = @(if ($env:VERSION) { "--version", $env:VERSION } else { "--prerelease" })
         dotnet add tests/Temporalio.SmokeTest package Temporalio @versionArg -s "$env:PACKAGE_SOURCE"
         dotnet run --project tests/Temporalio.SmokeTest
 
@@ -89,7 +89,7 @@ runs:
         PACKAGE_SOURCE: ${{ inputs.package-source }}
         VERSION: ${{ inputs.version }}
       run: |
-        $versionArg = if ($env:VERSION) { @("--version", $env:VERSION) } else { @("--prerelease") }
+        $versionArg = @(if ($env:VERSION) { "--version", $env:VERSION } else { "--prerelease" })
         dotnet add tests/Temporalio.SmokeTestDotNetFramework package Temporalio @versionArg -s "$env:PACKAGE_SOURCE"
         msbuild tests/Temporalio.SmokeTestDotNetFramework -t:restore,build -p:Platform=x64
         tests/Temporalio.SmokeTestDotNetFramework/bin/x64/Debug/Temporalio.SmokeTestDotNetFramework.exe
