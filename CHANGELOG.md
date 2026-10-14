@@ -5,7 +5,7 @@ Pending changes belong in changelog/; see changelog/README.md.
 
 # Changelog
 
-## [1.20.0-test.2] - 2026-10-14
+## [1.20.0-test.3] - 2026-10-14
 
 ### Added
 
