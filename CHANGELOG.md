@@ -5,6 +5,42 @@ Pending changes belong in changelog/; see changelog/README.md.
 
 # Changelog
 
+## [1.20.0-test.1] - 2026-10-14
+
+### Added
+
+- Added experimental Event Groups: `Workflow.CreateEventGroup` groups related history events for UI and observability using a required ID (used verbatim; omit secrets) and an optional codec-encoded label. Attach groups with `Workflow.WithEventGroups` or command-option `EventGroups`; signal and update handlers receive implicit inbound groups.
+
+- Added experimental `Endpoint`, `Operation`, and `Service` properties to the `NexusOperationHandle` class.
+
+- Added experimental `ISerializationContext.Nexus` support for callers' inputs, results, failures, and user metadata, and handlers' inputs, synchronous results, and failures. Standalone handles use the start request's context, including already-running operations; asynchronous-operation results and handles obtained through `GetNexusOperationHandle` with only an operation ID do not use this context.
+
+- Add experimental `ChildWorkflowOptions.VersioningOverride` for pinned, auto-upgrade, and one-time child workflow routing independently of the parent (Temporal Server 1.32.0+), `VersioningOverride.OneTime` for one-time routing on both client and child workflow starts, and `InvalidVersioningOverrideException` for invalid child overrides.
+
+- Added `WorkflowInfo.OriginalExecutionRunId`, the run ID recorded on the workflow execution started event. Unlike `RunId`, this value is preserved across workflow resets.
+
+### Stabilized
+
+- Removed experimental warnings from the core plugin APIs and client/worker plugin options.
+
+- `DevServerOptions` and `TestServerOptions` are no longer marked unstable. They remain specific to the dev server and test server implementations and may no longer be valid if those change.
+
+### :boom: Breaking Changes
+
+- `SchedulePolicy.CatchupWindow` is now nullable and defaults to `null`. An unspecified window uses the server configured default.
+
+### Fixed
+
+- Fixed an exception when reading schedule policies with an unset catchup window.
+
+- Source Link in the published symbol packages now resolves every source file, and packages are built with normalized paths so they are reproducible.
+
+- `Temporalio.Extensions.DiagnosticSource.CustomMetricMeter` no longer throws when a tag is appended with a key that the tag set already has. The appended value now replaces the existing one.
+
+- Core: Replay now preserves which local activity results were delivered together for newly recorded histories. This prevents local activity scheduling which was conditional on local activity resolution order from assigning recorded results to different handles. Older markers keep their existing behavior.
+
+- Prevented use-after-free errors caused by early finalization of `Temporalio.Bridge.ByteArray`.
+
 ## [1.20.0] - 2026-09-28
 
 ### Added
