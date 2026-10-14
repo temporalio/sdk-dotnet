@@ -28,39 +28,40 @@ namespace Temporalio.Api.Compute.V1 {
             "cmFsLmFwaS5jb21wdXRlLnYxGiZ0ZW1wb3JhbC9hcGkvY29tcHV0ZS92MS9w",
             "cm92aWRlci5wcm90bxokdGVtcG9yYWwvYXBpL2NvbXB1dGUvdjEvc2NhbGVy",
             "LnByb3RvGiZ0ZW1wb3JhbC9hcGkvZW51bXMvdjEvdGFza19xdWV1ZS5wcm90",
-            "bxogZ29vZ2xlL3Byb3RvYnVmL2ZpZWxkX21hc2sucHJvdG8izwEKGUNvbXB1",
+            "bxogZ29vZ2xlL3Byb3RvYnVmL2ZpZWxkX21hc2sucHJvdG8i4wEKGUNvbXB1",
             "dGVDb25maWdTY2FsaW5nR3JvdXASPgoQdGFza19xdWV1ZV90eXBlcxgBIAMo",
-            "DjIkLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5UYXNrUXVldWVUeXBlEjoKCHBy",
-            "b3ZpZGVyGAMgASgLMigudGVtcG9yYWwuYXBpLmNvbXB1dGUudjEuQ29tcHV0",
-            "ZVByb3ZpZGVyEjYKBnNjYWxlchgEIAEoCzImLnRlbXBvcmFsLmFwaS5jb21w",
-            "dXRlLnYxLkNvbXB1dGVTY2FsZXIizAEKDUNvbXB1dGVDb25maWcSUQoOc2Nh",
-            "bGluZ19ncm91cHMYASADKAsyOS50ZW1wb3JhbC5hcGkuY29tcHV0ZS52MS5D",
-            "b21wdXRlQ29uZmlnLlNjYWxpbmdHcm91cHNFbnRyeRpoChJTY2FsaW5nR3Jv",
-            "dXBzRW50cnkSCwoDa2V5GAEgASgJEkEKBXZhbHVlGAIgASgLMjIudGVtcG9y",
-            "YWwuYXBpLmNvbXB1dGUudjEuQ29tcHV0ZUNvbmZpZ1NjYWxpbmdHcm91cDoC",
-            "OAEinQEKH0NvbXB1dGVDb25maWdTY2FsaW5nR3JvdXBVcGRhdGUSSQoNc2Nh",
-            "bGluZ19ncm91cBgBIAEoCzIyLnRlbXBvcmFsLmFwaS5jb21wdXRlLnYxLkNv",
-            "bXB1dGVDb25maWdTY2FsaW5nR3JvdXASLwoLdXBkYXRlX21hc2sYAiABKAsy",
-            "Gi5nb29nbGUucHJvdG9idWYuRmllbGRNYXNrIuEBChRDb21wdXRlQ29uZmln",
-            "U3VtbWFyeRJYCg5zY2FsaW5nX2dyb3VwcxgBIAMoCzJALnRlbXBvcmFsLmFw",
-            "aS5jb21wdXRlLnYxLkNvbXB1dGVDb25maWdTdW1tYXJ5LlNjYWxpbmdHcm91",
-            "cHNFbnRyeRpvChJTY2FsaW5nR3JvdXBzRW50cnkSCwoDa2V5GAEgASgJEkgK",
-            "BXZhbHVlGAIgASgLMjkudGVtcG9yYWwuYXBpLmNvbXB1dGUudjEuQ29tcHV0",
-            "ZUNvbmZpZ1NjYWxpbmdHcm91cFN1bW1hcnk6AjgBInkKIENvbXB1dGVDb25m",
-            "aWdTY2FsaW5nR3JvdXBTdW1tYXJ5Ej4KEHRhc2tfcXVldWVfdHlwZXMYASAD",
-            "KA4yJC50ZW1wb3JhbC5hcGkuZW51bXMudjEuVGFza1F1ZXVlVHlwZRIVCg1w",
-            "cm92aWRlcl90eXBlGAIgASgJQo0BChppby50ZW1wb3JhbC5hcGkuY29tcHV0",
-            "ZS52MUILQ29uZmlnUHJvdG9QAVolZ28udGVtcG9yYWwuaW8vYXBpL2NvbXB1",
-            "dGUvdjE7Y29tcHV0ZaoCGVRlbXBvcmFsaW8uQXBpLkNvbXB1dGUuVjHqAhxU",
-            "ZW1wb3JhbGlvOjpBcGk6OkNvbXB1dGU6OlYxYgZwcm90bzM="));
+            "DjIkLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5UYXNrUXVldWVUeXBlEhIKCnJl",
+            "Z2lvbl9pZHMYAiADKAkSOgoIcHJvdmlkZXIYAyABKAsyKC50ZW1wb3JhbC5h",
+            "cGkuY29tcHV0ZS52MS5Db21wdXRlUHJvdmlkZXISNgoGc2NhbGVyGAQgASgL",
+            "MiYudGVtcG9yYWwuYXBpLmNvbXB1dGUudjEuQ29tcHV0ZVNjYWxlciLMAQoN",
+            "Q29tcHV0ZUNvbmZpZxJRCg5zY2FsaW5nX2dyb3VwcxgBIAMoCzI5LnRlbXBv",
+            "cmFsLmFwaS5jb21wdXRlLnYxLkNvbXB1dGVDb25maWcuU2NhbGluZ0dyb3Vw",
+            "c0VudHJ5GmgKElNjYWxpbmdHcm91cHNFbnRyeRILCgNrZXkYASABKAkSQQoF",
+            "dmFsdWUYAiABKAsyMi50ZW1wb3JhbC5hcGkuY29tcHV0ZS52MS5Db21wdXRl",
+            "Q29uZmlnU2NhbGluZ0dyb3VwOgI4ASKdAQofQ29tcHV0ZUNvbmZpZ1NjYWxp",
+            "bmdHcm91cFVwZGF0ZRJJCg1zY2FsaW5nX2dyb3VwGAEgASgLMjIudGVtcG9y",
+            "YWwuYXBpLmNvbXB1dGUudjEuQ29tcHV0ZUNvbmZpZ1NjYWxpbmdHcm91cBIv",
+            "Cgt1cGRhdGVfbWFzaxgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5GaWVsZE1h",
+            "c2si4QEKFENvbXB1dGVDb25maWdTdW1tYXJ5ElgKDnNjYWxpbmdfZ3JvdXBz",
+            "GAEgAygLMkAudGVtcG9yYWwuYXBpLmNvbXB1dGUudjEuQ29tcHV0ZUNvbmZp",
+            "Z1N1bW1hcnkuU2NhbGluZ0dyb3Vwc0VudHJ5Gm8KElNjYWxpbmdHcm91cHNF",
+            "bnRyeRILCgNrZXkYASABKAkSSAoFdmFsdWUYAiABKAsyOS50ZW1wb3JhbC5h",
+            "cGkuY29tcHV0ZS52MS5Db21wdXRlQ29uZmlnU2NhbGluZ0dyb3VwU3VtbWFy",
+            "eToCOAEijQEKIENvbXB1dGVDb25maWdTY2FsaW5nR3JvdXBTdW1tYXJ5Ej4K",
+            "EHRhc2tfcXVldWVfdHlwZXMYASADKA4yJC50ZW1wb3JhbC5hcGkuZW51bXMu",
+            "djEuVGFza1F1ZXVlVHlwZRIVCg1wcm92aWRlcl90eXBlGAIgASgJEhIKCnJl",
+            "Z2lvbl9pZHMYAyADKAlCjQEKGmlvLnRlbXBvcmFsLmFwaS5jb21wdXRlLnYx",
+            "QgtDb25maWdQcm90b1ABWiVnby50ZW1wb3JhbC5pby9hcGkvY29tcHV0ZS92",
+            "MTtjb21wdXRlqgIZVGVtcG9yYWxpby5BcGkuQ29tcHV0ZS5WMeoCHFRlbXBv",
+            "cmFsaW86OkFwaTo6Q29tcHV0ZTo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Compute.V1.ProviderReflection.Descriptor, global::Temporalio.Api.Compute.V1.ScalerReflection.Descriptor, global::Temporalio.Api.Enums.V1.TaskQueueReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.FieldMaskReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroup), global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroup.Parser, new[]{ "TaskQueueTypes", "Provider", "Scaler" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroup), global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroup.Parser, new[]{ "TaskQueueTypes", "RegionIds", "Provider", "Scaler" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Compute.V1.ComputeConfig), global::Temporalio.Api.Compute.V1.ComputeConfig.Parser, new[]{ "ScalingGroups" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate), global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate.Parser, new[]{ "ScalingGroup", "UpdateMask" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Compute.V1.ComputeConfigSummary), global::Temporalio.Api.Compute.V1.ComputeConfigSummary.Parser, new[]{ "ScalingGroups" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupSummary), global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupSummary.Parser, new[]{ "TaskQueueTypes", "ProviderType" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupSummary), global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupSummary.Parser, new[]{ "TaskQueueTypes", "ProviderType", "RegionIds" }, null, null, null, null)
           }));
     }
     #endregion
@@ -102,6 +103,7 @@ namespace Temporalio.Api.Compute.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public ComputeConfigScalingGroup(ComputeConfigScalingGroup other) : this() {
       taskQueueTypes_ = other.taskQueueTypes_.Clone();
+      regionIds_ = other.regionIds_.Clone();
       provider_ = other.provider_ != null ? other.provider_.Clone() : null;
       scaler_ = other.scaler_ != null ? other.scaler_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -127,6 +129,21 @@ namespace Temporalio.Api.Compute.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::Temporalio.Api.Enums.V1.TaskQueueType> TaskQueueTypes {
       get { return taskQueueTypes_; }
+    }
+
+    /// <summary>Field number for the "region_ids" field.</summary>
+    public const int RegionIdsFieldNumber = 2;
+    private static readonly pb::FieldCodec<string> _repeated_regionIds_codec
+        = pb::FieldCodec.ForString(18);
+    private readonly pbc::RepeatedField<string> regionIds_ = new pbc::RepeatedField<string>();
+    /// <summary>
+    /// Optional. If set, this scaling group is used only while the namespace is
+    /// active in one of these regions.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<string> RegionIds {
+      get { return regionIds_; }
     }
 
     /// <summary>Field number for the "provider" field.</summary>
@@ -177,6 +194,7 @@ namespace Temporalio.Api.Compute.V1 {
         return true;
       }
       if(!taskQueueTypes_.Equals(other.taskQueueTypes_)) return false;
+      if(!regionIds_.Equals(other.regionIds_)) return false;
       if (!object.Equals(Provider, other.Provider)) return false;
       if (!object.Equals(Scaler, other.Scaler)) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -187,6 +205,7 @@ namespace Temporalio.Api.Compute.V1 {
     public override int GetHashCode() {
       int hash = 1;
       hash ^= taskQueueTypes_.GetHashCode();
+      hash ^= regionIds_.GetHashCode();
       if (provider_ != null) hash ^= Provider.GetHashCode();
       if (scaler_ != null) hash ^= Scaler.GetHashCode();
       if (_unknownFields != null) {
@@ -208,6 +227,7 @@ namespace Temporalio.Api.Compute.V1 {
       output.WriteRawMessage(this);
     #else
       taskQueueTypes_.WriteTo(output, _repeated_taskQueueTypes_codec);
+      regionIds_.WriteTo(output, _repeated_regionIds_codec);
       if (provider_ != null) {
         output.WriteRawTag(26);
         output.WriteMessage(Provider);
@@ -227,6 +247,7 @@ namespace Temporalio.Api.Compute.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
       taskQueueTypes_.WriteTo(ref output, _repeated_taskQueueTypes_codec);
+      regionIds_.WriteTo(ref output, _repeated_regionIds_codec);
       if (provider_ != null) {
         output.WriteRawTag(26);
         output.WriteMessage(Provider);
@@ -246,6 +267,7 @@ namespace Temporalio.Api.Compute.V1 {
     public int CalculateSize() {
       int size = 0;
       size += taskQueueTypes_.CalculateSize(_repeated_taskQueueTypes_codec);
+      size += regionIds_.CalculateSize(_repeated_regionIds_codec);
       if (provider_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Provider);
       }
@@ -265,6 +287,7 @@ namespace Temporalio.Api.Compute.V1 {
         return;
       }
       taskQueueTypes_.Add(other.taskQueueTypes_);
+      regionIds_.Add(other.regionIds_);
       if (other.provider_ != null) {
         if (provider_ == null) {
           Provider = new global::Temporalio.Api.Compute.V1.ComputeProvider();
@@ -295,6 +318,10 @@ namespace Temporalio.Api.Compute.V1 {
           case 10:
           case 8: {
             taskQueueTypes_.AddEntriesFrom(input, _repeated_taskQueueTypes_codec);
+            break;
+          }
+          case 18: {
+            regionIds_.AddEntriesFrom(input, _repeated_regionIds_codec);
             break;
           }
           case 26: {
@@ -329,6 +356,10 @@ namespace Temporalio.Api.Compute.V1 {
           case 10:
           case 8: {
             taskQueueTypes_.AddEntriesFrom(ref input, _repeated_taskQueueTypes_codec);
+            break;
+          }
+          case 18: {
+            regionIds_.AddEntriesFrom(ref input, _repeated_regionIds_codec);
             break;
           }
           case 26: {
@@ -610,7 +641,7 @@ namespace Temporalio.Api.Compute.V1 {
     /// - Empty mask for an existing scaling group is no-op: no change.
     /// - Non-empty mask for an existing scaling group will update/unset only to the fields
     ///   mentioned in the mask.
-    /// - Accepted paths: "task_queue_types", "provider", "provider.type", "provider.details",
+    /// - Accepted paths: "task_queue_types", "region_ids", "provider", "provider.type", "provider.details",
     ///   "provider.nexus_endpoint", "scaler", "scaler.type", "scaler.details"
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1014,6 +1045,7 @@ namespace Temporalio.Api.Compute.V1 {
     public ComputeConfigScalingGroupSummary(ComputeConfigScalingGroupSummary other) : this() {
       taskQueueTypes_ = other.taskQueueTypes_.Clone();
       providerType_ = other.providerType_;
+      regionIds_ = other.regionIds_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1046,6 +1078,17 @@ namespace Temporalio.Api.Compute.V1 {
       }
     }
 
+    /// <summary>Field number for the "region_ids" field.</summary>
+    public const int RegionIdsFieldNumber = 3;
+    private static readonly pb::FieldCodec<string> _repeated_regionIds_codec
+        = pb::FieldCodec.ForString(26);
+    private readonly pbc::RepeatedField<string> regionIds_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<string> RegionIds {
+      get { return regionIds_; }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1063,6 +1106,7 @@ namespace Temporalio.Api.Compute.V1 {
       }
       if(!taskQueueTypes_.Equals(other.taskQueueTypes_)) return false;
       if (ProviderType != other.ProviderType) return false;
+      if(!regionIds_.Equals(other.regionIds_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1072,6 +1116,7 @@ namespace Temporalio.Api.Compute.V1 {
       int hash = 1;
       hash ^= taskQueueTypes_.GetHashCode();
       if (ProviderType.Length != 0) hash ^= ProviderType.GetHashCode();
+      hash ^= regionIds_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1095,6 +1140,7 @@ namespace Temporalio.Api.Compute.V1 {
         output.WriteRawTag(18);
         output.WriteString(ProviderType);
       }
+      regionIds_.WriteTo(output, _repeated_regionIds_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1110,6 +1156,7 @@ namespace Temporalio.Api.Compute.V1 {
         output.WriteRawTag(18);
         output.WriteString(ProviderType);
       }
+      regionIds_.WriteTo(ref output, _repeated_regionIds_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1124,6 +1171,7 @@ namespace Temporalio.Api.Compute.V1 {
       if (ProviderType.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ProviderType);
       }
+      size += regionIds_.CalculateSize(_repeated_regionIds_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -1140,6 +1188,7 @@ namespace Temporalio.Api.Compute.V1 {
       if (other.ProviderType.Length != 0) {
         ProviderType = other.ProviderType;
       }
+      regionIds_.Add(other.regionIds_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -1164,6 +1213,10 @@ namespace Temporalio.Api.Compute.V1 {
             ProviderType = input.ReadString();
             break;
           }
+          case 26: {
+            regionIds_.AddEntriesFrom(input, _repeated_regionIds_codec);
+            break;
+          }
         }
       }
     #endif
@@ -1186,6 +1239,10 @@ namespace Temporalio.Api.Compute.V1 {
           }
           case 18: {
             ProviderType = input.ReadString();
+            break;
+          }
+          case 26: {
+            regionIds_.AddEntriesFrom(ref input, _repeated_regionIds_codec);
             break;
           }
         }
