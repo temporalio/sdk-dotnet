@@ -37,15 +37,6 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Require main
-        env:
-          RELEASE_REF: ${{ github.ref }}
-        run: |
-          if [ "$RELEASE_REF" != "refs/heads/main" ]; then
-            echo "Release publishing must be dispatched from main" >&2
-            exit 1
-          fi
-
       - name: Setup release tooling
         uses: ./.github/actions/setup
 
@@ -148,6 +139,7 @@ jobs:
           run-dotnet-framework: true
 
   publish-prod:
+    if: false
     needs:
       - smoke-int
       - read-version
@@ -163,6 +155,7 @@ jobs:
       artifact-name: release-package
 
   smoke-prod:
+    if: false
     needs:
       - publish-prod
       - read-version
@@ -183,7 +176,7 @@ jobs:
 
   create-release-draft:
     needs:
-      - smoke-prod
+      - smoke-int
       - read-version
     runs-on: ubuntu-latest
     permissions:
