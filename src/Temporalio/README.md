@@ -1237,6 +1237,14 @@ activity context:
 This covers Temporal-specific Nexus extensions. For general Nexus information/documentation, see
 [the Nexus .NET SDK repository](https://github.com/nexus-rpc/sdk-dotnet)
 
+#### Standalone Nexus Operations
+
+Standalone Nexus Operations let clients call Nexus operations without a caller Workflow. They are in
+[Public Preview](https://docs.temporal.io/evaluate/development-production-features/release-stages#public-preview).
+We aim to preserve backward compatibility and avoid breaking changes.
+See the [standalone operation guide](https://docs.temporal.io/develop/dotnet/nexus/standalone-operations)
+and [sample](https://github.com/temporalio/samples-dotnet/tree/main/src/NexusStandaloneOperations).
+
 #### Nexus Operations Backed by Workflows
 
 To create a Nexus service with operations backed by workflows, first there needs to be a service contract, like so:
