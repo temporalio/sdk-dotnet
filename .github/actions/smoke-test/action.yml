@@ -49,9 +49,9 @@ runs:
           -e PACKAGE_SOURCE -e VERSION \
           mcr.microsoft.com/dotnet/sdk:10.0.400-alpine3.24 \
           sh -c '
-            version_arg=""
+            version_arg="--prerelease"
             [ -n "$VERSION" ] && version_arg="--version $VERSION"
-            dotnet add tests/Temporalio.SmokeTest package Temporalio $version_arg -s "$PACKAGE_SOURCE" --prerelease \
+            dotnet add tests/Temporalio.SmokeTest package Temporalio $version_arg -s "$PACKAGE_SOURCE" \
               && dotnet run --project tests/Temporalio.SmokeTest
           '
 
@@ -62,9 +62,9 @@ runs:
         PACKAGE_SOURCE: ${{ inputs.package-source }}
         VERSION: ${{ inputs.version }}
       run: |
-        version_arg=()
+        version_arg=(--prerelease)
         [ -n "$VERSION" ] && version_arg=(--version "$VERSION")
-        dotnet add tests/Temporalio.SmokeTest package Temporalio "${version_arg[@]}" -s "$PACKAGE_SOURCE" --prerelease
+        dotnet add tests/Temporalio.SmokeTest package Temporalio "${version_arg[@]}" -s "$PACKAGE_SOURCE"
         dotnet run --project tests/Temporalio.SmokeTest
 
     - name: Run smoke test (Windows)
@@ -74,8 +74,8 @@ runs:
         PACKAGE_SOURCE: ${{ inputs.package-source }}
         VERSION: ${{ inputs.version }}
       run: |
-        $versionArg = if ($env:VERSION) { @("--version", $env:VERSION) } else { @() }
-        dotnet add tests/Temporalio.SmokeTest package Temporalio @versionArg -s "$env:PACKAGE_SOURCE" --prerelease
+        $versionArg = if ($env:VERSION) { @("--version", $env:VERSION) } else { @("--prerelease") }
+        dotnet add tests/Temporalio.SmokeTest package Temporalio @versionArg -s "$env:PACKAGE_SOURCE"
         dotnet run --project tests/Temporalio.SmokeTest
 
     - name: Setup msbuild (Windows x64 only)
@@ -89,7 +89,7 @@ runs:
         PACKAGE_SOURCE: ${{ inputs.package-source }}
         VERSION: ${{ inputs.version }}
       run: |
-        $versionArg = if ($env:VERSION) { @("--version", $env:VERSION) } else { @() }
-        dotnet add tests/Temporalio.SmokeTestDotNetFramework package Temporalio @versionArg -s "$env:PACKAGE_SOURCE" --prerelease
+        $versionArg = if ($env:VERSION) { @("--version", $env:VERSION) } else { @("--prerelease") }
+        dotnet add tests/Temporalio.SmokeTestDotNetFramework package Temporalio @versionArg -s "$env:PACKAGE_SOURCE"
         msbuild tests/Temporalio.SmokeTestDotNetFramework -t:restore,build -p:Platform=x64
         tests/Temporalio.SmokeTestDotNetFramework/bin/x64/Debug/Temporalio.SmokeTestDotNetFramework.exe
