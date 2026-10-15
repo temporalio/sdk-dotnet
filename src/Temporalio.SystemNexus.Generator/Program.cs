@@ -64,8 +64,8 @@ void GenerateNexusApi()
             "--system-nexus",
             Path.Join(apiProtoDir, "nexus/workflow-service.wit"),
             Path.Join(apiProtoDir, "nexus/deps"),
-            "--support-file",
-            Path.Join(generatorDir, "wit/deps/nexus-temporal-types/dotnet/TemporalSupport.cs"),
+            "--support-package",
+            "Temporalio.Nexus.SystemNexus",
             "--descriptors",
             descriptorPath,
             "--output",
@@ -86,24 +86,21 @@ void PostProcessGeneratedNexusApi()
     WriteWorkflowGeneratedFile("Models.cs");
     WriteWorkflowGeneratedFile("Operations.cs");
     WriteWorkflowGeneratedFile("Services.cs");
-    WriteWorkflowGeneratedFile(Path.Join("Support", "TemporalSupport.cs"), "TemporalSupport.cs");
     WriteWorkerGeneratedFile("SystemNexusWorkflowOutboundInterceptor.cs");
 }
 
-void WriteWorkflowGeneratedFile(string stagingRelativePath, string? outputFileName = null)
+void WriteWorkflowGeneratedFile(string stagingRelativePath)
 {
     var sourcePath = Path.Join(stagingOutputDir, stagingRelativePath);
     var destinationPath = Path.Join(
         workflowsGeneratedDir,
-        outputFileName ?? Path.GetFileName(stagingRelativePath));
+        Path.GetFileName(stagingRelativePath));
     var contents = File.ReadAllText(sourcePath);
     contents = Regex.Replace(
         contents,
-        @"^using (Nexgen\.Support|Temporalio\.Workflows);\r?\n",
+        @"^using Temporalio\.Workflows;\r?\n",
         string.Empty,
         RegexOptions.Multiline);
-    contents = contents.Replace("namespace Nexgen.Support", "namespace Temporalio.Workflows");
-    contents = contents.Replace("Nexgen.Support.", string.Empty);
     File.WriteAllText(destinationPath, contents);
 }
 
