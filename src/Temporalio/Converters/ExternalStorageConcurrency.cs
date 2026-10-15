@@ -27,9 +27,7 @@ namespace Temporalio.Converters
         /// the owning <see cref="ExternalStorage" />. Defaults to 64.
         /// </summary>
         /// <remarks>
-        /// The budget belongs to the <see cref="ExternalStorage" /> this is set on, not to this
-        /// object, so sharing one <see cref="ExternalStorage" /> between a client and a worker gives
-        /// them a single combined budget while separate ones each get their own.
+        /// Each worker and each client gets its own concurrency limit of this size.
         /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException">If set to less than 1.</exception>
         public int MaxDriverOperations
