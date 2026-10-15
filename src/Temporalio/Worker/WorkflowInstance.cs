@@ -1633,9 +1633,11 @@ namespace Temporalio.Worker
                     }
                     catch (Exception conversionEx)
                     {
-                        // Prevent a ToFailure failure from failing the whole workflow task: report
-                        // the conversion error as the query failure instead.
-                        failed = new() { Message = $"Failed converting query failure: {conversionEx.Message}" };
+                        logger.LogError(
+                            conversionEx,
+                            "Failed converting query failure on workflow with run ID {RunId}",
+                            Info.RunId);
+                        failed = new() { Message = $"Failed converting query failure: {conversionEx}" };
                     }
                     AddCommand(
                         new()
