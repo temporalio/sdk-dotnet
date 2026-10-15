@@ -39,7 +39,7 @@ on:
         description: "Run artifact containing the .nupkg/.snupkg files to publish."
         required: false
         type: string
-        default: nuget-package
+        default: release-package
 
 permissions:
   contents: read
@@ -75,7 +75,7 @@ jobs:
         id: login
         uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1
         with:
-          user: Temporal
+          user: ${{ vars.NUGET_USER }}
           token-service-url: ${{ inputs.token-service-url }}
           audience: ${{ inputs.audience }}
 
@@ -87,6 +87,12 @@ jobs:
           dotnet nuget push "$GITHUB_WORKSPACE/nuget-package/**/*.nupkg" \
             --api-key "$NUGET_API_KEY" \
             --source "$INDEX_URL" \
+            --no-symbols \
+            --skip-duplicate
+
+          dotnet nuget push "$GITHUB_WORKSPACE/nuget-package/**/*.snupkg" \
+            --api-key "$NUGET_API_KEY" \
+            --source "$INDEX_URL" \
             --skip-duplicate
 
   wait:
@@ -95,16 +101,27 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Download verified package manifest
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: nuget-package
+
       - name: Wait for packages to be available
         env:
           VERSION: ${{ inputs.version }}
           INDEX_URL: ${{ inputs.index-url }}
         run: |
           set -euo pipefail
+          VERSION=$(printf '%s' "$VERSION" | tr '[:upper:]' '[:lower:]')
           # Flat-container is served from the same host as the V3 index.
           host="${INDEX_URL#https://}"
           host="${host%%/*}"
-          remaining="temporalio temporalio.extensions.diagnosticsource temporalio.extensions.hosting temporalio.extensions.opentelemetry"
+          remaining=$(tr '[:upper:]' '[:lower:]' < nuget-package/package-ids.txt)
+          if [ -z "$remaining" ]; then
+            echo "Verified package manifest is empty" >&2
+            exit 1
+          fi
           deadline=$(( $(date +%s) + 1800 )) # 30 minutes
           while true; do
             pending=""

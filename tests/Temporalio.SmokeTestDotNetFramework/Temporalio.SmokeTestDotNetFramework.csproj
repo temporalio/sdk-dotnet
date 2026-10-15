@@ -28,6 +28,12 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <!--
+      Release smoke tests restore from multiple remote sources (e.g. the NuGet
+      integration gallery plus nuget.org). As an error, NU1507 fails restore
+      before packages are extracted on Windows.
+    -->
+    <NoWarn>$(NoWarn);NU1507</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
