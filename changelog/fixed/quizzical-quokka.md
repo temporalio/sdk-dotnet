@@ -1,1 +1,0 @@
-Query handlers that throw an exception now fail only the query, even when the failure converter also throws during error conversion; the conversion error is reported as the query failure instead of failing the entire workflow task.
