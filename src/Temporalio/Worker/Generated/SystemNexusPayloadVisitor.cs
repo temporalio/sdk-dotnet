@@ -371,6 +371,12 @@ namespace Temporalio.Worker
                         Visit_temporal_api_workflowservice_v1_StartActivityExecutionRequest,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.workflowservice.v1.StartActivityExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.StartActivityExecutionResponse>(
+                        payload,
+                        Visit_temporal_api_workflowservice_v1_StartActivityExecutionResponse,
+                        visitPayload,
+                        visitPayloads),
                 ["temporal.api.workflowservice.v1.StartNexusOperationExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.StartNexusOperationExecutionRequest>(
                         payload,
@@ -2724,6 +2730,17 @@ namespace Temporalio.Worker
             foreach (var item_temporal_api_workflowservice_v1_StartActivityExecutionRequest_19 in value.CompletionCallbacks)
             {
                 await Visit_temporal_api_common_v1_Callback(item_temporal_api_workflowservice_v1_StartActivityExecutionRequest_19, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
+        }
+
+        private static async Task Visit_temporal_api_workflowservice_v1_StartActivityExecutionResponse(
+            global::Temporalio.Api.WorkflowService.V1.StartActivityExecutionResponse value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            if (value.EagerActivityTask != null)
+            {
+                await Visit_temporal_api_workflowservice_v1_PollActivityTaskQueueResponse(value.EagerActivityTask, visitPayload, visitPayloads).ConfigureAwait(false);
             }
         }
 
