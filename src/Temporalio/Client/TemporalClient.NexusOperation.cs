@@ -99,6 +99,14 @@ namespace Temporalio.Client
                     {
                         req.NexusHeader.Add(input.Headers);
                     }
+                    if (input.Options.CompletionCallbacks is { } completionCallbacks)
+                    {
+                        foreach (var callback in completionCallbacks)
+                        {
+                            req.CompletionCallbacks.Add(
+                                await callback.ToProtoAsync(dataConverter).ConfigureAwait(false));
+                        }
+                    }
 
                     var resp = await Client.Connection.WorkflowService.StartNexusOperationExecutionAsync(
                         req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
