@@ -32,6 +32,9 @@ namespace Temporalio.Nexus.SystemNexus
         internal static object? FromPayload(ApiCommon.Payload payload) =>
             SystemNexusConverterContext.PayloadConverter.ToValue<object?>(payload);
 
+        internal static T FromPayload<T>(ApiCommon.Payload payload) =>
+            SystemNexusConverterContext.PayloadConverter.ToValue<T>(payload);
+
         internal static ApiCommon.Payloads ToPayloads(IEnumerable<object?> values)
         {
             var payloads = new ApiCommon.Payloads();

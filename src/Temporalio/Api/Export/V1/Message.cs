@@ -26,18 +26,27 @@ namespace Temporalio.Api.Export.V1 {
           string.Concat(
             "CiR0ZW1wb3JhbC9hcGkvZXhwb3J0L3YxL21lc3NhZ2UucHJvdG8SFnRlbXBv",
             "cmFsLmFwaS5leHBvcnQudjEaJXRlbXBvcmFsL2FwaS9oaXN0b3J5L3YxL21l",
-            "c3NhZ2UucHJvdG8iRgoRV29ya2Zsb3dFeGVjdXRpb24SMQoHaGlzdG9yeRgB",
-            "IAEoCzIgLnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLkhpc3RvcnkiTgoSV29y",
-            "a2Zsb3dFeGVjdXRpb25zEjgKBWl0ZW1zGAEgAygLMikudGVtcG9yYWwuYXBp",
-            "LmV4cG9ydC52MS5Xb3JrZmxvd0V4ZWN1dGlvbkKJAQoZaW8udGVtcG9yYWwu",
-            "YXBpLmV4cG9ydC52MUIMTWVzc2FnZVByb3RvUAFaI2dvLnRlbXBvcmFsLmlv",
-            "L2FwaS9leHBvcnQvdjE7ZXhwb3J0qgIYVGVtcG9yYWxpby5BcGkuRXhwb3J0",
-            "LlYx6gIbVGVtcG9yYWxpbzo6QXBpOjpFeHBvcnQ6OlYxYgZwcm90bzM="));
+            "c3NhZ2UucHJvdG8aNnRlbXBvcmFsL2FwaS93b3JrZmxvd3NlcnZpY2UvdjEv",
+            "cmVxdWVzdF9yZXNwb25zZS5wcm90byJGChFXb3JrZmxvd0V4ZWN1dGlvbhIx",
+            "CgdoaXN0b3J5GAEgASgLMiAudGVtcG9yYWwuYXBpLmhpc3RvcnkudjEuSGlz",
+            "dG9yeSJOChJXb3JrZmxvd0V4ZWN1dGlvbnMSOAoFaXRlbXMYASADKAsyKS50",
+            "ZW1wb3JhbC5hcGkuZXhwb3J0LnYxLldvcmtmbG93RXhlY3V0aW9uImkKEUFj",
+            "dGl2aXR5RXhlY3V0aW9uElQKCGFjdGl2aXR5GAEgASgLMkIudGVtcG9yYWwu",
+            "YXBpLndvcmtmbG93c2VydmljZS52MS5EZXNjcmliZUFjdGl2aXR5RXhlY3V0",
+            "aW9uUmVzcG9uc2UikQEKEkV4cG9ydGVkRXhlY3V0aW9ucxI8Cgl3b3JrZmxv",
+            "d3MYASADKAsyKS50ZW1wb3JhbC5hcGkuZXhwb3J0LnYxLldvcmtmbG93RXhl",
+            "Y3V0aW9uEj0KCmFjdGl2aXRpZXMYAiADKAsyKS50ZW1wb3JhbC5hcGkuZXhw",
+            "b3J0LnYxLkFjdGl2aXR5RXhlY3V0aW9uQokBChlpby50ZW1wb3JhbC5hcGku",
+            "ZXhwb3J0LnYxQgxNZXNzYWdlUHJvdG9QAVojZ28udGVtcG9yYWwuaW8vYXBp",
+            "L2V4cG9ydC92MTtleHBvcnSqAhhUZW1wb3JhbGlvLkFwaS5FeHBvcnQuVjHq",
+            "AhtUZW1wb3JhbGlvOjpBcGk6OkV4cG9ydDo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Temporalio.Api.History.V1.MessageReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Temporalio.Api.History.V1.MessageReflection.Descriptor, global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Export.V1.WorkflowExecution), global::Temporalio.Api.Export.V1.WorkflowExecution.Parser, new[]{ "History" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Export.V1.WorkflowExecutions), global::Temporalio.Api.Export.V1.WorkflowExecutions.Parser, new[]{ "Items" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Export.V1.WorkflowExecutions), global::Temporalio.Api.Export.V1.WorkflowExecutions.Parser, new[]{ "Items" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Export.V1.ActivityExecution), global::Temporalio.Api.Export.V1.ActivityExecution.Parser, new[]{ "Activity" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Export.V1.ExportedExecutions), global::Temporalio.Api.Export.V1.ExportedExecutions.Parser, new[]{ "Workflows", "Activities" }, null, null, null, null)
           }));
     }
     #endregion
@@ -243,8 +252,8 @@ namespace Temporalio.Api.Export.V1 {
   }
 
   /// <summary>
-  /// WorkflowExecutions is used by the Cloud Export feature to deserialize 
-  /// the exported file. It encapsulates a collection of workflow execution information.
+  /// WorkflowExecutions is the legacy Cloud Export file format containing only workflow executions.
+  /// New exporters should use ExportedExecutions.
   /// </summary>
   public sealed partial class WorkflowExecutions : pb::IMessage<WorkflowExecutions>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -415,6 +424,412 @@ namespace Temporalio.Api.Export.V1 {
             break;
           case 10: {
             items_.AddEntriesFrom(ref input, _repeated_items_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class ActivityExecution : pb::IMessage<ActivityExecution>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ActivityExecution> _parser = new pb::MessageParser<ActivityExecution>(() => new ActivityExecution());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ActivityExecution> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Export.V1.MessageReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ActivityExecution() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ActivityExecution(ActivityExecution other) : this() {
+      activity_ = other.activity_ != null ? other.activity_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ActivityExecution Clone() {
+      return new ActivityExecution(this);
+    }
+
+    /// <summary>Field number for the "activity" field.</summary>
+    public const int ActivityFieldNumber = 1;
+    private global::Temporalio.Api.WorkflowService.V1.DescribeActivityExecutionResponse activity_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.WorkflowService.V1.DescribeActivityExecutionResponse Activity {
+      get { return activity_; }
+      set {
+        activity_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ActivityExecution);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ActivityExecution other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Activity, other.Activity)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (activity_ != null) hash ^= Activity.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (activity_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Activity);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (activity_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Activity);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (activity_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Activity);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ActivityExecution other) {
+      if (other == null) {
+        return;
+      }
+      if (other.activity_ != null) {
+        if (activity_ == null) {
+          Activity = new global::Temporalio.Api.WorkflowService.V1.DescribeActivityExecutionResponse();
+        }
+        Activity.MergeFrom(other.Activity);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (activity_ == null) {
+              Activity = new global::Temporalio.Api.WorkflowService.V1.DescribeActivityExecutionResponse();
+            }
+            input.ReadMessage(Activity);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (activity_ == null) {
+              Activity = new global::Temporalio.Api.WorkflowService.V1.DescribeActivityExecutionResponse();
+            }
+            input.ReadMessage(Activity);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// ExportedExecutions is used by the Cloud Export feature to deserialize the exported file.
+  /// It encapsulates workflow execution information and contains other execution types.
+  /// </summary>
+  public sealed partial class ExportedExecutions : pb::IMessage<ExportedExecutions>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ExportedExecutions> _parser = new pb::MessageParser<ExportedExecutions>(() => new ExportedExecutions());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ExportedExecutions> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Export.V1.MessageReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ExportedExecutions() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ExportedExecutions(ExportedExecutions other) : this() {
+      workflows_ = other.workflows_.Clone();
+      activities_ = other.activities_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ExportedExecutions Clone() {
+      return new ExportedExecutions(this);
+    }
+
+    /// <summary>Field number for the "workflows" field.</summary>
+    public const int WorkflowsFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Export.V1.WorkflowExecution> _repeated_workflows_codec
+        = pb::FieldCodec.ForMessage(10, global::Temporalio.Api.Export.V1.WorkflowExecution.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Export.V1.WorkflowExecution> workflows_ = new pbc::RepeatedField<global::Temporalio.Api.Export.V1.WorkflowExecution>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Export.V1.WorkflowExecution> Workflows {
+      get { return workflows_; }
+    }
+
+    /// <summary>Field number for the "activities" field.</summary>
+    public const int ActivitiesFieldNumber = 2;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Export.V1.ActivityExecution> _repeated_activities_codec
+        = pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Export.V1.ActivityExecution.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Export.V1.ActivityExecution> activities_ = new pbc::RepeatedField<global::Temporalio.Api.Export.V1.ActivityExecution>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Export.V1.ActivityExecution> Activities {
+      get { return activities_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ExportedExecutions);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ExportedExecutions other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!workflows_.Equals(other.workflows_)) return false;
+      if(!activities_.Equals(other.activities_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= workflows_.GetHashCode();
+      hash ^= activities_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      workflows_.WriteTo(output, _repeated_workflows_codec);
+      activities_.WriteTo(output, _repeated_activities_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      workflows_.WriteTo(ref output, _repeated_workflows_codec);
+      activities_.WriteTo(ref output, _repeated_activities_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += workflows_.CalculateSize(_repeated_workflows_codec);
+      size += activities_.CalculateSize(_repeated_activities_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ExportedExecutions other) {
+      if (other == null) {
+        return;
+      }
+      workflows_.Add(other.workflows_);
+      activities_.Add(other.activities_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            workflows_.AddEntriesFrom(input, _repeated_workflows_codec);
+            break;
+          }
+          case 18: {
+            activities_.AddEntriesFrom(input, _repeated_activities_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            workflows_.AddEntriesFrom(ref input, _repeated_workflows_codec);
+            break;
+          }
+          case 18: {
+            activities_.AddEntriesFrom(ref input, _repeated_activities_codec);
             break;
           }
         }
