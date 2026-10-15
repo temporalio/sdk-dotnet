@@ -13,6 +13,7 @@ using Google.Protobuf.Collections;
 using Microsoft.Extensions.Logging;
 using NexusRpc;
 using Temporalio.Api.Common.V1;
+using Temporalio.Api.Failure.V1;
 using Temporalio.Bridge.Api.ActivityResult;
 using Temporalio.Bridge.Api.ChildWorkflow;
 using Temporalio.Bridge.Api.Nexus;
@@ -1625,14 +1626,24 @@ namespace Temporalio.Worker
                 }
                 catch (Exception e)
                 {
+                    Failure failed;
+                    try
+                    {
+                        failed = failureConverterWorkflowContext.ToFailure(e, payloadConverterWorkflowContext);
+                    }
+                    catch (Exception conversionEx)
+                    {
+                        // Prevent a ToFailure failure from failing the whole workflow task: report
+                        // the conversion error as the query failure instead.
+                        failed = new() { Message = $"Failed converting query failure: {conversionEx.Message}" };
+                    }
                     AddCommand(
                         new()
                         {
                             RespondToQuery = new()
                             {
                                 QueryId = query.QueryId,
-                                Failed = failureConverterWorkflowContext.ToFailure(
-                                    e, payloadConverterWorkflowContext),
+                                Failed = failed,
                             },
                         },
                         eventGroupMarkers: null);
