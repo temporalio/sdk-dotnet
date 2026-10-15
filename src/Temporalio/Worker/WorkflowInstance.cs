@@ -13,7 +13,6 @@ using Google.Protobuf.Collections;
 using Microsoft.Extensions.Logging;
 using NexusRpc;
 using Temporalio.Api.Common.V1;
-using Temporalio.Api.Failure.V1;
 using Temporalio.Bridge.Api.ActivityResult;
 using Temporalio.Bridge.Api.ChildWorkflow;
 using Temporalio.Bridge.Api.Nexus;
@@ -27,6 +26,7 @@ using Temporalio.Nexus;
 using Temporalio.Runtime;
 using Temporalio.Worker.Interceptors;
 using Temporalio.Workflows;
+using ApiFailure = Temporalio.Api.Failure.V1.Failure;
 using EventGroupMarker = Temporalio.Api.Sdk.V1.EventGroupMarker;
 
 namespace Temporalio.Worker
@@ -1626,7 +1626,7 @@ namespace Temporalio.Worker
                 }
                 catch (Exception e)
                 {
-                    Failure failed;
+                    ApiFailure failed;
                     try
                     {
                         failed = failureConverterWorkflowContext.ToFailure(e, payloadConverterWorkflowContext);

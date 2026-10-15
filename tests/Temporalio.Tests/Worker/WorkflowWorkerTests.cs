@@ -6893,10 +6893,21 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var handle = await client.StartWorkflowAsync(
                     (HandlerFailToFailWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-                // The update never completes because the task fails, so don't wait on it
-                _ = Task.Run(() => handle.ExecuteUpdateAsync(wf => wf.DoUpdateAsync()));
-                // Previously the conversion error was swallowed and the update was never rejected
-                await AssertTaskFailureContainsEventuallyAsync(handle, "Intentional conversion failure");
+                using var cts = new CancellationTokenSource();
+                var updateTask = handle.ExecuteUpdateAsync(
+                    wf => wf.DoUpdateAsync(),
+                    new() { Rpc = new() { CancellationToken = cts.Token } });
+                try
+                {
+                    // Previously the conversion error was swallowed and the update was never rejected
+                    await AssertTaskFailureContainsEventuallyAsync(handle, "Intentional conversion failure");
+                }
+                finally
+                {
+                    await cts.CancelAsync();
+                    await Assert.ThrowsAsync<WorkflowUpdateRpcTimeoutOrCanceledException>(
+                        () => updateTask);
+                }
             },
             client: client);
     }
@@ -6916,83 +6927,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var handle = await client.StartWorkflowAsync(
                     (HandlerFailToFailWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-                // A query delivered alongside the first workflow task would fail that task
-                // instead of the query, so wait until the query is delivered on its own
-                await AssertMore.HasEventEventuallyAsync(
-                    handle, e => e.WorkflowTaskCompletedEventAttributes != null);
                 // Previously the conversion error was swallowed and the query was never answered
                 var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
                     () => handle.QueryAsync(wf => wf.FailingQuery()));
                 Assert.Contains("Intentional conversion failure", exc.Message);
-            },
-            client: client);
-    }
-
-    [Workflow]
-    public class HandlerFailToFailWorkflow
-    {
-        [WorkflowRun]
-        public Task RunAsync() => Workflow.WaitConditionAsync(() => false);
-
-        [WorkflowQuery]
-        public string FailingQuery() => throw new InvalidOperationException("Intentional exception");
-
-        [WorkflowUpdate]
-        public Task FailingUpdateAsync() =>
-            throw new ApplicationFailureException("Intentional exception");
-    }
-
-    [Fact]
-    public async Task ExecuteWorkflowAsync_QueryHandlerFailToFail_OnlyQueryFails()
-    {
-        var newOptions = (TemporalClientOptions)Client.Options.Clone();
-        newOptions.DataConverter = DataConverter.Default with
-        {
-            FailureConverter = new CannotSerializeIntentionalFailureConverter(),
-        };
-        var client = new TemporalClient(Client.Connection, newOptions);
-        await ExecuteWorkerAsync<HandlerFailToFailWorkflow>(
-            async worker =>
-            {
-                var handle = await client.StartWorkflowAsync(
-                    (HandlerFailToFailWorkflow wf) => wf.RunAsync(),
-                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-                var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
-                    () => handle.QueryAsync(wf => wf.FailingQuery()));
-                Assert.Contains("Intentional conversion failure", exc.Message);
-            },
-            client: client);
-    }
-
-    [Fact]
-    public async Task ExecuteWorkflowAsync_UpdateHandlerFailToFail_ProperlyHandled()
-    {
-        var newOptions = (TemporalClientOptions)Client.Options.Clone();
-        newOptions.DataConverter = DataConverter.Default with
-        {
-            FailureConverter = new CannotSerializeIntentionalFailureConverter(),
-        };
-        var client = new TemporalClient(Client.Connection, newOptions);
-        await ExecuteWorkerAsync<HandlerFailToFailWorkflow>(
-            async worker =>
-            {
-                var handle = await client.StartWorkflowAsync(
-                    (HandlerFailToFailWorkflow wf) => wf.RunAsync(),
-                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-                using var cts = new CancellationTokenSource();
-                var updateTask = handle.ExecuteUpdateAsync(
-                    wf => wf.FailingUpdateAsync(),
-                    new() { CancellationToken = cts.Token });
-                try
-                {
-                    await AssertTaskFailureContainsEventuallyAsync(handle, "Intentional conversion failure");
-                }
-                finally
-                {
-                    cts.Cancel();
-                    await Assert.ThrowsAsync<WorkflowUpdateRpcTimeoutOrCanceledException>(
-                        () => updateTask);
-                }
             },
             client: client);
     }
