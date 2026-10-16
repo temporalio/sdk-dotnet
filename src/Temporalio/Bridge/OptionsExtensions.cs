@@ -15,6 +15,12 @@ namespace Temporalio.Bridge
     /// </summary>
     internal static class OptionsExtensions
     {
+        // The OpenTelemetry SDK's own exponential histogram scale limits, checked here so a bad
+        // value names the .NET property instead of surfacing as a generic runtime creation
+        // failure from Core. Keep in sync with EXPO_MIN_SCALE/EXPO_MAX_SCALE in opentelemetry_sdk.
+        private const int ExponentialHistogramMinScale = -10;
+        private const int ExponentialHistogramMaxScale = 20;
+
         private static readonly ByteArrayRef ClientName = ByteArrayRef.FromUTF8("temporal-dotnet");
         private static readonly ByteArrayRef ClientVersion = ByteArrayRef.FromUTF8(
             Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "<unknown>");
@@ -116,6 +122,40 @@ namespace Temporalio.Bridge
                 default:
                     throw new ArgumentException("Unrecognized protocol");
             }
+            var exponential = options.HistogramAggregation as Temporalio.Runtime.OpenTelemetryHistogramAggregation.Base2Exponential;
+            var histogramAggregation = options.HistogramAggregation switch
+            {
+                Temporalio.Runtime.OpenTelemetryHistogramAggregation.ExplicitBuckets =>
+                    Interop.TemporalCoreOpenTelemetryHistogramAggregation.ExplicitBuckets,
+                Temporalio.Runtime.OpenTelemetryHistogramAggregation.Base2Exponential =>
+                    Interop.TemporalCoreOpenTelemetryHistogramAggregation.Base2Exponential,
+                _ => throw new ArgumentException(
+                    $"Unsupported histogram aggregation: {options.HistogramAggregation.GetType()}"),
+            };
+            if (exponential != null)
+            {
+                if (options.HistogramBucketOverrides?.Count > 0)
+                {
+                    throw new ArgumentException(
+                        $"{nameof(options.HistogramBucketOverrides)} cannot be combined with {nameof(Temporalio.Runtime.OpenTelemetryHistogramAggregation)}.{nameof(Temporalio.Runtime.OpenTelemetryHistogramAggregation.Base2Exponential)}");
+                }
+                // Core treats zero size and empty suffix as "use default", so reject them here
+                // rather than silently ignoring them.
+                if (exponential.MaxSize is int maxSize && maxSize <= 0)
+                {
+                    throw new ArgumentException("Exponential histogram MaxSize must be positive");
+                }
+                if (exponential.MaxScale is int maxScale &&
+                    (maxScale < ExponentialHistogramMinScale || maxScale > ExponentialHistogramMaxScale))
+                {
+                    throw new ArgumentException(
+                        $"Exponential histogram MaxScale must be from {ExponentialHistogramMinScale} to {ExponentialHistogramMaxScale}");
+                }
+                if (exponential.NameSuffix != null && exponential.NameSuffix.Length == 0)
+                {
+                    throw new ArgumentException("Exponential histogram NameSuffix must not be empty");
+                }
+            }
             return new Interop.TemporalCoreOpenTelemetryOptions()
             {
                 url = scope.ByteArray(options.Url.ToString()),
@@ -129,6 +169,11 @@ namespace Temporalio.Bridge
                 protocol = protocol,
                 histogram_bucket_overrides = ToHistogramBucketOverrides(
                     options.HistogramBucketOverrides, scope),
+                histogram_aggregation = histogramAggregation,
+                exponential_histogram_max_size = (uint)(exponential?.MaxSize ?? 0),
+                exponential_histogram_max_scale = (sbyte)(exponential?.MaxScale ?? 0),
+                exponential_histogram_max_scale_set = (byte)(exponential?.MaxScale == null ? 0 : 1),
+                exponential_histogram_name_suffix = scope.ByteArray(exponential?.NameSuffix),
             };
         }
 
