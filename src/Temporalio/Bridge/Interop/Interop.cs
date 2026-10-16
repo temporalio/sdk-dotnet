@@ -58,6 +58,12 @@ namespace Temporalio.Bridge.Interop
         Http,
     }
 
+    internal enum TemporalCoreOpenTelemetryHistogramAggregation
+    {
+        ExplicitBuckets = 0,
+        Base2Exponential,
+    }
+
     internal enum TemporalCoreRuntimeType
     {
         Unspecified = 0,
@@ -480,6 +486,21 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("TemporalCoreNewlineDelimitedMapRef")]
         public TemporalCoreByteArrayRef histogram_bucket_overrides;
+
+        [NativeTypeName("enum TemporalCoreOpenTelemetryHistogramAggregation")]
+        public TemporalCoreOpenTelemetryHistogramAggregation histogram_aggregation;
+
+        [NativeTypeName("uint32_t")]
+        public uint exponential_histogram_max_size;
+
+        [NativeTypeName("int8_t")]
+        public sbyte exponential_histogram_max_scale;
+
+        [NativeTypeName("bool")]
+        public byte exponential_histogram_max_scale_set;
+
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef exponential_histogram_name_suffix;
     }
 
     internal partial struct TemporalCorePrometheusOptions
