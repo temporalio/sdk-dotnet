@@ -311,4 +311,29 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
             respLines,
             line => line.StartsWith("custom_histogram_bucket{") && line.EndsWith("le=\"7\"} 3"));
     }
+
+    [Fact]
+    public void Runtime_Base2ExponentialHistograms_CoreAcceptsOptions()
+    {
+        // Core validates the exponential aggregation when building the exporter, so creating
+        // the runtime catches what interop option tests cannot, like a struct layout mismatch.
+        // The metric meter is deliberately left untouched so no meter handles outlive the
+        // runtime disposed here.
+        var runtime = new TemporalRuntime(new()
+        {
+            Telemetry = new()
+            {
+                Metrics = new(new OpenTelemetryOptions($"http://127.0.0.1:{TestUtils.FreePort()}")
+                {
+                    HistogramAggregation = new OpenTelemetryHistogramAggregation.Base2Exponential()
+                    {
+                        MaxSize = 80,
+                        MaxScale = 8,
+                        NameSuffix = "_exp",
+                    },
+                }),
+            },
+        });
+        runtime.Runtime.Dispose();
+    }
 }

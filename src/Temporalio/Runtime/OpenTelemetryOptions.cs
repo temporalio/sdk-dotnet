@@ -69,6 +69,12 @@ namespace Temporalio.Runtime
         public IReadOnlyDictionary<string, IReadOnlyCollection<double>>? HistogramBucketOverrides { get; set; }
 
         /// <summary>
+        /// Gets or sets how histogram metrics are aggregated. Default is
+        /// <see cref="OpenTelemetryHistogramAggregation.ExplicitBuckets" />.
+        /// </summary>
+        public OpenTelemetryHistogramAggregation HistogramAggregation { get; set; } = new OpenTelemetryHistogramAggregation.ExplicitBuckets();
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
