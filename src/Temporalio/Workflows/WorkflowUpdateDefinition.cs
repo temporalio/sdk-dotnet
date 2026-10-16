@@ -12,7 +12,9 @@ namespace Temporalio.Workflows
     /// </summary>
     public class WorkflowUpdateDefinition
     {
-        private static readonly ConcurrentDictionary<MethodInfo, WorkflowUpdateDefinition> Definitions = new();
+        // Keyed by validator too, because callers that only need the name (e.g. clients) pass no
+        // validator and must not cache a definition that a worker would later receive.
+        private static readonly ConcurrentDictionary<(MethodInfo Method, MethodInfo? ValidatorMethod), WorkflowUpdateDefinition> Definitions = new();
 
         private WorkflowUpdateDefinition(
             string? name,
@@ -103,7 +105,8 @@ namespace Temporalio.Workflows
             {
                 throw new ArgumentException($"WorkflowUpdateValidator method {validatorMethod} cannot be static");
             }
-            return Definitions.GetOrAdd(method, method => CreateFromMethod(method, validatorMethod));
+            return Definitions.GetOrAdd(
+                (method, validatorMethod), key => CreateFromMethod(key.Method, key.ValidatorMethod));
         }
 
         /// <summary>

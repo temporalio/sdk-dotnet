@@ -4853,6 +4853,48 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public class UpdateValidatorAfterClientCallWorkflow
+    {
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.WaitConditionAsync(() => false);
+
+        [WorkflowUpdate]
+        public async Task<string> DoUpdateAsync(string value) => value;
+
+        [WorkflowUpdateValidator(nameof(DoUpdateAsync))]
+        public void ValidateDoUpdate(string value)
+        {
+            if (value == "bad")
+            {
+                throw new ApplicationFailureException("Intentional validator failure");
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Updates_ValidatorRunsAfterClientCallBeforeWorker()
+    {
+        // A typed update call resolves the update definition without a validator. It must not be
+        // the definition the worker gets when the workflow is registered afterwards.
+        var missingHandle = Client.GetWorkflowHandle<UpdateValidatorAfterClientCallWorkflow>(
+            $"workflow-{Guid.NewGuid()}");
+        var missingException = await Assert.ThrowsAsync<RpcException>(
+            () => missingHandle.ExecuteUpdateAsync(wf => wf.DoUpdateAsync("good")));
+        Assert.Equal(RpcException.StatusCode.NotFound, missingException.Code);
+
+        await ExecuteWorkerAsync<UpdateValidatorAfterClientCallWorkflow>(async worker =>
+        {
+            var handle = await Env.Client.StartWorkflowAsync(
+                (UpdateValidatorAfterClientCallWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            var updateExc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
+                () => handle.ExecuteUpdateAsync(wf => wf.DoUpdateAsync("bad")));
+            var appExc = Assert.IsType<ApplicationFailureException>(updateExc.InnerException);
+            Assert.Equal("Intentional validator failure", appExc.Message);
+        });
+    }
+
+    [Workflow]
     public class UpdateBadResultSerializationWorkflow
     {
         public record MyUpdateResult(string Value);
