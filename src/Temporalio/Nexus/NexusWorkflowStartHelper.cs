@@ -60,10 +60,9 @@ namespace Temporalio.Nexus
                     AttachRequestId = true,
                 };
             }
-            if (NexusOperationStartHelper.CreateInboundLinks(
-                    nexusStartContext, temporalContext) is { } links)
+            if (temporalContext.RequestLinks.Count > 0)
             {
-                options.Links = links;
+                options.Links = temporalContext.RequestLinks;
             }
             if (NexusOperationStartHelper.CreateCallback(
                     nexusStartContext, token, options.Links) is { } callback)
