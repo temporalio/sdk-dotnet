@@ -132,12 +132,12 @@ public class CompletionCallbackTests
     [Fact]
     public void Create_TypedAcceptsRawOutput()
     {
-        CompletionCallback<IRawValue> callback =
-            CompletionCallback.Create<IRawOutputService, IRawValue, CallbackContext>(
-                (service, request) => service.Completed(request), "queue", new CallbackContext("source"));
+        CompletionCallback<RawValue> callback =
+            CompletionCallback.Create<IRawOutputService, RawValue, CallbackContext>(
+                (service, request) => service.CompletedRaw(request), "queue", new CallbackContext("source"));
 
         Assert.Equal("RawOutputService", callback.Service);
-        Assert.Equal(nameof(IRawOutputService.Completed), callback.Operation);
+        Assert.Equal(nameof(IRawOutputService.CompletedRaw), callback.Operation);
     }
 
     [Fact]
@@ -148,8 +148,8 @@ public class CompletionCallbackTests
             (service, request) => service.Completed(request), "typed-queue", context);
         CompletionCallback<RawValue> named = CompletionCallback.Create(
             "named-service", "named-operation", "named-queue", context);
-        CompletionCallback<IRawValue> raw = CompletionCallback.Create<IRawOutputService, IRawValue, CallbackContext>(
-            (service, request) => service.Completed(request), "raw-queue", context);
+        CompletionCallback<RawValue> raw = CompletionCallback.Create<IRawOutputService, RawValue, CallbackContext>(
+            (service, request) => service.CompletedRaw(request), "raw-queue", context);
         var first = new CompletionCallbackCollection<string>
         {
             typed,
@@ -160,7 +160,7 @@ public class CompletionCallbackTests
         var second = new CompletionCallbackCollection<string> { typed, raw, named };
 
         Assert.Equal(
-            new[] { "aliased-operation", "named-operation", "Completed", "inline-operation" },
+            new[] { "aliased-operation", "named-operation", "CompletedRaw", "inline-operation" },
             first.Select(callback => callback.Operation));
         Assert.Same(typed, first.First());
         Assert.Same(named, first.ElementAt(1));
@@ -178,20 +178,14 @@ public class CompletionCallbackTests
         var context = new CallbackContext("source");
         CompletionCallback<RawValue> concrete = CompletionCallback.Create<IRawOutputService, RawValue, CallbackContext>(
             (service, request) => service.CompletedRaw(request), "queue", context);
-        CompletionCallback<IRawValue> rawInterface =
-            CompletionCallback.Create<IRawOutputService, IRawValue, CallbackContext>(
-                (service, request) => service.Completed(request), "queue", context);
-        var references = new CompletionCallbackCollection<string> { concrete, rawInterface };
-        var values = new CompletionCallbackCollection<int> { concrete, rawInterface };
-        var concreteRaw = new CompletionCallbackCollection<RawValue> { concrete, rawInterface };
-        var interfaceRaw = new CompletionCallbackCollection<IRawValue> { concrete, rawInterface };
-        var collections = new IReadOnlyCollection<CompletionCallback>[] { references, values, concreteRaw, interfaceRaw };
+        var references = new CompletionCallbackCollection<string> { concrete };
+        var values = new CompletionCallbackCollection<int> { concrete };
+        var concreteRaw = new CompletionCallbackCollection<RawValue> { concrete };
+        var collections = new IReadOnlyCollection<CompletionCallback>[] { references, values, concreteRaw };
 
         foreach (var callbacks in collections)
         {
-            Assert.Equal(2, callbacks.Count);
-            Assert.Same(concrete, callbacks.First());
-            Assert.Same(rawInterface, callbacks.Last());
+            Assert.Same(concrete, Assert.Single(callbacks));
         }
     }
 
@@ -201,33 +195,20 @@ public class CompletionCallbackTests
         var callbacks = new CompletionCallbackCollection<int>();
 
         Assert.Throws<ArgumentNullException>(() => callbacks.Add((CompletionCallback<int>)null!));
-        Assert.Throws<ArgumentNullException>(() => callbacks.Add((CompletionCallback<IRawValue>)null!));
         Assert.Throws<ArgumentNullException>(() => callbacks.Add((CompletionCallback<RawValue>)null!));
         Assert.Empty(callbacks);
     }
 
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void Collection_RawCallbacksAcceptReferenceAndValueTypes(bool concreteRawValue)
+    [Fact]
+    public void Collection_RawCallbacksAcceptReferenceAndValueTypes()
     {
         var context = new CallbackContext("source");
         var references = new CompletionCallbackCollection<string>();
         var values = new CompletionCallbackCollection<int>();
-        if (concreteRawValue)
-        {
-            Expression<Func<IRawOutputService, OnCompleteRequest<RawValue, CallbackContext>, OnCompleteResponse>>
-                call = (service, request) => service.CompletedRaw(request);
-            references.Add(call, "queue", context);
-            values.Add(call, "queue", context);
-        }
-        else
-        {
-            Expression<Func<IRawOutputService, OnCompleteRequest<IRawValue, CallbackContext>, OnCompleteResponse>>
-                call = (service, request) => service.Completed(request);
-            references.Add(call, "queue", context);
-            values.Add(call, "queue", context);
-        }
+        Expression<Func<IRawOutputService, OnCompleteRequest<RawValue, CallbackContext>, OnCompleteResponse>>
+            call = (service, request) => service.CompletedRaw(request);
+        references.Add(call, "queue", context);
+        values.Add(call, "queue", context);
 
         var options = new NexusOperationOptions<string>("source-id")
         {
@@ -255,15 +236,11 @@ public class CompletionCallbackTests
             (Expression<Func<IRawOutputService, OnCompleteRequest<RawValue, CallbackContext>, OnCompleteResponse>>)null!,
             "queue",
             new CallbackContext("source")));
-        Assert.Throws<ArgumentNullException>(() => callbacks.Add(
-            (Expression<Func<IRawOutputService, OnCompleteRequest<IRawValue, CallbackContext>, OnCompleteResponse>>)null!,
-            "queue",
-            new CallbackContext("source")));
         Assert.Empty(callbacks);
     }
 
     [Fact]
-    public void Collection_RawOutputAcceptsBothRawTypes()
+    public void Collection_RawOutputAndExactInterfaceOutputRemainUsable()
     {
         var context = new CallbackContext("source");
         Expression<Func<IRawOutputService, OnCompleteRequest<RawValue, CallbackContext>, OnCompleteResponse>>
@@ -274,7 +251,6 @@ public class CompletionCallbackTests
         var concreteCollection = new CompletionCallbackCollection<RawValue>
         {
             { raw, "queue", context },
-            { rawInterface, "queue", context },
         };
         var interfaceCollection = new CompletionCallbackCollection<IRawValue>
         {
@@ -282,7 +258,7 @@ public class CompletionCallbackTests
             { rawInterface, "queue", context },
         };
 
-        Assert.Equal(new[] { "CompletedRaw", "Completed" }, concreteCollection.Select(item => item.Operation));
+        Assert.Equal("CompletedRaw", Assert.Single(concreteCollection).Operation);
         Assert.Equal(new[] { "CompletedRaw", "Completed" }, interfaceCollection.Select(item => item.Operation));
     }
 
@@ -295,9 +271,9 @@ public class CompletionCallbackTests
             .Where(method => method.Name == "Add" && method.GetParameters().Length == 1)
             .Select(method => method.GetParameters()[0].ParameterType)
             .ToArray();
-        Assert.Equal(3, descriptionAddTypes.Length);
+        Assert.Equal(2, descriptionAddTypes.Length);
         Assert.Contains(typeof(CompletionCallback<int>), descriptionAddTypes);
-        Assert.Contains(typeof(CompletionCallback<IRawValue>), descriptionAddTypes);
+        Assert.DoesNotContain(typeof(CompletionCallback<IRawValue>), descriptionAddTypes);
         Assert.Contains(typeof(CompletionCallback<RawValue>), descriptionAddTypes);
         Assert.DoesNotContain(typeof(CompletionCallback), descriptionAddTypes);
         Assert.DoesNotContain(typeof(CompletionCallback<string>), descriptionAddTypes);
@@ -386,28 +362,14 @@ public class CompletionCallbackTests
         Assert.Equal(new[] { "common", "specific", "extra" }, combined.Select(callback => callback.Operation));
     }
 
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void Concat_RawCollectionsWorkForReferenceAndValueTypes(bool concreteRawValue)
+    [Fact]
+    public void Concat_RawCollectionsWorkForReferenceAndValueTypes()
     {
         var typed = new CompletionCallbackCollection<string> { { "service", "typed", "queue", null } };
-        CompletionCallbackCollection<string> references;
-        CompletionCallbackCollection<int> values;
-        if (concreteRawValue)
-        {
-            var raw = new CompletionCallbackCollection<RawValue> { { "service", "raw", "queue", null } };
-            references = typed.Concat(raw);
-            values = new CompletionCallbackCollection<int>().Concat(raw);
-            Assert.Single(raw);
-        }
-        else
-        {
-            var raw = new CompletionCallbackCollection<IRawValue> { { "service", "raw", "queue", null } };
-            references = typed.Concat(raw);
-            values = new CompletionCallbackCollection<int>().Concat(raw);
-            Assert.Single(raw);
-        }
+        var raw = new CompletionCallbackCollection<RawValue> { { "service", "raw", "queue", null } };
+        var references = typed.Concat(raw);
+        var values = new CompletionCallbackCollection<int>().Concat(raw);
+        Assert.Single(raw);
 
         Assert.Equal(new[] { "typed", "raw" }, references.Select(callback => callback.Operation));
         Assert.Equal("raw", Assert.Single(values).Operation);
@@ -421,7 +383,6 @@ public class CompletionCallbackTests
         var rawInterface = new CompletionCallbackCollection<IRawValue> { { "service", "interface", "queue", null } };
 
         Assert.Equal(2, concrete.Concat(concrete).Count);
-        Assert.Equal(2, concrete.Concat(rawInterface).Count);
         Assert.Equal(2, rawInterface.Concat(concrete).Count);
         Assert.Equal(2, rawInterface.Concat(rawInterface).Count);
     }
@@ -432,7 +393,6 @@ public class CompletionCallbackTests
         var callbacks = new CompletionCallbackCollection<int>();
         Assert.Throws<ArgumentNullException>(() => callbacks.Concat((CompletionCallbackCollection<int>)null!));
         Assert.Throws<ArgumentNullException>(() => callbacks.Concat((CompletionCallbackCollection<RawValue>)null!));
-        Assert.Throws<ArgumentNullException>(() => callbacks.Concat((CompletionCallbackCollection<IRawValue>)null!));
     }
 
     [Fact]

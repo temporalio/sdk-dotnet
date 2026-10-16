@@ -380,7 +380,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
             });
             var callbacks = new CompletionCallbackCollection<int>();
             callbacks.Add(
-                (INotifications service, OnCompleteRequest<IRawValue, string> input) => service.OnCompleteRaw(input),
+                (INotifications service, OnCompleteRequest<RawValue, string> input) => service.OnCompleteRaw(input),
                 "notifications",
                 "request-context");
 
@@ -485,14 +485,14 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                 Namespace = "callbacks",
                 DataConverter = DataConverter.Default with { PayloadCodec = codec },
             });
-            var callbacks = new CompletionCallbackCollection<IRawValue>();
+            var callbacks = new CompletionCallbackCollection<RawValue>();
             callbacks.Add("Notifications", "OnCompleteRaw", "notifications", "request-context");
 
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 client.CreateNexusClient("source-endpoint", "Source").StartNexusOperationAsync(
                     "Run",
                     null,
-                    new NexusOperationOptions<IRawValue>("source-id") { CompletionCallbacks = callbacks }));
+                    new NexusOperationOptions<RawValue>("source-id") { CompletionCallbacks = callbacks }));
 
             Assert.Equal("Stopped before RPC", exception.Message);
             Assert.Single(codec.Payloads);
@@ -515,7 +515,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
             OnCompleteResponse OnComplete(OnCompleteRequest<string, string> input);
 
             [NexusOperation]
-            OnCompleteResponse OnCompleteRaw(OnCompleteRequest<IRawValue, string> input);
+            OnCompleteResponse OnCompleteRaw(OnCompleteRequest<RawValue, string> input);
         }
 
         private sealed class RecordingCodec :
