@@ -37,13 +37,6 @@ namespace Temporalio.Nexus
         /// Adds a callback that accepts raw payloads.
         /// </summary>
         /// <param name="callback">The callback to add.</param>
-        public void Add(CompletionCallback<IRawValue> callback) =>
-            callbacks.Add(callback ?? throw new ArgumentNullException(nameof(callback)));
-
-        /// <summary>
-        /// Adds a callback that accepts raw payloads.
-        /// </summary>
-        /// <param name="callback">The callback to add.</param>
         public void Add(CompletionCallback<RawValue> callback) =>
             callbacks.Add(callback ?? throw new ArgumentNullException(nameof(callback)));
 
@@ -57,20 +50,6 @@ namespace Temporalio.Nexus
         /// <param name="sourceContext">The source context that the callback operation receives.</param>
         public void Add<TService, TSourceContext>(
             Expression<Func<TService, OnCompleteRequest<TOutput, TSourceContext>, OnCompleteResponse>> operationCall,
-            string taskQueue,
-            TSourceContext sourceContext) =>
-            Add(CompletionCallback.Create(operationCall, taskQueue, sourceContext));
-
-        /// <summary>
-        /// Creates and adds a callback that accepts raw payloads.
-        /// </summary>
-        /// <typeparam name="TService">The callback service interface.</typeparam>
-        /// <typeparam name="TSourceContext">The type of the source context.</typeparam>
-        /// <param name="operationCall">An expression that selects the callback operation without calling it.</param>
-        /// <param name="taskQueue">The task queue that runs the callback operation.</param>
-        /// <param name="sourceContext">The source context that the callback operation receives.</param>
-        public void Add<TService, TSourceContext>(
-            Expression<Func<TService, OnCompleteRequest<IRawValue, TSourceContext>, OnCompleteResponse>> operationCall,
             string taskQueue,
             TSourceContext sourceContext) =>
             Add(CompletionCallback.Create(operationCall, taskQueue, sourceContext));
@@ -105,14 +84,6 @@ namespace Temporalio.Nexus
         /// <param name="callbacks">The callbacks to append.</param>
         /// <returns>A new collection with these callbacks followed by the supplied callbacks.</returns>
         public CompletionCallbackCollection<TOutput> Concat(CompletionCallbackCollection<TOutput> callbacks) =>
-            ConcatCore(callbacks);
-
-        /// <summary>
-        /// Combines these callbacks with raw callbacks without changing either source.
-        /// </summary>
-        /// <param name="callbacks">The callbacks to append.</param>
-        /// <returns>A new collection with these callbacks followed by the supplied callbacks.</returns>
-        public CompletionCallbackCollection<TOutput> Concat(CompletionCallbackCollection<IRawValue> callbacks) =>
             ConcatCore(callbacks);
 
         /// <summary>

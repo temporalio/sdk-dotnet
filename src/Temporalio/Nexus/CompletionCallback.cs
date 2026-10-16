@@ -142,7 +142,7 @@ namespace Temporalio.Nexus
     /// <typeparam name="TOutput">The type of the source operation's result.</typeparam>
     /// <remarks>
     /// Create callbacks with <see cref="CompletionCallback.Create{TService, TOutput, TSourceContext}"/>.
-    /// Callbacks that accept <see cref="Converters.RawValue"/> or <see cref="Converters.IRawValue"/>
+    /// Callbacks that accept <see cref="Converters.RawValue"/>
     /// can be added to a callback collection for any output type.
     /// WARNING: This API is experimental and may change.
     /// </remarks>
