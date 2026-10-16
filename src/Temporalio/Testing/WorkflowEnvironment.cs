@@ -109,7 +109,7 @@ namespace Temporalio.Testing
             // TODO(cretz): Remove when musl-support for time-skipping test server is present.
 #if NET5_0_OR_GREATER
             if (options.TestServer.ExistingPath == null &&
-                System.Runtime.InteropServices.RuntimeInformation.Contains("-musl", StringComparison.OrdinalIgnoreCase))
+                System.Runtime.InteropServices.RuntimeInformation.RuntimeIdentifier.Contains("-musl", StringComparison.OrdinalIgnoreCase))
             {
                 throw new InvalidOperationException(
                     "Time-skipping test server not currently supported in musl-based environments");

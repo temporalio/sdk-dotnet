@@ -22,7 +22,7 @@ namespace Temporalio.Exceptions
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
-            return (T)Details.ElementAt(index)!;
+            return (T)Details!.ElementAt(index)!;
         }
     }
 }

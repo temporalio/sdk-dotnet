@@ -1,0 +1,1 @@
+Added `TemporalWorker.ExecuteAsync()` on .NET 6 and later to shut down gracefully on Ctrl+C and, on Unix, SIGTERM. The existing overloads continue to use application-provided cancellation without registering signal handlers.

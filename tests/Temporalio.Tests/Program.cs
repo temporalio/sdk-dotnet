@@ -8,6 +8,11 @@ public static class Program
 
     public static async Task<int> Main(string[] args)
     {
+        if (args.Length > 0 && args[0] == "signal-worker")
+        {
+            return await Worker.WorkerSignalTests.RunWorkerAsync(args[1]);
+        }
+
         if (args.Length > 0 && args[0] == "cloud-namespace")
         {
             return await CloudNamespaceCommand.RunAsync(args[1..]);

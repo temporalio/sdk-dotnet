@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+#if NET6_0_OR_GREATER
+using System.Runtime.InteropServices;
+#endif
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -218,6 +221,65 @@ namespace Temporalio.Worker
         /// Gets the lazy metric meter.
         /// </summary>
         internal Lazy<MetricMeter> MetricMeter { get; }
+
+#if NET6_0_OR_GREATER
+        /// <summary>
+        /// Run this worker until failure, Ctrl+C, or SIGTERM on Unix.
+        /// </summary>
+        /// <remarks>
+        /// Signal handlers are registered only for the duration of this call. Signals initiate the
+        /// same shutdown as cancelling the token passed to <see cref="ExecuteAsync(CancellationToken)"/>,
+        /// including the configured <see cref="TemporalWorkerOptions.GracefulShutdownTimeout"/>.
+        /// Shutdown waits for all executing activities to complete. If an activity does not
+        /// respond to cancellation, this may never return.
+        /// <para>
+        /// Applications that manage their own signals or use Generic Host should use
+        /// <see cref="ExecuteAsync(CancellationToken)"/> instead. This overload is available on
+        /// .NET 6 and later.
+        /// </para>
+        /// </remarks>
+        /// <returns>
+        /// Task that will never succeed, only fail. When the task is complete, the worker has
+        /// completed shutdown.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">Already started.</exception>
+        /// <exception cref="OperationCanceledException">Shutdown signal received.</exception>
+        /// <exception cref="Exception">Fatal worker failure.</exception>
+        public async Task ExecuteAsync()
+        {
+            using var stoppingSource = new CancellationTokenSource();
+            var signalLock = new object();
+            var completed = false;
+
+            void HandleSignal(PosixSignalContext context)
+            {
+                lock (signalLock)
+                {
+                    if (!completed)
+                    {
+                        context.Cancel = true;
+                        stoppingSource.Cancel();
+                    }
+                }
+            }
+
+            try
+            {
+                using var interrupt = PosixSignalRegistration.Create(PosixSignal.SIGINT, HandleSignal);
+                using var terminate = OperatingSystem.IsWindows() ? null :
+                    PosixSignalRegistration.Create(PosixSignal.SIGTERM, HandleSignal);
+                await ExecuteAsync(stoppingSource.Token).ConfigureAwait(false);
+            }
+            finally
+            {
+                // Disposing a registration does not wait for callbacks already dispatched by the runtime.
+                lock (signalLock)
+                {
+                    completed = true;
+                }
+            }
+        }
+#endif
 
         /// <summary>
         /// Run this worker until failure or cancelled.
