@@ -79,9 +79,16 @@ jobs:
       - name: Build
         run: dotnet build
 
+      # Minimal console verbosity keeps failures findable; the uploaded TRX still has every test's
+      # output plus the dev server and core logs.
       - name: Test
+        shell: bash
         run: |
-          dotnet test --logger "console;verbosity=detailed" --logger "trx;LogFilePrefix=test-results" --results-directory tests/Temporalio.Tests/TestResults --blame-crash -v n --blame-hang-timeout 10m
+          dotnet test --no-build \
+            --logger "console;verbosity=minimal" \
+            --logger "trx;LogFilePrefix=test-results" \
+            --results-directory tests/Temporalio.Tests/TestResults \
+            --blame-crash --blame-hang-timeout 10m
 
       - name: Validate package API surface
         # Package API validation runs only during the Pack target and is
@@ -191,19 +198,10 @@ jobs:
         run: |
           dotnet test tests/Temporalio.Tests/Temporalio.Tests.csproj --no-build \
             --filter "CloudTest!=Excluded" \
-            --logger "console;verbosity=detailed" \
+            --logger "console;verbosity=minimal" \
             --logger "trx;LogFilePrefix=cloud-mtls-results" \
             --results-directory tests/Temporalio.Tests/CloudTestResults \
-            --blame-crash -v n --blame-hang-timeout 10m
-
-      - name: Upload Cloud test results
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: cloud-mtls-test-results-ubuntu-latest
-          path: tests/Temporalio.Tests/CloudTestResults/**/*.trx
-          if-no-files-found: warn
-          overwrite: true
+            --blame-crash --blame-hang-timeout 10m
 
       - name: Create Cloud namespace (API key)
         id: create-api-key-namespace
@@ -212,6 +210,8 @@ jobs:
           TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
         run: dotnet run --project tests/Temporalio.Tests -- cloud-namespace create api-key
 
+      # TreatNoTestsAsError keeps a renamed test from turning these narrow filters into silent
+      # no-op passes.
       - name: Test cloud (API key)
         # Uses API key auth to test auto-TLS feature (TLS auto-enabled when API key provided).
         if: ${{ !cancelled() && steps.create-api-key-namespace.outcome == 'success' }}
@@ -219,14 +219,37 @@ jobs:
           TEMPORAL_TEST_CLIENT_TARGET_HOST: ca-central-1.aws.api.temporal.io:7233
           TEMPORAL_TEST_CLIENT_NAMESPACE: ${{ steps.create-api-key-namespace.outputs.namespace }}
           TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
-        run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.ExecuteWorkflowAsync_Simple_Succeeds"
+        run: |
+          dotnet test tests/Temporalio.Tests/Temporalio.Tests.csproj --no-build \
+            --filter "FullyQualifiedName=Temporalio.Tests.Worker.WorkflowWorkerTests.ExecuteWorkflowAsync_Simple_Succeeds" \
+            --logger "console;verbosity=minimal" \
+            --logger "trx;LogFilePrefix=cloud-api-key-results" \
+            --results-directory tests/Temporalio.Tests/CloudTestResults \
+            --blame-crash --blame-hang-timeout 10m \
+            -- RunConfiguration.TreatNoTestsAsError=true
 
       - name: Test cloud operations client
         if: ${{ !cancelled() && steps.create-api-key-namespace.outcome == 'success' }}
         env:
           TEMPORAL_CLIENT_CLOUD_NAMESPACE: ${{ steps.create-api-key-namespace.outputs.namespace }}
           TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
-        run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.TemporalCloudOperationsClientTests.*"
+        run: |
+          dotnet test tests/Temporalio.Tests/Temporalio.Tests.csproj --no-build \
+            --filter "FullyQualifiedName~Temporalio.Tests.Client.TemporalCloudOperationsClientTests." \
+            --logger "console;verbosity=minimal" \
+            --logger "trx;LogFilePrefix=cloud-operations-results" \
+            --results-directory tests/Temporalio.Tests/CloudTestResults \
+            --blame-crash --blame-hang-timeout 10m \
+            -- RunConfiguration.TreatNoTestsAsError=true
+
+      - name: Upload Cloud test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: cloud-test-results-ubuntu-latest
+          path: tests/Temporalio.Tests/CloudTestResults/**/*.trx
+          if-no-files-found: warn
+          overwrite: true
 
       - name: Delete Cloud namespace (mTLS)
         id: delete-mtls-namespace
