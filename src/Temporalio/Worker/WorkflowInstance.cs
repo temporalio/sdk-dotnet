@@ -26,6 +26,7 @@ using Temporalio.Nexus;
 using Temporalio.Runtime;
 using Temporalio.Worker.Interceptors;
 using Temporalio.Workflows;
+using ApiFailure = Temporalio.Api.Failure.V1.Failure;
 using EventGroupMarker = Temporalio.Api.Sdk.V1.EventGroupMarker;
 
 namespace Temporalio.Worker
@@ -1190,6 +1191,20 @@ namespace Temporalio.Worker
             }
         }
 
+        private async Task RunOrFailActivationAsync(Func<Task> func)
+        {
+            try
+            {
+                await func().ConfigureAwait(true);
+            }
+            catch (Exception e)
+            {
+                // Tasks queued without being awaited would otherwise lose unexpected errors, e.g.
+                // a failure converter throwing, leaving the workflow hung instead of failing
+                SetCurrentActivationException(e);
+            }
+        }
+
         private bool IsWorkflowFailureException(Exception e) =>
             // Failure exceptions fail the workflow. We also allow non-internally-caught
             // cancellation exceptions fail the workflow because it's clearer when users are
@@ -1266,7 +1281,7 @@ namespace Temporalio.Worker
         private void ApplyDoUpdate(DoUpdate update)
         {
             // Queue it up so it can run in workflow environment
-            _ = QueueNewTaskAsync(() =>
+            _ = QueueNewTaskAsync(() => RunOrFailActivationAsync(() =>
             {
                 // Make sure we have loaded the instance which may invoke the constructor thereby
                 // letting the constructor register update handlers at runtime
@@ -1281,7 +1296,7 @@ namespace Temporalio.Worker
                 {
                     return ApplyDoUpdateAsync(update);
                 }
-            });
+            }));
         }
 
         private Task ApplyDoUpdateAsync(DoUpdate update)
@@ -1540,7 +1555,7 @@ namespace Temporalio.Worker
         private void ApplyQueryWorkflow(QueryWorkflow query)
         {
             // Queue it up so it can run in workflow environment
-            _ = QueueNewTaskAsync(() =>
+            _ = QueueNewTaskAsync(() => RunOrFailActivationAsync(() =>
             {
                 // Make sure we have loaded the instance which may invoke the constructor thereby
                 // letting the constructor register query handlers at runtime
@@ -1611,14 +1626,26 @@ namespace Temporalio.Worker
                 }
                 catch (Exception e)
                 {
+                    ApiFailure failed;
+                    try
+                    {
+                        failed = failureConverterWorkflowContext.ToFailure(e, payloadConverterWorkflowContext);
+                    }
+                    catch (Exception conversionEx)
+                    {
+                        logger.LogError(
+                            conversionEx,
+                            "Failed converting query failure on workflow with run ID {RunId}",
+                            Info.RunId);
+                        failed = new() { Message = $"Failed converting query failure: {conversionEx}" };
+                    }
                     AddCommand(
                         new()
                         {
                             RespondToQuery = new()
                             {
                                 QueryId = query.QueryId,
-                                Failed = failureConverterWorkflowContext.ToFailure(
-                                    e, payloadConverterWorkflowContext),
+                                Failed = failed,
                             },
                         },
                         eventGroupMarkers: null);
@@ -1637,7 +1664,7 @@ namespace Temporalio.Worker
                         $"Query handler for {query.QueryType} created workflow commands");
                 }
                 return Task.CompletedTask;
-            });
+            }));
         }
 
         private void ApplyResolveActivity(ResolveActivity resolve)
@@ -2642,7 +2669,7 @@ namespace Temporalio.Worker
                     StartCompletionSource: new(),
                     ResultCompletionSource: new());
                 instance.childWorkflowsPending[seq] = pending;
-                _ = instance.QueueNewTaskAsync(async () =>
+                _ = instance.QueueNewTaskAsync(() => instance.RunOrFailActivationAsync(async () =>
                 {
                     try
                     {
@@ -2753,7 +2780,7 @@ namespace Temporalio.Worker
                     {
                         instance.childWorkflowsPending.Remove(seq);
                     }
-                });
+                }));
                 return handleSource.Task;
             }
 

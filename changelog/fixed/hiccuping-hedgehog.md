@@ -1,0 +1,1 @@
+Unexpected errors in workflow-internal tasks for child workflows and updates, such as a failure converter throwing while resolving a child workflow, now fail the workflow task instead of being silently lost. For queries, such errors fail only the query itself, not the workflow task.
