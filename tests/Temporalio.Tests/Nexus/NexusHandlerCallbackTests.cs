@@ -32,14 +32,14 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
     public interface ISourceService
     {
         [NexusOperation]
-        string Echo(string input);
+        TestOperationOutput Echo(string input);
     }
 
     [NexusService]
     public interface ICallbackService
     {
         [NexusOperation]
-        OnCompleteResponse OnComplete(OnCompleteRequest<string, TestCallbackContext> request);
+        OnCompleteResponse OnComplete(OnCompleteRequest<TestOperationOutput, TestCallbackContext> request);
 
         [NexusOperation]
         OnCompleteResponse OnCompleteRaw(OnCompleteRequest<RawValue, TestCallbackContext> request);
@@ -49,18 +49,20 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
     public interface IActivityCallbackService
     {
         [NexusOperation]
-        OnCompleteResponse OnComplete(OnCompleteRequest<string, TestCallbackContext> input);
+        OnCompleteResponse OnComplete(OnCompleteRequest<TestOperationOutput, TestCallbackContext> input);
     }
 
     public sealed record TestCallbackContext(string Value);
 
-    public sealed record ActivityInput(TestCallbackContext SourceContext, string SourceResult);
+    public sealed record TestOperationOutput(string Value);
+
+    public sealed record ActivityInput(TestCallbackContext SourceContext, TestOperationOutput SourceResult);
 
     [Workflow]
     public class SourceWorkflow
     {
         [WorkflowRun]
-        public async Task<string> RunAsync(string input)
+        public async Task<TestOperationOutput> RunAsync(string input)
         {
             if (input == "wait")
             {
@@ -71,7 +73,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                 throw new ApplicationFailureException(
                     "source failed", errorType: "SourceFailure", details: new object?[] { "failure-detail" });
             }
-            return $"echo:{input}";
+            return new($"echo:{input}");
         }
     }
 
@@ -79,7 +81,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
     public class SourceHandler
     {
         [NexusOperationHandler]
-        public IOperationHandler<string, string> Echo() =>
+        public IOperationHandler<string, TestOperationOutput> Echo() =>
             WorkflowRunOperationHandler.FromHandleFactory(
                 (WorkflowRunOperationContext context, string input) =>
                     context.StartWorkflowAsync(
@@ -90,16 +92,16 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
     [NexusServiceHandler(typeof(ICallbackService))]
     public class CallbackHandler
     {
-        public TaskCompletionSource<OnCompleteRequest<string, TestCallbackContext>> Typed { get; } =
+        public TaskCompletionSource<OnCompleteRequest<TestOperationOutput, TestCallbackContext>> Typed { get; } =
             new(TaskCreationOptions.RunContinuationsAsynchronously);
 
         public TaskCompletionSource<OnCompleteRequest<RawValue, TestCallbackContext>> Raw { get; } =
             new(TaskCreationOptions.RunContinuationsAsynchronously);
 
         [NexusOperationHandler]
-        public IOperationHandler<OnCompleteRequest<string, TestCallbackContext>, OnCompleteResponse>
+        public IOperationHandler<OnCompleteRequest<TestOperationOutput, TestCallbackContext>, OnCompleteResponse>
             OnComplete() =>
-            OperationHandler.Sync<OnCompleteRequest<string, TestCallbackContext>, OnCompleteResponse>(
+            OperationHandler.Sync<OnCompleteRequest<TestOperationOutput, TestCallbackContext>, OnCompleteResponse>(
                 (ctx, request) =>
                 {
                     Typed.TrySetResult(request);
@@ -124,9 +126,9 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
         public Task<TemporalOperationResult<OnCompleteResponse>> OnComplete(
             TemporalOperationStartContext context,
             ITemporalNexusClient client,
-            OnCompleteRequest<string, TestCallbackContext> input)
+            OnCompleteRequest<TestOperationOutput, TestCallbackContext> input)
         {
-            if (input.Result is not OnCompleteRequestResult<string>.Success success)
+            if (input.Result is not OnCompleteRequestResult<TestOperationOutput>.Success success)
             {
                 return Task.FromResult(
                     TemporalOperationResult<OnCompleteResponse>.SyncResult(new OnCompleteResponse()));
@@ -168,10 +170,10 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
             var raw = CompletionCallback.Create(
                 "CallbackService", nameof(ICallbackService.OnCompleteRaw), queue, new TestCallbackContext("raw"));
             var typed = CompletionCallback.Create(
-                (ICallbackService svc, OnCompleteRequest<string, TestCallbackContext> input) => svc.OnComplete(input),
+                (ICallbackService svc, OnCompleteRequest<TestOperationOutput, TestCallbackContext> input) => svc.OnComplete(input),
                 queue,
                 new TestCallbackContext("typed"));
-            var options = new NexusOperationOptions<string>($"op-{Guid.NewGuid()}")
+            var options = new NexusOperationOptions<TestOperationOutput>($"op-{Guid.NewGuid()}")
             {
                 ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
                 CompletionCallbacks = new()
@@ -182,19 +184,19 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
             };
             var handle = await client.CreateNexusClient<ISourceService>(endpoint).
                 StartNexusOperationAsync(svc => svc.Echo("start"), options);
-            Assert.Equal("echo:start", await handle.GetResultAsync());
+            Assert.Equal(new TestOperationOutput("echo:start"), await handle.GetResultAsync());
 
             var typedRequest = await callbacks.Typed.Task.WaitAsync(TimeSpan.FromMinutes(1));
             Assert.Equal(new TestCallbackContext("typed"), typedRequest.SourceContext);
             Assert.Equal(
-                "echo:start",
-                Assert.IsType<OnCompleteRequestResult<string>.Success>(typedRequest.Result).Value);
+                new TestOperationOutput("echo:start"),
+                Assert.IsType<OnCompleteRequestResult<TestOperationOutput>.Success>(typedRequest.Result).Value);
 
             var rawRequest = await callbacks.Raw.Task.WaitAsync(TimeSpan.FromMinutes(1));
             Assert.Equal(new TestCallbackContext("raw"), rawRequest.SourceContext);
             Assert.Equal(
-                "echo:start",
-                DataConverter.Default.PayloadConverter.ToValue<string>(
+                new TestOperationOutput("echo:start"),
+                DataConverter.Default.PayloadConverter.ToValue<TestOperationOutput>(
                     Assert.IsType<OnCompleteRequestResult<RawValue>.Success>(rawRequest.Result).Value.Payload));
 
             Assert.Collection(
@@ -213,10 +215,10 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
         await RunAsync(callbacks, async (client, endpoint, queue) =>
         {
             var result = await client.CreateNexusClient(endpoint, "SourceService").
-                ExecuteNexusOperationAsync<string>(
+                ExecuteNexusOperationAsync<TestOperationOutput>(
                     nameof(ISourceService.Echo),
                     "execute",
-                    new NexusOperationOptions<string>($"op-{Guid.NewGuid()}")
+                    new NexusOperationOptions<TestOperationOutput>($"op-{Guid.NewGuid()}")
                     {
                         ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
                         CompletionCallbacks = new()
@@ -229,12 +231,12 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                             },
                         },
                     });
-            Assert.Equal("echo:execute", result);
+            Assert.Equal(new TestOperationOutput("echo:execute"), result);
             var request = await callbacks.Typed.Task.WaitAsync(TimeSpan.FromMinutes(1));
             Assert.Equal(new TestCallbackContext("execute"), request.SourceContext);
             Assert.Equal(
                 result,
-                Assert.IsType<OnCompleteRequestResult<string>.Success>(request.Result).Value);
+                Assert.IsType<OnCompleteRequestResult<TestOperationOutput>.Success>(request.Result).Value);
         });
     }
 
@@ -246,7 +248,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
             callbacks,
             async (client, endpoint, queue) =>
         {
-            var options = new NexusOperationOptions<string>($"op-{Guid.NewGuid()}")
+            var options = new NexusOperationOptions<TestOperationOutput>($"op-{Guid.NewGuid()}")
             {
                 ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
                 CompletionCallbacks = new()
@@ -261,12 +263,14 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
             };
             var handle = await client.CreateNexusClient<ISourceService>(endpoint).
                 StartNexusOperationAsync(service => service.Echo("raw"), options);
-            Assert.Equal("echo:raw", await handle.GetResultAsync());
+            Assert.Equal(new TestOperationOutput("echo:raw"), await handle.GetResultAsync());
 
             var request = await callbacks.Raw.Task.WaitAsync(TimeSpan.FromMinutes(1));
             Assert.Equal(new TestCallbackContext("raw-factory"), request.SourceContext);
             var result = Assert.IsType<OnCompleteRequestResult<RawValue>.Success>(request.Result).Value;
-            Assert.Equal("echo:raw", DataConverter.Default.PayloadConverter.ToValue<string>(result.Payload));
+            Assert.Equal(
+                new TestOperationOutput("echo:raw"),
+                DataConverter.Default.PayloadConverter.ToValue<TestOperationOutput>(result.Payload));
         },
             codec: true);
     }
@@ -287,7 +291,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
 
             var request = await callbacks.Typed.Task.WaitAsync(TimeSpan.FromMinutes(1));
             Assert.Equal(new TestCallbackContext("failure"), request.SourceContext);
-            var failure = Assert.IsType<OnCompleteRequestResult<string>.Failure>(request.Result);
+            var failure = Assert.IsType<OnCompleteRequestResult<TestOperationOutput>.Failure>(request.Result);
             var appFailure = Assert.IsType<ApplicationFailureException>(failure.Value);
             Assert.Equal("SourceFailure", appFailure.ErrorType);
             Assert.Equal("failure-detail", appFailure.Details.ElementAt<string>(0));
@@ -320,7 +324,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
             Assert.Equal(
                 new TestCallbackContext(terminate ? "terminate" : "cancel"),
                 request.SourceContext);
-            var failure = Assert.IsType<OnCompleteRequestResult<string>.Failure>(request.Result);
+            var failure = Assert.IsType<OnCompleteRequestResult<TestOperationOutput>.Failure>(request.Result);
             if (terminate)
             {
                 Assert.IsType<TerminatedFailureException>(failure.Value);
@@ -345,11 +349,11 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                     svc => svc.Echo("codec"),
                     Options(queue, "codec-context"));
             var request = await callbacks.Typed.Task.WaitAsync(TimeSpan.FromMinutes(1));
-            Assert.Equal("echo:codec", result);
+            Assert.Equal(new TestOperationOutput("echo:codec"), result);
             Assert.Equal(new TestCallbackContext("codec-context"), request.SourceContext);
             Assert.Equal(
                 result,
-                Assert.IsType<OnCompleteRequestResult<string>.Success>(request.Result).Value);
+                Assert.IsType<OnCompleteRequestResult<TestOperationOutput>.Success>(request.Result).Value);
         },
             codec: true);
     }
@@ -538,14 +542,14 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
         }
     }
 
-    private static NexusOperationOptions<string> Options(string queue, string context) =>
+    private static NexusOperationOptions<TestOperationOutput> Options(string queue, string context) =>
         new($"op-{Guid.NewGuid()}")
         {
             ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
             CompletionCallbacks = new()
             {
                 {
-                    (ICallbackService svc, OnCompleteRequest<string, TestCallbackContext> input) => svc.OnComplete(input),
+                    (ICallbackService svc, OnCompleteRequest<TestOperationOutput, TestCallbackContext> input) => svc.OnComplete(input),
                     queue,
                     new TestCallbackContext(context)
                 },
@@ -601,19 +605,19 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
         await worker.ExecuteAsync(async () =>
         {
             var callback = CompletionCallback.Create(
-                (IActivityCallbackService svc, OnCompleteRequest<string, TestCallbackContext> input) => svc.OnComplete(input),
+                (IActivityCallbackService svc, OnCompleteRequest<TestOperationOutput, TestCallbackContext> input) => svc.OnComplete(input),
                 queue,
                 context);
             var handle = await client.CreateNexusClient<ISourceService>(
                 endpoint).StartNexusOperationAsync(
                     svc => svc.Echo("from-source"),
-                    new NexusOperationOptions<string>($"op-{Guid.NewGuid()}")
+                    new NexusOperationOptions<TestOperationOutput>($"op-{Guid.NewGuid()}")
                     {
                         ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
                         CompletionCallbacks = new() { callback },
                     });
             var sourceResult = await handle.GetResultAsync().WaitAsync(TimeSpan.FromMinutes(1));
-            Assert.Equal("echo:from-source", sourceResult);
+            Assert.Equal(new TestOperationOutput("echo:from-source"), sourceResult);
             Assert.Equal(
                 new ActivityInput(context, sourceResult),
                 await activity.Received.Task.WaitAsync(TimeSpan.FromMinutes(1)));
