@@ -50,7 +50,7 @@ namespace Temporalio.Converters
         /// Defaults to 8.
         /// </summary>
         /// <remarks>
-        /// Every message gets its own budget of this size, which caps how much of
+        /// Every message gets its own concurrency limit of this size, which caps how much of
         /// <see cref="MaxDriverOperations" /> any one message can take and so stops a message
         /// carrying many large payloads from starving the rest.
         /// </remarks>
