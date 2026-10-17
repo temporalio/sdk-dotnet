@@ -14,9 +14,9 @@ namespace Temporalio.Converters
     /// <see cref="StorageDriverClaim" /> when retrieving.
     /// </typeparam>
     /// <remarks>
-    /// A driver is handed a whole batch and fans out however it likes, so the SDK cannot bound that
-    /// fan-out itself. The limit is cooperative: a driver that never calls
-    /// <see cref="RunAsync{TResult}" /> is simply unlimited.
+    /// A driver is handed a whole batch and decides for itself how many requests to make of it, so
+    /// the limit is cooperative: a driver that never calls <see cref="RunAsync{TResult}" /> makes
+    /// requests that no limit counts.
     /// </remarks>
     /// <remarks>
     /// Take one permit per concurrent request, not one around the whole batch. Wrapping an entire
@@ -40,8 +40,7 @@ namespace Temporalio.Converters
         /// <returns>The result of the operation.</returns>
         /// <exception cref="OperationCanceledException">Cancellation requested.</exception>
         /// <remarks>
-        /// Taking a permit from inside another permit can deadlock once the nesting depth reaches
-        /// the configured limit, so a driver must not nest these.
+        /// Do not take a permit while holding one.
         /// </remarks>
         Task<TResult> RunAsync<TResult>(
             TItem item,
