@@ -15,11 +15,25 @@ jobs:
     if: ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion != 'cancelled' }}
     runs-on: ubuntu-latest
     steps:
+      # Anchored so cloud results don't merge into the same-named ubuntu-latest check.
       - name: Test Report
         uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3
         with:
-          artifact: /test-results-(.*)/
+          artifact: /^test-results-(.+)$/
           name: Test Results ($1)
           path: '**/*.trx'
           reporter: dotnet-trx
           use-actions-summary: 'false'
+
+      - name: Cloud Test Report
+        # The previous step fails when it finds failed tests.
+        if: ${{ !cancelled() }}
+        uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3
+        with:
+          artifact: /^cloud-test-results-(.+)$/
+          name: Cloud Test Results ($1)
+          path: '**/*.trx'
+          reporter: dotnet-trx
+          use-actions-summary: 'false'
+          # The cloud job doesn't run for Dependabot or fork PRs.
+          fail-on-empty: 'false'
