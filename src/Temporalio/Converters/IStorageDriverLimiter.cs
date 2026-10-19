@@ -39,9 +39,8 @@ namespace Temporalio.Converters
         /// <returns>The result of the operation.</returns>
         /// <exception cref="OperationCanceledException">Cancellation requested.</exception>
         /// <remarks>
-        /// Taking a second permit while handling one request, directly or in a helper, deadlocks
-        /// at the limit: every holder would be waiting for a permit only another holder can
-        /// release.
+        /// Do not take more than one permit for a given request: at the limit, every holder would
+        /// be waiting for a permit only another holder can release.
         /// </remarks>
         Task<TResult> RunAsync<TResult>(
             TItem item,
