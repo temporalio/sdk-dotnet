@@ -116,6 +116,45 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
         }
     }
 
+    [Workflow]
+    public class ServiceOptionsWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync() => "done";
+    }
+
+    [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "The service-created client omits Cloud TLS and authentication options.")]
+    public async Task TemporalWorkerService_ExecuteAsync_ServiceOptionsConstructor()
+    {
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var options = new TemporalWorkerServiceOptions(taskQueue)
+        {
+            ClientOptions = new(Client.Connection.Options.TargetHost!)
+            {
+                Namespace = Client.Options.Namespace,
+            },
+        };
+        options.AddWorkflow<ServiceOptionsWorkflow>();
+        using var service = new TemporalWorkerService(options);
+
+        using var tokenSource = new CancellationTokenSource();
+        await service.StartAsync(tokenSource.Token);
+        try
+        {
+            var result = await Client.ExecuteWorkflowAsync(
+                (ServiceOptionsWorkflow wf) => wf.RunAsync(),
+                new($"wf-{Guid.NewGuid()}", taskQueue));
+            Assert.Equal("done", result);
+        }
+        finally
+        {
+            await service.StopAsync(tokenSource.Token);
+        }
+    }
+
     public class SingletonCounter
     {
         public int Counter { get; set; } = 5;
