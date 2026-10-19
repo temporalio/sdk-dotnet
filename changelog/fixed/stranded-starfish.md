@@ -1,0 +1,1 @@
+`TemporalWorkerService` created with the `TemporalWorkerServiceOptions` constructor now connects using `ClientOptions` and honors `WorkerClientUpdater`. Previously it failed with a `NullReferenceException` when started.

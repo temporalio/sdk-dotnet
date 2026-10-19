@@ -36,7 +36,9 @@ namespace Temporalio.Extensions.Hosting
                 throw new ArgumentException("Client options is required", nameof(options));
             }
 
+            newClientOptions = options.ClientOptions;
             workerOptions = options;
+            workerClientUpdater = options.WorkerClientUpdater;
         }
 
         /// <summary>
