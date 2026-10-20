@@ -98,9 +98,6 @@ void PostProcessGeneratedNexusApi()
     var notificationModels = File.ReadAllText(Path.Join(notificationsStagingOutputDir, "Models.cs"));
     notificationModels = notificationModels.Replace(
         "namespace Temporalio.Workflows", "namespace Temporalio.Nexus.Notifications");
-    notificationModels = notificationModels.Replace(
-        "#nullable enable",
-        "#nullable enable\n#pragma warning disable CS1591 // Notification WIT does not yet supply public API documentation.");
     File.WriteAllText(Path.Join(notificationsGeneratedDir, "Models.cs"), notificationModels);
 }
 
