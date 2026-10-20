@@ -5,6 +5,66 @@ Pending changes belong in changelog/; see changelog/README.md.
 
 # Changelog
 
+## [1.21.0] - 2026-10-20
+
+### Added
+
+- Added experimental Event Groups: `Workflow.CreateEventGroup` groups related history events for UI and observability using a required ID (used verbatim; omit secrets) and an optional codec-encoded label. Attach groups with `Workflow.WithEventGroups` or command-option `EventGroups`; signal and update handlers receive implicit inbound groups.
+
+- Added `OpenTelemetryOptions.HistogramAggregation`, which can be set to `OpenTelemetryHistogramAggregation.Base2Exponential` to export OTLP histograms, including custom ones, as OpenTelemetry exponential histograms, which Prometheus-compatible backends store as native histograms. Each series gets a name suffix (`_native` by default) so it never collides with the fixed-bucket series it replaces; this mode cannot be combined with `HistogramBucketOverrides`.
+
+- Added experimental `Endpoint`, `Operation`, and `Service` properties to the `NexusOperationHandle` class.
+
+- Added experimental `ISerializationContext.Nexus` support for callers' inputs, results, failures, and user metadata, and handlers' inputs, synchronous results, and failures. Standalone handles use the start request's context, including already-running operations; asynchronous-operation results and handles obtained through `GetNexusOperationHandle` with only an operation ID do not use this context.
+
+- Add experimental `ChildWorkflowOptions.VersioningOverride` for pinned, auto-upgrade, and one-time child workflow routing independently of the parent (Temporal Server 1.32.0+), `VersioningOverride.OneTime` for one-time routing on both client and child workflow starts, and `InvalidVersioningOverrideException` for invalid child overrides.
+
+- Added `WorkflowInfo.OriginalExecutionRunId`, the run ID recorded on the workflow execution started event. Unlike `RunId`, this value is preserved across workflow resets.
+
+### Stabilized
+
+- Removed experimental warnings from the core plugin APIs and client/worker plugin options.
+
+- `DevServerOptions` and `TestServerOptions` are no longer marked unstable. They remain specific to the dev server and test server implementations and may no longer be valid if those change.
+
+### :boom: Breaking Changes
+
+- Core: Replay detects changes to the service or operation of scheduled Nexus operations, reporting nondeterminism while retaining compatibility with histories recorded before these checks.
+
+- `SchedulePolicy.CatchupWindow` is now nullable and defaults to `null`. An unspecified window uses the server configured default.
+
+### Fixed
+
+- Fixed an exception when reading schedule policies with an unset catchup window.
+
+- Core: A workflow task that arrives while a workflow waits on a local activity, such as a legacy query, now waits until the current workflow task is reported. Previously it replaced that workflow task ("Trying to send a new WFT for a run which already has one!"), which then timed out on the server and could leave the workflow stuck on a nondeterminism error.
+
+- Fixed update validators being skipped when a typed client update call populated the cache before the workflow definition was created in the same process.
+
+- Core: Worker heartbeats now report correct task-slot and poller counts when using buffered or custom metrics backends, including the .NET SDK's `CustomMetricMeter`. Previously these counts could remain `0` because heartbeat accounting depended on reading labels from backend-owned attributes.
+- Core: Local activities still running when their workflow is evicted or the worker shuts down now always receive a cancellation. Local activities no longer retry ordinary failures or start-to-close timeouts after cancellation has been requested, matching non-local activities. Workflow code no longer observes a spurious local activity cancellation when its run is evicted or completes while the local activity is backing off between retries.
+- Core: Workers no longer panic when evicting a workflow with buffered local activity results. Completed activations' output is recorded before eviction, without recording eviction-induced cancellations.
+
+- Unexpected errors in workflow-internal tasks for child workflows and updates, such as a failure converter throwing while resolving a child workflow, now fail the workflow task instead of being silently lost. For queries, such errors fail only the query itself, not the workflow task.
+
+- Core: Workers now replay workflows paused before a scheduled task starts, allowing those workflows to make progress after unpause.
+
+- Source Link in the published symbol packages now resolves every source file, and packages are built with normalized paths so they are reproducible.
+
+- `Temporalio.Extensions.DiagnosticSource.CustomMetricMeter` no longer throws when a tag is appended with a key that the tag set already has. The appended value now replaces the existing one.
+
+- Core: Replay now preserves which local activity results were delivered together for newly recorded histories. This prevents local activity scheduling which was conditional on local activity resolution order from assigning recorded results to different handles. Older markers keep their existing behavior.
+
+- `TemporalWorkerService` created with the `TemporalWorkerServiceOptions` constructor now connects using `ClientOptions` and honors `WorkerClientUpdater`. Previously it failed with a `NullReferenceException` when started.
+
+- Prevented use-after-free errors caused by early finalization of `Temporalio.Bridge.ByteArray`.
+
+- An activity started using the ambient `TemporalClient` directly from inside a synchronous Nexus operation handler now inherits the handler's request ID and inbound links, same as the guarded start already gets.
+
+### Security
+
+- Core: Ephemeral server downloads now use `zip` 9.0 for ZIP extraction, replacing the 8.x dependency [yanked upstream for security issues](https://github.com/zip-rs/zip2/issues/1075#issuecomment-6209381974).
+
 ## [1.20.0] - 2026-09-28
 
 ### Added

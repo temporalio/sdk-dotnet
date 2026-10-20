@@ -1,1 +1,0 @@
-An activity started using the ambient `TemporalClient` directly from inside a synchronous Nexus operation handler now inherits the handler's request ID and inbound links, same as the guarded start already gets.
