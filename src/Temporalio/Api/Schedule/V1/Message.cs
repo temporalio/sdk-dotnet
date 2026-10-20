@@ -81,43 +81,46 @@ namespace Temporalio.Api.Schedule.V1 {
             "GAEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIsCghlbmRfdGlt",
             "ZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASRAoOb3Zlcmxh",
             "cF9wb2xpY3kYAyABKA4yLC50ZW1wb3JhbC5hcGkuZW51bXMudjEuU2NoZWR1",
-            "bGVPdmVybGFwUG9saWN5IsYBCg1TY2hlZHVsZVBhdGNoElAKE3RyaWdnZXJf",
+            "bGVPdmVybGFwUG9saWN5IpACCg1TY2hlZHVsZVBhdGNoElAKE3RyaWdnZXJf",
             "aW1tZWRpYXRlbHkYASABKAsyMy50ZW1wb3JhbC5hcGkuc2NoZWR1bGUudjEu",
             "VHJpZ2dlckltbWVkaWF0ZWx5UmVxdWVzdBJDChBiYWNrZmlsbF9yZXF1ZXN0",
             "GAIgAygLMikudGVtcG9yYWwuYXBpLnNjaGVkdWxlLnYxLkJhY2tmaWxsUmVx",
-            "dWVzdBINCgVwYXVzZRgDIAEoCRIPCgd1bnBhdXNlGAQgASgJIvADCgxTY2hl",
-            "ZHVsZUluZm8SFAoMYWN0aW9uX2NvdW50GAEgASgDEh0KFW1pc3NlZF9jYXRj",
-            "aHVwX3dpbmRvdxgCIAEoAxIXCg9vdmVybGFwX3NraXBwZWQYAyABKAMSFgoO",
-            "YnVmZmVyX2Ryb3BwZWQYCiABKAMSEwoLYnVmZmVyX3NpemUYCyABKAMSRAoR",
-            "cnVubmluZ193b3JrZmxvd3MYCSADKAsyKS50ZW1wb3JhbC5hcGkuY29tbW9u",
-            "LnYxLldvcmtmbG93RXhlY3V0aW9uEkYKDnJlY2VudF9hY3Rpb25zGAQgAygL",
-            "Mi4udGVtcG9yYWwuYXBpLnNjaGVkdWxlLnYxLlNjaGVkdWxlQWN0aW9uUmVz",
-            "dWx0EjcKE2Z1dHVyZV9hY3Rpb25fdGltZXMYBSADKAsyGi5nb29nbGUucHJv",
-            "dG9idWYuVGltZXN0YW1wEi8KC2NyZWF0ZV90aW1lGAYgASgLMhouZ29vZ2xl",
-            "LnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgHIAEoCzIaLmdv",
-            "b2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASIgoWaW52YWxpZF9zY2hlZHVsZV9l",
-            "cnJvchgIIAEoCUICGAESGAoQc3RhdGVfc2l6ZV9ieXRlcxgMIAEoAyLwAQoI",
-            "U2NoZWR1bGUSNAoEc3BlYxgBIAEoCzImLnRlbXBvcmFsLmFwaS5zY2hlZHVs",
-            "ZS52MS5TY2hlZHVsZVNwZWMSOAoGYWN0aW9uGAIgASgLMigudGVtcG9yYWwu",
-            "YXBpLnNjaGVkdWxlLnYxLlNjaGVkdWxlQWN0aW9uEjwKCHBvbGljaWVzGAMg",
-            "ASgLMioudGVtcG9yYWwuYXBpLnNjaGVkdWxlLnYxLlNjaGVkdWxlUG9saWNp",
-            "ZXMSNgoFc3RhdGUYBCABKAsyJy50ZW1wb3JhbC5hcGkuc2NoZWR1bGUudjEu",
-            "U2NoZWR1bGVTdGF0ZSK/AgoQU2NoZWR1bGVMaXN0SW5mbxI0CgRzcGVjGAEg",
-            "ASgLMiYudGVtcG9yYWwuYXBpLnNjaGVkdWxlLnYxLlNjaGVkdWxlU3BlYxI7",
-            "Cg13b3JrZmxvd190eXBlGAIgASgLMiQudGVtcG9yYWwuYXBpLmNvbW1vbi52",
-            "MS5Xb3JrZmxvd1R5cGUSDQoFbm90ZXMYAyABKAkSDgoGcGF1c2VkGAQgASgI",
-            "EkYKDnJlY2VudF9hY3Rpb25zGAUgAygLMi4udGVtcG9yYWwuYXBpLnNjaGVk",
-            "dWxlLnYxLlNjaGVkdWxlQWN0aW9uUmVzdWx0EjcKE2Z1dHVyZV9hY3Rpb25f",
-            "dGltZXMYBiADKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhgKEHN0",
-            "YXRlX3NpemVfYnl0ZXMYByABKAMi0wEKEVNjaGVkdWxlTGlzdEVudHJ5EhMK",
-            "C3NjaGVkdWxlX2lkGAEgASgJEioKBG1lbW8YAiABKAsyHC50ZW1wb3JhbC5h",
-            "cGkuY29tbW9uLnYxLk1lbW8SQwoRc2VhcmNoX2F0dHJpYnV0ZXMYAyABKAsy",
-            "KC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlNlYXJjaEF0dHJpYnV0ZXMSOAoE",
-            "aW5mbxgEIAEoCzIqLnRlbXBvcmFsLmFwaS5zY2hlZHVsZS52MS5TY2hlZHVs",
-            "ZUxpc3RJbmZvQpMBChtpby50ZW1wb3JhbC5hcGkuc2NoZWR1bGUudjFCDE1l",
-            "c3NhZ2VQcm90b1ABWidnby50ZW1wb3JhbC5pby9hcGkvc2NoZWR1bGUvdjE7",
-            "c2NoZWR1bGWqAhpUZW1wb3JhbGlvLkFwaS5TY2hlZHVsZS5WMeoCHVRlbXBv",
-            "cmFsaW86OkFwaTo6U2NoZWR1bGU6OlYxYgZwcm90bzM="));
+            "dWVzdBINCgVwYXVzZRgDIAEoCRIPCgd1bnBhdXNlGAQgASgJEkgKFHRpbWVf",
+            "c2tpcHBpbmdfY29uZmlnGAUgASgLMioudGVtcG9yYWwuYXBpLmNvbW1vbi52",
+            "MS5UaW1lU2tpcHBpbmdDb25maWcitgQKDFNjaGVkdWxlSW5mbxIUCgxhY3Rp",
+            "b25fY291bnQYASABKAMSHQoVbWlzc2VkX2NhdGNodXBfd2luZG93GAIgASgD",
+            "EhcKD292ZXJsYXBfc2tpcHBlZBgDIAEoAxIWCg5idWZmZXJfZHJvcHBlZBgK",
+            "IAEoAxITCgtidWZmZXJfc2l6ZRgLIAEoAxJEChFydW5uaW5nX3dvcmtmbG93",
+            "cxgJIAMoCzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dFeGVj",
+            "dXRpb24SRgoOcmVjZW50X2FjdGlvbnMYBCADKAsyLi50ZW1wb3JhbC5hcGku",
+            "c2NoZWR1bGUudjEuU2NoZWR1bGVBY3Rpb25SZXN1bHQSNwoTZnV0dXJlX2Fj",
+            "dGlvbl90aW1lcxgFIAMoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAS",
+            "LwoLY3JlYXRlX3RpbWUYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0",
+            "YW1wEi8KC3VwZGF0ZV90aW1lGAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRp",
+            "bWVzdGFtcBIiChZpbnZhbGlkX3NjaGVkdWxlX2Vycm9yGAggASgJQgIYARIY",
+            "ChBzdGF0ZV9zaXplX2J5dGVzGAwgASgDEkQKEnRpbWVfc2tpcHBpbmdfaW5m",
+            "bxgNIAEoCzIoLnRlbXBvcmFsLmFwaS5jb21tb24udjEuVGltZVNraXBwaW5n",
+            "SW5mbyLwAQoIU2NoZWR1bGUSNAoEc3BlYxgBIAEoCzImLnRlbXBvcmFsLmFw",
+            "aS5zY2hlZHVsZS52MS5TY2hlZHVsZVNwZWMSOAoGYWN0aW9uGAIgASgLMigu",
+            "dGVtcG9yYWwuYXBpLnNjaGVkdWxlLnYxLlNjaGVkdWxlQWN0aW9uEjwKCHBv",
+            "bGljaWVzGAMgASgLMioudGVtcG9yYWwuYXBpLnNjaGVkdWxlLnYxLlNjaGVk",
+            "dWxlUG9saWNpZXMSNgoFc3RhdGUYBCABKAsyJy50ZW1wb3JhbC5hcGkuc2No",
+            "ZWR1bGUudjEuU2NoZWR1bGVTdGF0ZSK/AgoQU2NoZWR1bGVMaXN0SW5mbxI0",
+            "CgRzcGVjGAEgASgLMiYudGVtcG9yYWwuYXBpLnNjaGVkdWxlLnYxLlNjaGVk",
+            "dWxlU3BlYxI7Cg13b3JrZmxvd190eXBlGAIgASgLMiQudGVtcG9yYWwuYXBp",
+            "LmNvbW1vbi52MS5Xb3JrZmxvd1R5cGUSDQoFbm90ZXMYAyABKAkSDgoGcGF1",
+            "c2VkGAQgASgIEkYKDnJlY2VudF9hY3Rpb25zGAUgAygLMi4udGVtcG9yYWwu",
+            "YXBpLnNjaGVkdWxlLnYxLlNjaGVkdWxlQWN0aW9uUmVzdWx0EjcKE2Z1dHVy",
+            "ZV9hY3Rpb25fdGltZXMYBiADKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0",
+            "YW1wEhgKEHN0YXRlX3NpemVfYnl0ZXMYByABKAMi0wEKEVNjaGVkdWxlTGlz",
+            "dEVudHJ5EhMKC3NjaGVkdWxlX2lkGAEgASgJEioKBG1lbW8YAiABKAsyHC50",
+            "ZW1wb3JhbC5hcGkuY29tbW9uLnYxLk1lbW8SQwoRc2VhcmNoX2F0dHJpYnV0",
+            "ZXMYAyABKAsyKC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlNlYXJjaEF0dHJp",
+            "YnV0ZXMSOAoEaW5mbxgEIAEoCzIqLnRlbXBvcmFsLmFwaS5zY2hlZHVsZS52",
+            "MS5TY2hlZHVsZUxpc3RJbmZvQpMBChtpby50ZW1wb3JhbC5hcGkuc2NoZWR1",
+            "bGUudjFCDE1lc3NhZ2VQcm90b1ABWidnby50ZW1wb3JhbC5pby9hcGkvc2No",
+            "ZWR1bGUvdjE7c2NoZWR1bGWqAhpUZW1wb3JhbGlvLkFwaS5TY2hlZHVsZS5W",
+            "MeoCHVRlbXBvcmFsaW86OkFwaTo6U2NoZWR1bGU6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.ScheduleReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -132,8 +135,8 @@ namespace Temporalio.Api.Schedule.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.ScheduleState), global::Temporalio.Api.Schedule.V1.ScheduleState.Parser, new[]{ "Notes", "Paused", "LimitedActions", "RemainingActions" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.TriggerImmediatelyRequest), global::Temporalio.Api.Schedule.V1.TriggerImmediatelyRequest.Parser, new[]{ "OverlapPolicy", "ScheduledTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.BackfillRequest), global::Temporalio.Api.Schedule.V1.BackfillRequest.Parser, new[]{ "StartTime", "EndTime", "OverlapPolicy" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.SchedulePatch), global::Temporalio.Api.Schedule.V1.SchedulePatch.Parser, new[]{ "TriggerImmediately", "BackfillRequest", "Pause", "Unpause" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.ScheduleInfo), global::Temporalio.Api.Schedule.V1.ScheduleInfo.Parser, new[]{ "ActionCount", "MissedCatchupWindow", "OverlapSkipped", "BufferDropped", "BufferSize", "RunningWorkflows", "RecentActions", "FutureActionTimes", "CreateTime", "UpdateTime", "InvalidScheduleError", "StateSizeBytes" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.SchedulePatch), global::Temporalio.Api.Schedule.V1.SchedulePatch.Parser, new[]{ "TriggerImmediately", "BackfillRequest", "Pause", "Unpause", "TimeSkippingConfig" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.ScheduleInfo), global::Temporalio.Api.Schedule.V1.ScheduleInfo.Parser, new[]{ "ActionCount", "MissedCatchupWindow", "OverlapSkipped", "BufferDropped", "BufferSize", "RunningWorkflows", "RecentActions", "FutureActionTimes", "CreateTime", "UpdateTime", "InvalidScheduleError", "StateSizeBytes", "TimeSkippingInfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.Schedule), global::Temporalio.Api.Schedule.V1.Schedule.Parser, new[]{ "Spec", "Action", "Policies", "State" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.ScheduleListInfo), global::Temporalio.Api.Schedule.V1.ScheduleListInfo.Parser, new[]{ "Spec", "WorkflowType", "Notes", "Paused", "RecentActions", "FutureActionTimes", "StateSizeBytes" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Schedule.V1.ScheduleListEntry), global::Temporalio.Api.Schedule.V1.ScheduleListEntry.Parser, new[]{ "ScheduleId", "Memo", "SearchAttributes", "Info" }, null, null, null, null)
@@ -3990,6 +3993,7 @@ namespace Temporalio.Api.Schedule.V1 {
       backfillRequest_ = other.backfillRequest_.Clone();
       pause_ = other.pause_;
       unpause_ = other.unpause_;
+      timeSkippingConfig_ = other.timeSkippingConfig_ != null ? other.timeSkippingConfig_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -4058,6 +4062,22 @@ namespace Temporalio.Api.Schedule.V1 {
       }
     }
 
+    /// <summary>Field number for the "time_skipping_config" field.</summary>
+    public const int TimeSkippingConfigFieldNumber = 5;
+    private global::Temporalio.Api.Common.V1.TimeSkippingConfig timeSkippingConfig_;
+    /// <summary>
+    /// If set, applies the specified time-skipping configuration to this schedule,
+    /// replacing any existing time-skipping configuration.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Common.V1.TimeSkippingConfig TimeSkippingConfig {
+      get { return timeSkippingConfig_; }
+      set {
+        timeSkippingConfig_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -4077,6 +4097,7 @@ namespace Temporalio.Api.Schedule.V1 {
       if(!backfillRequest_.Equals(other.backfillRequest_)) return false;
       if (Pause != other.Pause) return false;
       if (Unpause != other.Unpause) return false;
+      if (!object.Equals(TimeSkippingConfig, other.TimeSkippingConfig)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -4088,6 +4109,7 @@ namespace Temporalio.Api.Schedule.V1 {
       hash ^= backfillRequest_.GetHashCode();
       if (Pause.Length != 0) hash ^= Pause.GetHashCode();
       if (Unpause.Length != 0) hash ^= Unpause.GetHashCode();
+      if (timeSkippingConfig_ != null) hash ^= TimeSkippingConfig.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -4119,6 +4141,10 @@ namespace Temporalio.Api.Schedule.V1 {
         output.WriteRawTag(34);
         output.WriteString(Unpause);
       }
+      if (timeSkippingConfig_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(TimeSkippingConfig);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -4142,6 +4168,10 @@ namespace Temporalio.Api.Schedule.V1 {
         output.WriteRawTag(34);
         output.WriteString(Unpause);
       }
+      if (timeSkippingConfig_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(TimeSkippingConfig);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -4161,6 +4191,9 @@ namespace Temporalio.Api.Schedule.V1 {
       }
       if (Unpause.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Unpause);
+      }
+      if (timeSkippingConfig_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(TimeSkippingConfig);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -4186,6 +4219,12 @@ namespace Temporalio.Api.Schedule.V1 {
       }
       if (other.Unpause.Length != 0) {
         Unpause = other.Unpause;
+      }
+      if (other.timeSkippingConfig_ != null) {
+        if (timeSkippingConfig_ == null) {
+          TimeSkippingConfig = new global::Temporalio.Api.Common.V1.TimeSkippingConfig();
+        }
+        TimeSkippingConfig.MergeFrom(other.TimeSkippingConfig);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -4221,6 +4260,13 @@ namespace Temporalio.Api.Schedule.V1 {
             Unpause = input.ReadString();
             break;
           }
+          case 42: {
+            if (timeSkippingConfig_ == null) {
+              TimeSkippingConfig = new global::Temporalio.Api.Common.V1.TimeSkippingConfig();
+            }
+            input.ReadMessage(TimeSkippingConfig);
+            break;
+          }
         }
       }
     #endif
@@ -4253,6 +4299,13 @@ namespace Temporalio.Api.Schedule.V1 {
           }
           case 34: {
             Unpause = input.ReadString();
+            break;
+          }
+          case 42: {
+            if (timeSkippingConfig_ == null) {
+              TimeSkippingConfig = new global::Temporalio.Api.Common.V1.TimeSkippingConfig();
+            }
+            input.ReadMessage(TimeSkippingConfig);
             break;
           }
         }
@@ -4308,6 +4361,7 @@ namespace Temporalio.Api.Schedule.V1 {
       updateTime_ = other.updateTime_ != null ? other.updateTime_.Clone() : null;
       invalidScheduleError_ = other.invalidScheduleError_;
       stateSizeBytes_ = other.stateSizeBytes_;
+      timeSkippingInfo_ = other.timeSkippingInfo_ != null ? other.timeSkippingInfo_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -4498,6 +4552,22 @@ namespace Temporalio.Api.Schedule.V1 {
       }
     }
 
+    /// <summary>Field number for the "time_skipping_info" field.</summary>
+    public const int TimeSkippingInfoFieldNumber = 13;
+    private global::Temporalio.Api.Common.V1.TimeSkippingInfo timeSkippingInfo_;
+    /// <summary>
+    /// Information about time skipping for this schedule.
+    /// If the schedule has never enabled time skipping, this will be unset.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Common.V1.TimeSkippingInfo TimeSkippingInfo {
+      get { return timeSkippingInfo_; }
+      set {
+        timeSkippingInfo_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -4525,6 +4595,7 @@ namespace Temporalio.Api.Schedule.V1 {
       if (!object.Equals(UpdateTime, other.UpdateTime)) return false;
       if (InvalidScheduleError != other.InvalidScheduleError) return false;
       if (StateSizeBytes != other.StateSizeBytes) return false;
+      if (!object.Equals(TimeSkippingInfo, other.TimeSkippingInfo)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -4544,6 +4615,7 @@ namespace Temporalio.Api.Schedule.V1 {
       if (updateTime_ != null) hash ^= UpdateTime.GetHashCode();
       if (InvalidScheduleError.Length != 0) hash ^= InvalidScheduleError.GetHashCode();
       if (StateSizeBytes != 0L) hash ^= StateSizeBytes.GetHashCode();
+      if (timeSkippingInfo_ != null) hash ^= TimeSkippingInfo.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -4601,6 +4673,10 @@ namespace Temporalio.Api.Schedule.V1 {
         output.WriteRawTag(96);
         output.WriteInt64(StateSizeBytes);
       }
+      if (timeSkippingInfo_ != null) {
+        output.WriteRawTag(106);
+        output.WriteMessage(TimeSkippingInfo);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -4650,6 +4726,10 @@ namespace Temporalio.Api.Schedule.V1 {
         output.WriteRawTag(96);
         output.WriteInt64(StateSizeBytes);
       }
+      if (timeSkippingInfo_ != null) {
+        output.WriteRawTag(106);
+        output.WriteMessage(TimeSkippingInfo);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -4689,6 +4769,9 @@ namespace Temporalio.Api.Schedule.V1 {
       }
       if (StateSizeBytes != 0L) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(StateSizeBytes);
+      }
+      if (timeSkippingInfo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(TimeSkippingInfo);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -4737,6 +4820,12 @@ namespace Temporalio.Api.Schedule.V1 {
       }
       if (other.StateSizeBytes != 0L) {
         StateSizeBytes = other.StateSizeBytes;
+      }
+      if (other.timeSkippingInfo_ != null) {
+        if (timeSkippingInfo_ == null) {
+          TimeSkippingInfo = new global::Temporalio.Api.Common.V1.TimeSkippingInfo();
+        }
+        TimeSkippingInfo.MergeFrom(other.TimeSkippingInfo);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -4807,6 +4896,13 @@ namespace Temporalio.Api.Schedule.V1 {
             StateSizeBytes = input.ReadInt64();
             break;
           }
+          case 106: {
+            if (timeSkippingInfo_ == null) {
+              TimeSkippingInfo = new global::Temporalio.Api.Common.V1.TimeSkippingInfo();
+            }
+            input.ReadMessage(TimeSkippingInfo);
+            break;
+          }
         }
       }
     #endif
@@ -4874,6 +4970,13 @@ namespace Temporalio.Api.Schedule.V1 {
           }
           case 96: {
             StateSizeBytes = input.ReadInt64();
+            break;
+          }
+          case 106: {
+            if (timeSkippingInfo_ == null) {
+              TimeSkippingInfo = new global::Temporalio.Api.Common.V1.TimeSkippingInfo();
+            }
+            input.ReadMessage(TimeSkippingInfo);
             break;
           }
         }
