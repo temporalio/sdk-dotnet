@@ -1,1 +1,1 @@
-Core: The C bridge's shared dev and test server options accept a startup timeout in milliseconds, with zero selecting the five-second default.
+`DevServerOptions.StartupTimeout` and `TestServerOptions.StartupTimeout` set how long a local or time-skipping `WorkflowEnvironment` waits for its server to become ready, excluding download time. The default remains five seconds.

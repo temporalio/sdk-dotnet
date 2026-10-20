@@ -512,6 +512,8 @@ namespace Temporalio.Bridge
                         extra_args = scope.NewlineDelimited(args),
                         download_ttl_seconds =
                             (ulong)(options.DevServerOptions.DownloadTtl?.TotalSeconds ?? 0),
+                        startup_timeout_millis =
+                            (ulong)(options.DevServerOptions.StartupTimeout?.TotalMilliseconds ?? 0),
                     }),
                 namespace_ = scope.ByteArray(options.Namespace),
                 ip = scope.ByteArray(ip),
@@ -551,6 +553,8 @@ namespace Temporalio.Bridge
                 extra_args = scope.NewlineDelimited(options.TestServer.ExtraArgs),
                 download_ttl_seconds =
                     (ulong)(options.TestServer.DownloadTtl?.TotalSeconds ?? 0),
+                startup_timeout_millis =
+                    (ulong)(options.TestServer.StartupTimeout?.TotalMilliseconds ?? 0),
             };
         }
 
