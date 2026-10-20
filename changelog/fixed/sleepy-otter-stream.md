@@ -1,0 +1,1 @@
+Preserve retained Workflow Streams items after workflow completion, failure, cancellation, termination, or timeout by draining them through queries pinned to the closed run before subscriptions finish.

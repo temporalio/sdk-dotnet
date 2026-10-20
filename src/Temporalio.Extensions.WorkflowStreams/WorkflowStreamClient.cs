@@ -159,7 +159,8 @@ namespace Temporalio.Extensions.WorkflowStreams
         /// Subscription options, snapshotted by this call.
         /// </param>
         /// <returns>
-        /// A reusable asynchronous stream of raw Temporal payloads.
+        /// A reusable asynchronous stream of raw Temporal payloads, including retained items after
+        /// workflow closure.
         /// </returns>
         public IAsyncEnumerable<WorkflowStreamItem> SubscribeAsync(
             WorkflowStreamSubscribeOptions? options = null)
@@ -342,7 +343,7 @@ namespace Temporalio.Extensions.WorkflowStreams
                 disposeToken, cancellationToken);
             var rpcToken = linkedSource.Token;
             var offset = options.FromOffset;
-            string? polledRunId = null;
+            WorkflowHandle? terminalHandle = null;
 
             while (true)
             {
@@ -357,13 +358,27 @@ namespace Temporalio.Extensions.WorkflowStreams
                 var clientDisposed = false;
                 try
                 {
-                    attempt = await PollOnceAsync(
-                        options.Topics, offset, options.PollCooldown, rpcToken).ConfigureAwait(false);
-                    if (attempt.RunId != null)
+                    if (terminalHandle == null)
                     {
-                        polledRunId = attempt.RunId;
+                        attempt = await PollOnceAsync(
+                            options.Topics, offset, options.PollCooldown, rpcToken).ConfigureAwait(false);
+                        pollError = attempt.Error;
                     }
-                    pollError = attempt.Error;
+                    else
+                    {
+                        var result = await terminalHandle.QueryAsync<PollResult>(
+                            WorkflowStreamConstants.PollQueryName,
+                            new object?[] { new PollInput { Topics = options.Topics, FromOffset = offset } },
+                            new()
+                            {
+                                Rpc = new()
+                                {
+                                    CancellationToken = rpcToken,
+                                    Timeout = this.options.RpcTimeout,
+                                },
+                            }).ConfigureAwait(false);
+                        attempt = new(result, null, null);
+                    }
                 }
                 catch (OperationCanceledException)
                 {
@@ -398,12 +413,12 @@ namespace Temporalio.Extensions.WorkflowStreams
                         continue;
                     }
 
-                    WorkflowExecutionStatus status = WorkflowExecutionStatus.Unspecified;
+                    WorkflowExecutionDescription? description = null;
                     var describeCanceledByDispose = false;
                     try
                     {
-                        status = await DescribeStatusAsync(
-                            polledRunId, rpcToken).ConfigureAwait(false);
+                        description = await DescribePolledRunAsync(
+                            attempt!.RunId, rpcToken).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -421,13 +436,15 @@ namespace Temporalio.Extensions.WorkflowStreams
                     {
                         yield break;
                     }
+                    var status = description?.Status ?? WorkflowExecutionStatus.Unspecified;
                     if (status == WorkflowExecutionStatus.ContinuedAsNew)
                     {
                         continue;
                     }
-                    if (IsTerminal(status))
+                    if (IsTerminal(status) && !string.IsNullOrEmpty(description!.RunId))
                     {
-                        yield break;
+                        terminalHandle = client.GetWorkflowHandle(workflowId, description!.RunId);
+                        continue;
                     }
                     throw pollError;
                 }
@@ -445,6 +462,10 @@ namespace Temporalio.Extensions.WorkflowStreams
                         item.Offset);
                 }
                 offset = attempt!.Result!.NextOffset;
+                if (!attempt.Result.MoreReady && terminalHandle != null)
+                {
+                    yield break;
+                }
                 if (!attempt.Result.MoreReady &&
                     !await DelayAsync(options.PollCooldown, rpcToken).ConfigureAwait(false))
                 {
@@ -541,7 +562,7 @@ namespace Temporalio.Extensions.WorkflowStreams
             }
         }
 
-        private async Task<WorkflowExecutionStatus> DescribeStatusAsync(
+        private async Task<WorkflowExecutionDescription?> DescribePolledRunAsync(
             string? runId,
             CancellationToken cancellationToken)
         {
@@ -556,14 +577,14 @@ namespace Temporalio.Extensions.WorkflowStreams
                             Timeout = options.RpcTimeout,
                         },
                     }).ConfigureAwait(false);
-                return description.Status;
+                return description;
             }
 #pragma warning disable CA1031 // The original poll failure is more relevant than a status lookup failure.
             catch (Exception)
 #pragma warning restore CA1031
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                return WorkflowExecutionStatus.Unspecified;
+                return null;
             }
         }
 
