@@ -60,6 +60,15 @@ namespace Temporalio.Testing
         public TimeSpan? DownloadTtl { get; set; }
 
         /// <summary>
+        /// Gets or sets how long to wait for the dev server to become ready after it is started.
+        /// If null, five seconds.
+        /// </summary>
+        /// <remarks>
+        /// This does not include time spent downloading the dev server.
+        /// </remarks>
+        public TimeSpan? StartupTimeout { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
