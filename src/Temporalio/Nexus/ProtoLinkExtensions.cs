@@ -88,7 +88,7 @@ namespace Temporalio.Nexus
 
         /// <summary>
         /// Convert a proto Link to a Nexus link, dispatching on the populated oneof variant. Handles
-        /// the workflow-event, nexus-operation, workflow, and activity variants. Returns <c>null</c>
+        /// the workflow-event, nexus-operation, workflow, activity, and callback variants. Returns <c>null</c>
         /// when no variant is set (e.g. a rejected update that has no history event to link to), so
         /// callers can skip it rather than dereferencing an unset variant. Throws for a
         /// set-but-unrecognized variant.
@@ -102,6 +102,7 @@ namespace Temporalio.Nexus
             Api.Common.V1.Link.VariantOneofCase.NexusOperation => link.NexusOperation.ToNexusLink(),
             Api.Common.V1.Link.VariantOneofCase.Workflow => link.Workflow.ToNexusLink(),
             Api.Common.V1.Link.VariantOneofCase.Activity => link.Activity.ToNexusLink(),
+            Api.Common.V1.Link.VariantOneofCase.Callback => link.Callback.ToNexusLink(),
             Api.Common.V1.Link.VariantOneofCase.None => null,
             _ => throw new ArgumentException($"Unknown link variant: {link.VariantCase}"),
         };
@@ -122,6 +123,8 @@ namespace Temporalio.Nexus
                 new Api.Common.V1.Link { Activity = link.ToActivity() },
             var t when t == Api.Common.V1.Link.Types.Workflow.Descriptor.FullName =>
                 new Api.Common.V1.Link { Workflow = link.ToWorkflow() },
+            var t when t == Api.Common.V1.Link.Types.Callback.Descriptor.FullName =>
+                new Api.Common.V1.Link { Callback = link.ToCallback() },
             _ => throw new ArgumentException($"Unknown link type: {link.Type}"),
         };
 
@@ -206,6 +209,69 @@ namespace Temporalio.Nexus
         }
 
         /// <summary>
+        /// Convert a callback link to a Nexus link. The component path is carried as one query param
+        /// per segment, in order, so a delimiter inside a segment cannot be mistaken for a separator.
+        /// </summary>
+        /// <param name="callback">Callback link to convert.</param>
+        /// <returns>Nexus link.</returns>
+        /// <exception cref="ArgumentException">If the execution type is unsupported.</exception>
+        public static NexusLink ToNexusLink(this Api.Common.V1.Link.Types.Callback callback)
+        {
+            var execution = callback.Execution ?? new();
+            var kind = execution.Type switch
+            {
+                ExecutionType.Workflow => "workflows",
+                ExecutionType.Activity => "activities",
+                ExecutionType.NexusOperation => "nexus-operations",
+                _ => throw new ArgumentException($"Unsupported execution type: {execution.Type}"),
+            };
+            return new(
+                BuildTemporalLinkUri(
+                    kind,
+                    callback.Namespace,
+                    execution.BusinessId,
+                    execution.RunId,
+                    "callbacks/" + Uri.EscapeDataString(callback.RequestId),
+                    callback.ComponentPath.Select(p => new KeyValuePair<string, string>("componentPath", p))),
+                Api.Common.V1.Link.Types.Callback.Descriptor.FullName);
+        }
+
+        /// <summary>
+        /// Convert a Nexus link to a callback link.
+        /// </summary>
+        /// <param name="link">Nexus link.</param>
+        /// <returns>Callback link.</returns>
+        /// <exception cref="ArgumentException">If the link is invalid.</exception>
+        public static Api.Common.V1.Link.Types.Callback ToCallback(this NexusLink link)
+        {
+            var pathPieces = SplitTemporalLinkPath(link);
+            if (pathPieces.Length != 7 || pathPieces[0] != "namespaces" || pathPieces[5] != "callbacks")
+            {
+                throw new ArgumentException("Invalid path");
+            }
+            var callback = new Api.Common.V1.Link.Types.Callback
+            {
+                Namespace = Uri.UnescapeDataString(pathPieces[1]),
+                Execution = new()
+                {
+                    Type = pathPieces[2] switch
+                    {
+                        "workflows" => ExecutionType.Workflow,
+                        "activities" => ExecutionType.Activity,
+                        "nexus-operations" => ExecutionType.NexusOperation,
+                        _ => throw new ArgumentException($"Unsupported execution type: {pathPieces[2]}"),
+                    },
+                    BusinessId = Uri.UnescapeDataString(pathPieces[3]),
+                    RunId = Uri.UnescapeDataString(pathPieces[4]),
+                },
+                RequestId = Uri.UnescapeDataString(pathPieces[6]),
+            };
+            callback.ComponentPath.Add(
+                ParseQueryPairs(link.Uri).Where(kv => kv.Key == "componentPath").Select(kv => kv.Value));
+            return callback;
+        }
+
+        /// <summary>
         /// Convert a Nexus link to a workflow event.
         /// </summary>
         /// <param name="link">Nexus link.</param>
@@ -281,8 +347,17 @@ namespace Temporalio.Nexus
         }
 
         /// <summary>
-        /// Parse a URI query string into its parameters. Simple hand-rolled parser because the .NET
-        /// stdlib does not have one in all versions we target.
+        /// Parse a URI query string into its parameters. A query repeating a key throws, which
+        /// callers treat as an invalid link like any other malformed URI.
+        /// </summary>
+        /// <param name="uri">URI whose query string to parse.</param>
+        /// <returns>The query parameters, decoded as described on <see cref="ParseQueryPairs"/>.</returns>
+        private static Dictionary<string, string> ParseQueryParams(Uri uri) =>
+            ParseQueryPairs(uri).ToDictionary(kv => kv.Key, kv => kv.Value);
+
+        /// <summary>
+        /// Parse a URI query string into its parameters in order, keeping repeated keys. Simple
+        /// hand-rolled parser because the .NET stdlib does not have one in all versions we target.
         /// </summary>
         /// <param name="uri">URI whose query string to parse.</param>
         /// <returns>
@@ -292,18 +367,16 @@ namespace Temporalio.Nexus
         /// <c>+</c> is encoded as <c>%2B</c>. A parameter present with no <c>=</c> maps to an empty
         /// string, so callers cannot distinguish <c>?reason</c> from <c>?reason=</c>. Keys are looked
         /// up with the dictionary's default ordinal comparer, so lookups are case-sensitive and
-        /// <c>reason</c> and <c>Reason</c> are different parameters. A query repeating a key throws,
-        /// which callers treat as an invalid link like any other malformed URI.
+        /// <c>reason</c> and <c>Reason</c> are different parameters.
         /// </returns>
-        private static Dictionary<string, string> ParseQueryParams(Uri uri) =>
+        private static IEnumerable<KeyValuePair<string, string>> ParseQueryPairs(Uri uri) =>
             uri.Query.
                 TrimStart('?').
                 Split(QuerySeparator, StringSplitOptions.RemoveEmptyEntries).
                 Select(v => v.Split(QueryValueSeparator, 2)).
-                ToDictionary(
-                    kv => Uri.UnescapeDataString(kv[0]),
-                    kv => kv.Length > 1 ?
-                        Uri.UnescapeDataString(kv[1].Replace("+", " ")) : string.Empty);
+                Select(kv => new KeyValuePair<string, string>(
+                    Uri.UnescapeDataString(kv[0]),
+                    kv.Length > 1 ? Uri.UnescapeDataString(kv[1].Replace("+", " ")) : string.Empty));
 
         // Build a Temporal-shaped link URI: /namespaces/{namespace}/{kind}/{id}/{run}[/{tail}]
         // with an optional query. The mirror of ParseTemporalLinkPath, so the two shapes stay in
@@ -346,15 +419,7 @@ namespace Temporalio.Nexus
         private static string[] ParseTemporalLinkPath(
             NexusLink link, string expectedKind, string? expectedTail)
         {
-            if (link.Uri.Scheme != "temporal")
-            {
-                throw new ArgumentException("Invalid scheme");
-            }
-            if (link.Uri.Host.Length > 0)
-            {
-                throw new ArgumentException("Unexpected host");
-            }
-            var pathPieces = link.Uri.AbsolutePath.TrimStart('/').Split('/');
+            var pathPieces = SplitTemporalLinkPath(link);
             if (pathPieces.Length != (expectedTail == null ? 5 : 6) ||
                 pathPieces[0] != "namespaces" ||
                 pathPieces[2] != expectedKind ||
@@ -363,6 +428,20 @@ namespace Temporalio.Nexus
                 throw new ArgumentException("Invalid path");
             }
             return pathPieces;
+        }
+
+        // Validate a link's scheme and host and return its still-escaped path segments.
+        private static string[] SplitTemporalLinkPath(NexusLink link)
+        {
+            if (link.Uri.Scheme != "temporal")
+            {
+                throw new ArgumentException("Invalid scheme");
+            }
+            if (link.Uri.Host.Length > 0)
+            {
+                throw new ArgumentException("Unexpected host");
+            }
+            return link.Uri.AbsolutePath.TrimStart('/').Split('/');
         }
     }
 }
