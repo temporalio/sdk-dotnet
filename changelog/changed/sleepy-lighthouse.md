@@ -1,0 +1,1 @@
+Workflow wait conditions are no longer evaluated for activations that cannot have changed workflow state, such as a task whose updates are all rejected. Previously, a condition on a per-task value like `Workflow.TargetWorkerDeploymentVersionChanged` could resume workflow code in such a task, which could produce history that fails to replay.
