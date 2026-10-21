@@ -1,5 +1,6 @@
 using Temporalio.Common;
 using Temporalio.Converters;
+using Temporalio.Exceptions;
 using Temporalio.Worker;
 using Temporalio.Workflows;
 using Xunit;
@@ -793,6 +794,112 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
             // and the new run should execute on v2
             var result = await handle.GetResultAsync();
             Assert.Equal("v2.0", result);
+        }
+    }
+
+    [Workflow("RejectedUpdateUpgradeWorkflow", VersioningBehavior = VersioningBehavior.Pinned)]
+    public class RejectedUpdateUpgradeWorkflowV1
+    {
+        private readonly Queue<string> items = new();
+
+        [WorkflowRun]
+        public async Task<string> RunAsync(int attempt)
+        {
+            if (attempt > 0)
+            {
+                return "v1.0";
+            }
+
+            while (true)
+            {
+                await Workflow.WaitConditionAsync(
+                    () => items.Count > 0 || Workflow.TargetWorkerDeploymentVersionChanged);
+                if (Workflow.TargetWorkerDeploymentVersionChanged)
+                {
+                    throw Workflow.CreateContinueAsNewException(
+                        (RejectedUpdateUpgradeWorkflowV1 wf) => wf.RunAsync(attempt + 1),
+                        new ContinueAsNewOptions
+                        {
+                            InitialVersioningBehavior = InitialVersioningBehavior.AutoUpgrade,
+                        });
+                }
+                items.Dequeue();
+            }
+        }
+
+        [WorkflowUpdate]
+        public async Task SubmitAsync(string item) => items.Enqueue(item);
+
+        [WorkflowUpdateValidator(nameof(SubmitAsync))]
+        public void ValidateSubmit(string item)
+        {
+            if (string.IsNullOrEmpty(item))
+            {
+                throw new ArgumentException("Item is required");
+            }
+        }
+    }
+
+    [Workflow("RejectedUpdateUpgradeWorkflow", VersioningBehavior = VersioningBehavior.Pinned)]
+    public class RejectedUpdateUpgradeWorkflowV2
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync(int attempt) => "v2.0";
+    }
+
+    [Fact]
+    public async Task ContinueAsNew_WithVersionUpgradeObservedByRejectedUpdate_MovesToNewVersion()
+    {
+        var deploymentName = $"deployment-can-rejected-update-{Guid.NewGuid()}";
+        var v1 = new WorkerDeploymentVersion(deploymentName, "1.0");
+        var v2 = new WorkerDeploymentVersion(deploymentName, "2.0");
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+
+        using var worker1 = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue)
+            {
+                DeploymentOptions = new(v1, true),
+            }.AddWorkflow<RejectedUpdateUpgradeWorkflowV1>());
+
+        using var worker2 = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue)
+            {
+                DeploymentOptions = new(v2, true),
+            }.AddWorkflow<RejectedUpdateUpgradeWorkflowV2>());
+
+        var testTask = ExecuteTest();
+        await Task.WhenAll(
+            worker1.ExecuteAsync(() => testTask),
+            worker2.ExecuteAsync(() => testTask));
+
+        async Task ExecuteTest()
+        {
+            var describe1 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, v1);
+            await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe1.ConflictToken, v1);
+            await TestUtils.WaitForRoutingConfigPropagationAsync(Client, deploymentName, v1.BuildId);
+
+            var handle = await Client.StartWorkflowAsync(
+                (RejectedUpdateUpgradeWorkflowV1 wf) => wf.RunAsync(0),
+                new(id: $"can-rejected-update-{Guid.NewGuid()}", taskQueue: taskQueue));
+            await TestUtils.WaitForWorkflowRunningOnVersionAsync(Client, handle.Id, v1.BuildId);
+
+            var describe2 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, v2);
+            await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe2.ConflictToken, v2);
+            await TestUtils.WaitForRoutingConfigPropagationAsync(Client, deploymentName, v2.BuildId);
+
+            // The idle workflow has no task to observe the version change in until this update
+            // arrives, so the task whose update is rejected is the one that must continue-as-new
+            var exc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
+                () => handle.ExecuteUpdateAsync(wf => wf.SubmitAsync(string.Empty)));
+            Assert.Equal("Item is required", exc.InnerException?.Message);
+
+            var firstRun = await Client.GetWorkflowHandle(handle.Id, runId: handle.ResultRunId)
+                .FetchHistoryAsync();
+            Assert.DoesNotContain(
+                firstRun.Events, e => e.WorkflowTaskFailedEventAttributes != null);
+            Assert.Equal("v2.0", await handle.GetResultAsync());
         }
     }
 
