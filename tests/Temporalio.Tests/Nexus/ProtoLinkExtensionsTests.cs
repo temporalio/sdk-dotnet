@@ -615,12 +615,13 @@ public class ProtoLinkExtensionsTests
     [Fact]
     public void ToNexusLink_EscapesIdsInEveryLinkTypeAndParsesThemBack()
     {
-        // All four link types share one URI builder and one path parser, so each is checked against
+        // All link types share one URI builder and one path parser, so each is checked against
         // both: the exact path pins the encoding, and the round trip pins that the parser reads it
-        // back. A slash must stay inside its segment, and a space must be %20 rather than "+", which
-        // a path decoder reads as a literal plus.
-        const string id = "a/b c+d%e";
-        const string escaped = "a%2Fb%20c%2Bd%25e";
+        // back. A slash must stay inside its segment, a '?' must stay in the path rather than
+        // starting the query string, and a space must be %20 rather than "+", which a path decoder
+        // reads as a literal plus.
+        const string id = "a/b c+d%e?f";
+        const string escaped = "a%2Fb%20c%2Bd%25e%3Ff";
         var cases = new (Api.Common.V1.Link Link, string Path)[]
         {
             (
@@ -644,6 +645,18 @@ public class ProtoLinkExtensionsTests
             (
                 new() { Activity = new() { Namespace = id, ActivityId = id, RunId = id } },
                 $"/namespaces/{escaped}/activities/{escaped}/{escaped}/details"),
+            (
+                new()
+                {
+                    Callback = new()
+                    {
+                        Namespace = id,
+                        Execution = new() { Type = Api.Enums.V1.ExecutionType.Activity, BusinessId = id, RunId = id },
+                        ComponentPath = { id },
+                        RequestId = id,
+                    },
+                },
+                $"/namespaces/{escaped}/activities/{escaped}/{escaped}/callbacks/{escaped}"),
         };
 
         foreach (var (link, path) in cases)
@@ -672,4 +685,61 @@ public class ProtoLinkExtensionsTests
             Assert.Equal(1, evt.EventRef.EventId);
         }
     }
+
+    [Theory]
+    [InlineData(Api.Enums.V1.ExecutionType.Workflow, "workflows")]
+    [InlineData(Api.Enums.V1.ExecutionType.Activity, "activities")]
+    [InlineData(Api.Enums.V1.ExecutionType.NexusOperation, "nexus-operations")]
+    public void CallbackLink_ToNexusLink_RoundTrips(Api.Enums.V1.ExecutionType type, string kind)
+    {
+        // Unsorted segments with delimiters prove each segment is its own param and order is kept.
+        var callback = NewCallback(type, "zulu", "A:B", "C/D", "id,with,commas", "alpha");
+        var nexusLink = callback.ToNexusLink();
+        Assert.Equal(Api.Common.V1.Link.Types.Callback.Descriptor.FullName, nexusLink.Type);
+        Assert.Equal(
+            $"temporal:///namespaces/ns/{kind}/biz-id/run-id/callbacks/request-id" +
+            "?componentPath=zulu&componentPath=A%3AB&componentPath=C%2FD" +
+            "&componentPath=id%2Cwith%2Ccommas&componentPath=alpha",
+            nexusLink.Uri.AbsoluteUri);
+        Assert.Equal(callback, nexusLink.ToCallback());
+        Assert.Equal(new Api.Common.V1.Link { Callback = callback }, nexusLink.ToProtoLink());
+    }
+
+    [Fact]
+    public void CallbackLink_ToNexusLink_EmptyComponentPathHasNoQuery()
+    {
+        var nexusLink = NewCallback(Api.Enums.V1.ExecutionType.Workflow).ToNexusLink();
+        Assert.Equal(
+            "temporal:///namespaces/ns/workflows/biz-id/run-id/callbacks/request-id",
+            nexusLink.Uri.AbsoluteUri);
+    }
+
+    [Fact]
+    public void CallbackLink_ToNexusLink_RejectsUnsupportedExecutionType()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            NewCallback(Api.Enums.V1.ExecutionType.Unspecified).ToNexusLink());
+        Assert.Throws<ArgumentException>(() =>
+            new Api.Common.V1.Link.Types.Callback { Namespace = "ns" }.ToNexusLink());
+    }
+
+    [Theory]
+    [InlineData("https://somehost/namespaces/ns/workflows/biz-id/run-id/callbacks/request-id")]
+    [InlineData("temporal:///namespaces/ns/workflows/biz-id/run-id/callbacks")]
+    [InlineData("temporal:///namespaces/ns/workflows/biz-id/run-id/history/request-id")]
+    [InlineData("temporal:///namespaces/ns/schedules/biz-id/run-id/callbacks/request-id")]
+    public void ToCallback_RejectsInvalidLinks(string raw)
+    {
+        var link = new NexusLink(new Uri(raw), Api.Common.V1.Link.Types.Callback.Descriptor.FullName);
+        Assert.Throws<ArgumentException>(() => link.ToCallback());
+    }
+
+    private static Api.Common.V1.Link.Types.Callback NewCallback(
+        Api.Enums.V1.ExecutionType type, params string[] componentPath) => new()
+        {
+            Namespace = "ns",
+            Execution = new() { Type = type, BusinessId = "biz-id", RunId = "run-id" },
+            ComponentPath = { componentPath },
+            RequestId = "request-id",
+        };
 }
