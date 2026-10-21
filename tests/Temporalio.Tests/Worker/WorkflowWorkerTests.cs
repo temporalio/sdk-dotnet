@@ -4672,6 +4672,56 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Workflow]
+    public class ConditionEvaluationWorkflow
+    {
+        private int conditionEvaluations;
+        private bool done;
+
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.WaitConditionAsync(() =>
+        {
+            conditionEvaluations++;
+            return done;
+        });
+
+        [WorkflowQuery]
+        public int ConditionEvaluations() => conditionEvaluations;
+
+        [WorkflowUpdate]
+        public async Task FinishAsync(bool accept) => done = true;
+
+        [WorkflowUpdateValidator(nameof(FinishAsync))]
+        public void ValidateFinish(bool accept)
+        {
+            if (!accept)
+            {
+                throw new ApplicationFailureException("Rejected");
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Updates_RejectedUpdateDoesNotEvaluateConditions()
+    {
+        await ExecuteWorkerAsync<ConditionEvaluationWorkflow>(async worker =>
+        {
+            var handle = await Env.Client.StartWorkflowAsync(
+                (ConditionEvaluationWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            var evaluations = await handle.QueryAsync(wf => wf.ConditionEvaluations());
+
+            // Neither the rejected update nor the queries can change state, so none of their
+            // activations may evaluate the condition
+            await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
+                () => handle.ExecuteUpdateAsync(wf => wf.FinishAsync(false)));
+            Assert.Equal(evaluations, await handle.QueryAsync(wf => wf.ConditionEvaluations()));
+
+            await handle.ExecuteUpdateAsync(wf => wf.FinishAsync(true));
+            await handle.GetResultAsync();
+        });
+    }
+
     [Fact]
     public async Task ExecuteWorkflowAsync_Updates_CancelWhileUpdating()
     {
