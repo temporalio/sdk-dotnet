@@ -101,6 +101,7 @@ namespace Temporalio.Worker
         private bool applyModernEventLoopLogic;
         private bool dynamicOptionsGetterInvoked;
         private bool inQueryOrValidator;
+        private bool activationMayHaveChangedState;
         private bool contextFrozen;
         private string currentDetails = string.Empty;
 
@@ -723,6 +724,14 @@ namespace Temporalio.Worker
             {
                 completion = new() { RunId = act.RunId, Successful = new() };
                 currentActivationException = null;
+                // Updates can only change state once accepted, which is recorded when that happens
+                activationMayHaveChangedState = act.Jobs.Any(j => j.VariantCase switch
+                {
+                    WorkflowActivationJob.VariantOneofCase.DoUpdate or
+                    WorkflowActivationJob.VariantOneofCase.QueryWorkflow or
+                    WorkflowActivationJob.VariantOneofCase.RemoveFromCache => false,
+                    _ => true,
+                });
                 ContinueAsNewSuggested = act.ContinueAsNewSuggested;
                 CurrentHistoryLength = checked((int)act.HistoryLength);
                 CurrentHistorySize = checked((int)act.HistorySizeBytes);
@@ -989,7 +998,12 @@ namespace Temporalio.Worker
                 // based on each other. This sounds confusing but basically: can't run check
                 // conditions in the task scheduler comfortably but still need to access the static
                 // Workflow class, hence the context override.
-                if (checkConditions && conditions.Count > 0)
+                //
+                // Values refreshed on every activation (time, history length, version changed,
+                // etc.) must not unblock workflow code unless the activation may have changed
+                // workflow state. Rejected updates, for example, leave nothing in history, so code
+                // they unblocked would not run on replay.
+                if (checkConditions && conditions.Count > 0 && activationMayHaveChangedState)
                 {
                     Workflow.OverrideContext.Value = this;
                     try
@@ -1387,6 +1401,7 @@ namespace Temporalio.Worker
                 }
 
                 // Send accepted
+                activationMayHaveChangedState = true;
                 AddCommand(
                     new()
                     {
