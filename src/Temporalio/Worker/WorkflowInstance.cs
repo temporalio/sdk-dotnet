@@ -799,8 +799,10 @@ namespace Temporalio.Worker
                             if (!applyModernEventLoopLogic)
                             {
                                 // Run scheduler once. Do not check conditions when patching or
-                                // querying with legacy event loop logic.
-                                var checkConditions = job.NotifyHasPatch == null && job.QueryWorkflow == null;
+                                // querying with legacy event loop logic. Updates only change state
+                                // once accepted, which RunOnce checks for itself.
+                                var checkConditions = job.NotifyHasPatch == null &&
+                                    job.QueryWorkflow == null && job.DoUpdate == null;
                                 RunOnce(checkConditions);
                             }
                         }
@@ -813,10 +815,14 @@ namespace Temporalio.Worker
                         }
 
                         // For modern event loop logic, we run the event loop only after applying
-                        // everything, and we check conditions if there are any non-query jobs
+                        // everything, and we check conditions if there are any non-query jobs.
+                        // Updates only change state once accepted, which RunOnce checks for
+                        // itself.
                         if (applyModernEventLoopLogic)
                         {
-                            var checkConditions = jobs.Any(j => j.VariantCase != WorkflowActivationJob.VariantOneofCase.QueryWorkflow);
+                            var checkConditions = jobs.Any(j => j.VariantCase is not
+                                (WorkflowActivationJob.VariantOneofCase.QueryWorkflow or
+                                WorkflowActivationJob.VariantOneofCase.DoUpdate));
                             RunOnce(checkConditions);
                         }
 
@@ -989,7 +995,12 @@ namespace Temporalio.Worker
                 // based on each other. This sounds confusing but basically: can't run check
                 // conditions in the task scheduler comfortably but still need to access the static
                 // Workflow class, hence the context override.
-                if (checkConditions && conditions.Count > 0)
+                //
+                // Rejected updates leave nothing in history, so a condition they let through (e.g.
+                // one on a value refreshed every activation) could not unblock on replay. Callers
+                // leave updates out of checkConditions, so accepted ones are detected here.
+                if (conditions.Count > 0 && (checkConditions ||
+                    completion?.Successful?.Commands.Any(c => c.UpdateResponse?.Accepted != null) == true))
                 {
                     Workflow.OverrideContext.Value = this;
                     try
