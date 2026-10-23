@@ -245,6 +245,21 @@ public class ExternalStorageRunnerTests : TestBase
     }
 
     [Fact]
+    public async Task RetrieveAsync_LeavesTheDriversPayloadIntact()
+    {
+        var driver = new MapDriver("mem");
+        var runner = Runner(Storage(driver, threshold: 1));
+        var payload = Sized(50);
+        var before = payload.Clone();
+
+        var stored = await runner.StoreAsync(new[] { payload }, null, default);
+        var back = (await runner.RetrieveAsync(stored, default)).Single();
+        back.Metadata["changed"] = ByteString.CopyFromUtf8("after retrieve");
+
+        Assert.Equal(before, driver.Stored.Single().Value);
+    }
+
+    [Fact]
     public async Task RetrieveAsync_DriverReturnsWrongNumberOfPayloads_Throws()
     {
         var runner = Runner(Storage(new MiscountDriver("mem"), threshold: 1));

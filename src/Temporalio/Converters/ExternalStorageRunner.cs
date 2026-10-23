@@ -202,7 +202,9 @@ namespace Temporalio.Converters
                 }
                 foreach (var (item, payload) in entry.Items.Zip(retrieved, (i, p) => (i, p)))
                 {
-                    result[item.Index] = payload;
+                    // Later passes modify payloads in place, which must not reach an instance the
+                    // driver may still hold or have returned for another claim.
+                    result[item.Index] = payload.Clone();
                 }
             })).ConfigureAwait(false);
             return result;
