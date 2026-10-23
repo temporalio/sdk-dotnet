@@ -2811,7 +2811,7 @@ namespace Temporalio.Worker
                         new CanceledFailureException("Nexus operation cancelled before scheduled"));
                 }
 
-                var isSystemEndpoint = SystemNexusPayloadVisitor.IsSystemEndpoint(
+                var isSystemEndpoint = SystemNexusPayloads.IsSystemEndpoint(
                     input.ClientOptions.Endpoint);
                 ISerializationContext? serializationContext = null;
                 if (!isSystemEndpoint)
@@ -2961,7 +2961,7 @@ namespace Temporalio.Worker
                 ScheduleSystemNexusOperationInput input) =>
                 ScheduleNexusOperationAsync<TResult>(new(
                     Service: input.Service,
-                    ClientOptions: new(SystemNexusPayloadVisitor.TemporalSystemEndpoint),
+                    ClientOptions: new(SystemNexusPayloads.TemporalSystemEndpoint),
                     OperationName: input.Operation.Name,
                     Arg: input.Arg,
                     Options: new(),
@@ -3275,7 +3275,7 @@ namespace Temporalio.Worker
 
             public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 string operationName, object? arg, NexusWorkflowOperationOptions? options = null) =>
-                SystemNexusPayloadVisitor.IsSystemEndpoint(Options.Endpoint) ?
+                SystemNexusPayloads.IsSystemEndpoint(Options.Endpoint) ?
                 instance.StartSystemNexusOperationAsync<TResult>(Service, operationName, arg) :
                 instance.outbound.Value.ScheduleNexusOperationAsync<TResult>(new(
                     Service: Service,
@@ -3303,7 +3303,7 @@ namespace Temporalio.Worker
 
             public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 string operationName, object? arg, NexusWorkflowOperationOptions? options = null) =>
-                SystemNexusPayloadVisitor.IsSystemEndpoint(Options.Endpoint) ?
+                SystemNexusPayloads.IsSystemEndpoint(Options.Endpoint) ?
                 instance.StartSystemNexusOperationAsync<TResult>(Service, operationName, arg) :
                 instance.outbound.Value.ScheduleNexusOperationAsync<TResult>(new(
                     Service: Service,

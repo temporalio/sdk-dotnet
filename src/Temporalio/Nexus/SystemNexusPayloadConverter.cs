@@ -40,7 +40,7 @@ namespace Temporalio.Nexus
         {
             using var context = SystemNexusConverterContext.Push(payloadConverter, failureConverter);
             var payload = OuterPayloadConverter.ToPayload(value);
-            SystemNexusPayloadVisitor.MarkSystemPayload(payload);
+            SystemNexusPayloads.MarkSystemPayload(payload);
             return payload;
         }
 

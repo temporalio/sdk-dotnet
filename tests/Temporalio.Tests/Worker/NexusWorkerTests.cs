@@ -1599,7 +1599,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             IReadOnlyCollection<Payload> payloads)
         {
             Assert.All(payloads, payload =>
-                Assert.False(SystemNexusPayloadVisitor.IsSystemPayload(payload)));
+                Assert.False(SystemNexusPayloads.IsSystemPayload(payload)));
             return inner.EncodeAsync(payloads);
         }
 
@@ -1607,7 +1607,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             IReadOnlyCollection<Payload> payloads)
         {
             Assert.All(payloads, payload =>
-                Assert.False(SystemNexusPayloadVisitor.IsSystemPayload(payload)));
+                Assert.False(SystemNexusPayloads.IsSystemPayload(payload)));
             return inner.DecodeAsync(payloads);
         }
     }
