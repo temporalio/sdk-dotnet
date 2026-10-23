@@ -271,17 +271,6 @@ public class ExternalStorageRunnerTests : TestBase
         Assert.Equal(before[1], back[1]);
     }
 
-    [Fact]
-    public void ThrowIfContainsReference_Reference_ThrowsTmprl1105()
-    {
-        var reference = ExternalStorageReferences.CreateReferencePayload(
-            "mem", new Dictionary<string, string> { ["key"] = "k0" }, 10);
-
-        ExternalStorageRunner.ThrowIfContainsReference(new[] { Sized(8) });
-        Assert.Throws<ExternalStorageNotConfiguredException>(() =>
-            ExternalStorageRunner.ThrowIfContainsReference(new[] { reference }));
-    }
-
     private static ExternalStorageRunner Runner(ExternalStorage storage) =>
         new ExternalStorageRunner(
             storage, new PassThroughLimiter<Payload>(), new PassThroughLimiter<StorageDriverClaim>());

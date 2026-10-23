@@ -43,23 +43,6 @@ namespace Temporalio.Converters
         }
 
         /// <summary>
-        /// Throw <see cref="ExternalStorageNotConfiguredException"/> (TMPRL1105) if any payload is a
-        /// reference, so a caller with no external storage configured does not hand a reference to
-        /// application code as its own data.
-        /// </summary>
-        /// <param name="payloads">Payloads to check.</param>
-        public static void ThrowIfContainsReference(IEnumerable<Payload> payloads)
-        {
-            foreach (var payload in payloads)
-            {
-                if (ExternalStorageReferences.IsReference(payload))
-                {
-                    throw new ExternalStorageNotConfiguredException();
-                }
-            }
-        }
-
-        /// <summary>
         /// Replace every payload at or above the configured size threshold with a reference,
         /// preserving order. Payloads below the threshold, or that the selector declines, are left
         /// as they are.
