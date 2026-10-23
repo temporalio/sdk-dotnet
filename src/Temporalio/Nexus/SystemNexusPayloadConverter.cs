@@ -1,8 +1,8 @@
 using System;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
+using Temporalio.Nexus.SystemNexus;
 using Temporalio.Worker;
-using Temporalio.Workflows;
 
 namespace Temporalio.Nexus
 {
