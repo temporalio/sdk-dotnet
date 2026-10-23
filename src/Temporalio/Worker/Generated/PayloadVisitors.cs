@@ -2014,7 +2014,10 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            await VisitAsync(value.GroupValues, visitPayload, visitPayloads).ConfigureAwait(false);
+            foreach (var payload_temporal_api_workflowservice_v1_CountWorkflowExecutionsResponse_AggregationGroup_1 in value.GroupValues)
+            {
+                await VisitAsync(payload_temporal_api_workflowservice_v1_CountWorkflowExecutionsResponse_AggregationGroup_1, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
         }
 
         internal static async Task VisitAsync(
@@ -2276,7 +2279,10 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            await VisitAsync(value.GroupValues, visitPayload, visitPayloads).ConfigureAwait(false);
+            foreach (var payload_temporal_api_workflowservice_v1_CountSchedulesResponse_AggregationGroup_1 in value.GroupValues)
+            {
+                await VisitAsync(payload_temporal_api_workflowservice_v1_CountSchedulesResponse_AggregationGroup_1, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
         }
 
         internal static async Task VisitAsync(
@@ -2941,7 +2947,10 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            await VisitAsync(value.GroupValues, visitPayload, visitPayloads).ConfigureAwait(false);
+            foreach (var payload_temporal_api_workflowservice_v1_CountActivityExecutionsResponse_AggregationGroup_1 in value.GroupValues)
+            {
+                await VisitAsync(payload_temporal_api_workflowservice_v1_CountActivityExecutionsResponse_AggregationGroup_1, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
         }
 
         internal static async Task VisitAsync(
@@ -2960,7 +2969,10 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            await VisitAsync(value.GroupValues, visitPayload, visitPayloads).ConfigureAwait(false);
+            foreach (var payload_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_AggregationGroup_1 in value.GroupValues)
+            {
+                await VisitAsync(payload_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_AggregationGroup_1, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
         }
 
         internal static async Task VisitAsync(

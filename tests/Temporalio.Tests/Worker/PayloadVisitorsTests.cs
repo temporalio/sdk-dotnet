@@ -4,6 +4,7 @@ using Google.Protobuf;
 using Google.Protobuf.Collections;
 using Temporalio.Api.Command.V1;
 using Temporalio.Api.Common.V1;
+using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Bridge.Api.ActivityResult;
 using Temporalio.Bridge.Api.ActivityTask;
 using Temporalio.Bridge.Api.WorkflowActivation;
@@ -103,6 +104,29 @@ public class PayloadVisitorsTests : TestBase
 
         var batch = Assert.Single(batches);
         Assert.Equal(new[] { first, second }, batch);
+    }
+
+    [Fact]
+    public async Task VisitAsync_ApiRepeatedPayload_VisitsEachValueAlone()
+    {
+        var first = new Payload();
+        var second = new Payload();
+        var group = new CountWorkflowExecutionsResponse.Types.AggregationGroup
+        {
+            GroupValues = { first, second },
+        };
+        var visited = new List<Payload>();
+
+        await PayloadVisitors.VisitAsync(
+            group,
+            payload =>
+            {
+                visited.Add(payload);
+                return Task.CompletedTask;
+            },
+            _ => throw new InvalidOperationException("Independent values visited as a batch"));
+
+        Assert.Equal(new[] { first, second }, visited);
     }
 
     private static async Task<(List<Payload> Visited, List<Payload> Batched)> VisitAsync(

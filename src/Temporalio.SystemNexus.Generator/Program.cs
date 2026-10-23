@@ -485,11 +485,22 @@ static IEnumerable<string> VisitFieldLines(
 
         if (IsPayload(fieldMessage))
         {
-            if (field.Label == FieldDescriptorProto.Types.Label.Repeated)
+            // Argument lists are visited as one collection so visitPayloads sees the whole
+            // batch, which codecs that pack or split payloads depend on. The API wraps argument
+            // lists in Payloads, but core protos use a bare repeated Payload; any other bare
+            // repeated Payload in the API holds independent values, so each is visited alone.
+            if (field.Label == FieldDescriptorProto.Types.Label.Repeated &&
+                (IsPayloads(message) || message.FullName.StartsWith("coresdk.", StringComparison.Ordinal)))
             {
-                // Visited as one collection so visitPayloads sees the whole batch, which codecs
-                // that pack or split payloads depend on.
                 yield return $"await VisitAsync(value.{propertyName}, visitPayload, visitPayloads).ConfigureAwait(false);";
+            }
+            else if (field.Label == FieldDescriptorProto.Types.Label.Repeated)
+            {
+                var valueName = UniqueLocalName(message, field, "payload");
+                yield return $"foreach (var {valueName} in value.{propertyName})";
+                yield return "{";
+                yield return $"    await VisitAsync({valueName}, visitPayload, visitPayloads).ConfigureAwait(false);";
+                yield return "}";
             }
             else
             {
