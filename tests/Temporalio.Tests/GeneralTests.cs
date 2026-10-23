@@ -17,12 +17,16 @@ public class GeneralTests : TestBase
         // Walk Temporal assemblies finding all classes that are cloneable
         var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes().Where(t =>
             t.IsClass &&
+            !t.IsAbstract &&
+            !t.ContainsGenericParameters &&
             t.Namespace is { } ns &&
             ns.StartsWith("Temporalio.") &&
             !ns.StartsWith("Temporalio.Api.") &&
             !ns.StartsWith("Temporalio.Bridge.") &&
             !typeof(Delegate).IsAssignableFrom(t) &&
             t.GetMethod("Clone", BindingFlags.Public | BindingFlags.Instance) != null));
+        // Include a closed generic options type because the scan above excludes open generic definitions.
+        types = types.Append(typeof(Temporalio.Client.NexusOperationOptions<string>));
         // Ensure at least one we know of is there
         Assert.Contains(typeof(Temporalio.Client.Schedules.ScheduleListOptions), types);
         foreach (var type in types)
