@@ -57,6 +57,110 @@ public class NexusWorkerRegistrationTests
     }
 
     [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    public class TemporalOperationAttrAsyncSuffixService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomethingAsync(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+    }
+
+    [Fact]
+    public void AddNexusService_TemporalOperationAsyncSuffix_Succeeds()
+    {
+        var options = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new TemporalOperationAttrAsyncSuffixService());
+
+        Assert.Equal(
+            "DoSomething",
+            Assert.Single(Assert.Single(options.NexusServices).OperationHandlers).Key);
+    }
+
+    [NexusService]
+    public interface IAsyncSuffixService
+    {
+        [NexusOperation]
+        string DoSomething(string input);
+
+        [NexusOperation]
+        int DoSomethingAsync(string input);
+    }
+
+    [NexusServiceHandler(typeof(IAsyncSuffixService))]
+    public class TemporalOperationExactMatchService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+
+        [TemporalOperation]
+        public Task<TemporalOperationResult<int>> DoSomethingAsync(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<int>.SyncResult(input.Length));
+    }
+
+    [Fact]
+    public void AddNexusService_TemporalOperationAsyncSuffix_MatchesExactFirst()
+    {
+        var options = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new TemporalOperationExactMatchService());
+
+        Assert.Equal(
+            new[] { "DoSomething", "DoSomethingAsync" },
+            Assert.Single(options.NexusServices).OperationHandlers.Keys.OrderBy(name => name));
+    }
+
+    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    public class TemporalOperationDuplicateAsyncSuffixService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomethingAsync(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+    }
+
+    [Fact]
+    public void AddNexusService_TemporalOperationAsyncSuffix_RejectsDuplicates()
+    {
+        var exc = Assert.Throws<ArgumentException>(() =>
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddNexusService(new TemporalOperationDuplicateAsyncSuffixService()));
+        Assert.Contains("Duplicate operation handler for operation 'DoSomething'", exc.Message);
+    }
+
+    [NexusService]
+    public interface IAsyncSuffixOnlyService
+    {
+        [NexusOperation]
+        string DoSomethingAsync(string input);
+    }
+
+    [NexusServiceHandler(typeof(IAsyncSuffixOnlyService))]
+    public class TemporalOperationUnsuffixedService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+    }
+
+    [Fact]
+    public void AddNexusService_TemporalOperationAsyncSuffix_DoesNotMatchInReverse()
+    {
+        var exc = Assert.Throws<ArgumentException>(() =>
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddNexusService(new TemporalOperationUnsuffixedService()));
+        Assert.Contains("Missing handlers for defined operations", exc.Message);
+        Assert.Contains("DoSomethingAsync", exc.Message);
+    }
+
+    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
     public class TemporalOperationAttrBadParamsService
     {
         [TemporalOperation]
