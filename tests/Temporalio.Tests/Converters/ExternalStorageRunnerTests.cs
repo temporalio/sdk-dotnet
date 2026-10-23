@@ -195,6 +195,19 @@ public class ExternalStorageRunnerTests : TestBase
     }
 
     [Fact]
+    public async Task StoreAsync_SinglePayload_LeavesTheDriversPayloadIntact()
+    {
+        var driver = new MapDriver("mem");
+        var runner = Runner(Storage(driver, threshold: 1));
+        var payload = Sized(50);
+        var before = payload.Clone();
+
+        await runner.StoreAsync(payload, null, default);
+
+        Assert.Equal(before, driver.Stored.Single().Value);
+    }
+
+    [Fact]
     public async Task RetrieveAsync_SinglePayload_ReplacesInPlace()
     {
         var runner = Runner(Storage(new MapDriver("mem"), threshold: 1));
@@ -305,7 +318,9 @@ public class ExternalStorageRunnerTests : TestBase
             foreach (var payload in payloads)
             {
                 var key = $"k{Stored.Count}";
-                Stored[key] = payload.Clone();
+                // Kept as handed over rather than copied, as an in-memory or deferred-upload driver
+                // would, so a runner that mutates a payload after giving it away is caught.
+                Stored[key] = payload;
                 claims.Add(new StorageDriverClaim(new Dictionary<string, string> { ["key"] = key }));
             }
             return Task.FromResult<IReadOnlyCollection<StorageDriverClaim>>(claims);

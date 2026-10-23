@@ -146,9 +146,12 @@ namespace Temporalio.Converters
         public async Task StoreAsync(
             Payload payload, IStorageDriverTargetInfo? target, CancellationToken cancellationToken)
         {
-            var result = (await StoreAsync(new[] { payload }, target, cancellationToken)
+            // The driver may keep the payload it is handed, and this one is overwritten below, so it
+            // gets a copy. Cloning shares the immutable data bytes, so only the metadata is copied.
+            var copy = payload.Clone();
+            var result = (await StoreAsync(new[] { copy }, target, cancellationToken)
                 .ConfigureAwait(false)).Single();
-            if (!ReferenceEquals(result, payload))
+            if (!ReferenceEquals(result, copy))
             {
                 ReplaceInPlace(payload, result);
             }
