@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Protobuf;
 using Temporalio.Api.Common.V1;
 using Temporalio.Exceptions;
 
@@ -136,7 +135,7 @@ namespace Temporalio.Converters
                 .ConfigureAwait(false)).Single();
             if (!ReferenceEquals(result, copy))
             {
-                ReplaceInPlace(payload, result);
+                payload.ReplaceWith(result);
             }
         }
 
@@ -221,16 +220,8 @@ namespace Temporalio.Converters
                 .ConfigureAwait(false)).Single();
             if (!ReferenceEquals(result, payload))
             {
-                ReplaceInPlace(payload, result);
+                payload.ReplaceWith(result);
             }
-        }
-
-        private static void ReplaceInPlace(Payload payload, Payload replacement)
-        {
-            payload.Metadata.Clear();
-            payload.Data = ByteString.Empty;
-            payload.ExternalPayloads.Clear();
-            payload.MergeFrom(replacement);
         }
     }
 }
