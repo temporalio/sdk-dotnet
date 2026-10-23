@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Temporalio.Api.Common.V1;
@@ -98,23 +99,26 @@ namespace Temporalio.Converters
             }
 
             var context = new StorageDriverStoreContext(target, storeLimiter);
-            await Task.WhenAll(groups.Values.Select(async group =>
-            {
-                var toStore = group.Items.Select(item => result[item.Index]).ToArray();
-                var claims = await group.Driver
-                    .StoreAsync(context, toStore, cancellationToken).ConfigureAwait(false);
-                if (claims.Count != group.Items.Count)
+            await WhenAllCancelOnFailureAsync(
+                groups.Values,
+                async (group, token) =>
                 {
-                    throw new InvalidOperationException(
-                        $"Storage driver '{group.Driver.Name}' returned {claims.Count} claims " +
-                        $"for {group.Items.Count} payloads.");
-                }
-                foreach (var (item, claim) in group.Items.Zip(claims, (i, c) => (i, c)))
-                {
-                    result[item.Index] = ExternalStorageReferences.CreateReferencePayload(
-                        group.Driver.Name, claim.ClaimData, item.Size);
-                }
-            })).ConfigureAwait(false);
+                    var toStore = group.Items.Select(item => result[item.Index]).ToArray();
+                    var claims = await group.Driver
+                        .StoreAsync(context, toStore, token).ConfigureAwait(false);
+                    if (claims.Count != group.Items.Count)
+                    {
+                        throw new InvalidOperationException(
+                            $"Storage driver '{group.Driver.Name}' returned {claims.Count} " +
+                            $"claims for {group.Items.Count} payloads.");
+                    }
+                    foreach (var (item, claim) in group.Items.Zip(claims, (i, c) => (i, c)))
+                    {
+                        result[item.Index] = ExternalStorageReferences.CreateReferencePayload(
+                            group.Driver.Name, claim.ClaimData, item.Size);
+                    }
+                },
+                cancellationToken).ConfigureAwait(false);
             return result;
         }
 
@@ -189,24 +193,27 @@ namespace Temporalio.Converters
             }
 
             var context = new StorageDriverRetrieveContext(retrieveLimiter);
-            await Task.WhenAll(work.Select(async entry =>
-            {
-                var claims = entry.Items.Select(item => item.Claim).ToArray();
-                var retrieved = await entry.Driver
-                    .RetrieveAsync(context, claims, cancellationToken).ConfigureAwait(false);
-                if (retrieved.Count != entry.Items.Count)
+            await WhenAllCancelOnFailureAsync(
+                work,
+                async (entry, token) =>
                 {
-                    throw new InvalidOperationException(
-                        $"Storage driver '{entry.Driver.Name}' returned {retrieved.Count} " +
-                        $"payloads for {entry.Items.Count} claims.");
-                }
-                foreach (var (item, payload) in entry.Items.Zip(retrieved, (i, p) => (i, p)))
-                {
-                    // Later passes modify payloads in place, which must not reach an instance the
-                    // driver may still hold or have returned for another claim.
-                    result[item.Index] = payload.Clone();
-                }
-            })).ConfigureAwait(false);
+                    var claims = entry.Items.Select(item => item.Claim).ToArray();
+                    var retrieved = await entry.Driver
+                        .RetrieveAsync(context, claims, token).ConfigureAwait(false);
+                    if (retrieved.Count != entry.Items.Count)
+                    {
+                        throw new InvalidOperationException(
+                            $"Storage driver '{entry.Driver.Name}' returned {retrieved.Count} " +
+                            $"payloads for {entry.Items.Count} claims.");
+                    }
+                    foreach (var (item, payload) in entry.Items.Zip(retrieved, (i, p) => (i, p)))
+                    {
+                        // Later passes modify payloads in place, which must not reach an instance
+                        // the driver may still hold or have returned for another claim.
+                        result[item.Index] = payload.Clone();
+                    }
+                },
+                cancellationToken).ConfigureAwait(false);
             return result;
         }
 
@@ -223,6 +230,45 @@ namespace Temporalio.Converters
             if (!ReferenceEquals(result, payload))
             {
                 payload.ReplaceWith(result);
+            }
+        }
+
+        private static async Task WhenAllCancelOnFailureAsync<T>(
+            IEnumerable<T> items,
+            Func<T, CancellationToken, Task> run,
+            CancellationToken cancellationToken)
+        {
+            using (var cancelOthers = CancellationTokenSource.CreateLinkedTokenSource(
+                cancellationToken))
+            {
+                ExceptionDispatchInfo? firstFailure = null;
+                var tasks = items.Select(async item =>
+                {
+                    try
+                    {
+                        await run(item, cancelOthers.Token).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        if (Interlocked.CompareExchange(
+                            ref firstFailure, ExceptionDispatchInfo.Capture(e), null) is null)
+                        {
+                            cancelOthers.Cancel();
+                        }
+                        throw;
+                    }
+                }).ToList();
+                try
+                {
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
+                }
+                catch
+                {
+                    // Cancelling can finish another task before the one that cancelled it, so the
+                    // failure WhenAll surfaces may be that task's response rather than the cause.
+                    firstFailure?.Throw();
+                    throw;
+                }
             }
         }
     }

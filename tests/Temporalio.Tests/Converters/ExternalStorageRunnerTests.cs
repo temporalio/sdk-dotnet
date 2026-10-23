@@ -245,6 +245,37 @@ public class ExternalStorageRunnerTests : TestBase
     }
 
     [Fact]
+    public async Task RetrieveAsync_DriverFails_CancelsOthersAndThrowsTheCause()
+    {
+        // "waits" fails inline from the cancellation, so it finishes failing before "fails" does
+        // and is also first in task order. The exception surfaced must still be the cause. Run
+        // off the test's synchronization context, which would stop the continuations inlining.
+        var abandoned = new TaskCompletionSource<IReadOnlyCollection<Payload>>();
+        var waits = new RetrieveFuncDriver("waits", token =>
+        {
+            token.Register(() => abandoned.TrySetException(
+                new InvalidOperationException("Retrieve abandoned")));
+            return abandoned.Task;
+        });
+        var fails = new RetrieveFuncDriver(
+            "fails", token => throw new InvalidOperationException("Driver broke"));
+        var storage = new ExternalStorage(
+            new IStorageDriver[] { waits, fails }, (context, payload) => waits);
+        var runner = Runner(storage);
+        var refWaits = ExternalStorageReferences.CreateReferencePayload(
+            "waits", new Dictionary<string, string> { ["key"] = "one" }, 1);
+        var refFails = ExternalStorageReferences.CreateReferencePayload(
+            "fails", new Dictionary<string, string> { ["key"] = "two" }, 1);
+
+        var err = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => Task.Run(() => runner.RetrieveAsync(new[] { refWaits, refFails }, default))
+                .WaitAsync(TimeSpan.FromSeconds(5)));
+
+        Assert.Equal("Driver broke", err.Message);
+        Assert.True(abandoned.Task.IsFaulted);
+    }
+
+    [Fact]
     public async Task RetrieveAsync_LeavesTheDriversPayloadIntact()
     {
         var driver = new MapDriver("mem");
@@ -389,6 +420,34 @@ public class ExternalStorageRunnerTests : TestBase
                 .Select(c => new Payload() { Data = ByteString.CopyFromUtf8(c.ClaimData["key"]) })
                 .ToList();
         }
+    }
+
+    private sealed class RetrieveFuncDriver : IStorageDriver
+    {
+        private readonly Func<CancellationToken, Task<IReadOnlyCollection<Payload>>> retrieve;
+
+        public RetrieveFuncDriver(
+            string name, Func<CancellationToken, Task<IReadOnlyCollection<Payload>>> retrieve)
+        {
+            Name = name;
+            this.retrieve = retrieve;
+        }
+
+        public string Name { get; }
+
+        public string Type => "test.retrievefuncdriver";
+
+        public Task<IReadOnlyCollection<StorageDriverClaim>> StoreAsync(
+            StorageDriverStoreContext context,
+            IReadOnlyCollection<Payload> payloads,
+            CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
+        public Task<IReadOnlyCollection<Payload>> RetrieveAsync(
+            StorageDriverRetrieveContext context,
+            IReadOnlyCollection<StorageDriverClaim> claims,
+            CancellationToken cancellationToken) =>
+            retrieve(cancellationToken);
     }
 
     private sealed class PassThroughLimiter<TItem> : IStorageDriverLimiter<TItem>
