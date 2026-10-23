@@ -96,6 +96,12 @@ void PostProcessGeneratedNexusApi()
     WriteWorkerGeneratedFile("SystemNexusWorkflowOutboundInterceptor.cs");
 
     var notificationModels = File.ReadAllText(Path.Join(notificationsStagingOutputDir, "Models.cs"));
+    if (!notificationModels.Contains("namespace Temporalio.Workflows", StringComparison.Ordinal))
+    {
+        throw new InvalidOperationException(
+            "Generated notification Models.cs does not contain the expected namespace Temporalio.Workflows");
+    }
+
     notificationModels = notificationModels.Replace(
         "namespace Temporalio.Workflows", "namespace Temporalio.Nexus.Notifications");
     File.WriteAllText(Path.Join(notificationsGeneratedDir, "Models.cs"), notificationModels);
