@@ -470,21 +470,10 @@ static IEnumerable<string> VisitFieldLines(
             var valueName = UniqueLocalName(message, field, "item");
             yield return $"foreach (var {valueName} in value.{propertyName}.Values)";
             yield return "{";
-            if (IsPayload(valueMessage))
-            {
-                yield return $"    if ({valueName} != null)";
-                yield return "    {";
-                yield return $"        await VisitAsync({valueName}, visitPayload, visitPayloads).ConfigureAwait(false);";
-                yield return "    }";
-            }
-            else
-            {
-                yield return $"    if ({valueName} != null)";
-                yield return "    {";
-                yield return $"        await VisitAsync({valueName}, visitPayload, visitPayloads).ConfigureAwait(false);";
-                yield return "    }";
-            }
-
+            yield return $"    if ({valueName} != null)";
+            yield return "    {";
+            yield return $"        await VisitAsync({valueName}, visitPayload, visitPayloads).ConfigureAwait(false);";
+            yield return "    }";
             yield return "}";
             continue;
         }
@@ -498,11 +487,9 @@ static IEnumerable<string> VisitFieldLines(
         {
             if (field.Label == FieldDescriptorProto.Types.Label.Repeated)
             {
-                var valueName = UniqueLocalName(message, field, "payload");
-                yield return $"foreach (var {valueName} in value.{propertyName})";
-                yield return "{";
-                yield return $"    await VisitAsync({valueName}, visitPayload, visitPayloads).ConfigureAwait(false);";
-                yield return "}";
+                // Visited as one collection so visitPayloads sees the whole batch, which codecs
+                // that pack or split payloads depend on.
+                yield return $"await VisitAsync(value.{propertyName}, visitPayload, visitPayloads).ConfigureAwait(false);";
             }
             else
             {

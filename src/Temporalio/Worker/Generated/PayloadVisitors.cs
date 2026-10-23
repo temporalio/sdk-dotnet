@@ -769,10 +769,7 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            foreach (var payload_temporal_api_common_v1_Payloads_1 in value.Payloads_)
-            {
-                await VisitAsync(payload_temporal_api_common_v1_Payloads_1, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            await VisitAsync(value.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
         }
 
         internal static async Task VisitAsync(
@@ -2017,10 +2014,7 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            foreach (var payload_temporal_api_workflowservice_v1_CountWorkflowExecutionsResponse_AggregationGroup_1 in value.GroupValues)
-            {
-                await VisitAsync(payload_temporal_api_workflowservice_v1_CountWorkflowExecutionsResponse_AggregationGroup_1, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            await VisitAsync(value.GroupValues, visitPayload, visitPayloads).ConfigureAwait(false);
         }
 
         internal static async Task VisitAsync(
@@ -2282,10 +2276,7 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            foreach (var payload_temporal_api_workflowservice_v1_CountSchedulesResponse_AggregationGroup_1 in value.GroupValues)
-            {
-                await VisitAsync(payload_temporal_api_workflowservice_v1_CountSchedulesResponse_AggregationGroup_1, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            await VisitAsync(value.GroupValues, visitPayload, visitPayloads).ConfigureAwait(false);
         }
 
         internal static async Task VisitAsync(
@@ -2950,10 +2941,7 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            foreach (var payload_temporal_api_workflowservice_v1_CountActivityExecutionsResponse_AggregationGroup_1 in value.GroupValues)
-            {
-                await VisitAsync(payload_temporal_api_workflowservice_v1_CountActivityExecutionsResponse_AggregationGroup_1, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            await VisitAsync(value.GroupValues, visitPayload, visitPayloads).ConfigureAwait(false);
         }
 
         internal static async Task VisitAsync(
@@ -2972,10 +2960,7 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            foreach (var payload_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_AggregationGroup_1 in value.GroupValues)
-            {
-                await VisitAsync(payload_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_AggregationGroup_1, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            await VisitAsync(value.GroupValues, visitPayload, visitPayloads).ConfigureAwait(false);
         }
 
         internal static async Task VisitAsync(
@@ -2994,10 +2979,7 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            foreach (var payload_coresdk_workflow_activation_InitializeWorkflow_3 in value.Arguments)
-            {
-                await VisitAsync(payload_coresdk_workflow_activation_InitializeWorkflow_3, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            await VisitAsync(value.Arguments, visitPayload, visitPayloads).ConfigureAwait(false);
             foreach (var item_coresdk_workflow_activation_InitializeWorkflow_5 in value.Headers.Values)
             {
                 if (item_coresdk_workflow_activation_InitializeWorkflow_5 != null)
@@ -3024,10 +3006,7 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            foreach (var payload_coresdk_workflow_activation_QueryWorkflow_3 in value.Arguments)
-            {
-                await VisitAsync(payload_coresdk_workflow_activation_QueryWorkflow_3, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            await VisitAsync(value.Arguments, visitPayload, visitPayloads).ConfigureAwait(false);
             foreach (var item_coresdk_workflow_activation_QueryWorkflow_5 in value.Headers.Values)
             {
                 if (item_coresdk_workflow_activation_QueryWorkflow_5 != null)
@@ -3042,10 +3021,7 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            foreach (var payload_coresdk_workflow_activation_SignalWorkflow_2 in value.Input)
-            {
-                await VisitAsync(payload_coresdk_workflow_activation_SignalWorkflow_2, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            await VisitAsync(value.Input, visitPayload, visitPayloads).ConfigureAwait(false);
             foreach (var item_coresdk_workflow_activation_SignalWorkflow_5 in value.Headers.Values)
             {
                 if (item_coresdk_workflow_activation_SignalWorkflow_5 != null)
@@ -3230,10 +3206,7 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            foreach (var payload_coresdk_workflow_activation_DoUpdate_4 in value.Input)
-            {
-                await VisitAsync(payload_coresdk_workflow_activation_DoUpdate_4, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            await VisitAsync(value.Input, visitPayload, visitPayloads).ConfigureAwait(false);
             foreach (var item_coresdk_workflow_activation_DoUpdate_5 in value.Headers.Values)
             {
                 if (item_coresdk_workflow_activation_DoUpdate_5 != null)
@@ -3362,10 +3335,7 @@ namespace Temporalio.Worker
                     await VisitAsync(item_coresdk_workflow_commands_ScheduleActivity_6, visitPayload, visitPayloads).ConfigureAwait(false);
                 }
             }
-            foreach (var payload_coresdk_workflow_commands_ScheduleActivity_7 in value.Arguments)
-            {
-                await VisitAsync(payload_coresdk_workflow_commands_ScheduleActivity_7, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            await VisitAsync(value.Arguments, visitPayload, visitPayloads).ConfigureAwait(false);
         }
 
         internal static async Task VisitAsync(
@@ -3421,10 +3391,7 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            foreach (var payload_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_3 in value.Arguments)
-            {
-                await VisitAsync(payload_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_3, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            await VisitAsync(value.Arguments, visitPayload, visitPayloads).ConfigureAwait(false);
             foreach (var item_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_6 in value.Memo.Values)
             {
                 if (item_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_6 != null)
@@ -3457,10 +3424,7 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            foreach (var payload_coresdk_workflow_commands_StartChildWorkflowExecution_6 in value.Input)
-            {
-                await VisitAsync(payload_coresdk_workflow_commands_StartChildWorkflowExecution_6, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            await VisitAsync(value.Input, visitPayload, visitPayloads).ConfigureAwait(false);
             foreach (var item_coresdk_workflow_commands_StartChildWorkflowExecution_15 in value.Headers.Values)
             {
                 if (item_coresdk_workflow_commands_StartChildWorkflowExecution_15 != null)
@@ -3482,10 +3446,7 @@ namespace Temporalio.Worker
             PayloadVisitor visitPayload,
             PayloadsVisitor visitPayloads)
         {
-            foreach (var payload_coresdk_workflow_commands_SignalExternalWorkflowExecution_5 in value.Args)
-            {
-                await VisitAsync(payload_coresdk_workflow_commands_SignalExternalWorkflowExecution_5, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            await VisitAsync(value.Args, visitPayload, visitPayloads).ConfigureAwait(false);
             foreach (var item_coresdk_workflow_commands_SignalExternalWorkflowExecution_6 in value.Headers.Values)
             {
                 if (item_coresdk_workflow_commands_SignalExternalWorkflowExecution_6 != null)
@@ -3507,10 +3468,7 @@ namespace Temporalio.Worker
                     await VisitAsync(item_coresdk_workflow_commands_ScheduleLocalActivity_6, visitPayload, visitPayloads).ConfigureAwait(false);
                 }
             }
-            foreach (var payload_coresdk_workflow_commands_ScheduleLocalActivity_7 in value.Arguments)
-            {
-                await VisitAsync(payload_coresdk_workflow_commands_ScheduleLocalActivity_7, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            await VisitAsync(value.Arguments, visitPayload, visitPayloads).ConfigureAwait(false);
         }
 
         internal static async Task VisitAsync(
@@ -3662,14 +3620,8 @@ namespace Temporalio.Worker
                     await VisitAsync(item_coresdk_activity_task_Start_6, visitPayload, visitPayloads).ConfigureAwait(false);
                 }
             }
-            foreach (var payload_coresdk_activity_task_Start_7 in value.Input)
-            {
-                await VisitAsync(payload_coresdk_activity_task_Start_7, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
-            foreach (var payload_coresdk_activity_task_Start_8 in value.HeartbeatDetails)
-            {
-                await VisitAsync(payload_coresdk_activity_task_Start_8, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            await VisitAsync(value.Input, visitPayload, visitPayloads).ConfigureAwait(false);
+            await VisitAsync(value.HeartbeatDetails, visitPayload, visitPayloads).ConfigureAwait(false);
         }
 
         internal static async Task VisitAsync(

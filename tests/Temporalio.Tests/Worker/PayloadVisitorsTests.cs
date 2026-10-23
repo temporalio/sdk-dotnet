@@ -2,6 +2,7 @@ namespace Temporalio.Tests.Worker;
 
 using Google.Protobuf;
 using Google.Protobuf.Collections;
+using Temporalio.Api.Command.V1;
 using Temporalio.Api.Common.V1;
 using Temporalio.Bridge.Api.ActivityResult;
 using Temporalio.Bridge.Api.ActivityTask;
@@ -35,9 +36,9 @@ public class PayloadVisitorsTests : TestBase
         var searchAttributePaths = 0;
         // One payload is populated at a time and visited immediately: sibling fields of the same
         // protobuf oneof clear each other, so only the payload just set is reachable.
-        await ForEachPayloadAsync(root, async (path, getPayload, underSearchAttributes) =>
+        await ForEachPayloadAsync(root, async (path, getPayload, underSearchAttributes, repeated) =>
         {
-            var visited = await VisitAsync(root);
+            var (visited, batched) = await VisitAsync(root);
             var wasVisited = visited.Any(p => ReferenceEquals(p, getPayload()));
             if (underSearchAttributes)
             {
@@ -49,6 +50,13 @@ public class PayloadVisitorsTests : TestBase
             {
                 checkedPaths++;
                 Assert.True(wasVisited, $"Payload at {path} was not visited");
+                if (repeated)
+                {
+                    // Codecs that pack or split payloads only work when handed the whole field.
+                    Assert.True(
+                        batched.Any(p => ReferenceEquals(p, getPayload())),
+                        $"Repeated payload at {path} was not visited as a batch");
+                }
             }
         });
 
@@ -62,7 +70,7 @@ public class PayloadVisitorsTests : TestBase
         var paths = new List<string>();
         await ForEachPayloadAsync(
             new WorkflowActivation(),
-            (path, _, _) =>
+            (path, _, _, _) =>
             {
                 paths.Add(path);
                 return Task.CompletedTask;
@@ -75,9 +83,33 @@ public class PayloadVisitorsTests : TestBase
         Assert.Contains("Jobs.InitializeWorkflow.SearchAttributes.IndexedFields", paths);
     }
 
-    private static async Task<List<Payload>> VisitAsync(IMessage root)
+    [Fact]
+    public async Task VisitAsync_MapOfPayloads_VisitsEachValueAsBatch()
+    {
+        var first = new Payload();
+        var second = new Payload();
+        var marker = new RecordMarkerCommandAttributes();
+        marker.Details["some-key"] = new Payloads { Payloads_ = { first, second } };
+        var batches = new List<IReadOnlyCollection<Payload>>();
+
+        await PayloadVisitors.VisitAsync(
+            marker,
+            _ => throw new InvalidOperationException("Payload visited outside its batch"),
+            payloads =>
+            {
+                batches.Add(payloads.ToList());
+                return Task.FromResult(payloads);
+            });
+
+        var batch = Assert.Single(batches);
+        Assert.Equal(new[] { first, second }, batch);
+    }
+
+    private static async Task<(List<Payload> Visited, List<Payload> Batched)> VisitAsync(
+        IMessage root)
     {
         var visited = new List<Payload>();
+        var batched = new List<Payload>();
         PayloadVisitors.PayloadVisitor visitPayload = payload =>
         {
             visited.Add(payload);
@@ -86,6 +118,7 @@ public class PayloadVisitorsTests : TestBase
         PayloadVisitors.PayloadsVisitor visitPayloads = payloads =>
         {
             visited.AddRange(payloads);
+            batched.AddRange(payloads);
             return Task.FromResult(payloads);
         };
         await (root switch
@@ -96,11 +129,11 @@ public class PayloadVisitorsTests : TestBase
             ActivityExecutionResult value => PayloadVisitors.VisitAsync(value, visitPayload, visitPayloads),
             _ => throw new InvalidOperationException($"No entry point for {root.GetType()}"),
         });
-        return visited;
+        return (visited, batched);
     }
 
     private static Task ForEachPayloadAsync(
-        IMessage root, Func<string, Func<Payload>, bool, Task> onPayload) =>
+        IMessage root, Func<string, Func<Payload>, bool, bool, Task> onPayload) =>
         WalkAsync(root, string.Empty, new List<(Type Message, string Property)>(), false, onPayload);
 
     private static async Task WalkAsync(
@@ -108,7 +141,7 @@ public class PayloadVisitorsTests : TestBase
         string path,
         List<(Type Message, string Property)> seen,
         bool underSearchAttributes,
-        Func<string, Func<Payload>, bool, Task> onPayload)
+        Func<string, Func<Payload>, bool, bool, Task> onPayload)
     {
         foreach (var prop in current.GetType().GetProperties())
         {
@@ -118,7 +151,7 @@ public class PayloadVisitorsTests : TestBase
             {
                 prop.SetValue(current, new Payload());
                 await onPayload(
-                    childPath, () => (Payload)prop.GetValue(current)!, inSearchAttributes);
+                    childPath, () => (Payload)prop.GetValue(current)!, inSearchAttributes, false);
             }
             else if (prop.PropertyType.IsAssignableTo(typeof(RepeatedField<Payload>)))
             {
@@ -128,7 +161,8 @@ public class PayloadVisitorsTests : TestBase
                 await onPayload(
                     childPath,
                     () => ((RepeatedField<Payload>)prop.GetValue(current)!)[0],
-                    inSearchAttributes);
+                    inSearchAttributes,
+                    true);
             }
             else if (prop.PropertyType.IsAssignableTo(typeof(MapField<string, Payload>)))
             {
@@ -137,7 +171,8 @@ public class PayloadVisitorsTests : TestBase
                 await onPayload(
                     childPath,
                     () => ((MapField<string, Payload>)prop.GetValue(current)!)["some-key"],
-                    inSearchAttributes);
+                    inSearchAttributes,
+                    false);
             }
             else if (prop.PropertyType.IsAssignableTo(typeof(IMessage)))
             {
