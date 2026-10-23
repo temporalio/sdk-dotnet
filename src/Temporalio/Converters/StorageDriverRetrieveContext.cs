@@ -3,8 +3,7 @@ namespace Temporalio.Converters
     /// <summary>
     /// Context given to <see cref="IStorageDriver.RetrieveAsync" />.
     /// </summary>
-    /// <param name="Limiter">Limiter the driver must run each individual retrieve request through,
-    /// so that its fan-out counts against the configured limits.</param>
+    /// <param name="Limiter">Limiter for this driver's retrieve requests.</param>
     /// <remarks>
     /// This deliberately carries no target. A payload must be retrievable from its
     /// <see cref="StorageDriverClaim" /> alone, since the same payload can be read from a different

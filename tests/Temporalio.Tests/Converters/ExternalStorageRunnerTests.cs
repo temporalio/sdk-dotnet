@@ -33,7 +33,7 @@ public class ExternalStorageRunnerTests : TestBase
             new[] { small, atThreshold }, null, default)).ToList();
 
         Assert.Same(small, result[0]);
-        Assert.True(ExternalStorageReferences.IsReference(result[1]));
+        Assert.True(ExternalStorageReferences.IsPlainReference(result[1]));
         // What the driver was handed is byte-equal to what history would have held inline.
         Assert.Equal(atThreshold, driver.Stored.Single().Value);
     }
@@ -67,7 +67,7 @@ public class ExternalStorageRunnerTests : TestBase
 
         var result = (await runner.StoreAsync(new[] { routed, declined }, null, default)).ToList();
 
-        Assert.True(ExternalStorageReferences.IsReference(result[0]));
+        Assert.True(ExternalStorageReferences.IsPlainReference(result[0]));
         Assert.Same(declined, result[1]);
     }
 
@@ -79,7 +79,7 @@ public class ExternalStorageRunnerTests : TestBase
         var result = (await runner.StoreAsync(
             new[] { Sized(1), Sized(8) }, null, default)).ToList();
 
-        Assert.All(result, p => Assert.True(ExternalStorageReferences.IsReference(p)));
+        Assert.All(result, p => Assert.True(ExternalStorageReferences.IsPlainReference(p)));
     }
 
     [Fact]
@@ -102,7 +102,7 @@ public class ExternalStorageRunnerTests : TestBase
 
         var result = (await runner.StoreAsync(payloads, null, default)).ToList();
 
-        Assert.All(result, p => Assert.True(ExternalStorageReferences.IsReference(p)));
+        Assert.All(result, p => Assert.True(ExternalStorageReferences.IsPlainReference(p)));
         // Each driver was called once with its two payloads.
         Assert.Equal(new[] { 2 }, a.Batches);
         Assert.Equal(new[] { 2 }, b.Batches);
@@ -179,7 +179,7 @@ public class ExternalStorageRunnerTests : TestBase
 
         await runner.StoreAsync(payload, null, default);
 
-        Assert.True(ExternalStorageReferences.IsReference(payload));
+        Assert.True(ExternalStorageReferences.IsPlainReference(payload));
     }
 
     [Fact]
@@ -215,7 +215,7 @@ public class ExternalStorageRunnerTests : TestBase
         var expected = payload.Clone();
 
         await runner.StoreAsync(payload, null, default);
-        Assert.True(ExternalStorageReferences.IsReference(payload));
+        Assert.True(ExternalStorageReferences.IsPlainReference(payload));
         await runner.RetrieveAsync(payload, default);
 
         Assert.Equal(expected, payload);
@@ -310,7 +310,7 @@ public class ExternalStorageRunnerTests : TestBase
         var before = payloads.Select(p => p.Clone()).ToArray();
 
         var stored = await runner.StoreAsync(payloads, null, default);
-        Assert.All(stored, p => Assert.True(ExternalStorageReferences.IsReference(p)));
+        Assert.All(stored, p => Assert.True(ExternalStorageReferences.IsPlainReference(p)));
         var back = (await runner.RetrieveAsync(stored, default)).ToList();
 
         Assert.Equal(before[0], back[0]);

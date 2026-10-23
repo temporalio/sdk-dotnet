@@ -52,12 +52,57 @@ public class ExternalStorageReferencesTests : TestBase
     }
 
     [Fact]
+    public void NeedsRetrieval_MarkedPayload_IgnoresEncoding()
+    {
+        // A codec has encoded the reference, so neither the encoding nor the message type still
+        // identifies it; only the marker does.
+        var payload = new Payload
+        {
+            Metadata = { ["encoding"] = ByteString.CopyFromUtf8("binary/encrypted") },
+            Data = ByteString.CopyFromUtf8("opaque"),
+        };
+        Assert.False(ExternalStorageReferences.NeedsRetrieval(payload));
+
+        ExternalStorageReferences.Mark(payload);
+
+        Assert.True(ExternalStorageReferences.NeedsRetrieval(payload));
+        // Its data is not a reference until the codec has decoded it.
+        Assert.False(ExternalStorageReferences.IsPlainReference(payload));
+    }
+
+    [Fact]
+    public void NeedsRetrieval_MarkerWithOtherValue_ReturnsFalse()
+    {
+        var payload = new Payload
+        {
+            Metadata =
+            {
+                ["__temporal_external_storage_reference"] = ByteString.CopyFromUtf8("false"),
+            },
+            Data = ByteString.CopyFromUtf8("{}"),
+        };
+
+        Assert.False(ExternalStorageReferences.NeedsRetrieval(payload));
+    }
+
+    [Fact]
+    public void NeedsRetrieval_UnmarkedReference_ReturnsTrue()
+    {
+        // A history written before the marker existed, or one no codec encoded.
+        var payload = ExternalStorageReferences.CreateReferencePayload(
+            "mem", new Dictionary<string, string> { ["key"] = "k" }, 10);
+
+        Assert.True(ExternalStorageReferences.NeedsRetrieval(payload));
+        Assert.True(ExternalStorageReferences.IsPlainReference(payload));
+    }
+
+    [Fact]
     public void ParseReference_CreatedReference_RoundTrips()
     {
         var payload = ExternalStorageReferences.CreateReferencePayload(
             "my-driver", new Dictionary<string, string> { ["key"] = "k" }, originalSizeBytes: 1);
 
-        Assert.True(ExternalStorageReferences.IsReference(payload));
+        Assert.True(ExternalStorageReferences.IsPlainReference(payload));
         var reference = ExternalStorageReferences.ParseReference(payload);
         Assert.Equal("my-driver", reference.DriverName);
         Assert.Equal("k", reference.ClaimData["key"]);
@@ -95,7 +140,7 @@ public class ExternalStorageReferencesTests : TestBase
 
         var payload = ProtoJsonParser.Parse<Payload>(RawPayloadJson);
 
-        Assert.True(ExternalStorageReferences.IsReference(payload));
+        Assert.True(ExternalStorageReferences.IsPlainReference(payload));
         var reference = ExternalStorageReferences.ParseReference(payload);
         Assert.Equal("aws.s3driver", reference.DriverName);
         Assert.Equal("test-bucket", reference.ClaimData["bucket"]);
@@ -147,7 +192,7 @@ public class ExternalStorageReferencesTests : TestBase
     [InlineData("json/protobuf", "temporal.api.common.v1.Payload")]
     [InlineData("json/protobuf", null)]
     [InlineData(null, "temporal.api.sdk.v1.ExternalStorageReference")]
-    public void IsReference_NonReferencePayload_ReturnsFalse(
+    public void NeedsRetrieval_NonReferencePayload_ReturnsFalse(
         string? encoding, string? messageType)
     {
         var payload = new Payload() { Data = ByteString.CopyFromUtf8("{}") };
@@ -160,7 +205,7 @@ public class ExternalStorageReferencesTests : TestBase
             payload.Metadata["messageType"] = ByteString.CopyFromUtf8(messageType);
         }
 
-        Assert.False(ExternalStorageReferences.IsReference(payload));
+        Assert.False(ExternalStorageReferences.NeedsRetrieval(payload));
         Assert.Throws<InvalidExternalStorageReferenceException>(() =>
             ExternalStorageReferences.ParseReference(payload));
     }

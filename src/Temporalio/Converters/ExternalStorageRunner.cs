@@ -161,7 +161,7 @@ namespace Temporalio.Converters
             var groups = new Dictionary<string, List<(int Index, StorageDriverClaim Claim)>>();
             for (var i = 0; i < result.Length; i++)
             {
-                if (!ExternalStorageReferences.IsReference(result[i]))
+                if (!ExternalStorageReferences.IsPlainReference(result[i]))
                 {
                     continue;
                 }
