@@ -7,8 +7,7 @@ namespace Temporalio.Converters
     /// </summary>
     /// <param name="Target">The execution the payloads are being stored on behalf of, or null if
     /// there is no associated execution.</param>
-    /// <param name="Limiter">Limiter the driver must run each individual store request through, so
-    /// that its fan-out counts against the configured limits.</param>
+    /// <param name="Limiter">Limiter for this driver's store requests.</param>
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
