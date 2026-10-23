@@ -20,7 +20,10 @@ namespace Temporalio.Nexus
     /// <para>This attribute is mutually exclusive with
     /// <see cref="NexusRpc.Handlers.NexusOperationHandlerAttribute"/> on the same method. The
     /// operation this method handles is matched by C# method name to the corresponding
-    /// <see cref="NexusRpc.NexusOperationAttribute"/> method on the service interface.</para>
+    /// <see cref="NexusRpc.NexusOperationAttribute"/> method on the service interface. An exact
+    /// match takes precedence. If no exact match exists and the handler method name ends with
+    /// <c>Async</c>, the SDK removes this suffix before matching again. This does not change
+    /// the operation's wire name.</para>
     /// <para>Example:</para>
     /// <code>
     /// [NexusServiceHandler(typeof(ITransferService))]

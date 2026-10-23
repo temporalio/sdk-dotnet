@@ -105,8 +105,6 @@ Pending changes belong in changelog/; see changelog/README.md.
   `ExecutionTime`, `LastDeploymentVersion`, `Priority`, `RetryPolicy`, `StartDelay`,
   `TotalHeartbeatCount`, `GetLastFailureAsync`, `GetOutcomeFailureAsync`, `GetResultAsync`,
   and access to raw Proto objects from the response.
-- Nexus service handler methods marked with `TemporalOperation` may now use an `Async` suffix while
-  matching a service operation without the suffix.
 - Added operation-specific outbound workflow interceptors for Temporal System Nexus operations.
   `SignalWithStartWorkflowAsync` can now be intercepted before the existing
   `ScheduleSystemNexusOperationAsync` hook.
