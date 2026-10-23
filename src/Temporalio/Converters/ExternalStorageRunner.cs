@@ -96,7 +96,7 @@ namespace Temporalio.Converters
                     continue;
                 }
                 // Checked by reference, so a driver built to look like a registered one is rejected.
-                if (!storage.Drivers.Any(d => ReferenceEquals(d, driver)))
+                if (!ReferenceEquals(storage.GetDriver(driver.Name), driver))
                 {
                     throw new InvalidOperationException(
                         "Storage driver selector returned a driver that is not registered: " +
