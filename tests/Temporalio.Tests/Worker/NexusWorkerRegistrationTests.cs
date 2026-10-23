@@ -9,6 +9,20 @@ using Xunit;
 public class NexusWorkerRegistrationTests
 {
     [NexusService]
+    public interface IStringService
+    {
+        [NexusOperation]
+        string DoSomething(string input);
+    }
+
+    [NexusService]
+    public interface IGenericInputService
+    {
+        [NexusOperation]
+        int Sum(List<int> values);
+    }
+
+    [NexusService]
     public interface IBadService
     {
         [NexusOperation]
@@ -35,7 +49,7 @@ public class NexusWorkerRegistrationTests
             Assert.IsType<ArgumentException>(exc.InnerException).Message);
     }
 
-    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationAttrBadReturnService
     {
         [TemporalOperation]
@@ -56,7 +70,7 @@ public class NexusWorkerRegistrationTests
             Assert.IsType<ArgumentException>(exc.InnerException).Message);
     }
 
-    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationAttrAsyncSuffixService
     {
         [TemporalOperation]
@@ -111,7 +125,7 @@ public class NexusWorkerRegistrationTests
             Assert.Single(options.NexusServices).OperationHandlers.Keys.OrderBy(name => name));
     }
 
-    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationDuplicateAsyncSuffixService
     {
         [TemporalOperation]
@@ -160,7 +174,7 @@ public class NexusWorkerRegistrationTests
         Assert.Contains("DoSomethingAsync", exc.Message);
     }
 
-    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationAttrBadParamsService
     {
         [TemporalOperation]
@@ -181,7 +195,7 @@ public class NexusWorkerRegistrationTests
     }
 
 #pragma warning disable CA1052 // Intentionally non-static so registration reaches signature check
-    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationAttrStaticService
     {
         [TemporalOperation]
@@ -203,7 +217,7 @@ public class NexusWorkerRegistrationTests
             Assert.IsType<ArgumentException>(exc.InnerException).Message);
     }
 
-    [NexusServiceHandler(typeof(NexusWorkerTests.IGenericInputService))]
+    [NexusServiceHandler(typeof(IGenericInputService))]
     public class TemporalOperationAttrGenericInputMismatchService
     {
         [TemporalOperation]
@@ -224,7 +238,7 @@ public class NexusWorkerRegistrationTests
             Assert.IsType<ArgumentException>(exc.InnerException).Message);
     }
 
-    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationAttrRawReturnService
     {
         [TemporalOperation]
@@ -245,7 +259,7 @@ public class NexusWorkerRegistrationTests
             Assert.IsType<ArgumentException>(exc.InnerException).Message);
     }
 
-    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationAttrDualAnnotationService
     {
         [TemporalOperation]
@@ -265,7 +279,7 @@ public class NexusWorkerRegistrationTests
                 AddNexusService(new TemporalOperationAttrDualAnnotationService()));
     }
 
-    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationAttrPrivateService
     {
         [TemporalOperation]

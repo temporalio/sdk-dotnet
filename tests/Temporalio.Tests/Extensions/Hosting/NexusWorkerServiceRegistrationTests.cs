@@ -1,10 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using NexusRpc;
 using NexusRpc.Handlers;
 using Temporalio.Extensions.Hosting;
 using Temporalio.Nexus;
-using Temporalio.Tests.Worker;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -19,10 +19,41 @@ public class NexusWorkerServiceRegistrationTests : WorkflowEnvironmentTestBase
     {
     }
 
+    [NexusService]
+    public interface IIncrementService
+    {
+        [NexusOperation]
+        int Increment(string input);
+    }
+
+    [NexusService]
+    public interface IStringService
+    {
+        [NexusOperation]
+        string DoSomething(string input);
+    }
+
+    [NexusService]
+    public interface IAsyncSuffixService
+    {
+        [NexusOperation]
+        string DoSomething(string input);
+
+        [NexusOperation]
+        int DoSomethingAsync(string input);
+    }
+
+    [NexusService]
+    public interface IAsyncSuffixOnlyService
+    {
+        [NexusOperation]
+        string DoSomethingAsync(string input);
+    }
+
     // A [NexusOperationHandler] method whose name maps to no operation on the service interface.
     // Increment is a valid handler for the sole operation, so registration failure is isolated to
     // the unmatched NotAnOperation method rather than surfacing as a missing-handler error.
-    [NexusServiceHandler(typeof(NexusWorkerServiceTests.ITestNexusService))]
+    [NexusServiceHandler(typeof(IIncrementService))]
     public class UnmatchedOperationHandlerNexusService
     {
         [NexusOperationHandler]
@@ -34,7 +65,7 @@ public class NexusWorkerServiceRegistrationTests : WorkflowEnvironmentTestBase
             throw new NotImplementedException();
     }
 
-    [NexusServiceHandler(typeof(NexusWorkerServiceTests.ITestNexusService))]
+    [NexusServiceHandler(typeof(IIncrementService))]
     public class AsyncTemporalOperationNexusService
     {
         [TemporalOperation]
@@ -57,13 +88,27 @@ public class NexusWorkerServiceRegistrationTests : WorkflowEnvironmentTestBase
         await host.StopAsync();
     }
 
+    [NexusServiceHandler(typeof(IAsyncSuffixService))]
+    public class TemporalOperationExactMatchService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+
+        [TemporalOperation]
+        public Task<TemporalOperationResult<int>> DoSomethingAsync(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<int>.SyncResult(input.Length));
+    }
+
     [Fact]
     public void NexusWorkerService_TemporalOperationAsyncSuffix_MatchesExactFirst()
     {
         var taskQueue = $"tq-{Guid.NewGuid()}";
         var services = new ServiceCollection();
         services.AddHostedTemporalWorker(taskQueue).
-            AddScopedNexusService<NexusWorkerRegistrationTests.TemporalOperationExactMatchService>();
+            AddScopedNexusService<TemporalOperationExactMatchService>();
         using var provider = services.BuildServiceProvider();
 
         var options = provider.GetRequiredService<IOptionsMonitor<TemporalWorkerServiceOptions>>().Get(taskQueue);
@@ -72,18 +117,41 @@ public class NexusWorkerServiceRegistrationTests : WorkflowEnvironmentTestBase
             Assert.Single(options.NexusServices).OperationHandlers.Keys.OrderBy(name => name));
     }
 
+    [NexusServiceHandler(typeof(IStringService))]
+    public class TemporalOperationDuplicateAsyncSuffixService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomethingAsync(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+    }
+
     [Fact]
     public void NexusWorkerService_TemporalOperationAsyncSuffix_RejectsDuplicates()
     {
         var taskQueue = $"tq-{Guid.NewGuid()}";
         var services = new ServiceCollection();
         services.AddHostedTemporalWorker(taskQueue).
-            AddScopedNexusService<NexusWorkerRegistrationTests.TemporalOperationDuplicateAsyncSuffixService>();
+            AddScopedNexusService<TemporalOperationDuplicateAsyncSuffixService>();
         using var provider = services.BuildServiceProvider();
 
         var exc = Assert.Throws<ArgumentException>(() =>
             provider.GetRequiredService<IOptionsMonitor<TemporalWorkerServiceOptions>>().Get(taskQueue));
         Assert.Equal("Duplicate operation handler named DoSomething", exc.Message);
+    }
+
+    [NexusServiceHandler(typeof(IAsyncSuffixOnlyService))]
+    public class TemporalOperationUnsuffixedService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
     }
 
     [Fact]
@@ -92,7 +160,7 @@ public class NexusWorkerServiceRegistrationTests : WorkflowEnvironmentTestBase
         var taskQueue = $"tq-{Guid.NewGuid()}";
         var services = new ServiceCollection();
         services.AddHostedTemporalWorker(taskQueue).
-            AddScopedNexusService<NexusWorkerRegistrationTests.TemporalOperationUnsuffixedService>();
+            AddScopedNexusService<TemporalOperationUnsuffixedService>();
         using var provider = services.BuildServiceProvider();
 
         var exc = Assert.Throws<ArgumentException>(() =>
