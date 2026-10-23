@@ -38,10 +38,16 @@ namespace Temporalio.Converters
             ExternalStorageReference.Descriptor.FullName;
 
         /// <summary>
-        /// Whether the given payload is a reference to externally stored data.
+        /// Whether the given payload is a plain reference to externally stored data.
         /// </summary>
         /// <param name="payload">Payload to check.</param>
-        /// <returns>True if the payload is a reference.</returns>
+        /// <returns>True if the payload is a plain reference.</returns>
+        /// <remarks>
+        /// Plain means the reference exactly as <see cref="CreateReferencePayload" /> built it,
+        /// before any payload codec has run over it. A codec rewrites the metadata, so an encoded
+        /// reference is not recognized here and has to be decoded first. Both the <c>encoding</c>
+        /// and the <c>messageType</c> metadata must match.
+        /// </remarks>
         internal static bool IsReference(Payload payload) =>
             payload.Metadata.TryGetValue(EncodingMetadataKey, out var encoding) &&
             ProtoJsonEncoding.Equals(encoding) &&
