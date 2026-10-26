@@ -126,6 +126,11 @@
           "xunit.extensibility.execution": "2.4.0"
         }
       },
+      "AWSSDK.Core": {
+        "type": "Transitive",
+        "resolved": "4.0.102.13",
+        "contentHash": "vaYs/kwfB+Lv9PeVKYE4g2mQlzVtHImXLWgfTG8UgeCybUAPkew5kwb8GS6RhuzwvImbolyLHT+IM34WoM9lJg=="
+      },
       "Microsoft.CodeCoverage": {
         "type": "Transitive",
         "resolved": "18.9.0",
@@ -476,6 +481,19 @@
           "Temporalio": "[1.21.0, )"
         }
       },
+      "temporalio.extensions.externalstorage.s3": {
+        "type": "Project",
+        "dependencies": {
+          "Temporalio": "[1.21.0, )"
+        }
+      },
+      "temporalio.extensions.externalstorage.s3.awssdk": {
+        "type": "Project",
+        "dependencies": {
+          "AWSSDK.S3": "[4.0.104.6, )",
+          "Temporalio.Extensions.ExternalStorage.S3": "[1.21.0, )"
+        }
+      },
       "temporalio.extensions.gcp.cloudrun.id": {
         "type": "Project",
         "dependencies": {
@@ -517,6 +535,15 @@
         "requested": "[3.1.0, )",
         "resolved": "3.1.0",
         "contentHash": "uZZ2k5lMoB9OzPTmKkkEKpyFcnLxcb7FxtxrA3+HBg/sooTzu402iCcSk5r+N62Qokhwr4Q9cbaVJSM6Dln3aA=="
+      },
+      "AWSSDK.S3": {
+        "type": "CentralTransitive",
+        "requested": "[4.0.104.6, )",
+        "resolved": "4.0.104.6",
+        "contentHash": "fSqAOkftU8jKemilzLGZDU0zLEJXHjAemU+8Nd29+sUwRxVK04w6/GY3O4f9S1+JIYwEnHDGcW66VK4AZ2kx6g==",
+        "dependencies": {
+          "AWSSDK.Core": "[4.0.102.13, 5.0.0)"
+        }
       },
       "Google.Protobuf": {
         "type": "CentralTransitive",
