@@ -66,6 +66,31 @@ public class NexusWorkerServiceRegistrationTests : WorkflowEnvironmentTestBase
     }
 
     [NexusServiceHandler(typeof(IIncrementService))]
+    public class AsyncOperationHandlerNexusService
+    {
+        [NexusOperationHandler]
+        public IOperationHandler<string, int> IncrementAsync() =>
+            OperationHandler.Sync<string, int>((ctx, input) => 1);
+    }
+
+    [Fact]
+    public void NexusWorkerService_OperationHandlerAsyncSuffix_FailsRegistration()
+    {
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var services = new ServiceCollection();
+        services.AddHostedTemporalWorker(taskQueue).
+            AddScopedNexusService<AsyncOperationHandlerNexusService>();
+        using var provider = services.BuildServiceProvider();
+
+        var exc = Assert.Throws<ArgumentException>(() =>
+            provider.GetRequiredService<IOptionsMonitor<TemporalWorkerServiceOptions>>().Get(taskQueue));
+        Assert.Equal("Failed obtaining operation handler from IncrementAsync", exc.Message);
+        Assert.Equal(
+            "No matching NexusOperation on the service interface",
+            Assert.IsType<ArgumentException>(exc.InnerException).Message);
+    }
+
+    [NexusServiceHandler(typeof(IIncrementService))]
     public class AsyncTemporalOperationNexusService
     {
         [TemporalOperation]

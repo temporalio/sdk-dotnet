@@ -46,7 +46,8 @@ namespace Temporalio.Extensions.Hosting
             {
                 var opDef = serviceDef.Operations.Values
                     .FirstOrDefault(o => o.MethodInfo?.Name == method.Name);
-                if (opDef == null && method.Name.Length > 5 && method.Name.EndsWith("Async", StringComparison.Ordinal))
+                if (opDef == null && method.GetCustomAttribute<NexusOperationHandlerAttribute>() == null &&
+                    method.Name.Length > 5 && method.Name.EndsWith("Async", StringComparison.Ordinal))
                 {
                     var trimmed = method.Name.Substring(0, method.Name.Length - 5);
                     opDef = serviceDef.Operations.Values.FirstOrDefault(o => o.MethodInfo?.Name == trimmed);
