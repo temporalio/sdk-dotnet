@@ -232,7 +232,7 @@
           "Google.Protobuf": "[3.26.1, )",
           "Microsoft.Bcl.HashCode": "[6.0.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[2.2.0, )",
-          "NexusRpc": "[0.4.0, )",
+          "NexusRpc": "[0.5.0, )",
           "System.Text.Json": "[9.0.4, )"
         }
       },
@@ -241,7 +241,7 @@
         "dependencies": {
           "OpenTelemetry.Api": "[1.15.3, )",
           "System.Diagnostics.DiagnosticSource": "[10.0.0, )",
-          "Temporalio": "[1.20.0, )"
+          "Temporalio": "[1.21.0, )"
         }
       },
       "Google.Protobuf": {
@@ -296,9 +296,9 @@
       },
       "NexusRpc": {
         "type": "CentralTransitive",
-        "requested": "[0.4.0, )",
-        "resolved": "0.4.0",
-        "contentHash": "2cdRtmwT/vskWqJvojODvR7CpRhLWAnCeVT5Z8sPdRDX8P/Ywpw48T2lqgqhxM8JROfoflHzhSiXo4h1ln3/MQ==",
+        "requested": "[0.5.0, )",
+        "resolved": "0.5.0",
+        "contentHash": "Kcb6c8xHvWy+Q3shNro1I1ZFBWKmnJxxumRpo5qoiLpm3mi+a1dh9rxF4ZnJ/3RTSBGD0x5TXNbTaucOuPFWnA==",
         "dependencies": {
           "Microsoft.Bcl.HashCode": "6.0.0"
         }
