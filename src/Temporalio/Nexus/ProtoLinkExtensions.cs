@@ -13,6 +13,10 @@ namespace Temporalio.Nexus
     /// </summary>
     internal static class ProtoLinkExtensions
     {
+        private const string WorkflowsPathSegment = "workflows";
+        private const string ActivitiesPathSegment = "activities";
+        private const string NexusOperationsPathSegment = "nexus-operations";
+
         // Need to map PascalCase enum names and original enum names to the event type
         private static readonly Dictionary<string, EventType> StringToEventType =
             Enum.GetValues(typeof(EventType)).
@@ -56,7 +60,7 @@ namespace Temporalio.Nexus
 
             return new(
                 BuildTemporalLinkUri(
-                    "workflows", evt.Namespace, evt.WorkflowId, evt.RunId, "history", queryParams),
+                    WorkflowsPathSegment, evt.Namespace, evt.WorkflowId, evt.RunId, "history", queryParams),
                 Api.Common.V1.Link.Types.WorkflowEvent.Descriptor.FullName);
         }
 
@@ -69,7 +73,7 @@ namespace Temporalio.Nexus
         {
             return new(
                 BuildTemporalLinkUri(
-                    "nexus-operations", nexusOp.Namespace, nexusOp.OperationId, nexusOp.RunId, "details"),
+                    NexusOperationsPathSegment, nexusOp.Namespace, nexusOp.OperationId, nexusOp.RunId, "details"),
                 Api.Common.V1.Link.Types.NexusOperation.Descriptor.FullName);
         }
 
@@ -82,7 +86,7 @@ namespace Temporalio.Nexus
         {
             return new(
                 BuildTemporalLinkUri(
-                    "activities", act.Namespace, act.ActivityId, act.RunId, "details"),
+                    ActivitiesPathSegment, act.Namespace, act.ActivityId, act.RunId, "details"),
                 Api.Common.V1.Link.Types.Activity.Descriptor.FullName);
         }
 
@@ -136,7 +140,7 @@ namespace Temporalio.Nexus
         /// <exception cref="ArgumentException">If the link is invalid.</exception>
         public static Api.Common.V1.Link.Types.NexusOperation ToNexusOperation(this NexusLink link)
         {
-            var pathPieces = ParseTemporalLinkPath(link, "nexus-operations", "details");
+            var pathPieces = ParseTemporalLinkPath(link, NexusOperationsPathSegment, "details");
             return new Api.Common.V1.Link.Types.NexusOperation
             {
                 Namespace = Uri.UnescapeDataString(pathPieces[1]),
@@ -163,7 +167,7 @@ namespace Temporalio.Nexus
             }
             return new(
                 BuildTemporalLinkUri(
-                    "workflows", workflow.Namespace, workflow.WorkflowId, workflow.RunId, null, queryParams),
+                    WorkflowsPathSegment, workflow.Namespace, workflow.WorkflowId, workflow.RunId, null, queryParams),
                 Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
         }
 
@@ -177,7 +181,7 @@ namespace Temporalio.Nexus
         /// <exception cref="ArgumentException">If the link is invalid.</exception>
         public static Api.Common.V1.Link.Types.Workflow ToWorkflow(this NexusLink link)
         {
-            var pathPieces = ParseTemporalLinkPath(link, "workflows", null);
+            var pathPieces = ParseTemporalLinkPath(link, WorkflowsPathSegment, null);
             var workflow = new Api.Common.V1.Link.Types.Workflow
             {
                 Namespace = Uri.UnescapeDataString(pathPieces[1]),
@@ -199,7 +203,7 @@ namespace Temporalio.Nexus
         /// <exception cref="ArgumentException">If the link is invalid.</exception>
         public static Api.Common.V1.Link.Types.Activity ToActivity(this NexusLink link)
         {
-            var pathPieces = ParseTemporalLinkPath(link, "activities", "details");
+            var pathPieces = ParseTemporalLinkPath(link, ActivitiesPathSegment, "details");
             return new Api.Common.V1.Link.Types.Activity
             {
                 Namespace = Uri.UnescapeDataString(pathPieces[1]),
@@ -220,9 +224,9 @@ namespace Temporalio.Nexus
             var execution = callback.Execution ?? new();
             var kind = execution.Type switch
             {
-                ExecutionType.Workflow => "workflows",
-                ExecutionType.Activity => "activities",
-                ExecutionType.NexusOperation => "nexus-operations",
+                ExecutionType.Workflow => WorkflowsPathSegment,
+                ExecutionType.Activity => ActivitiesPathSegment,
+                ExecutionType.NexusOperation => NexusOperationsPathSegment,
                 _ => throw new ArgumentException($"Unsupported execution type: {execution.Type}"),
             };
             return new(
@@ -256,9 +260,9 @@ namespace Temporalio.Nexus
                 {
                     Type = pathPieces[2] switch
                     {
-                        "workflows" => ExecutionType.Workflow,
-                        "activities" => ExecutionType.Activity,
-                        "nexus-operations" => ExecutionType.NexusOperation,
+                        WorkflowsPathSegment => ExecutionType.Workflow,
+                        ActivitiesPathSegment => ExecutionType.Activity,
+                        NexusOperationsPathSegment => ExecutionType.NexusOperation,
                         _ => throw new ArgumentException($"Unsupported execution type: {pathPieces[2]}"),
                     },
                     BusinessId = Uri.UnescapeDataString(pathPieces[3]),
@@ -279,7 +283,7 @@ namespace Temporalio.Nexus
         /// <exception cref="ArgumentException">If the link is invalid.</exception>
         public static Api.Common.V1.Link.Types.WorkflowEvent ToWorkflowEvent(this NexusLink link)
         {
-            var pathPieces = ParseTemporalLinkPath(link, "workflows", "history");
+            var pathPieces = ParseTemporalLinkPath(link, WorkflowsPathSegment, "history");
             var evt = new Api.Common.V1.Link.Types.WorkflowEvent
             {
                 Namespace = Uri.UnescapeDataString(pathPieces[1]),
@@ -364,10 +368,9 @@ namespace Temporalio.Nexus
         /// The query parameters, with both keys and values percent-decoded. Values are additionally
         /// form-decoded, i.e. <c>+</c> becomes a space, since that is how a query value is encoded on
         /// the way out; the replacement is safe to do before percent-decoding because a literal
-        /// <c>+</c> is encoded as <c>%2B</c>. A parameter present with no <c>=</c> maps to an empty
-        /// string, so callers cannot distinguish <c>?reason</c> from <c>?reason=</c>. Keys are looked
-        /// up with the dictionary's default ordinal comparer, so lookups are case-sensitive and
-        /// <c>reason</c> and <c>Reason</c> are different parameters.
+        /// <c>+</c> is encoded as <c>%2B</c>. A parameter present with no <c>=</c> gets an empty
+        /// string value, so callers cannot distinguish <c>?reason</c> from <c>?reason=</c>. Keys are
+        /// not case-normalized, so <c>reason</c> and <c>Reason</c> are different parameters.
         /// </returns>
         private static IEnumerable<KeyValuePair<string, string>> ParseQueryPairs(Uri uri) =>
             uri.Query.
@@ -441,7 +444,12 @@ namespace Temporalio.Nexus
             {
                 throw new ArgumentException("Unexpected host");
             }
-            return link.Uri.AbsolutePath.TrimStart('/').Split('/');
+            var pathPieces = link.Uri.AbsolutePath.TrimStart('/').Split('/');
+            if (pathPieces.Any(piece => piece.Length == 0))
+            {
+                throw new ArgumentException("Empty path segment");
+            }
+            return pathPieces;
         }
     }
 }

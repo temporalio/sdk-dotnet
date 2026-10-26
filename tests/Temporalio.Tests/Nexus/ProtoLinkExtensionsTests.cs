@@ -524,34 +524,16 @@ public class ProtoLinkExtensionsTests
         Assert.Equal("a b", link.ToWorkflowEvent().RequestIdRef.RequestId);
     }
 
-    [Fact]
-    public void ToWorkflow_AcceptsEmptyRunId()
+    [Theory]
+    [InlineData("temporal:///namespaces/ns/workflows/wf-id/")]
+    [InlineData("temporal:///namespaces//workflows/wf-id/run-id")]
+    [InlineData("temporal:///namespaces/ns/workflows//run-id")]
+    public void ToWorkflow_RejectsEmptySegment(string raw)
     {
-        // A trailing slash still yields the expected segment count, so the run ID comes back empty
-        // rather than being rejected. The workflow-event, activity, and nexus-operation converters
-        // are equally lenient because all four share this path parsing, so tightening it is a
-        // decision about all four and belongs with that change rather than this one. This test
-        // exists so that whichever way it is decided, the behavior changes visibly instead of
-        // silently.
-        var link = new NexusLink(
-            new Uri("temporal:///namespaces/ns/workflows/wf-id/"),
-            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
-
-        Assert.Equal(string.Empty, link.ToWorkflow().RunId);
-    }
-
-    [Fact]
-    public void ToWorkflow_AcceptsEmptyNamespace()
-    {
-        // The same shared-path-parsing leniency as ToWorkflow_AcceptsEmptyRunId; see that test.
-        var link = new NexusLink(
-            new Uri("temporal:///namespaces//workflows/wf-id/run-id"),
-            Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
-
-        var workflow = link.ToWorkflow();
-        Assert.Equal(string.Empty, workflow.Namespace);
-        Assert.Equal("wf-id", workflow.WorkflowId);
-        Assert.Equal("run-id", workflow.RunId);
+        // An empty segment still yields the expected segment count, so it must be rejected
+        // explicitly to match the other SDKs.
+        var link = new NexusLink(new Uri(raw), Api.Common.V1.Link.Types.Workflow.Descriptor.FullName);
+        Assert.Throws<ArgumentException>(() => link.ToWorkflow());
     }
 
     [Fact]
@@ -728,6 +710,10 @@ public class ProtoLinkExtensionsTests
     [InlineData("temporal:///namespaces/ns/workflows/biz-id/run-id/callbacks")]
     [InlineData("temporal:///namespaces/ns/workflows/biz-id/run-id/history/request-id")]
     [InlineData("temporal:///namespaces/ns/schedules/biz-id/run-id/callbacks/request-id")]
+    [InlineData("temporal:///namespaces//workflows/biz-id/run-id/callbacks/request-id")]
+    [InlineData("temporal:///namespaces/ns/workflows//run-id/callbacks/request-id")]
+    [InlineData("temporal:///namespaces/ns/workflows/biz-id//callbacks/request-id")]
+    [InlineData("temporal:///namespaces/ns/workflows/biz-id/run-id/callbacks/")]
     public void ToCallback_RejectsInvalidLinks(string raw)
     {
         var link = new NexusLink(new Uri(raw), Api.Common.V1.Link.Types.Callback.Descriptor.FullName);
