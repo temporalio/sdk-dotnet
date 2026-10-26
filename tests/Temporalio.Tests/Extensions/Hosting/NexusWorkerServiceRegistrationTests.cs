@@ -100,17 +100,18 @@ public class NexusWorkerServiceRegistrationTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public async Task NexusWorkerService_TemporalOperationAsyncSuffix_Registers()
+    public void NexusWorkerService_TemporalOperationAsyncSuffix_Registers()
     {
-        var builder = Host.CreateApplicationBuilder();
-        builder.Services.
-            AddSingleton(Client).
-            AddHostedTemporalWorker($"tq-{Guid.NewGuid()}").
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var services = new ServiceCollection();
+        services.AddHostedTemporalWorker(taskQueue).
             AddScopedNexusService<AsyncTemporalOperationNexusService>();
-        using var host = builder.Build();
+        using var provider = services.BuildServiceProvider();
 
-        await host.StartAsync();
-        await host.StopAsync();
+        var options = provider.GetRequiredService<IOptionsMonitor<TemporalWorkerServiceOptions>>().Get(taskQueue);
+        Assert.Equal(
+            "Increment",
+            Assert.Single(Assert.Single(options.NexusServices).OperationHandlers).Key);
     }
 
     [NexusServiceHandler(typeof(IAsyncSuffixService))]
@@ -137,9 +138,10 @@ public class NexusWorkerServiceRegistrationTests : WorkflowEnvironmentTestBase
         using var provider = services.BuildServiceProvider();
 
         var options = provider.GetRequiredService<IOptionsMonitor<TemporalWorkerServiceOptions>>().Get(taskQueue);
-        Assert.Equal(
-            new[] { "DoSomething", "DoSomethingAsync" },
-            Assert.Single(options.NexusServices).OperationHandlers.Keys.OrderBy(name => name));
+        var handlers = Assert.Single(options.NexusServices).OperationHandlers;
+        Assert.Equal(2, handlers.Count);
+        Assert.Contains("DoSomething", handlers.Keys);
+        Assert.Contains("DoSomethingAsync", handlers.Keys);
     }
 
     [NexusServiceHandler(typeof(IStringService))]

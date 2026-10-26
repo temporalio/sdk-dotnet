@@ -54,10 +54,10 @@ namespace Temporalio.Extensions.Hosting
                 }
                 if (opDef == null)
                 {
-                    // A built-in [NexusOperationHandler] method that maps to no operation is an
-                    // error, mirroring NexusRpc's ServiceHandlerInstance.FromInstance. Extension
-                    // attributes such as [TemporalOperation] are only consulted for name-matched
-                    // operations, so a method carrying only such an attribute is silently skipped.
+                    // Reject unmatched [NexusOperationHandler] methods to match NexusRpc's
+                    // ServiceHandlerInstance.FromInstance behavior. Extension attributes such as
+                    // [TemporalOperation] allow exact matches or matches after removing a trailing
+                    // Async suffix. Skip extension methods when neither lookup finds an operation.
                     if (method.GetCustomAttribute<NexusOperationHandlerAttribute>() != null)
                     {
                         throw new ArgumentException(
