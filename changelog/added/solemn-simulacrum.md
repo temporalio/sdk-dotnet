@@ -1,0 +1,1 @@
+Added experimental `Temporalio.Extensions.ExternalStorage.S3` package with an S3 storage driver for external storage payloads, and an optional `Temporalio.Extensions.ExternalStorage.S3.AwsSdk` package with an `AWSSDK.S3` backed client.
