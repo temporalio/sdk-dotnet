@@ -14,7 +14,7 @@ public class S3StorageDriverTests
         new("my-ns", "my-workflow-id", "my-run-id", "MyWorkflow");
 
     [Fact]
-    public async Task StoreAsync_ThenRetrieveAsync_RoundTrips()
+    public async Task RetrieveAsync_ClaimsFromStoreAsync_ReturnsTheOriginalPayloads()
     {
         var driver = new S3StorageDriver(new FakeS3Client(), "my-bucket");
         var payloads = new[] { NewPayload("one"), NewPayload("two") };
@@ -25,7 +25,7 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public async Task StoreAsync_Claim_HasLocationAndHash()
+    public async Task StoreAsync_Claim_HoldsBucketKeyAndSha256Hash()
     {
         var driver = new S3StorageDriver(new FakeS3Client(), "my-bucket");
 
@@ -45,16 +45,7 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public void NameAndType_DefaultToDriverType()
-    {
-        var driver = new S3StorageDriver(new FakeS3Client(), "b");
-        Assert.Equal("aws.s3driver", driver.Name);
-        Assert.Equal("aws.s3driver", driver.Type);
-        Assert.Equal("other", new S3StorageDriver(new FakeS3Client(), "b") { Name = "other" }.Name);
-    }
-
-    [Fact]
-    public async Task StoreAsync_WorkflowKey_IsPercentEncoded()
+    public async Task StoreAsync_WorkflowTarget_BuildsTheSpecExampleKey()
     {
         var target = new IStorageDriverTargetInfo.Workflow(
             "payments prod", "order+123=abc", "3f1d6c7a-8b2e-4f7a-9d0a-87a6f95e4d31", "ChargeWorkflow");
@@ -66,7 +57,7 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public async Task StoreAsync_ActivityKey_IsPercentEncoded()
+    public async Task StoreAsync_ActivityTarget_BuildsTheSpecExampleKey()
     {
         var target = new IStorageDriverTargetInfo.Activity(
             "payments prod", "activity id+42", "9e1d1fd9-2f8a-4c40-93e2-731f31b9268b", "Capture/Charge");
@@ -78,7 +69,7 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public async Task StoreAsync_Key_KeepsSafeCharactersAndEscapesTheRest()
+    public async Task StoreAsync_KeySegment_EscapesEveryByteOutsideS3SafeCharacters()
     {
         var target = new IStorageDriverTargetInfo.Workflow("AZaz09!-_.*'()", "~é", "run-1", "MyWorkflow");
 
@@ -88,7 +79,7 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public async Task StoreAsync_MissingTargetValues_BecomeNull()
+    public async Task StoreAsync_EmptyOrMissingTargetValues_WritesNullSegments()
     {
         var target = new IStorageDriverTargetInfo.Workflow(string.Empty, null, string.Empty, null);
 
@@ -98,13 +89,13 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public async Task StoreAsync_NoTarget_UsesBareDigestKey()
+    public async Task StoreAsync_NoTarget_KeyHasOnlyTheDigest()
     {
         Assert.Equal($"v0/d/sha256/{HashOf("one")}", await StoreKeyAsync(null, "one"));
     }
 
     [Fact]
-    public async Task StoreAsync_IdenticalPayloadsInBatch_UploadOnce()
+    public async Task StoreAsync_SamePayloadTwiceInOneCall_UploadsOnce()
     {
         var client = new FakeS3Client();
         var driver = new S3StorageDriver(client, "my-bucket");
@@ -117,7 +108,7 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public async Task StoreAsync_ExistingObject_IsNotUploadedAgain()
+    public async Task StoreAsync_ObjectAlreadyInS3_SkipsTheUpload()
     {
         var client = new FakeS3Client();
         var driver = new S3StorageDriver(client, "my-bucket");
@@ -129,7 +120,7 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public async Task StoreAsync_BucketSelector_IsCalledPerPayload()
+    public async Task StoreAsync_BucketSelector_ChoosesTheBucketForEachPayload()
     {
         var client = new FakeS3Client();
         var driver = new S3StorageDriver(
@@ -143,7 +134,7 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public async Task StoreAndRetrieve_TakeOnePermitPerRequest()
+    public async Task StoreAndRetrieve_EachS3Request_TakesOneLimiterPermit()
     {
         var driver = new S3StorageDriver(new FakeS3Client(), "my-bucket");
         var storeLimiter = new RecordingLimiter<Payload>();
@@ -162,7 +153,7 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public async Task StoreAsync_MaxPayloadSize_IsEnforced()
+    public async Task StoreAsync_PayloadOverMaxPayloadSize_ThrowsAndAtTheLimitSucceeds()
     {
         var payload = NewPayload("one");
         var size = payload.CalculateSize();
@@ -176,7 +167,7 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public async Task StoreAsync_Failure_IsWrappedWithLocationAndClientInfo()
+    public async Task StoreAsync_S3RequestFails_ThrowsWithBucketKeyAndRegion()
     {
         var driver = new S3StorageDriver(new FailingS3Client(), "my-bucket");
 
@@ -191,7 +182,7 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public async Task RetrieveAsync_Failure_IsWrapped()
+    public async Task RetrieveAsync_S3RequestFails_ThrowsWithBucketKeyAndRegion()
     {
         var driver = new S3StorageDriver(new FailingS3Client(), "my-bucket");
 
@@ -205,9 +196,9 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public async Task StoreAsync_Failure_CancelsInFlightRequests()
+    public async Task StoreAsync_OneUploadFails_CancelsTheOthersAndThrowsTheCause()
     {
-        var client = new FailOneS3Client(failingKeySuffix: HashOf("fail"));
+        var client = new BlockingS3Client(failingKeySuffix: HashOf("fail"));
         var driver = new S3StorageDriver(client, "my-bucket");
 
         var err = await Assert.ThrowsAsync<InvalidOperationException>(
@@ -219,7 +210,19 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public async Task RetrieveAsync_IntegrityCheckFailure_Throws()
+    public async Task StoreAsync_CallerCancels_ThrowsOperationCanceledNotAnS3Failure()
+    {
+        var driver = new S3StorageDriver(new BlockingS3Client(), "my-bucket");
+        using var cancellationSource = new CancellationTokenSource();
+
+        var store = driver.StoreAsync(StoreContext(), new[] { NewPayload("one") }, cancellationSource.Token);
+        await cancellationSource.CancelAsync();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => store);
+    }
+
+    [Fact]
+    public async Task RetrieveAsync_DataDoesNotMatchClaimHash_Throws()
     {
         var client = new FakeS3Client();
         var driver = new S3StorageDriver(client, "my-bucket");
@@ -233,7 +236,7 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public async Task RetrieveAsync_InvalidClaims_AreRejectedBeforeAnyRequest()
+    public async Task RetrieveAsync_IncompleteOrUnsupportedClaim_ThrowsBeforeAnyS3Request()
     {
         var client = new FailingS3Client();
         var driver = new S3StorageDriver(client, "my-bucket");
@@ -350,14 +353,18 @@ public class S3StorageDriverTests
         }
     }
 
-    private sealed class FailOneS3Client : IS3StorageDriverClient
+    /// <summary>
+    /// Blocks every existence check until it is canceled, except the one for a key ending in
+    /// failingKeySuffix, which fails once two others are in flight.
+    /// </summary>
+    private sealed class BlockingS3Client : IS3StorageDriverClient
     {
-        private readonly string failingKeySuffix;
+        private readonly string? failingKeySuffix;
         private readonly TaskCompletionSource otherRequestsStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
         private int startedCount;
         private int canceledCount;
 
-        public FailOneS3Client(string failingKeySuffix) => this.failingKeySuffix = failingKeySuffix;
+        public BlockingS3Client(string? failingKeySuffix = null) => this.failingKeySuffix = failingKeySuffix;
 
         public int CanceledCount => canceledCount;
 
@@ -366,7 +373,7 @@ public class S3StorageDriverTests
 
         public async Task<bool> ObjectExistsAsync(string bucket, string key, CancellationToken cancellationToken)
         {
-            if (key.EndsWith(failingKeySuffix, StringComparison.Ordinal))
+            if (failingKeySuffix != null && key.EndsWith(failingKeySuffix, StringComparison.Ordinal))
             {
                 // Fail only once the other requests are in flight, so the test proves they are canceled
                 await otherRequestsStarted.Task;

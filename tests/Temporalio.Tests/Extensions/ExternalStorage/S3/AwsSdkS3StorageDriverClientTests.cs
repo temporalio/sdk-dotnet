@@ -10,7 +10,7 @@ using Xunit;
 public class AwsSdkS3StorageDriverClientTests
 {
     [Fact]
-    public async Task ObjectExistsAsync_MapsNotFoundToFalse()
+    public async Task ObjectExistsAsync_Returns200AsTrueAnd404AsFalse()
     {
         var handler = new StubHandler(_ => new(HttpStatusCode.OK));
         using var amazonClient = NewAmazonS3Client(handler);
@@ -22,7 +22,7 @@ public class AwsSdkS3StorageDriverClientTests
     }
 
     [Fact]
-    public async Task ObjectExistsAsync_OtherErrors_Throw()
+    public async Task ObjectExistsAsync_ErrorOtherThan404_Throws()
     {
         var handler = new StubHandler(_ => new(HttpStatusCode.Forbidden));
         using var amazonClient = NewAmazonS3Client(handler);
@@ -34,7 +34,7 @@ public class AwsSdkS3StorageDriverClientTests
     }
 
     [Fact]
-    public async Task PutObjectAsync_UploadsData()
+    public async Task PutObjectAsync_SendsDataToBucketAndKey()
     {
         var handler = new StubHandler(_ => new(HttpStatusCode.OK));
         using var amazonClient = NewAmazonS3Client(handler);
@@ -49,7 +49,7 @@ public class AwsSdkS3StorageDriverClientTests
     }
 
     [Fact]
-    public async Task GetObjectAsync_ReturnsData()
+    public async Task GetObjectAsync_ReturnsTheResponseBody()
     {
         var handler = new StubHandler(_ => new(HttpStatusCode.OK)
         {
@@ -62,7 +62,7 @@ public class AwsSdkS3StorageDriverClientTests
     }
 
     [Fact]
-    public void Describe_ReportsRegion()
+    public void Describe_ReturnsTheClientRegion()
     {
         using var amazonClient = new AmazonS3Client(new AnonymousAWSCredentials(), RegionEndpoint.USWest2);
         var client = new AwsSdkS3StorageDriverClient(amazonClient);
