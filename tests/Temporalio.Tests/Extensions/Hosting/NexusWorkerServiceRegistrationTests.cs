@@ -40,7 +40,7 @@ public class NexusWorkerServiceRegistrationTests : WorkflowEnvironmentTestBase
         string DoSomething(string input);
 
         [NexusOperation]
-        int DoSomethingAsync(string input);
+        string DoSomethingAsync(string input);
     }
 
     [NexusService]
@@ -97,9 +97,9 @@ public class NexusWorkerServiceRegistrationTests : WorkflowEnvironmentTestBase
             Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
 
         [TemporalOperation]
-        public Task<TemporalOperationResult<int>> DoSomethingAsync(
+        public Task<TemporalOperationResult<string>> DoSomethingAsync(
             TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
-            Task.FromResult(TemporalOperationResult<int>.SyncResult(input.Length));
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
     }
 
     [Fact]
