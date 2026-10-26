@@ -49,7 +49,7 @@ namespace Temporalio.Api.Activity.V1 {
             "LkR1cmF0aW9uEjkKDHJldHJ5X3BvbGljeRgGIAEoCzIjLnRlbXBvcmFsLmFw",
             "aS5jb21tb24udjEuUmV0cnlQb2xpY3kSMgoIcHJpb3JpdHkYByABKAsyIC50",
             "ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlByaW9yaXR5Ei4KC3N0YXJ0X2RlbGF5",
-            "GAggASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uIr8PChVBY3Rpdml0",
+            "GAggASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uIpoRChVBY3Rpdml0",
             "eUV4ZWN1dGlvbkluZm8SEwoLYWN0aXZpdHlfaWQYASABKAkSDgoGcnVuX2lk",
             "GAIgASgJEjsKDWFjdGl2aXR5X3R5cGUYAyABKAsyJC50ZW1wb3JhbC5hcGku",
             "Y29tbW9uLnYxLkFjdGl2aXR5VHlwZRI+CgZzdGF0dXMYBCABKA4yLi50ZW1w",
@@ -93,35 +93,40 @@ namespace Temporalio.Api.Activity.V1 {
             "aW1lGCYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBJlCiZwcm9w",
             "YWdhdGVkX25leHVzX3NlcmlhbGl6YXRpb25fY29udGV4dBgnIAEoCzI1LnRl",
             "bXBvcmFsLmFwaS5uZXh1cy52MS5Qcm9wYWdhdGVkU2VyaWFsaXphdGlvbkNv",
-            "bnRleHQSIAoYZWFnZXJfZXhlY3V0aW9uX2FjY2VwdGVkGCggASgIIp4EChlB",
-            "Y3Rpdml0eUV4ZWN1dGlvbkxpc3RJbmZvEhMKC2FjdGl2aXR5X2lkGAEgASgJ",
-            "Eg4KBnJ1bl9pZBgCIAEoCRI7Cg1hY3Rpdml0eV90eXBlGAMgASgLMiQudGVt",
-            "cG9yYWwuYXBpLmNvbW1vbi52MS5BY3Rpdml0eVR5cGUSMQoNc2NoZWR1bGVf",
-            "dGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY2xv",
-            "c2VfdGltZRgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASPgoG",
-            "c3RhdHVzGAYgASgOMi4udGVtcG9yYWwuYXBpLmVudW1zLnYxLkFjdGl2aXR5",
-            "RXhlY3V0aW9uU3RhdHVzEkMKEXNlYXJjaF9hdHRyaWJ1dGVzGAcgASgLMigu",
-            "dGVtcG9yYWwuYXBpLmNvbW1vbi52MS5TZWFyY2hBdHRyaWJ1dGVzEhIKCnRh",
-            "c2tfcXVldWUYCCABKAkSHgoWc3RhdGVfdHJhbnNpdGlvbl9jb3VudBgJIAEo",
-            "AxIYChBzdGF0ZV9zaXplX2J5dGVzGAogASgDEjUKEmV4ZWN1dGlvbl9kdXJh",
-            "dGlvbhgLIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhIyCg5leGVj",
-            "dXRpb25fdGltZRgMIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAi",
-            "/wEKDENhbGxiYWNrSW5mbxI/Cgd0cmlnZ2VyGAEgASgLMi4udGVtcG9yYWwu",
-            "YXBpLmFjdGl2aXR5LnYxLkNhbGxiYWNrSW5mby5UcmlnZ2VyEjQKBGluZm8Y",
-            "AiABKAsyJi50ZW1wb3JhbC5hcGkuY2FsbGJhY2sudjEuQ2FsbGJhY2tJbmZv",
-            "GhAKDkFjdGl2aXR5Q2xvc2VkGmYKB1RyaWdnZXISUAoPYWN0aXZpdHlfY2xv",
-            "c2VkGAEgASgLMjUudGVtcG9yYWwuYXBpLmFjdGl2aXR5LnYxLkNhbGxiYWNr",
-            "SW5mby5BY3Rpdml0eUNsb3NlZEgAQgkKB3ZhcmlhbnRCkwEKG2lvLnRlbXBv",
-            "cmFsLmFwaS5hY3Rpdml0eS52MUIMTWVzc2FnZVByb3RvUAFaJ2dvLnRlbXBv",
-            "cmFsLmlvL2FwaS9hY3Rpdml0eS92MTthY3Rpdml0eaoCGlRlbXBvcmFsaW8u",
-            "QXBpLkFjdGl2aXR5LlYx6gIdVGVtcG9yYWxpbzo6QXBpOjpBY3Rpdml0eTo6",
-            "VjFiBnByb3RvMw=="));
+            "bnRleHQSIAoYZWFnZXJfZXhlY3V0aW9uX2FjY2VwdGVkGCggASgIEkcKFHN0",
+            "YXJ0ZWRfYnlfcHJpbmNpcGFsGCkgASgLMikudGVtcG9yYWwuYXBpLmNvbW1v",
+            "bi52MS5SZXNvbHZlZFByaW5jaXBhbBJGChNjbG9zZWRfYnlfcHJpbmNpcGFs",
+            "GCogASgLMikudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5SZXNvbHZlZFByaW5j",
+            "aXBhbBJIChVsYXN0X3dvcmtlcl9wcmluY2lwYWwYKyABKAsyKS50ZW1wb3Jh",
+            "bC5hcGkuY29tbW9uLnYxLlJlc29sdmVkUHJpbmNpcGFsIp4EChlBY3Rpdml0",
+            "eUV4ZWN1dGlvbkxpc3RJbmZvEhMKC2FjdGl2aXR5X2lkGAEgASgJEg4KBnJ1",
+            "bl9pZBgCIAEoCRI7Cg1hY3Rpdml0eV90eXBlGAMgASgLMiQudGVtcG9yYWwu",
+            "YXBpLmNvbW1vbi52MS5BY3Rpdml0eVR5cGUSMQoNc2NoZWR1bGVfdGltZRgE",
+            "IAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY2xvc2VfdGlt",
+            "ZRgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASPgoGc3RhdHVz",
+            "GAYgASgOMi4udGVtcG9yYWwuYXBpLmVudW1zLnYxLkFjdGl2aXR5RXhlY3V0",
+            "aW9uU3RhdHVzEkMKEXNlYXJjaF9hdHRyaWJ1dGVzGAcgASgLMigudGVtcG9y",
+            "YWwuYXBpLmNvbW1vbi52MS5TZWFyY2hBdHRyaWJ1dGVzEhIKCnRhc2tfcXVl",
+            "dWUYCCABKAkSHgoWc3RhdGVfdHJhbnNpdGlvbl9jb3VudBgJIAEoAxIYChBz",
+            "dGF0ZV9zaXplX2J5dGVzGAogASgDEjUKEmV4ZWN1dGlvbl9kdXJhdGlvbhgL",
+            "IAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhIyCg5leGVjdXRpb25f",
+            "dGltZRgMIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAi/wEKDENh",
+            "bGxiYWNrSW5mbxI/Cgd0cmlnZ2VyGAEgASgLMi4udGVtcG9yYWwuYXBpLmFj",
+            "dGl2aXR5LnYxLkNhbGxiYWNrSW5mby5UcmlnZ2VyEjQKBGluZm8YAiABKAsy",
+            "Ji50ZW1wb3JhbC5hcGkuY2FsbGJhY2sudjEuQ2FsbGJhY2tJbmZvGhAKDkFj",
+            "dGl2aXR5Q2xvc2VkGmYKB1RyaWdnZXISUAoPYWN0aXZpdHlfY2xvc2VkGAEg",
+            "ASgLMjUudGVtcG9yYWwuYXBpLmFjdGl2aXR5LnYxLkNhbGxiYWNrSW5mby5B",
+            "Y3Rpdml0eUNsb3NlZEgAQgkKB3ZhcmlhbnRCkwEKG2lvLnRlbXBvcmFsLmFw",
+            "aS5hY3Rpdml0eS52MUIMTWVzc2FnZVByb3RvUAFaJ2dvLnRlbXBvcmFsLmlv",
+            "L2FwaS9hY3Rpdml0eS92MTthY3Rpdml0eaoCGlRlbXBvcmFsaW8uQXBpLkFj",
+            "dGl2aXR5LlYx6gIdVGVtcG9yYWxpbzo6QXBpOjpBY3Rpdml0eTo6VjFiBnBy",
+            "b3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.ActivityReflection.Descriptor, global::Temporalio.Api.Callback.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.Nexus.V1.MessageReflection.Descriptor, global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor, global::Temporalio.Api.Sdk.V1.UserMetadataReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.ActivityExecutionOutcome), global::Temporalio.Api.Activity.V1.ActivityExecutionOutcome.Parser, new[]{ "Result", "Failure", "RetryState" }, new[]{ "Value" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.ActivityOptions), global::Temporalio.Api.Activity.V1.ActivityOptions.Parser, new[]{ "TaskQueue", "ScheduleToCloseTimeout", "ScheduleToStartTimeout", "StartToCloseTimeout", "HeartbeatTimeout", "RetryPolicy", "Priority", "StartDelay" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.ActivityExecutionInfo), global::Temporalio.Api.Activity.V1.ActivityExecutionInfo.Parser, new[]{ "ActivityId", "RunId", "ActivityType", "Status", "RunState", "TaskQueue", "ScheduleToCloseTimeout", "ScheduleToStartTimeout", "StartToCloseTimeout", "HeartbeatTimeout", "RetryPolicy", "HeartbeatDetails", "LastHeartbeatTime", "LastStartedTime", "Attempt", "ExecutionDuration", "ScheduleTime", "ExpirationTime", "CloseTime", "LastFailure", "LastWorkerIdentity", "CurrentRetryInterval", "LastAttemptCompleteTime", "NextAttemptScheduleTime", "LastDeploymentVersion", "Priority", "StateTransitionCount", "StateSizeBytes", "SearchAttributes", "Header", "UserMetadata", "CanceledReason", "Links", "TotalHeartbeatCount", "SdkName", "SdkVersion", "StartDelay", "ExecutionTime", "PropagatedNexusSerializationContext", "EagerExecutionAccepted" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.ActivityExecutionInfo), global::Temporalio.Api.Activity.V1.ActivityExecutionInfo.Parser, new[]{ "ActivityId", "RunId", "ActivityType", "Status", "RunState", "TaskQueue", "ScheduleToCloseTimeout", "ScheduleToStartTimeout", "StartToCloseTimeout", "HeartbeatTimeout", "RetryPolicy", "HeartbeatDetails", "LastHeartbeatTime", "LastStartedTime", "Attempt", "ExecutionDuration", "ScheduleTime", "ExpirationTime", "CloseTime", "LastFailure", "LastWorkerIdentity", "CurrentRetryInterval", "LastAttemptCompleteTime", "NextAttemptScheduleTime", "LastDeploymentVersion", "Priority", "StateTransitionCount", "StateSizeBytes", "SearchAttributes", "Header", "UserMetadata", "CanceledReason", "Links", "TotalHeartbeatCount", "SdkName", "SdkVersion", "StartDelay", "ExecutionTime", "PropagatedNexusSerializationContext", "EagerExecutionAccepted", "StartedByPrincipal", "ClosedByPrincipal", "LastWorkerPrincipal" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.ActivityExecutionListInfo), global::Temporalio.Api.Activity.V1.ActivityExecutionListInfo.Parser, new[]{ "ActivityId", "RunId", "ActivityType", "ScheduleTime", "CloseTime", "Status", "SearchAttributes", "TaskQueue", "StateTransitionCount", "StateSizeBytes", "ExecutionDuration", "ExecutionTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.CallbackInfo), global::Temporalio.Api.Activity.V1.CallbackInfo.Parser, new[]{ "Trigger", "Info" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.CallbackInfo.Types.ActivityClosed), global::Temporalio.Api.Activity.V1.CallbackInfo.Types.ActivityClosed.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Activity.V1.CallbackInfo.Types.Trigger), global::Temporalio.Api.Activity.V1.CallbackInfo.Types.Trigger.Parser, new[]{ "ActivityClosed" }, new[]{ "Variant" }, null, null, null)})
@@ -1102,6 +1107,9 @@ namespace Temporalio.Api.Activity.V1 {
       executionTime_ = other.executionTime_ != null ? other.executionTime_.Clone() : null;
       propagatedNexusSerializationContext_ = other.propagatedNexusSerializationContext_ != null ? other.propagatedNexusSerializationContext_.Clone() : null;
       eagerExecutionAccepted_ = other.eagerExecutionAccepted_;
+      startedByPrincipal_ = other.startedByPrincipal_ != null ? other.startedByPrincipal_.Clone() : null;
+      closedByPrincipal_ = other.closedByPrincipal_ != null ? other.closedByPrincipal_.Clone() : null;
+      lastWorkerPrincipal_ = other.lastWorkerPrincipal_ != null ? other.lastWorkerPrincipal_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1722,6 +1730,57 @@ namespace Temporalio.Api.Activity.V1 {
       }
     }
 
+    /// <summary>Field number for the "started_by_principal" field.</summary>
+    public const int StartedByPrincipalFieldNumber = 41;
+    private global::Temporalio.Api.Common.V1.ResolvedPrincipal startedByPrincipal_;
+    /// <summary>
+    /// Authenticated principal by which this activity execution was started.
+    ///
+    /// (-- api-linter: core::0140::prepositions=disabled
+    ///     aip.dev/not-precedent: "by" identifies the authenticated actor. --)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Common.V1.ResolvedPrincipal StartedByPrincipal {
+      get { return startedByPrincipal_; }
+      set {
+        startedByPrincipal_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "closed_by_principal" field.</summary>
+    public const int ClosedByPrincipalFieldNumber = 42;
+    private global::Temporalio.Api.Common.V1.ResolvedPrincipal closedByPrincipal_;
+    /// <summary>
+    /// Authenticated principal by which this activity execution was closed.
+    ///
+    /// (-- api-linter: core::0140::prepositions=disabled
+    ///     aip.dev/not-precedent: "by" identifies the authenticated actor. --)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Common.V1.ResolvedPrincipal ClosedByPrincipal {
+      get { return closedByPrincipal_; }
+      set {
+        closedByPrincipal_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "last_worker_principal" field.</summary>
+    public const int LastWorkerPrincipalFieldNumber = 43;
+    private global::Temporalio.Api.Common.V1.ResolvedPrincipal lastWorkerPrincipal_;
+    /// <summary>
+    /// Authenticated principal of the worker that most recently interacted with this activity execution.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Common.V1.ResolvedPrincipal LastWorkerPrincipal {
+      get { return lastWorkerPrincipal_; }
+      set {
+        lastWorkerPrincipal_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1777,6 +1836,9 @@ namespace Temporalio.Api.Activity.V1 {
       if (!object.Equals(ExecutionTime, other.ExecutionTime)) return false;
       if (!object.Equals(PropagatedNexusSerializationContext, other.PropagatedNexusSerializationContext)) return false;
       if (EagerExecutionAccepted != other.EagerExecutionAccepted) return false;
+      if (!object.Equals(StartedByPrincipal, other.StartedByPrincipal)) return false;
+      if (!object.Equals(ClosedByPrincipal, other.ClosedByPrincipal)) return false;
+      if (!object.Equals(LastWorkerPrincipal, other.LastWorkerPrincipal)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1824,6 +1886,9 @@ namespace Temporalio.Api.Activity.V1 {
       if (executionTime_ != null) hash ^= ExecutionTime.GetHashCode();
       if (propagatedNexusSerializationContext_ != null) hash ^= PropagatedNexusSerializationContext.GetHashCode();
       if (EagerExecutionAccepted != false) hash ^= EagerExecutionAccepted.GetHashCode();
+      if (startedByPrincipal_ != null) hash ^= StartedByPrincipal.GetHashCode();
+      if (closedByPrincipal_ != null) hash ^= ClosedByPrincipal.GetHashCode();
+      if (lastWorkerPrincipal_ != null) hash ^= LastWorkerPrincipal.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1999,6 +2064,18 @@ namespace Temporalio.Api.Activity.V1 {
         output.WriteRawTag(192, 2);
         output.WriteBool(EagerExecutionAccepted);
       }
+      if (startedByPrincipal_ != null) {
+        output.WriteRawTag(202, 2);
+        output.WriteMessage(StartedByPrincipal);
+      }
+      if (closedByPrincipal_ != null) {
+        output.WriteRawTag(210, 2);
+        output.WriteMessage(ClosedByPrincipal);
+      }
+      if (lastWorkerPrincipal_ != null) {
+        output.WriteRawTag(218, 2);
+        output.WriteMessage(LastWorkerPrincipal);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2166,6 +2243,18 @@ namespace Temporalio.Api.Activity.V1 {
         output.WriteRawTag(192, 2);
         output.WriteBool(EagerExecutionAccepted);
       }
+      if (startedByPrincipal_ != null) {
+        output.WriteRawTag(202, 2);
+        output.WriteMessage(StartedByPrincipal);
+      }
+      if (closedByPrincipal_ != null) {
+        output.WriteRawTag(210, 2);
+        output.WriteMessage(ClosedByPrincipal);
+      }
+      if (lastWorkerPrincipal_ != null) {
+        output.WriteRawTag(218, 2);
+        output.WriteMessage(LastWorkerPrincipal);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2293,6 +2382,15 @@ namespace Temporalio.Api.Activity.V1 {
       }
       if (EagerExecutionAccepted != false) {
         size += 2 + 1;
+      }
+      if (startedByPrincipal_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(StartedByPrincipal);
+      }
+      if (closedByPrincipal_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(ClosedByPrincipal);
+      }
+      if (lastWorkerPrincipal_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(LastWorkerPrincipal);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2498,6 +2596,24 @@ namespace Temporalio.Api.Activity.V1 {
       }
       if (other.EagerExecutionAccepted != false) {
         EagerExecutionAccepted = other.EagerExecutionAccepted;
+      }
+      if (other.startedByPrincipal_ != null) {
+        if (startedByPrincipal_ == null) {
+          StartedByPrincipal = new global::Temporalio.Api.Common.V1.ResolvedPrincipal();
+        }
+        StartedByPrincipal.MergeFrom(other.StartedByPrincipal);
+      }
+      if (other.closedByPrincipal_ != null) {
+        if (closedByPrincipal_ == null) {
+          ClosedByPrincipal = new global::Temporalio.Api.Common.V1.ResolvedPrincipal();
+        }
+        ClosedByPrincipal.MergeFrom(other.ClosedByPrincipal);
+      }
+      if (other.lastWorkerPrincipal_ != null) {
+        if (lastWorkerPrincipal_ == null) {
+          LastWorkerPrincipal = new global::Temporalio.Api.Common.V1.ResolvedPrincipal();
+        }
+        LastWorkerPrincipal.MergeFrom(other.LastWorkerPrincipal);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -2749,6 +2865,27 @@ namespace Temporalio.Api.Activity.V1 {
             EagerExecutionAccepted = input.ReadBool();
             break;
           }
+          case 330: {
+            if (startedByPrincipal_ == null) {
+              StartedByPrincipal = new global::Temporalio.Api.Common.V1.ResolvedPrincipal();
+            }
+            input.ReadMessage(StartedByPrincipal);
+            break;
+          }
+          case 338: {
+            if (closedByPrincipal_ == null) {
+              ClosedByPrincipal = new global::Temporalio.Api.Common.V1.ResolvedPrincipal();
+            }
+            input.ReadMessage(ClosedByPrincipal);
+            break;
+          }
+          case 346: {
+            if (lastWorkerPrincipal_ == null) {
+              LastWorkerPrincipal = new global::Temporalio.Api.Common.V1.ResolvedPrincipal();
+            }
+            input.ReadMessage(LastWorkerPrincipal);
+            break;
+          }
         }
       }
     #endif
@@ -2997,6 +3134,27 @@ namespace Temporalio.Api.Activity.V1 {
           }
           case 320: {
             EagerExecutionAccepted = input.ReadBool();
+            break;
+          }
+          case 330: {
+            if (startedByPrincipal_ == null) {
+              StartedByPrincipal = new global::Temporalio.Api.Common.V1.ResolvedPrincipal();
+            }
+            input.ReadMessage(StartedByPrincipal);
+            break;
+          }
+          case 338: {
+            if (closedByPrincipal_ == null) {
+              ClosedByPrincipal = new global::Temporalio.Api.Common.V1.ResolvedPrincipal();
+            }
+            input.ReadMessage(ClosedByPrincipal);
+            break;
+          }
+          case 346: {
+            if (lastWorkerPrincipal_ == null) {
+              LastWorkerPrincipal = new global::Temporalio.Api.Common.V1.ResolvedPrincipal();
+            }
+            input.ReadMessage(LastWorkerPrincipal);
             break;
           }
         }
