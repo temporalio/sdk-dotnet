@@ -225,9 +225,12 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the maximum number of concurrent poll workflow task requests we will
-        /// perform at a time on this worker's task queue. Default is 5.
+        /// perform at a time on this worker's task queue. Default is 5 when neither this nor
+        /// <see cref="WorkflowTaskPollerBehavior"/> is set. When both are left unset, the worker
+        /// becomes eligible for automatic enrollment into poller autoscaling if the namespace
+        /// advertises support for it.
         /// </summary>
-        public int MaxConcurrentWorkflowTaskPolls { get; set; } = 5;
+        public int? MaxConcurrentWorkflowTaskPolls { get; set; }
 
         /// <summary>
         /// Gets or sets the sticky poll ratio. <see cref="MaxConcurrentWorkflowTaskPolls" /> times
@@ -241,15 +244,21 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the maximum number of concurrent poll activity task requests we will
-        /// perform at a time on this worker's task queue. Default is 5.
+        /// perform at a time on this worker's task queue. Default is 5 when neither this nor
+        /// <see cref="ActivityTaskPollerBehavior"/> is set. When both are left unset, the worker
+        /// becomes eligible for automatic enrollment into poller autoscaling if the namespace
+        /// advertises support for it.
         /// </summary>
-        public int MaxConcurrentActivityTaskPolls { get; set; } = 5;
+        public int? MaxConcurrentActivityTaskPolls { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum number of concurrent poll Nexus task requests we will perform
-        /// at a time on this worker's task queue. Default is 5.
+        /// at a time on this worker's task queue. Default is 5 when neither this nor
+        /// <see cref="NexusTaskPollerBehavior"/> is set. When both are left unset, the worker
+        /// becomes eligible for automatic enrollment into poller autoscaling if the namespace
+        /// advertises support for it.
         /// </summary>
-        public int MaxConcurrentNexusTaskPolls { get; set; } = 5;
+        public int? MaxConcurrentNexusTaskPolls { get; set; }
 
         /// <summary>
         /// Gets or sets the behavior of the workflow task poller.
