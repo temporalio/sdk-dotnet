@@ -753,8 +753,11 @@ Temporal Workflows [must be deterministic](https://docs.temporal.io/workflows#de
 * Make any random calls
 * Make any not-guaranteed-deterministic calls (e.g. iterating over a dictionary)
 
-In the future, an analyzer may be written to help catch some of these mistakes at compile time. In the meantime, due to
-.NET's lack of a sandbox, there is not a good way to prevent non-deterministic calls so developers need to be vigilant.
+Due to .NET's lack of a sandbox, there is not a good way to prevent non-deterministic calls, so developers need to be
+vigilant. The SDK does include a runtime check for accidental use of the default task scheduler (see
+[.NET Task Determinism](#net-task-determinism) below), and [replay testing](#workflow-replay) is the best way to catch
+non-determinism before deploying. For compile-time checks of workflow code, some tooling outside the SDK is available;
+see [Community packages](https://github.com/temporalio/sdk-dotnet#community-packages).
 
 ##### .NET Task Determinism
 
