@@ -12,116 +12,35 @@ namespace Temporalio.Worker
 {
     internal static class PayloadCodecHelper
     {
-        internal static async Task EncodeAsync(
-            IPayloadCodec codec, RepeatedField<Payload> payloads)
-        {
-            if (payloads.Count == 0)
-            {
-                return;
-            }
-            var newPayloads = new List<Payload>();
-            var codecPayloads = new List<Payload>();
-            foreach (var payload in payloads)
-            {
-                if (!await SystemNexusPayloadVisitor.TryVisitAsync(
-                        payload,
-                        payload => EncodeAsync(codec, payload),
-                        nestedPayloads => EncodeAsync(codec, nestedPayloads)).ConfigureAwait(false))
-                {
-                    codecPayloads.Add(payload);
-                    continue;
-                }
+        internal static Task EncodeAsync(IPayloadCodec codec, RepeatedField<Payload> payloads) =>
+            PayloadVisitors.VisitAsync(
+                payloads, p => ApplyAsync(codec.EncodeAsync, p), codec.EncodeAsync);
 
-                if (codecPayloads.Count > 0)
-                {
-                    newPayloads.AddRange(await codec.EncodeAsync(codecPayloads).ConfigureAwait(false));
-                    codecPayloads.Clear();
-                }
-                newPayloads.Add(payload);
-            }
-            if (codecPayloads.Count > 0)
-            {
-                newPayloads.AddRange(await codec.EncodeAsync(codecPayloads).ConfigureAwait(false));
-            }
-            payloads.Clear();
-            payloads.AddRange(newPayloads);
-        }
+        internal static Task EncodeAsync(IPayloadCodec codec, Payload payload) =>
+            PayloadVisitors.VisitAsync(
+                payload, p => ApplyAsync(codec.EncodeAsync, p), codec.EncodeAsync);
 
-        internal static async Task EncodeAsync(IPayloadCodec codec, Payload payload)
+        internal static Task DecodeAsync(IPayloadCodec codec, RepeatedField<Payload> payloads) =>
+            PayloadVisitors.VisitAsync(
+                payloads, p => ApplyAsync(codec.DecodeAsync, p), codec.DecodeAsync);
+
+        internal static Task DecodeAsync(IPayloadCodec codec, Payload payload) =>
+            PayloadVisitors.VisitAsync(
+                payload, p => ApplyAsync(codec.DecodeAsync, p), codec.DecodeAsync);
+
+        private static async Task ApplyAsync(
+            System.Func<IReadOnlyCollection<Payload>, Task<IReadOnlyCollection<Payload>>> codecCall,
+            Payload payload)
         {
-            if (await SystemNexusPayloadVisitor.TryVisitAsync(
-                    payload,
-                    nestedPayload => EncodeAsync(codec, nestedPayload),
-                    nestedPayloads => EncodeAsync(codec, nestedPayloads)).ConfigureAwait(false))
-            {
-                return;
-            }
-            // We are gonna require a single result here. It is important that we do Single() call
-            // before clearing out payload to merge with since underlying enumerable may be lazy.
-            // If the returned payload is literally the same object as the one sent to the codec,
-            // we leave it alone.
-            var encodedList = await codec.EncodeAsync(new Payload[] { payload }).ConfigureAwait(false);
-            var encoded = encodedList.Single();
-            if (!ReferenceEquals(encoded, payload))
+            // Single() runs before the payload is cleared because the returned enumerable may be
+            // lazy. A codec that declined to alter the payload returns the same instance, which is
+            // left alone so its identity survives for callers holding a reference.
+            var result = (await codecCall(new Payload[] { payload }).ConfigureAwait(false)).Single();
+            if (!ReferenceEquals(result, payload))
             {
                 payload.Metadata.Clear();
                 payload.Data = ByteString.Empty;
-                payload.MergeFrom(encoded);
-            }
-        }
-
-        internal static async Task DecodeAsync(IPayloadCodec codec, RepeatedField<Payload> payloads)
-        {
-            if (payloads.Count == 0)
-            {
-                return;
-            }
-            var newPayloads = new List<Payload>();
-            var codecPayloads = new List<Payload>();
-            foreach (var payload in payloads)
-            {
-                if (!await SystemNexusPayloadVisitor.TryVisitAsync(
-                        payload,
-                        payload => DecodeAsync(codec, payload),
-                        nestedPayloads => DecodeAsync(codec, nestedPayloads)).ConfigureAwait(false))
-                {
-                    codecPayloads.Add(payload);
-                    continue;
-                }
-
-                if (codecPayloads.Count > 0)
-                {
-                    newPayloads.AddRange(await codec.DecodeAsync(codecPayloads).ConfigureAwait(false));
-                    codecPayloads.Clear();
-                }
-                newPayloads.Add(payload);
-            }
-            if (codecPayloads.Count > 0)
-            {
-                newPayloads.AddRange(await codec.DecodeAsync(codecPayloads).ConfigureAwait(false));
-            }
-            payloads.Clear();
-            payloads.AddRange(newPayloads);
-        }
-
-        internal static async Task DecodeAsync(IPayloadCodec codec, Payload payload)
-        {
-            if (await SystemNexusPayloadVisitor.TryVisitAsync(
-                    payload,
-                    nestedPayload => DecodeAsync(codec, nestedPayload),
-                    nestedPayloads => DecodeAsync(codec, nestedPayloads)).ConfigureAwait(false))
-            {
-                return;
-            }
-            // We are gonna require a single result here.
-            // Similarly with encode, we leave the payload alone if it's exactly the same object as the original.
-            var decoded = await codec.DecodeAsync(new Payload[] { payload }).ConfigureAwait(false);
-            var decodedPayload = decoded.Single();
-            if (!ReferenceEquals(decodedPayload, payload))
-            {
-                payload.Metadata.Clear();
-                payload.Data = ByteString.Empty;
-                payload.MergeFrom(decodedPayload);
+                payload.MergeFrom(result);
             }
         }
     }

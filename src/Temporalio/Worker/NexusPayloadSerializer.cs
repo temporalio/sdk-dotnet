@@ -53,10 +53,10 @@ namespace Temporalio.Worker
             }
 
             var payload = Payload.Parser.ParseFrom(content.Data);
-            var isSystemPayload = SystemNexusPayloadVisitor.IsSystemPayload(payload);
+            var isSystemPayload = SystemNexusPayloads.IsSystemPayload(payload);
 
             if (isSystemPayload &&
-                !SystemNexusPayloadVisitor.TryGetVisitor(payload, out var messageType, out _))
+                !PayloadVisitors.TryGetEnvelopeVisitor(payload, out var messageType, out _))
             {
                 throw new HandlerException(
                     HandlerErrorType.Internal,

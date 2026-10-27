@@ -35,7 +35,7 @@ public class NexusPayloadSerializerTests
         };
         var payload = new SystemNexusPayloadConverter(
             dataConverter.PayloadConverter, dataConverter.FailureConverter).ToPayload(request);
-        Assert.True(SystemNexusPayloadVisitor.IsSystemPayload(payload));
+        Assert.True(SystemNexusPayloads.IsSystemPayload(payload));
 
         var result = Assert.IsType<SignalWithStartWorkflowRequest>(
             await new NexusPayloadSerializer(dataConverter).DeserializeAsync(
@@ -49,7 +49,7 @@ public class NexusPayloadSerializerTests
     {
         var transferValue = new SignalWithStartWorkflowExecutionRequest { Namespace = "test-value" };
         Assert.True(new BinaryProtoConverter().TryToPayload(transferValue, out var payload));
-        SystemNexusPayloadVisitor.MarkSystemPayload(payload!);
+        SystemNexusPayloads.MarkSystemPayload(payload!);
 
         var result = Assert.IsType<TestSystemRequest>(
             await new NexusPayloadSerializer(DataConverter.Default).DeserializeAsync(
@@ -84,7 +84,7 @@ public class NexusPayloadSerializerTests
         var payload = DataConverter.Default.PayloadConverter.ToPayload("ignored");
         payload.Metadata["messageType"] = ByteString.CopyFromUtf8(
             "temporal.api.workflowservice.v1.UnknownRequest");
-        SystemNexusPayloadVisitor.MarkSystemPayload(payload);
+        SystemNexusPayloads.MarkSystemPayload(payload);
 
         var exc = await Assert.ThrowsAsync<HandlerException>(() =>
             new NexusPayloadSerializer(dataConverter).DeserializeAsync(
@@ -164,7 +164,7 @@ public class NexusPayloadSerializerTests
 
         public object? ToValue(Payload payload, Type type)
         {
-            Assert.False(SystemNexusPayloadVisitor.IsSystemPayload(payload));
+            Assert.False(SystemNexusPayloads.IsSystemPayload(payload));
             Assert.Equal(typeof(object), type);
             DecodeCount++;
             return $"converted-{inner.ToValue(payload, type)}";
@@ -188,7 +188,7 @@ public class NexusPayloadSerializerTests
             IReadOnlyCollection<Payload> payloads)
         {
             Assert.All(payloads, payload =>
-                Assert.False(SystemNexusPayloadVisitor.IsSystemPayload(payload)));
+                Assert.False(SystemNexusPayloads.IsSystemPayload(payload)));
             DecodeCount++;
             return Task.FromResult<IReadOnlyCollection<Payload>>(new[]
             {
@@ -216,7 +216,7 @@ public class NexusPayloadSerializerTests
     public async Task DeserializeAsync_UnmarkedPayload_UsesUserConverter()
     {
         var payload = DataConverter.Default.PayloadConverter.ToPayload("ordinary-input");
-        Assert.False(SystemNexusPayloadVisitor.IsSystemPayload(payload));
+        Assert.False(SystemNexusPayloads.IsSystemPayload(payload));
 
         var result = await new NexusPayloadSerializer(DataConverter.Default).DeserializeAsync(
             new(payload.ToByteArray()), typeof(string));
