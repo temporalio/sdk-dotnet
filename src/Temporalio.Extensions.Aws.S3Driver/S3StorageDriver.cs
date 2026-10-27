@@ -11,7 +11,7 @@ using Google.Protobuf;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
 
-namespace Temporalio.Extensions.ExternalStorage.S3
+namespace Temporalio.Extensions.Aws.S3Driver
 {
     /// <summary>
     /// Storage driver that stores and retrieves payloads in Amazon S3.
@@ -45,7 +45,7 @@ namespace Temporalio.Extensions.ExternalStorage.S3
         private const string SafeSpecialCharacters = "!-_.*'()";
 
         private readonly IS3StorageDriverClient client;
-        private readonly Func<StorageDriverStoreContext, Payload, string> bucketSelector;
+        private readonly BucketSelector bucketSelector;
         private readonly int maxPayloadSize = DefaultMaxPayloadSize;
 
         /// <summary>
@@ -57,6 +57,10 @@ namespace Temporalio.Extensions.ExternalStorage.S3
         public S3StorageDriver(IS3StorageDriverClient client, string bucket)
             : this(client, (context, payload) => bucket)
         {
+            if (bucket == null)
+            {
+                throw new ArgumentNullException(nameof(bucket));
+            }
         }
 
         /// <summary>
@@ -67,7 +71,7 @@ namespace Temporalio.Extensions.ExternalStorage.S3
         /// <param name="bucketSelector">Returns the bucket name for a payload.</param>
         public S3StorageDriver(
             IS3StorageDriverClient client,
-            Func<StorageDriverStoreContext, Payload, string> bucketSelector)
+            BucketSelector bucketSelector)
         {
             this.client = client ?? throw new ArgumentNullException(nameof(client));
             this.bucketSelector =
@@ -174,8 +178,8 @@ namespace Temporalio.Extensions.ExternalStorage.S3
             }
             catch when (firstError != null)
             {
-                // Task.WhenAll throws the first failure in list order, which may be a sibling's
-                // cancellation rather than the failure that caused it
+                // Task.WhenAll throws the first fault in list order, which may be a sibling that
+                // failed because it was canceled rather than the failure that caused it
                 ExceptionDispatchInfo.Capture(firstError).Throw();
                 throw;
             }
@@ -342,8 +346,19 @@ namespace Temporalio.Extensions.ExternalStorage.S3
             return Payload.Parser.ParseFrom(data);
         }
 
-        private string ClientContext() =>
-            string.Concat(client.Describe().Select(pair => $", {pair.Key}={pair.Value}"));
+        private string ClientContext()
+        {
+            try
+            {
+                return string.Concat(client.Describe().Select(pair => $", {pair.Key}={pair.Value}"));
+            }
+#pragma warning disable CA1031 // The original S3 failure is more relevant than a diagnostics failure.
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+#pragma warning restore CA1031
+        }
 
         private sealed record StoredObject(
             Payload Payload, string Bucket, string Key, string HashValue, byte[] Data);

@@ -1,10 +1,10 @@
-namespace Temporalio.Tests.Extensions.ExternalStorage.S3;
+namespace Temporalio.Tests.Extensions.Aws.S3Driver;
 
 using System.Net;
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
-using Temporalio.Extensions.ExternalStorage.S3.AwsSdk;
+using Temporalio.Extensions.Aws.S3Driver.AwsSdk;
 using Xunit;
 
 public class AwsSdkS3StorageDriverClientTests

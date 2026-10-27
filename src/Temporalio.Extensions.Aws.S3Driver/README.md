@@ -6,15 +6,15 @@
 This extension stores and retrieves Temporal payloads in Amazon S3 using external storage.
 
 It has no AWS dependency. It defines `S3StorageDriver` and the `IS3StorageDriverClient` interface,
-and you supply the S3 client. Use the `Temporalio.Extensions.ExternalStorage.S3.AwsSdk` package for a
+and you supply the S3 client. Use the `Temporalio.Extensions.Aws.S3Driver.AwsSdk` package for a
 client backed by the official AWS SDK, or implement `IS3StorageDriverClient` yourself.
 
 ## Quick Start
 
 ```csharp
 using Amazon.S3;
-using Temporalio.Extensions.ExternalStorage.S3;
-using Temporalio.Extensions.ExternalStorage.S3.AwsSdk;
+using Temporalio.Extensions.Aws.S3Driver;
+using Temporalio.Extensions.Aws.S3Driver.AwsSdk;
 
 var driver = new S3StorageDriver(
     new AwsSdkS3StorageDriverClient(new AmazonS3Client()),
@@ -28,6 +28,30 @@ var driver = new S3StorageDriver(
     client,
     (context, payload) => payload.Data.Length > 10 * 1024 * 1024 ? "large-payloads" : "small-payloads");
 ```
+
+## Required IAM Permissions
+
+Before uploading a payload, the driver checks whether the object already exists with a `HeadObject`
+request. That check needs `s3:GetObject`. It also needs `s3:ListBucket`, because without it S3
+reports a missing object as `403 Forbidden` instead of `404 Not Found`, and the upload fails.
+
+```json
+[
+  {
+    "Effect": "Allow",
+    "Action": ["s3:PutObject", "s3:GetObject"],
+    "Resource": "arn:aws:s3:::my-temporal-payloads/*"
+  },
+  {
+    "Effect": "Allow",
+    "Action": "s3:ListBucket",
+    "Resource": "arn:aws:s3:::my-temporal-payloads"
+  }
+]
+```
+
+Components that store payloads need all three permissions. Components that only retrieve payloads
+need only `s3:GetObject`.
 
 ## S3 Storage Key Specification
 

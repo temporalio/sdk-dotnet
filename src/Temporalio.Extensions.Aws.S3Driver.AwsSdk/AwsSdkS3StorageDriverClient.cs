@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Amazon.S3;
 
-namespace Temporalio.Extensions.ExternalStorage.S3.AwsSdk
+namespace Temporalio.Extensions.Aws.S3Driver.AwsSdk
 {
     /// <summary>
     /// <see cref="IS3StorageDriverClient" /> backed by an <see cref="IAmazonS3" /> from the

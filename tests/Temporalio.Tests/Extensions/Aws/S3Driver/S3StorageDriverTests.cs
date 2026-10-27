@@ -1,17 +1,45 @@
-namespace Temporalio.Tests.Extensions.ExternalStorage.S3;
+namespace Temporalio.Tests.Extensions.Aws.S3Driver;
 
 using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using Google.Protobuf;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
-using Temporalio.Extensions.ExternalStorage.S3;
+using Temporalio.Extensions.Aws.S3Driver;
 using Xunit;
 
 public class S3StorageDriverTests
 {
     private static readonly IStorageDriverTargetInfo.Workflow WorkflowTarget =
         new("my-ns", "my-workflow-id", "my-run-id", "MyWorkflow");
+
+    [Fact]
+    public void Name_Default_MatchesTheOtherSdks()
+    {
+        // Retrieval is routed by the name recorded in history, so this must stay identical across
+        // SDKs. The literal is deliberate: a test against the constant would pass if it changed.
+        Assert.Equal("aws.s3driver", new S3StorageDriver(new FakeS3Client(), "b").Name);
+    }
+
+    [Fact]
+    public void Constructor_NullArgument_Throws()
+    {
+        Assert.Throws<ArgumentNullException>(() => new S3StorageDriver(null!, "b"));
+        Assert.Throws<ArgumentNullException>(() => new S3StorageDriver(new FakeS3Client(), (string)null!));
+        Assert.Throws<ArgumentNullException>(
+            () => new S3StorageDriver(null!, (context, payload) => "b"));
+        Assert.Throws<ArgumentNullException>(
+            () => new S3StorageDriver(new FakeS3Client(), (BucketSelector)null!));
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void MaxPayloadSize_ZeroOrLess_Throws(int maxPayloadSize)
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () => new S3StorageDriver(new FakeS3Client(), "b") { MaxPayloadSize = maxPayloadSize });
+    }
 
     [Fact]
     public async Task RetrieveAsync_ClaimsFromStoreAsync_ReturnsTheOriginalPayloads()
@@ -150,6 +178,22 @@ public class S3StorageDriverTests
             new[] { NewPayload("one"), NewPayload("two") },
             storeLimiter.Items.OrderBy(payload => payload.Data.ToStringUtf8()));
         Assert.Equal(claims.Count, retrieveLimiter.Items.Count);
+    }
+
+    [Fact]
+    public async Task StoreAsync_ManyPayloads_RunsAsManyRequestsAtOnceAsTheLimiterAllows()
+    {
+        var client = new ConcurrencyTrackingS3Client(expectedConcurrency: 2);
+        var driver = new S3StorageDriver(client, "my-bucket");
+        using var limiter = new SemaphoreLimiter<Payload>(2);
+        var payloads = new[] { "a", "b", "c", "d" }.Select(NewPayload).ToArray();
+
+        // The client holds requests until two are in flight, so a driver that did not fan out
+        // would never finish
+        await driver.StoreAsync(new(null, limiter), payloads, default).WaitAsync(TimeSpan.FromSeconds(10));
+
+        Assert.Equal(2, client.MaxInFlight);
+        Assert.Equal(4, client.RequestCount);
     }
 
     [Fact]
@@ -301,6 +345,82 @@ public class S3StorageDriverTests
         {
             Items.Enqueue(item);
             return operation();
+        }
+    }
+
+    private sealed class SemaphoreLimiter<TItem> : IStorageDriverLimiter<TItem>, IDisposable
+    {
+        private readonly SemaphoreSlim semaphore;
+
+        public SemaphoreLimiter(int permits) => semaphore = new(permits);
+
+        public async Task<TResult> RunAsync<TResult>(
+            TItem item, Func<Task<TResult>> operation, CancellationToken cancellationToken)
+        {
+            await semaphore.WaitAsync(cancellationToken);
+            try
+            {
+                return await operation();
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        }
+
+        public void Dispose() => semaphore.Dispose();
+    }
+
+    /// <summary>
+    /// Records the most existence checks in flight at once, holding each one until the expected
+    /// number are in flight together.
+    /// </summary>
+    private sealed class ConcurrencyTrackingS3Client : IS3StorageDriverClient
+    {
+        private readonly int expectedConcurrency;
+        private readonly TaskCompletionSource expectedConcurrencyReached =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        private int inFlight;
+        private int maxInFlight;
+        private int requestCount;
+
+        public ConcurrencyTrackingS3Client(int expectedConcurrency) =>
+            this.expectedConcurrency = expectedConcurrency;
+
+        public int MaxInFlight => maxInFlight;
+
+        public int RequestCount => requestCount;
+
+        public Task PutObjectAsync(string bucket, string key, byte[] data, CancellationToken cancellationToken) =>
+            Task.CompletedTask;
+
+        public async Task<bool> ObjectExistsAsync(string bucket, string key, CancellationToken cancellationToken)
+        {
+            Interlocked.Increment(ref requestCount);
+            var current = Interlocked.Increment(ref inFlight);
+            InterlockedMax(ref maxInFlight, current);
+            if (current == expectedConcurrency)
+            {
+                expectedConcurrencyReached.TrySetResult();
+            }
+            await expectedConcurrencyReached.Task;
+            Interlocked.Decrement(ref inFlight);
+            return false;
+        }
+
+        public Task<byte[]> GetObjectAsync(string bucket, string key, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
+        public IReadOnlyDictionary<string, string> Describe() => new Dictionary<string, string>();
+
+        private static void InterlockedMax(ref int target, int value)
+        {
+            int current;
+            while (value > (current = Volatile.Read(ref target)) &&
+                Interlocked.CompareExchange(ref target, value, current) != current)
+            {
+            }
         }
     }
 

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Temporalio.Extensions.ExternalStorage.S3
+namespace Temporalio.Extensions.Aws.S3Driver
 {
     /// <summary>
     /// S3 object operations used by <see cref="S3StorageDriver" />. Implement this to use an S3

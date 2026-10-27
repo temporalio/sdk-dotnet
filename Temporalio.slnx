@@ -3,9 +3,9 @@
     <Project Path="src/Temporalio.Api.Generator/Temporal.Api.Generator.csproj" />
     <Project Path="src/Temporalio.Extensions.Aws.Lambda.OpenTelemetry/Temporalio.Extensions.Aws.Lambda.OpenTelemetry.csproj" />
     <Project Path="src/Temporalio.Extensions.Aws.Lambda/Temporalio.Extensions.Aws.Lambda.csproj" />
+    <Project Path="src/Temporalio.Extensions.Aws.S3Driver.AwsSdk/Temporalio.Extensions.Aws.S3Driver.AwsSdk.csproj" />
+    <Project Path="src/Temporalio.Extensions.Aws.S3Driver/Temporalio.Extensions.Aws.S3Driver.csproj" />
     <Project Path="src/Temporalio.Extensions.DiagnosticSource/Temporalio.Extensions.DiagnosticSource.csproj" />
-    <Project Path="src/Temporalio.Extensions.ExternalStorage.S3.AwsSdk/Temporalio.Extensions.ExternalStorage.S3.AwsSdk.csproj" />
-    <Project Path="src/Temporalio.Extensions.ExternalStorage.S3/Temporalio.Extensions.ExternalStorage.S3.csproj" />
     <Project Path="src/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry.csproj" />
     <Project Path="src/Temporalio.Extensions.Gcp.CloudRun.Id/Temporalio.Extensions.Gcp.CloudRun.Id.csproj" />
     <Project Path="src/Temporalio.Extensions.Hosting/Temporalio.Extensions.Hosting.csproj" />

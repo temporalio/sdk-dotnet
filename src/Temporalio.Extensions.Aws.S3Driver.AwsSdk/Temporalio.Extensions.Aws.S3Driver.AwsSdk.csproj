@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Temporalio.Extensions.ExternalStorage.S3\Temporalio.Extensions.ExternalStorage.S3.csproj" />
+    <ProjectReference Include="..\Temporalio.Extensions.Aws.S3Driver\Temporalio.Extensions.Aws.S3Driver.csproj" />
   </ItemGroup>
 
   <ItemGroup>

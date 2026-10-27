@@ -128,8 +128,8 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "4.0.102.13",
-        "contentHash": "vaYs/kwfB+Lv9PeVKYE4g2mQlzVtHImXLWgfTG8UgeCybUAPkew5kwb8GS6RhuzwvImbolyLHT+IM34WoM9lJg=="
+        "resolved": "4.0.3.3",
+        "contentHash": "YQv10JuxnciWh0QwnkarSbge4gXQV1qTURf5jkBjNUH/3jYS9QrbxopA4TK1qdjfOfP37tqiJkLSrRRNqX81aw=="
       },
       "Microsoft.CodeCoverage": {
         "type": "Transitive",
@@ -475,23 +475,23 @@
           "Temporalio.Extensions.OpenTelemetry": "[1.21.0, )"
         }
       },
+      "temporalio.extensions.aws.s3driver": {
+        "type": "Project",
+        "dependencies": {
+          "Temporalio": "[1.21.0, )"
+        }
+      },
+      "temporalio.extensions.aws.s3driver.awssdk": {
+        "type": "Project",
+        "dependencies": {
+          "AWSSDK.S3": "[4.0.13.1, )",
+          "Temporalio.Extensions.Aws.S3Driver": "[1.21.0, )"
+        }
+      },
       "temporalio.extensions.diagnosticsource": {
         "type": "Project",
         "dependencies": {
           "Temporalio": "[1.21.0, )"
-        }
-      },
-      "temporalio.extensions.externalstorage.s3": {
-        "type": "Project",
-        "dependencies": {
-          "Temporalio": "[1.21.0, )"
-        }
-      },
-      "temporalio.extensions.externalstorage.s3.awssdk": {
-        "type": "Project",
-        "dependencies": {
-          "AWSSDK.S3": "[4.0.104.6, )",
-          "Temporalio.Extensions.ExternalStorage.S3": "[1.21.0, )"
         }
       },
       "temporalio.extensions.gcp.cloudrun.id": {
@@ -538,11 +538,11 @@
       },
       "AWSSDK.S3": {
         "type": "CentralTransitive",
-        "requested": "[4.0.104.6, )",
-        "resolved": "4.0.104.6",
-        "contentHash": "fSqAOkftU8jKemilzLGZDU0zLEJXHjAemU+8Nd29+sUwRxVK04w6/GY3O4f9S1+JIYwEnHDGcW66VK4AZ2kx6g==",
+        "requested": "[4.0.13.1, )",
+        "resolved": "4.0.13.1",
+        "contentHash": "+YDlfV80LsY9Q/+G31SepQW+XqLYIyqlpfkhHtHMAsB18T1dRtIGaiPtqkdYSPxBJpVQ+FaxwZ45bIwLneKrxA==",
         "dependencies": {
-          "AWSSDK.Core": "[4.0.102.13, 5.0.0)"
+          "AWSSDK.Core": "[4.0.3.3, 5.0.0)"
         }
       },
       "Google.Protobuf": {

@@ -4,11 +4,11 @@
     ".NETStandard,Version=v2.0": {
       "AWSSDK.S3": {
         "type": "Direct",
-        "requested": "[4.0.104.6, )",
-        "resolved": "4.0.104.6",
-        "contentHash": "fSqAOkftU8jKemilzLGZDU0zLEJXHjAemU+8Nd29+sUwRxVK04w6/GY3O4f9S1+JIYwEnHDGcW66VK4AZ2kx6g==",
+        "requested": "[4.0.13.1, )",
+        "resolved": "4.0.13.1",
+        "contentHash": "+YDlfV80LsY9Q/+G31SepQW+XqLYIyqlpfkhHtHMAsB18T1dRtIGaiPtqkdYSPxBJpVQ+FaxwZ45bIwLneKrxA==",
         "dependencies": {
-          "AWSSDK.Core": "[4.0.102.13, 5.0.0)"
+          "AWSSDK.Core": "[4.0.3.3, 5.0.0)"
         }
       },
       "Microsoft.VisualStudio.Threading.Analyzers": {
@@ -37,13 +37,13 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "4.0.102.13",
-        "contentHash": "vaYs/kwfB+Lv9PeVKYE4g2mQlzVtHImXLWgfTG8UgeCybUAPkew5kwb8GS6RhuzwvImbolyLHT+IM34WoM9lJg==",
+        "resolved": "4.0.3.3",
+        "contentHash": "YQv10JuxnciWh0QwnkarSbge4gXQV1qTURf5jkBjNUH/3jYS9QrbxopA4TK1qdjfOfP37tqiJkLSrRRNqX81aw==",
         "dependencies": {
           "Microsoft.Bcl.AsyncInterfaces": "8.0.0",
           "System.Buffers": "4.5.1",
           "System.Memory": "4.5.5",
-          "System.Text.Json": "8.0.6"
+          "System.Text.Json": "8.0.5"
         }
       },
       "Microsoft.NETCore.Platforms": {
@@ -119,7 +119,7 @@
           "System.Text.Json": "[9.0.4, )"
         }
       },
-      "temporalio.extensions.externalstorage.s3": {
+      "temporalio.extensions.aws.s3driver": {
         "type": "Project",
         "dependencies": {
           "Temporalio": "[1.21.0, )"
