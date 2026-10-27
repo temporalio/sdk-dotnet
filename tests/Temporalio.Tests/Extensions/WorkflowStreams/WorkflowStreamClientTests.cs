@@ -1,6 +1,9 @@
 namespace Temporalio.Tests.Extensions.WorkflowStreams;
 
+using Temporalio.Api.Enums.V1;
+using Temporalio.Client;
 using Temporalio.Converters;
+using Temporalio.Exceptions;
 using Temporalio.Extensions.WorkflowStreams;
 using Temporalio.Worker;
 using Temporalio.Workflows;
@@ -115,6 +118,239 @@ public class WorkflowStreamClientTests : WorkflowEnvironmentTestBase
             var terminalMove = terminal.MoveNextAsync().AsTask();
             await handle.SignalAsync(workflow => workflow.FinishAsync());
             Assert.False(await terminalMove.WaitAsync(TimeSpan.FromSeconds(15)));
+            await handle.GetResultAsync();
+        });
+    }
+
+    [Fact]
+    public async Task SubscribeAfterCompletion_DrainsFilteredPagesWithIndependentEnumerations()
+    {
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
+            {
+                MaxCachedWorkflows = 0,
+            }.AddWorkflow<HostedStreamWorkflow>());
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (HostedStreamWorkflow workflow) => workflow.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            var value = new string('x', 400_000);
+            await handle.SignalAsync(workflow => workflow.PublishAsync("events", value));
+            await handle.SignalAsync(workflow => workflow.PublishAsync("other", "ignored"));
+            await handle.SignalAsync(workflow => workflow.PublishAsync("events", value));
+            await handle.SignalAsync(workflow => workflow.PublishAsync("events", value));
+            await handle.SignalAsync(workflow => workflow.FinishAsync());
+            await handle.GetResultAsync();
+
+            await using var client = new WorkflowStreamClient(Client, handle.Id);
+            var historyCount = (await handle.FetchHistoryAsync()).Events.Count;
+            var subscription = client.GetTopic<string>("events").SubscribeAsync();
+            for (var iteration = 0; iteration < 2; iteration++)
+            {
+                var offsets = new List<long>();
+                await foreach (var item in subscription)
+                {
+                    Assert.Equal(value, item.Value);
+                    offsets.Add(item.Offset);
+                }
+                Assert.Equal(new long[] { 0, 2, 3 }, offsets);
+            }
+            Assert.Equal(historyCount, (await handle.FetchHistoryAsync()).Events.Count);
+        });
+    }
+
+    [Theory]
+    [InlineData(WorkflowExecutionStatus.Completed)]
+    [InlineData(WorkflowExecutionStatus.Failed)]
+    [InlineData(WorkflowExecutionStatus.Canceled)]
+    [InlineData(WorkflowExecutionStatus.Terminated)]
+    [InlineData(WorkflowExecutionStatus.TimedOut)]
+    public async Task SubscribeAfterClosure_DrainsEveryTerminalStatus(WorkflowExecutionStatus status)
+    {
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
+            {
+                MaxCachedWorkflows = 0,
+            }.AddWorkflow<HostedStreamWorkflow>());
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (HostedStreamWorkflow workflow) => workflow.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
+                {
+                    RunTimeout = status == WorkflowExecutionStatus.TimedOut ?
+                        TimeSpan.FromSeconds(5) : null,
+                });
+            await handle.SignalAsync(workflow => workflow.PublishAsync("events", "retained"));
+            await using var client = new WorkflowStreamClient(Client, handle.Id);
+            Assert.Equal(1, await client.GetOffsetAsync());
+            if (status == WorkflowExecutionStatus.Completed)
+            {
+                await handle.SignalAsync(workflow => workflow.FinishAsync());
+                await handle.GetResultAsync();
+            }
+            else
+            {
+                if (status == WorkflowExecutionStatus.Failed)
+                {
+                    await handle.SignalAsync(workflow => workflow.FailAsync());
+                }
+                else if (status == WorkflowExecutionStatus.Canceled)
+                {
+                    await handle.CancelAsync();
+                }
+                else if (status == WorkflowExecutionStatus.Terminated)
+                {
+                    await handle.TerminateAsync();
+                }
+                await Assert.ThrowsAsync<WorkflowFailedException>(() => handle.GetResultAsync());
+            }
+            Assert.Equal(status, (await handle.DescribeAsync()).Status);
+            await using var enumerator = client.GetTopic<string>("events").SubscribeAsync().
+                GetAsyncEnumerator();
+            Assert.True(await enumerator.MoveNextAsync());
+            Assert.Equal("retained", enumerator.Current.Value);
+            Assert.False(await enumerator.MoveNextAsync());
+        });
+    }
+
+    [Fact]
+    public async Task ClosedStreamPagination_StaysPinnedAfterWorkflowIdReuse()
+    {
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<HostedStreamWorkflow>());
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (HostedStreamWorkflow workflow) => workflow.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            var value = new string('x', 400_000);
+            for (var index = 0; index < 3; index++)
+            {
+                await handle.SignalAsync(workflow => workflow.PublishAsync("events", value));
+            }
+            await handle.SignalAsync(workflow => workflow.FinishAsync());
+            await handle.GetResultAsync();
+            await using var client = new WorkflowStreamClient(Client, handle.Id);
+            await using var enumerator = client.GetTopic<string>("events").SubscribeAsync().
+                GetAsyncEnumerator();
+            Assert.True(await enumerator.MoveNextAsync());
+            Assert.Equal(value, enumerator.Current.Value);
+            var replacement = await Client.StartWorkflowAsync(
+                (HostedStreamWorkflow workflow) => workflow.RunAsync(),
+                new(id: handle.Id, taskQueue: worker.Options.TaskQueue!));
+            await replacement.SignalAsync(workflow => workflow.PublishAsync("events", "replacement"));
+            for (var index = 1; index < 3; index++)
+            {
+                Assert.True(await enumerator.MoveNextAsync());
+                Assert.Equal(value, enumerator.Current.Value);
+                Assert.Equal(index, enumerator.Current.Offset);
+            }
+            Assert.False(await enumerator.MoveNextAsync());
+            await replacement.SignalAsync(workflow => workflow.FinishAsync());
+            await replacement.GetResultAsync();
+        });
+    }
+
+    [Fact]
+    public async Task SubscribeAfterCompletion_ClampsTruncationAndCompletesEmptyReads()
+    {
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<HostedStreamWorkflow>());
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (HostedStreamWorkflow workflow) => workflow.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            await handle.SignalAsync(workflow => workflow.PublishAsync("events", "zero"));
+            await handle.SignalAsync(workflow => workflow.PublishAsync("events", "one"));
+            await handle.SignalAsync(workflow => workflow.PublishAsync("events", "two"));
+            await handle.SignalAsync(workflow => workflow.TruncateAsync(2));
+            await handle.SignalAsync(workflow => workflow.FinishAsync());
+            await handle.GetResultAsync();
+            await using var client = new WorkflowStreamClient(Client, handle.Id);
+            await using var retained = client.SubscribeAsync<string>(new() { FromOffset = 1 }).
+                GetAsyncEnumerator();
+            Assert.True(await retained.MoveNextAsync());
+            Assert.Equal("two", retained.Current.Value);
+            Assert.Equal(2, retained.Current.Offset);
+            Assert.False(await retained.MoveNextAsync());
+
+            await using var exhausted = client.SubscribeAsync(new() { FromOffset = 3 }).
+                GetAsyncEnumerator();
+            Assert.False(await exhausted.MoveNextAsync());
+            await using var missing = client.GetTopic("missing").SubscribeAsync().GetAsyncEnumerator();
+            Assert.False(await missing.MoveNextAsync());
+        });
+    }
+
+    [Fact]
+    public async Task SubscribeAfterCompletion_PropagatesConfiguredQueryRejection()
+    {
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<HostedStreamWorkflow>());
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (HostedStreamWorkflow workflow) => workflow.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            await handle.SignalAsync(workflow => workflow.FinishAsync());
+            await handle.GetResultAsync();
+            var options = (TemporalClientOptions)Client.Options.Clone();
+            options.QueryRejectCondition = QueryRejectCondition.NotOpen;
+            var rejectingClient = new TemporalClient(Client.Connection, options);
+            await using var client = new WorkflowStreamClient(rejectingClient, handle.Id);
+            await using var enumerator = client.SubscribeAsync().GetAsyncEnumerator();
+            await Assert.ThrowsAsync<WorkflowQueryRejectedException>(
+                () => enumerator.MoveNextAsync().AsTask());
+        });
+    }
+
+    [Fact]
+    public async Task SubscribeAfterCompletion_PropagatesMissingPollQuery()
+    {
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<NoStreamWorkflow>());
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (NoStreamWorkflow workflow) => workflow.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            await handle.GetResultAsync();
+            await using var client = new WorkflowStreamClient(Client, handle.Id);
+            await using var enumerator = client.SubscribeAsync().GetAsyncEnumerator();
+            await Assert.ThrowsAsync<WorkflowQueryFailedException>(
+                () => enumerator.MoveNextAsync().AsTask());
+        });
+    }
+
+    [Fact]
+    public async Task PollQuery_ReturnsImmediatelyWhileRunningAndDraining()
+    {
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<HostedStreamWorkflow>());
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (HostedStreamWorkflow workflow) => workflow.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            var empty = await handle.QueryAsync<PollResult>(
+                WorkflowStreamConstants.PollQueryName, new object?[] { new PollInput() });
+            Assert.Empty(empty.Items);
+            Assert.False(empty.MoreReady);
+            await handle.SignalAsync(workflow => workflow.DetachAsync());
+            var draining = await handle.QueryAsync<PollResult>(
+                WorkflowStreamConstants.PollQueryName, new object?[] { new PollInput() });
+            Assert.Empty(draining.Items);
+            await handle.SignalAsync(workflow => workflow.FinishAsync());
             await handle.GetResultAsync();
         });
     }
@@ -264,21 +500,55 @@ public class WorkflowStreamClientTests : WorkflowEnvironmentTestBase
         (string)DataConverter.Default.PayloadConverter.ToValue(item.Payload, typeof(string))!;
 
     [Workflow]
+    public class NoStreamWorkflow
+    {
+        [WorkflowRun]
+        public Task RunAsync() => Task.CompletedTask;
+    }
+
+    [Workflow]
     public class HostedStreamWorkflow
     {
         private readonly WorkflowStream stream = new();
         private bool finished;
+        private bool fail;
 
         [WorkflowRun]
         public async Task RunAsync()
         {
             await Workflow.WaitConditionAsync(() => finished);
+            if (fail)
+            {
+                throw new ApplicationFailureException("failed after persisting stream state");
+            }
+        }
+
+        [WorkflowSignal]
+        public Task FailAsync()
+        {
+            fail = true;
+            finished = true;
+            return Task.CompletedTask;
         }
 
         [WorkflowSignal]
         public Task FinishAsync()
         {
             finished = true;
+            return Task.CompletedTask;
+        }
+
+        [WorkflowSignal]
+        public Task PublishAsync(string topic, string value)
+        {
+            stream.GetTopic(topic).Publish(value);
+            return Task.CompletedTask;
+        }
+
+        [WorkflowSignal]
+        public Task DetachAsync()
+        {
+            stream.DetachPollers();
             return Task.CompletedTask;
         }
 
