@@ -14,7 +14,7 @@ public class S3StorageDriverTests
         new("my-ns", "my-workflow-id", "my-run-id", "MyWorkflow");
 
     [Fact]
-    public void Name_Default_MatchesTheOtherSdks()
+    public void Name_Default_IsAwsS3Driver()
     {
         // Retrieval is routed by the name recorded in history, so this must stay identical across
         // SDKs. The literal is deliberate: a test against the constant would pass if it changed.
