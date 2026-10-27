@@ -71,7 +71,7 @@ jobs:
         run: mise run changelog:release-notes -- --version "$VERSION" --output release-notes.md
 
       - name: Upload release notes
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: release-notes
           path: release-notes.md
@@ -105,7 +105,7 @@ jobs:
         run: dotnet run --file scripts/release.cs -- verify-packages nuget-package "$VERSION" > nuget-package/package-ids.txt
 
       - name: Upload verified packages
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: release-package
           path: nuget-package
