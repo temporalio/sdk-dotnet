@@ -442,6 +442,14 @@ namespace Temporalio.Worker
             }
 #pragma warning restore CA1031
 
+            // Core can stop polling after it has reported an activity cancellation even while the
+            // managed activity is still preparing its completion. Finalizing before that completion
+            // crosses the bridge removes the Core worker out from under the completion callback.
+            if (activityWorker != null)
+            {
+                await activityWorker.WaitAllAsync().ConfigureAwait(false);
+            }
+
             // If the token is not already cancelled, we want to remove that from the tasks to be
             // waited on
             if (!tasks[0].IsCompleted)
