@@ -25,6 +25,8 @@ Also see:
 **Contents**
 
 - [Packages](#packages)
+  - [SDK packages](#sdk-packages)
+  - [Community packages](#community-packages)
 - [Contributing](#contributing)
 - [Development](#development)
   - [Build](#build)
@@ -37,6 +39,8 @@ Also see:
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Packages
+
+### SDK packages
 
 Each package has its own README next to its project, which is also its NuGet package page.
 
@@ -51,6 +55,18 @@ Each package has its own README next to its project, which is also its NuGet pac
 | [Temporalio.Extensions.Hosting](src/Temporalio.Extensions.Hosting/README.md) | Client dependency injection, activity dependency injection, and worker generic host support |
 | [Temporalio.Extensions.OpenTelemetry](src/Temporalio.Extensions.OpenTelemetry/README.md) | OpenTelemetry tracing support |
 | [Temporalio.Extensions.WorkflowStreams](src/Temporalio.Extensions.WorkflowStreams/README.md) | Experimental durable, offset-based workflow publish/subscribe streams |
+
+### Community packages
+
+The following packages are published from the [temporal-community](https://github.com/temporal-community) GitHub
+organization, in [temporal-dotnet-extensions](https://github.com/temporal-community/temporal-dotnet-extensions). They
+are not part of the Temporal .NET SDK and are not covered by any Temporal support policy. They are released and
+versioned independently of the SDK; please file issues in their repository.
+
+| Package | Description |
+| ------- | ----------- |
+| [TemporalCommunity.Extensions.Analyzers](https://www.nuget.org/packages/TemporalCommunity.Extensions.Analyzers) | Roslyn analyzers for workflow code |
+| [TemporalCommunity.Templates](https://www.nuget.org/packages/TemporalCommunity.Templates) | `dotnet new` templates for workflows, activities, workers, and solutions |
 
 ## Contributing
 
