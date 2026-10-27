@@ -9,6 +9,20 @@ using Xunit;
 public class NexusWorkerRegistrationTests
 {
     [NexusService]
+    public interface IStringService
+    {
+        [NexusOperation]
+        string DoSomething(string input);
+    }
+
+    [NexusService]
+    public interface IGenericInputService
+    {
+        [NexusOperation]
+        int Sum(List<int> values);
+    }
+
+    [NexusService]
     public interface IBadService
     {
         [NexusOperation]
@@ -35,7 +49,7 @@ public class NexusWorkerRegistrationTests
             Assert.IsType<ArgumentException>(exc.InnerException).Message);
     }
 
-    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationAttrBadReturnService
     {
         [TemporalOperation]
@@ -56,7 +70,111 @@ public class NexusWorkerRegistrationTests
             Assert.IsType<ArgumentException>(exc.InnerException).Message);
     }
 
-    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    [NexusServiceHandler(typeof(IStringService))]
+    public class TemporalOperationAttrAsyncSuffixService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomethingAsync(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+    }
+
+    [Fact]
+    public void AddNexusService_TemporalOperationAsyncSuffix_Succeeds()
+    {
+        var options = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new TemporalOperationAttrAsyncSuffixService());
+
+        Assert.Equal(
+            "DoSomething",
+            Assert.Single(Assert.Single(options.NexusServices).OperationHandlers).Key);
+    }
+
+    [NexusService]
+    public interface IAsyncSuffixService
+    {
+        [NexusOperation]
+        string DoSomething(string input);
+
+        [NexusOperation]
+        string DoSomethingAsync(string input);
+    }
+
+    [NexusServiceHandler(typeof(IAsyncSuffixService))]
+    public class TemporalOperationExactMatchService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomethingAsync(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+    }
+
+    [Fact]
+    public void AddNexusService_TemporalOperationAsyncSuffix_MatchesExactFirst()
+    {
+        var options = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new TemporalOperationExactMatchService());
+
+        Assert.Equal(
+            new[] { "DoSomething", "DoSomethingAsync" },
+            Assert.Single(options.NexusServices).OperationHandlers.Keys.OrderBy(name => name));
+    }
+
+    [NexusServiceHandler(typeof(IStringService))]
+    public class TemporalOperationDuplicateAsyncSuffixService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomethingAsync(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+    }
+
+    [Fact]
+    public void AddNexusService_TemporalOperationAsyncSuffix_RejectsDuplicates()
+    {
+        var exc = Assert.Throws<ArgumentException>(() =>
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddNexusService(new TemporalOperationDuplicateAsyncSuffixService()));
+        Assert.Contains("Duplicate operation handler for operation 'DoSomething'", exc.Message);
+    }
+
+    [NexusService]
+    public interface IAsyncSuffixOnlyService
+    {
+        [NexusOperation]
+        string DoSomethingAsync(string input);
+    }
+
+    [NexusServiceHandler(typeof(IAsyncSuffixOnlyService))]
+    public class TemporalOperationUnsuffixedService
+    {
+        [TemporalOperation]
+        public Task<TemporalOperationResult<string>> DoSomething(
+            TemporalOperationStartContext ctx, ITemporalNexusClient client, string input) =>
+            Task.FromResult(TemporalOperationResult<string>.SyncResult(input));
+    }
+
+    [Fact]
+    public void AddNexusService_TemporalOperationAsyncSuffix_DoesNotMatchInReverse()
+    {
+        var exc = Assert.Throws<ArgumentException>(() =>
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddNexusService(new TemporalOperationUnsuffixedService()));
+        Assert.Contains("Missing handlers for defined operations", exc.Message);
+        Assert.Contains("DoSomethingAsync", exc.Message);
+    }
+
+    [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationAttrBadParamsService
     {
         [TemporalOperation]
@@ -77,7 +195,7 @@ public class NexusWorkerRegistrationTests
     }
 
 #pragma warning disable CA1052 // Intentionally non-static so registration reaches signature check
-    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationAttrStaticService
     {
         [TemporalOperation]
@@ -99,7 +217,7 @@ public class NexusWorkerRegistrationTests
             Assert.IsType<ArgumentException>(exc.InnerException).Message);
     }
 
-    [NexusServiceHandler(typeof(NexusWorkerTests.IGenericInputService))]
+    [NexusServiceHandler(typeof(IGenericInputService))]
     public class TemporalOperationAttrGenericInputMismatchService
     {
         [TemporalOperation]
@@ -120,7 +238,7 @@ public class NexusWorkerRegistrationTests
             Assert.IsType<ArgumentException>(exc.InnerException).Message);
     }
 
-    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationAttrRawReturnService
     {
         [TemporalOperation]
@@ -141,7 +259,7 @@ public class NexusWorkerRegistrationTests
             Assert.IsType<ArgumentException>(exc.InnerException).Message);
     }
 
-    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationAttrDualAnnotationService
     {
         [TemporalOperation]
@@ -161,7 +279,7 @@ public class NexusWorkerRegistrationTests
                 AddNexusService(new TemporalOperationAttrDualAnnotationService()));
     }
 
-    [NexusServiceHandler(typeof(NexusWorkerTests.IStringService))]
+    [NexusServiceHandler(typeof(IStringService))]
     public class TemporalOperationAttrPrivateService
     {
         [TemporalOperation]

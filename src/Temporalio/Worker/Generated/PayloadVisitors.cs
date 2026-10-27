@@ -426,6 +426,18 @@ namespace Temporalio.Worker
                         VisitNoPayloadEnvelopeAsync,
                         visitPayload,
                         visitPayloads),
+                ["temporal.api.notificationservice.v1.OnCompleteRequest"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.NotificationService.V1.OnCompleteRequest>(
+                        payload,
+                        VisitAsync,
+                        visitPayload,
+                        visitPayloads),
+                ["temporal.api.notificationservice.v1.OnCompleteResponse"] = (payload, visitPayload, visitPayloads) =>
+                    VisitEnvelopeAsync<global::Temporalio.Api.NotificationService.V1.OnCompleteResponse>(
+                        payload,
+                        VisitNoPayloadEnvelopeAsync,
+                        visitPayload,
+                        visitPayloads),
             };
 
         private static Task VisitNoPayloadEnvelopeAsync<T>(
@@ -3689,6 +3701,25 @@ namespace Temporalio.Worker
             if (value.Failure != null)
             {
                 await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
+        }
+
+        internal static async Task VisitAsync(
+            global::Temporalio.Api.NotificationService.V1.OnCompleteRequest value,
+            PayloadVisitor visitPayload,
+            PayloadsVisitor visitPayloads)
+        {
+            if (value.Success != null)
+            {
+                await VisitAsync(value.Success, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
+            if (value.Failure != null)
+            {
+                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+            }
+            if (value.SourceContext != null)
+            {
+                await VisitAsync(value.SourceContext, visitPayload, visitPayloads).ConfigureAwait(false);
             }
         }
 

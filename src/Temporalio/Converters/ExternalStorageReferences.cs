@@ -19,6 +19,9 @@ namespace Temporalio.Converters
     {
         private const string EncodingMetadataKey = "encoding";
         private const string MessageTypeMetadataKey = "messageType";
+        private const string MarkerMetadataKey = "__temporal_external_storage_reference";
+
+        private static readonly ByteString MarkerValue = ByteString.CopyFromUtf8("true");
 
         private static readonly ByteString ProtoJsonEncoding =
             ByteString.CopyFromUtf8("json/protobuf");
@@ -38,27 +41,64 @@ namespace Temporalio.Converters
             ExternalStorageReference.Descriptor.FullName;
 
         /// <summary>
-        /// Whether the given payload is a reference to externally stored data.
+        /// Whether the given payload has to be retrieved from external storage. Reads metadata
+        /// only, so no payload is decoded and one that needs no retrieval is not touched.
         /// </summary>
         /// <param name="payload">Payload to check.</param>
-        /// <returns>True if the payload is a reference.</returns>
-        internal static bool IsReference(Payload payload) =>
+        /// <returns>True if the payload has to be retrieved.</returns>
+        internal static bool NeedsRetrieval(Payload payload) =>
+            IsMarked(payload) || IsPlainReference(payload);
+
+        /// <summary>
+        /// Whether the given payload is a reference in the form a codec has not encoded, so its
+        /// data can be parsed directly. A marked payload that a codec encoded must be decoded
+        /// before it is parsed.
+        /// </summary>
+        /// <param name="payload">Payload to check.</param>
+        /// <returns>True if the payload is a plain reference.</returns>
+        /// <remarks>
+        /// Both halves are required: <c>json/protobuf</c> on its own is an ordinary encoding for
+        /// any protobuf payload.
+        /// </remarks>
+        internal static bool IsPlainReference(Payload payload) =>
             payload.Metadata.TryGetValue(EncodingMetadataKey, out var encoding) &&
             ProtoJsonEncoding.Equals(encoding) &&
             payload.Metadata.TryGetValue(MessageTypeMetadataKey, out var messageType) &&
             ReferenceMessageTypeBytes.Equals(messageType);
 
         /// <summary>
+        /// Whether the given payload carries the reference marker. The value is checked, not just
+        /// the key.
+        /// </summary>
+        /// <param name="payload">Payload to check.</param>
+        /// <returns>True if the payload is marked.</returns>
+        internal static bool IsMarked(Payload payload) =>
+            payload.Metadata.TryGetValue(MarkerMetadataKey, out var marker) &&
+            MarkerValue.Equals(marker);
+
+        /// <summary>
+        /// Mark a reference so a reader finds it without decoding anything.
+        /// </summary>
+        /// <param name="payload">Reference payload to mark, modified in place.</param>
+        /// <remarks>
+        /// The SDK does this after the codec has encoded the reference, so the marker lands on the
+        /// outermost payload. With no codec configured the reference is itself outermost and is
+        /// marked just the same.
+        /// </remarks>
+        internal static void Mark(Payload payload) =>
+            payload.Metadata[MarkerMetadataKey] = MarkerValue;
+
+        /// <summary>
         /// Parse the reference from the given payload, which must be one.
         /// </summary>
-        /// <param name="payload">Payload to parse. Check <see cref="IsReference" /> first.</param>
+        /// <param name="payload">Payload to parse. Check <see cref="IsPlainReference" /> first.</param>
         /// <returns>The parsed reference.</returns>
         /// <exception cref="InvalidExternalStorageReferenceException">
         /// If the payload is not a reference, or its data cannot be read as one.
         /// </exception>
         internal static ExternalStorageReference ParseReference(Payload payload)
         {
-            if (!IsReference(payload))
+            if (!IsPlainReference(payload))
             {
                 throw new InvalidExternalStorageReferenceException(inner: null);
             }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Temporalio.Converters
 {
@@ -17,7 +18,6 @@ namespace Temporalio.Converters
     {
         private const int DefaultPayloadSizeThreshold = 256 * 1024;
 
-        private readonly Dictionary<string, IStorageDriver> driversByName;
         private readonly int payloadSizeThreshold = DefaultPayloadSizeThreshold;
         private readonly ExternalStorageConcurrency concurrency = ExternalStorageConcurrency.Default;
 
@@ -81,9 +81,9 @@ namespace Temporalio.Converters
             {
                 throw new ArgumentNullException(nameof(driverSelector));
             }
-            driversByName = new(drivers.Count);
+            var names = new HashSet<string>();
             // Copied so a caller mutating their collection afterwards cannot invalidate the checks
-            // below or disagree with the name lookup.
+            // below.
             var copied = new IStorageDriver[drivers.Count];
             var index = 0;
             foreach (var driver in drivers)
@@ -99,12 +99,11 @@ namespace Temporalio.Converters
                     throw new ArgumentException(
                         "Driver name cannot be null or empty.", nameof(drivers));
                 }
-                if (driversByName.ContainsKey(driver.Name))
+                if (!names.Add(driver.Name))
                 {
                     throw new ArgumentException(
                         $"Multiple drivers given with name '{driver.Name}'.", nameof(drivers));
                 }
-                driversByName[driver.Name] = driver;
                 copied[index++] = driver;
             }
             Drivers = copied;
@@ -171,6 +170,6 @@ namespace Temporalio.Converters
         /// <param name="name">Driver name recorded in the payload reference.</param>
         /// <returns>The driver, or null if no driver is registered under that name.</returns>
         public IStorageDriver? GetDriver(string name) =>
-            driversByName.TryGetValue(name, out var driver) ? driver : null;
+            Drivers.FirstOrDefault(driver => driver.Name == name);
     }
 }

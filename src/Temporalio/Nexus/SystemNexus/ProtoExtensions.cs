@@ -1,111 +1,17 @@
+#pragma warning disable SA1600 // Internal implementation plumbing.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Threading;
 using Google.Protobuf.WellKnownTypes;
-using Temporalio.Common;
 using Temporalio.Converters;
-using Temporalio.Workflows;
 using ApiCommon = Temporalio.Api.Common.V1;
 using ApiFailure = Temporalio.Api.Failure.V1;
 using ApiTaskQueue = Temporalio.Api.TaskQueue.V1;
 using ApiWorkflow = Temporalio.Api.Workflow.V1;
 
-namespace Nexgen.Support
+namespace Temporalio.Nexus.SystemNexus
 {
-    internal static class TemporalWorkflowContext
-    {
-        internal static string WorkflowNamespace() => Workflow.Info.Namespace;
-    }
-
-    internal static class WorkflowServiceSerializationContexts
-    {
-        internal static ISerializationContext SignalWithStartWorkflow(
-            SignalWithStartWorkflowRequest request) =>
-            new ISerializationContext.Workflow(request.Namespace, request.Id);
-    }
-
-    internal static class TemporalFunctionNames
-    {
-        internal static (MethodInfo Method, IReadOnlyCollection<object?> Args) ExtractCall<TDelegate>(
-            Expression<TDelegate> expression)
-        {
-            if (expression.Body is not MethodCallExpression call)
-            {
-                throw new ArgumentException("Expression must be a single method call", nameof(expression));
-            }
-            var method = call.Method;
-            var args = call.Arguments.Select(arg => Expression.Lambda<Func<object?>>(
-                Expression.Convert(arg, typeof(object))).Compile()()).ToArray();
-            return (method, args);
-        }
-
-        internal static string WorkflowName(MethodInfo method)
-        {
-            if (method.GetCustomAttribute<WorkflowRunAttribute>() == null)
-            {
-                throw new ArgumentException($"{method} missing WorkflowRun attribute");
-            }
-            var definition = WorkflowDefinition.Create(method.ReflectedType ??
-                throw new ArgumentException($"{method} has no reflected type"));
-            return definition.Name ??
-                throw new ArgumentException(
-                    $"{method} cannot be used directly since it is a dynamic workflow");
-        }
-
-        internal static string SignalName(MethodInfo method)
-        {
-            var definition = WorkflowSignalDefinition.FromMethod(method);
-            return definition.Name ??
-                throw new ArgumentException(
-                    $"{method} cannot be used directly since it is a dynamic signal");
-        }
-    }
-
-    internal static class SystemNexusConverterContext
-    {
-        private static readonly AsyncLocal<ConverterContext?> CurrentLocal = new();
-
-        internal static IPayloadConverter PayloadConverter => Current.PayloadConverter;
-
-        internal static IFailureConverter FailureConverter => Current.FailureConverter;
-
-        private static ConverterContext Current => CurrentLocal.Value ?? throw new InvalidOperationException(
-            "The System Nexus converter context is only available while a System Nexus transfer type converter is executing.");
-
-        internal static IDisposable Push(
-            IPayloadConverter payloadConverter,
-            IFailureConverter failureConverter)
-        {
-            var previous = CurrentLocal.Value;
-            CurrentLocal.Value = new(payloadConverter, failureConverter);
-            return new PopOnDispose(previous);
-        }
-
-        private sealed record ConverterContext(
-            IPayloadConverter PayloadConverter,
-            IFailureConverter FailureConverter);
-
-        private sealed class PopOnDispose : IDisposable
-        {
-            private readonly ConverterContext? previous;
-            private bool disposed;
-
-            internal PopOnDispose(ConverterContext? previous) => this.previous = previous;
-
-            public void Dispose()
-            {
-                if (!disposed)
-                {
-                    CurrentLocal.Value = previous;
-                    disposed = true;
-                }
-            }
-        }
-    }
-
     internal static class ProtoExtensions
     {
         internal static ApiCommon.WorkflowType ToWorkflowTypeProto(this string value) =>
@@ -125,6 +31,9 @@ namespace Nexgen.Support
 
         internal static object? FromPayload(ApiCommon.Payload payload) =>
             SystemNexusConverterContext.PayloadConverter.ToValue<object?>(payload);
+
+        internal static T FromPayload<T>(ApiCommon.Payload payload) =>
+            SystemNexusConverterContext.PayloadConverter.ToValue<T>(payload);
 
         internal static ApiCommon.Payloads ToPayloads(IEnumerable<object?> values)
         {
