@@ -125,7 +125,7 @@ jobs:
             '
 
       - name: Upload bridge library
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: ${{ matrix.out-prefix }}-bridge
           path: src/Temporalio/Bridge/target/release-lto/${{ matrix.out-file }}
@@ -160,7 +160,7 @@ jobs:
         run: dotnet pack -c Release /p:ContinuousIntegrationBuild=true /p:BridgeLibraryRoot=${{ github.workspace }}/bridge-libraries
 
       - name: Upload NuGet artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: nuget-package
           path: |
