@@ -12,5 +12,6 @@ namespace Temporalio.Extensions.Aws.S3Driver
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    internal delegate string BucketSelector(StorageDriverStoreContext context, Payload payload);
+    internal delegate string S3StorageDriverBucketSelector(
+        StorageDriverStoreContext context, Payload payload);
 }

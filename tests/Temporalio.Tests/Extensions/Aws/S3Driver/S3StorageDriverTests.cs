@@ -10,6 +10,8 @@ using Xunit;
 
 public class S3StorageDriverTests
 {
+    private static readonly AsyncLocal<bool> PermitHeld = new();
+
     private static readonly IStorageDriverTargetInfo.Workflow WorkflowTarget =
         new("my-ns", "my-workflow-id", "my-run-id", "MyWorkflow");
 
@@ -29,7 +31,7 @@ public class S3StorageDriverTests
         Assert.Throws<ArgumentNullException>(
             () => new S3StorageDriver(null!, (context, payload) => "b"));
         Assert.Throws<ArgumentNullException>(
-            () => new S3StorageDriver(new FakeS3Client(), (BucketSelector)null!));
+            () => new S3StorageDriver(new FakeS3Client(), (S3StorageDriverBucketSelector)null!));
     }
 
     [Theory]
@@ -178,6 +180,22 @@ public class S3StorageDriverTests
             new[] { NewPayload("one"), NewPayload("two") },
             storeLimiter.Items.OrderBy(payload => payload.Data.ToStringUtf8()));
         Assert.Equal(claims.Count, retrieveLimiter.Items.Count);
+    }
+
+    [Fact]
+    public async Task StoreAndRetrieve_EveryS3Request_RunsWhileHoldingAPermit()
+    {
+        var client = new PermitCheckingS3Client();
+        var driver = new S3StorageDriver(client, "my-bucket");
+
+        var claims = await driver.StoreAsync(
+            new(null, new PermitFlaggingLimiter<Payload>()),
+            new[] { NewPayload("one"), NewPayload("two") },
+            default);
+        await driver.RetrieveAsync(new(new PermitFlaggingLimiter<StorageDriverClaim>()), claims, default);
+
+        Assert.Equal(6, client.RequestCount);
+        Assert.Equal(0, client.RequestsWithoutPermitCount);
     }
 
     [Fact]
@@ -345,6 +363,60 @@ public class S3StorageDriverTests
         {
             Items.Enqueue(item);
             return operation();
+        }
+    }
+
+    /// <summary>
+    /// Marks the operation it runs as holding a permit. The mark flows into the operation's async
+    /// calls and is undone when <see cref="RunAsync" /> returns.
+    /// </summary>
+    private sealed class PermitFlaggingLimiter<TItem> : IStorageDriverLimiter<TItem>
+    {
+        public async Task<TResult> RunAsync<TResult>(
+            TItem item, Func<Task<TResult>> operation, CancellationToken cancellationToken)
+        {
+            PermitHeld.Value = true;
+            return await operation();
+        }
+    }
+
+    private sealed class PermitCheckingS3Client : IS3StorageDriverClient
+    {
+        private readonly FakeS3Client inner = new();
+        private int requestCount;
+        private int requestsWithoutPermitCount;
+
+        public int RequestCount => requestCount;
+
+        public int RequestsWithoutPermitCount => requestsWithoutPermitCount;
+
+        public Task PutObjectAsync(string bucket, string key, byte[] data, CancellationToken cancellationToken)
+        {
+            RecordRequest();
+            return inner.PutObjectAsync(bucket, key, data, cancellationToken);
+        }
+
+        public Task<bool> ObjectExistsAsync(string bucket, string key, CancellationToken cancellationToken)
+        {
+            RecordRequest();
+            return inner.ObjectExistsAsync(bucket, key, cancellationToken);
+        }
+
+        public Task<byte[]> GetObjectAsync(string bucket, string key, CancellationToken cancellationToken)
+        {
+            RecordRequest();
+            return inner.GetObjectAsync(bucket, key, cancellationToken);
+        }
+
+        public IReadOnlyDictionary<string, string> Describe() => new Dictionary<string, string>();
+
+        private void RecordRequest()
+        {
+            Interlocked.Increment(ref requestCount);
+            if (!PermitHeld.Value)
+            {
+                Interlocked.Increment(ref requestsWithoutPermitCount);
+            }
         }
     }
 

@@ -45,7 +45,7 @@ namespace Temporalio.Extensions.Aws.S3Driver
         private const string SafeSpecialCharacters = "!-_.*'()";
 
         private readonly IS3StorageDriverClient client;
-        private readonly BucketSelector bucketSelector;
+        private readonly S3StorageDriverBucketSelector bucketSelector;
         private readonly int maxPayloadSize = DefaultMaxPayloadSize;
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Temporalio.Extensions.Aws.S3Driver
         /// <param name="bucketSelector">Returns the bucket name for a payload.</param>
         public S3StorageDriver(
             IS3StorageDriverClient client,
-            BucketSelector bucketSelector)
+            S3StorageDriverBucketSelector bucketSelector)
         {
             this.client = client ?? throw new ArgumentNullException(nameof(client));
             this.bucketSelector =
