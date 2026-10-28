@@ -212,9 +212,10 @@ namespace Temporalio.Activities
             if (result is Task resultTask)
             {
                 await resultTask.ConfigureAwait(false);
-                // We have to use reflection to extract value if it's a Task<>
+                // We have to use reflection to extract value if it's a Task<>, but not if the
+                // activity is declared as a non-generic Task
                 var resultTaskType = resultTask.GetType();
-                if (resultTaskType.IsGenericType)
+                if (ReturnType != typeof(Task) && resultTaskType.IsGenericType)
                 {
                     result = resultTaskType.GetProperty("Result")!.GetValue(resultTask);
                 }
