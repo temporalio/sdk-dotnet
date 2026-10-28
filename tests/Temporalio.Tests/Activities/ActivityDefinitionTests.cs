@@ -124,6 +124,15 @@ public class ActivityDefinitionTests
     }
 
     [Fact]
+    public async Task InvokeAsync_TaskDelegateReturningGenericTask_HasNoResult()
+    {
+        var act = [Activity("MyActivity")] Task (int param) => Task.FromResult(param + 5);
+        Assert.Equal(
+            ValueTuple.Create(),
+            await ActivityDefinition.Create(act).InvokeAsync(new object?[] { 123 }));
+    }
+
+    [Fact]
     public async Task InvokeAsync_ManualInvoker_IsCalled()
     {
         var defn = ActivityDefinition.Create(
