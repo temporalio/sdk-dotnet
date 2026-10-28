@@ -11,7 +11,7 @@ namespace Temporalio.Converters
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    internal sealed class StorageDriverRetrieveContext
+    public sealed class StorageDriverRetrieveContext
     {
         /// <summary>
         /// Gets the limiter each retrieve request is run through. Internal until concurrency

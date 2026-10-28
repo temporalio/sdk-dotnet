@@ -15,7 +15,7 @@ namespace Temporalio.Converters
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    internal interface IStorageDriver
+    public interface IStorageDriver
     {
         /// <summary>
         /// Gets the name of this driver instance. This is written into history alongside every

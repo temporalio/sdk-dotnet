@@ -6,7 +6,7 @@ namespace Temporalio.Converters
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    internal sealed class StorageDriverSelectContext
+    public sealed class StorageDriverSelectContext
     {
         /// <summary>
         /// Gets the execution the payload is being stored on behalf of, or null if there is no
