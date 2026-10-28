@@ -37,8 +37,8 @@ namespace Temporalio.Activities
         public string? Name { get; private init; }
 
         /// <summary>
-        /// Gets the return type for the definition. This may be a Task for async activities. This
-        /// is currently unused (callers are expected to provide the return type as needed).
+        /// Gets the return type for the definition. This may be a Task for async activities. When
+        /// it is a non-generic Task, the activity completes with no result.
         /// </summary>
         public Type ReturnType { get; private init; }
 
@@ -84,7 +84,7 @@ namespace Temporalio.Activities
         /// Create an activity definition manually from the given values.
         /// </summary>
         /// <param name="name">Name to use for the activity or null for dynamic.</param>
-        /// <param name="returnType">Return type of the activity. This is currently unused.</param>
+        /// <param name="returnType">Return type of the activity. A non-generic Task means no result.</param>
         /// <param name="parameterTypes">Parameter types for the invoker.</param>
         /// <param name="requiredParameterCount">Minimum number of parameters that must be provided
         /// to the invoker.</param>
