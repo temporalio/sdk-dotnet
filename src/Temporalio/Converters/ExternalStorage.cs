@@ -157,7 +157,7 @@ namespace Temporalio.Converters
         /// suitable for most deployments.
         /// </summary>
         /// <exception cref="ArgumentNullException">If set to null.</exception>
-        public ExternalStorageConcurrency Concurrency
+        internal ExternalStorageConcurrency Concurrency
         {
             get => concurrency;
             init => concurrency = value ??

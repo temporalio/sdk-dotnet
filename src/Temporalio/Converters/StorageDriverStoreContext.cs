@@ -5,17 +5,22 @@ namespace Temporalio.Converters
     /// <summary>
     /// Context given to <see cref="IStorageDriver.StoreAsync" />.
     /// </summary>
-    /// <param name="Target">The execution the payloads are being stored on behalf of, or null if
-    /// there is no associated execution.</param>
-    /// <param name="Limiter">Limiter for this driver's store requests.</param>
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    /// <remarks>
-    /// WARNING: This constructor may have required properties added. Do not rely on the exact
-    /// constructor, only use "with" clauses.
-    /// </remarks>
-    internal sealed record StorageDriverStoreContext(
-        IStorageDriverTargetInfo? Target,
-        IStorageDriverLimiter<Payload> Limiter);
+    internal sealed class StorageDriverStoreContext
+    {
+        /// <summary>
+        /// Gets the execution the payloads are being stored on behalf of, or null if there is no
+        /// associated execution.
+        /// </summary>
+        public IStorageDriverTargetInfo? Target { get; init; }
+
+        /// <summary>
+        /// Gets the limiter each store request is run through. Internal until concurrency limiting
+        /// is part of the public API.
+        /// </summary>
+        internal IStorageDriverLimiter<Payload> Limiter { get; init; } =
+            UnboundedStorageDriverLimiter<Payload>.Instance;
+    }
 }

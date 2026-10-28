@@ -58,8 +58,8 @@ namespace Temporalio.Converters
                 UnconfiguredRunner.Instance :
                 new ExternalStorageRunner(
                     storage,
-                    new UnlimitedLimiter<Payload>(),
-                    new UnlimitedLimiter<StorageDriverClaim>());
+                    UnboundedStorageDriverLimiter<Payload>.Instance,
+                    UnboundedStorageDriverLimiter<StorageDriverClaim>.Instance);
 
         /// <inheritdoc />
         public Task RetrieveAsync<T>(
@@ -102,7 +102,7 @@ namespace Temporalio.Converters
             }
 
             var result = payloads.ToArray();
-            var selectContext = new StorageDriverSelectContext(target);
+            var selectContext = new StorageDriverSelectContext { Target = target };
             var groups = new Dictionary<
                 string, (IStorageDriver Driver, List<(int Index, long Size)> Items)>();
             for (var i = 0; i < result.Length; i++)
@@ -138,7 +138,7 @@ namespace Temporalio.Converters
                 return payloads;
             }
 
-            var context = new StorageDriverStoreContext(target, storeLimiter);
+            var context = new StorageDriverStoreContext { Target = target, Limiter = storeLimiter };
             await WhenAllCancelOnFailureAsync(
                 groups.Values,
                 async (group, token) =>
@@ -232,7 +232,7 @@ namespace Temporalio.Converters
                 work.Add((driver, group.Value));
             }
 
-            var context = new StorageDriverRetrieveContext(retrieveLimiter);
+            var context = new StorageDriverRetrieveContext { Limiter = retrieveLimiter };
             await WhenAllCancelOnFailureAsync(
                 work,
                 async (entry, token) =>
@@ -310,13 +310,6 @@ namespace Temporalio.Converters
                     throw;
                 }
             }
-        }
-
-        private sealed class UnlimitedLimiter<TItem> : IStorageDriverLimiter<TItem>
-        {
-            public Task<TResult> RunAsync<TResult>(
-                TItem item, Func<Task<TResult>> operation, CancellationToken cancellationToken) =>
-                operation();
         }
 
         // Rejects references when no external storage is configured, since nothing can retrieve them.

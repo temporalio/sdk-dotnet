@@ -25,7 +25,7 @@ public class ExternalStorageTests : TestBase
         Assert.Equal(64, storage.Concurrency.MaxDriverOperations);
         Assert.Equal(8, storage.Concurrency.MaxOperationsPerMessage);
         Assert.Same(driver, Assert.Single(storage.Drivers));
-        Assert.Same(driver, storage.DriverSelector(new StorageDriverSelectContext(null), new Payload()));
+        Assert.Same(driver, storage.DriverSelector(new StorageDriverSelectContext(), new Payload()));
     }
 
     [Fact]
@@ -121,7 +121,7 @@ public class ExternalStorageTests : TestBase
 
         Assert.Equal(2, storage.Drivers.Count);
         Assert.Same(
-            first, storage.DriverSelector(new StorageDriverSelectContext(null), new Payload()));
+            first, storage.DriverSelector(new StorageDriverSelectContext(), new Payload()));
     }
 
     [Fact]
@@ -161,27 +161,13 @@ public class ExternalStorageTests : TestBase
     }
 
     [Fact]
-    public void StoreContext_SameValues_AreEqual()
-    {
-        var target = new IStorageDriverTargetInfo.Workflow("ns", "wf-id", "run-id", "wf-type");
-        var limiter = new PassThroughLimiter<Payload>();
-        var context = new StorageDriverStoreContext(target, limiter);
-
-        Assert.Equal(
-            new StorageDriverStoreContext(
-                new IStorageDriverTargetInfo.Workflow("ns", "wf-id", "run-id", "wf-type"), limiter),
-            context);
-        Assert.NotEqual(
-            new StorageDriverStoreContext(null, limiter), context);
-    }
-
-    [Fact]
     public void StoreContext_NoTarget_IsAllowed()
     {
         // Nexus operation payloads are stored without an associated execution.
-        var context = new StorageDriverStoreContext(null, new PassThroughLimiter<Payload>());
+        var context = new StorageDriverStoreContext();
 
         Assert.Null(context.Target);
+        // The limiter defaults rather than being left null.
         Assert.NotNull(context.Limiter);
     }
 
@@ -232,13 +218,6 @@ public class ExternalStorageTests : TestBase
         Assert.NotEqual(
             claim,
             new StorageDriverClaim(new Dictionary<string, string> { ["key"] = "k", ["extra"] = "e" }));
-    }
-
-    private class PassThroughLimiter<TItem> : IStorageDriverLimiter<TItem>
-    {
-        public Task<TResult> RunAsync<TResult>(
-            TItem item, Func<Task<TResult>> operation, CancellationToken cancellationToken) =>
-            operation();
     }
 
     private class StubStorageDriver : IStorageDriver
