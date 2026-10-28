@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Temporal SDK .NET Amazon S3 External Storage Driver client for the AWS SDK</Description>
+    <IncludeSymbols>true</IncludeSymbols>
+    <LangVersion>9.0</LangVersion>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <!-- Not yet published, so there is no previous version to validate against -->
+    <PackageValidationBaselineVersion></PackageValidationBaselineVersion>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Temporalio.Extensions.Aws.S3Driver\Temporalio.Extensions.Aws.S3Driver.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Temporalio.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>
