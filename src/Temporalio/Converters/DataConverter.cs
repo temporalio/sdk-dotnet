@@ -18,6 +18,15 @@ namespace Temporalio.Converters
         public static DataConverter Default { get; } =
             new(new DefaultPayloadConverter(), new DefaultFailureConverter());
 
+        /// <summary>
+        /// Gets the external storage configuration. When set, payloads at or above its size threshold
+        /// are offloaded to a storage driver and replaced on the wire by a reference.
+        /// </summary>
+        /// <remarks>
+        /// WARNING: This API is experimental and may change in the future.
+        /// </remarks>
+        internal ExternalStorage? ExternalStorage { get; init; }
+
         /// <inheritdoc/>
         public virtual DataConverter WithSerializationContext(ISerializationContext context)
         {
@@ -40,7 +49,14 @@ namespace Temporalio.Converters
                 return this;
             }
 
-            return new(payloadConverter, failureConverter, payloadCodec);
+            // Must be `with` rather than a new instance so additive members such as ExternalStorage
+            // are carried onto the context-scoped converter.
+            return this with
+            {
+                PayloadConverter = payloadConverter,
+                FailureConverter = failureConverter,
+                PayloadCodec = payloadCodec,
+            };
         }
     }
 }

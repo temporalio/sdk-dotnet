@@ -9,6 +9,7 @@ using Google.Protobuf;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
+using Temporalio.Worker;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -315,6 +316,68 @@ public class ExternalStorageRunnerTests : TestBase
 
         Assert.Equal(before[0], back[0]);
         Assert.Equal(before[1], back[1]);
+    }
+
+    [Fact]
+    public async Task Create_NoStorage_RejectsReferenceWithTmprl1105()
+    {
+        var runner = ExternalStorageRunner.Create(null);
+        var reference = ExternalStorageReferences.CreateReferencePayload(
+            "my-driver",
+            new Dictionary<string, string> { ["key"] = "k" },
+            originalSizeBytes: 1024);
+
+        var error = await Assert.ThrowsAsync<ExternalStorageNotConfiguredException>(
+            () => runner.RetrieveAsync(PayloadVisitors.VisitAsync, reference, CancellationToken.None));
+        Assert.Contains("[TMPRL1105]", error.Message);
+    }
+
+    [Fact]
+    public async Task Create_NoStorage_LeavesNonReferenceAlone()
+    {
+        var runner = ExternalStorageRunner.Create(null);
+        var plain = new Payload { Data = ByteString.CopyFromUtf8("not a reference") };
+
+        // Must not throw.
+        await runner.RetrieveAsync(PayloadVisitors.VisitAsync, plain, CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task Create_NoStorage_PreservesNormalPayloadCollection()
+    {
+        var runner = ExternalStorageRunner.Create(null);
+        var payloads = new Payloads
+        {
+            Payloads_ =
+            {
+                new Payload { Data = ByteString.CopyFromUtf8("a") },
+                new Payload { Data = ByteString.CopyFromUtf8("b") },
+            },
+        };
+
+        await runner.RetrieveAsync(PayloadVisitors.VisitAsync, payloads, CancellationToken.None);
+
+        Assert.Equal(2, payloads.Payloads_.Count);
+        Assert.Equal("a", payloads.Payloads_[0].Data.ToStringUtf8());
+        Assert.Equal("b", payloads.Payloads_[1].Data.ToStringUtf8());
+    }
+
+    [Fact]
+    public async Task Create_WithStorage_RetrievesReference()
+    {
+        var driver = new RetrieveFuncDriver("my-driver", _ =>
+            Task.FromResult<IReadOnlyCollection<Payload>>(
+                new[] { new Payload { Data = ByteString.CopyFromUtf8("retrieved") } }));
+        var runner = ExternalStorageRunner.Create(new ExternalStorage(driver));
+        var reference = ExternalStorageReferences.CreateReferencePayload(
+            "my-driver",
+            new Dictionary<string, string> { ["key"] = "k" },
+            originalSizeBytes: 1024);
+
+        await runner.RetrieveAsync(PayloadVisitors.VisitAsync, reference, CancellationToken.None);
+
+        // Configured storage retrieves the reference in place from the driver.
+        Assert.Equal("retrieved", reference.Data.ToStringUtf8());
     }
 
     private static ExternalStorageRunner Runner(ExternalStorage storage) =>
