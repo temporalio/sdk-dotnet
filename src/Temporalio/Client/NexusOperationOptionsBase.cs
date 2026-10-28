@@ -13,7 +13,7 @@ namespace Temporalio.Client
         /// <summary>
         /// Initializes a new instance of the <see cref="NexusOperationOptionsBase"/> class.
         /// </summary>
-        protected NexusOperationOptionsBase()
+        private protected NexusOperationOptionsBase()
         {
         }
 
@@ -22,7 +22,7 @@ namespace Temporalio.Client
         /// with the common settings from another options instance.
         /// </summary>
         /// <param name="options">The settings to copy.</param>
-        protected NexusOperationOptionsBase(NexusOperationOptionsBase options)
+        private protected NexusOperationOptionsBase(NexusOperationOptionsBase options)
         {
             Id = options.Id;
             ScheduleToCloseTimeout = options.ScheduleToCloseTimeout;

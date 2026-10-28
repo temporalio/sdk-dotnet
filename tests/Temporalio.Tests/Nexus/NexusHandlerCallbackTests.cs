@@ -176,11 +176,11 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
             var options = new NexusOperationOptions<TestOperationOutput>($"op-{Guid.NewGuid()}")
             {
                 ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
-                CompletionCallbacks = new()
+                CompletionCallbacks = new CompletionCallbackCollection<TestOperationOutput>.Builder
                 {
                     raw,
                     typed,
-                },
+                }.Build(),
             };
             var handle = await client.CreateNexusClient<ISourceService>(endpoint).
                 StartNexusOperationAsync(svc => svc.Echo("start"), options);
@@ -221,7 +221,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                     new NexusOperationOptions<TestOperationOutput>($"op-{Guid.NewGuid()}")
                     {
                         ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
-                        CompletionCallbacks = new()
+                        CompletionCallbacks = new CompletionCallbackCollection<TestOperationOutput>.Builder
                         {
                             {
                                 "CallbackService",
@@ -229,7 +229,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                                 queue,
                                 new TestCallbackContext("execute")
                             },
-                        },
+                        }.Build(),
                     });
             Assert.Equal(new TestOperationOutput("echo:execute"), result);
             var request = await callbacks.Typed.Task.WaitAsync(TimeSpan.FromMinutes(1));
@@ -251,7 +251,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
             var options = new NexusOperationOptions<TestOperationOutput>($"op-{Guid.NewGuid()}")
             {
                 ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
-                CompletionCallbacks = new()
+                CompletionCallbacks = new CompletionCallbackCollection<TestOperationOutput>.Builder
                 {
                     {
                         (ICallbackService service, OnCompleteRequest<RawValue, TestCallbackContext> input) =>
@@ -259,7 +259,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                         queue,
                         new TestCallbackContext("raw-factory")
                     },
-                },
+                }.Build(),
             };
             var handle = await client.CreateNexusClient<ISourceService>(endpoint).
                 StartNexusOperationAsync(service => service.Echo("raw"), options);
@@ -369,6 +369,82 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
 
     public class RequestTests
     {
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task StartNexusOperationAsync_MismatchedCallback_RejectsBeforeEncoding(bool intercept)
+        {
+            var callback = CompletionCallback.Create(
+                (INotifications service, OnCompleteRequest<string, string> input) => service.OnComplete(input),
+                "notifications",
+                "mismatched-context");
+            var interceptor = new CallbackInterceptor { AdditionalCallback = intercept ? callback : null };
+            var codec = new RecordingCodec();
+            var client = TemporalClient.CreateLazy(new("localhost:1")
+            {
+                Namespace = "callbacks",
+                DataConverter = DataConverter.Default with { PayloadCodec = codec },
+                Interceptors = new IClientInterceptor[] { interceptor },
+            });
+            var callbacks = new List<CompletionCallback>
+            {
+                CompletionCallback.Create("Notifications", "OnCompleteRaw", "notifications", "raw-context"),
+            };
+            if (!intercept)
+            {
+                callbacks.Add(callback);
+            }
+            var options = new NexusOperationOptions("source-id")
+            {
+                CompletionCallbacks = callbacks,
+                Summary = "source summary",
+            };
+
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
+                client.CreateNexusClient<ISource>("source-endpoint").StartNexusOperationAsync(
+                    service => service.Run(), options));
+
+            Assert.Contains("Notifications.OnComplete", exception.Message);
+            Assert.Contains(typeof(string).ToString(), exception.Message);
+            Assert.Contains(typeof(int).ToString(), exception.Message);
+            Assert.Empty(codec.Payloads);
+            Assert.Equal(intercept ? 1 : 2, callbacks.Count);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task StartNexusOperationAsync_InterceptorAddsCallback_EncodesContext(bool raw)
+        {
+            Assert.True(typeof(NexusOperationOptions).GetProperty(nameof(NexusOperationOptions.CompletionCallbacks))!
+                .GetSetMethod()!.IsPublic);
+            CompletionCallback callback = raw
+                ? CompletionCallback.Create(
+                    "Notifications", "OnCompleteRaw", "notifications", "interceptor-context")
+                : CompletionCallback.Create(
+                    (INotifications service, OnCompleteRequest<string, string> input) => service.OnComplete(input),
+                    "notifications",
+                    "interceptor-context");
+            var interceptor = new CallbackInterceptor { AdditionalCallback = callback };
+            var codec = new RecordingCodec();
+            var client = TemporalClient.CreateLazy(new("localhost:1")
+            {
+                Namespace = "callbacks",
+                DataConverter = DataConverter.Default with { PayloadCodec = codec },
+                Interceptors = new IClientInterceptor[] { interceptor },
+            });
+            var options = new NexusOperationOptions<string>("source-id");
+
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                client.CreateNexusClient<ISource>("source-endpoint").StartNexusOperationAsync(
+                    service => service.Echo(), options));
+
+            Assert.Equal("Stopped before RPC", exception.Message);
+            Assert.Equal("\"interceptor-context\"", Assert.Single(codec.Payloads).Data.ToStringUtf8());
+            Assert.Same(callback, Assert.Single(interceptor.Callbacks!));
+            Assert.Null(options.CompletionCallbacks);
+        }
+
         [Fact]
         public async Task StartNexusOperationAsync_RawCallbackAcceptsValueTypeOutput()
         {
@@ -378,7 +454,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                 Namespace = "callbacks",
                 DataConverter = DataConverter.Default with { PayloadCodec = codec },
             });
-            var callbacks = new CompletionCallbackCollection<int>();
+            var callbacks = new CompletionCallbackCollection<int>.Builder();
             callbacks.Add(
                 (INotifications service, OnCompleteRequest<RawValue, string> input) => service.OnCompleteRaw(input),
                 "notifications",
@@ -389,7 +465,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                     service => service.Run(),
                     new NexusOperationOptions<int>("source-id")
                     {
-                        CompletionCallbacks = callbacks,
+                        CompletionCallbacks = callbacks.Build(),
                     }));
 
             Assert.Equal("Stopped before RPC", exception.Message);
@@ -405,7 +481,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                 Namespace = "callbacks",
                 DataConverter = DataConverter.Default with { PayloadCodec = codec },
             });
-            var callbacks = new CompletionCallbackCollection<string>();
+            var callbacks = new CompletionCallbackCollection<string>.Builder();
             callbacks.Add(
                 (INotifications service, OnCompleteRequest<string, string> input) => service.OnComplete(input),
                 "notifications",
@@ -414,7 +490,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 client.CreateNexusClient<ISource>("source-endpoint").StartNexusOperationAsync(
                     service => service.Echo(),
-                    new NexusOperationOptions<string>("source-id") { CompletionCallbacks = callbacks }));
+                    new NexusOperationOptions<string>("source-id") { CompletionCallbacks = callbacks.Build() }));
 
             Assert.Equal("Stopped before RPC", exception.Message);
             Assert.Single(codec.Payloads);
@@ -429,7 +505,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                 Namespace = "callbacks",
                 DataConverter = DataConverter.Default with { PayloadCodec = codec },
             });
-            var callbacks = new CompletionCallbackCollection<string>();
+            var callbacks = new CompletionCallbackCollection<string>.Builder();
             callbacks.Add(
                 (INotifications service, OnCompleteRequest<string, string> input) => service.OnComplete(input),
                 "notifications",
@@ -439,7 +515,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                 client.CreateNexusClient<ISource>("source-endpoint").StartNexusOperationAsync<string>(
                     nameof(ISource.Run),
                     null,
-                    new NexusOperationOptions<string>("source-id") { CompletionCallbacks = callbacks }));
+                    new NexusOperationOptions<string>("source-id") { CompletionCallbacks = callbacks.Build() }));
 
             Assert.Equal("Stopped before RPC", exception.Message);
             Assert.Single(codec.Payloads);
@@ -454,7 +530,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                 Namespace = "callbacks",
                 DataConverter = DataConverter.Default with { PayloadCodec = codec },
             });
-            var callbacks = new CompletionCallbackCollection<int>();
+            var callbacks = new CompletionCallbackCollection<int>.Builder();
             callbacks.Add(
                 service: "Notifications",
                 operation: "OnComplete",
@@ -466,7 +542,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                     service => service.Run(),
                     new NexusOperationOptions<int>("source-id")
                     {
-                        CompletionCallbacks = callbacks,
+                        CompletionCallbacks = callbacks.Build(),
                     }));
 
             Assert.Equal("Stopped before RPC", exception.Message);
@@ -485,14 +561,14 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                 Namespace = "callbacks",
                 DataConverter = DataConverter.Default with { PayloadCodec = codec },
             });
-            var callbacks = new CompletionCallbackCollection<RawValue>();
+            var callbacks = new CompletionCallbackCollection<RawValue>.Builder();
             callbacks.Add("Notifications", "OnCompleteRaw", "notifications", "request-context");
 
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 client.CreateNexusClient("source-endpoint", "Source").StartNexusOperationAsync(
                     "Run",
                     null,
-                    new NexusOperationOptions<RawValue>("source-id") { CompletionCallbacks = callbacks }));
+                    new NexusOperationOptions<RawValue>("source-id") { CompletionCallbacks = callbacks.Build() }));
 
             Assert.Equal("Stopped before RPC", exception.Message);
             Assert.Single(codec.Payloads);
@@ -546,14 +622,14 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
         new($"op-{Guid.NewGuid()}")
         {
             ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
-            CompletionCallbacks = new()
+            CompletionCallbacks = new CompletionCallbackCollection<TestOperationOutput>.Builder
             {
                 {
                     (ICallbackService svc, OnCompleteRequest<TestOperationOutput, TestCallbackContext> input) => svc.OnComplete(input),
                     queue,
                     new TestCallbackContext(context)
                 },
-            },
+            }.Build(),
         };
 
     private async Task RunAsync(
@@ -614,7 +690,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                     new NexusOperationOptions<TestOperationOutput>($"op-{Guid.NewGuid()}")
                     {
                         ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
-                        CompletionCallbacks = new() { callback },
+                        CompletionCallbacks = new CompletionCallbackCollection<TestOperationOutput>.Builder { callback }.Build(),
                     });
             var sourceResult = await handle.GetResultAsync().WaitAsync(TimeSpan.FromMinutes(1));
             Assert.Equal(new TestOperationOutput("echo:from-source"), sourceResult);
@@ -631,6 +707,8 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
     {
         public IReadOnlyCollection<CompletionCallback>? Callbacks { get; private set; }
 
+        public CompletionCallback? AdditionalCallback { get; init; }
+
         public ClientOutboundInterceptor InterceptClient(ClientOutboundInterceptor next) =>
             new CallbackOutboundInterceptor(next, this);
 
@@ -645,6 +723,13 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
             public override Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 StartNexusOperationInput input)
             {
+                if (owner.AdditionalCallback is { } callback)
+                {
+                    var options = (NexusOperationOptions)input.Options.Clone();
+                    options.CompletionCallbacks = (options.CompletionCallbacks ?? Array.Empty<CompletionCallback>())
+                        .Append(callback).ToList();
+                    input = input with { Options = options };
+                }
                 owner.Callbacks = input.Options.CompletionCallbacks;
                 return base.StartNexusOperationAsync<TResult>(input);
             }

@@ -7,7 +7,7 @@ namespace Temporalio.Client
     /// Options for starting a standalone Nexus operation. <see cref="NexusOperationOptionsBase.Id" /> is required.
     /// </summary>
     /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
-    public class NexusOperationOptions : NexusOperationOptionsBase
+    public sealed class NexusOperationOptions : NexusOperationOptionsBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NexusOperationOptions"/> class.
@@ -36,8 +36,8 @@ namespace Temporalio.Client
         }
 
         /// <summary>
-        /// Gets the callbacks attached to this request.
+        /// Gets or sets the callbacks attached to this request.
         /// </summary>
-        public IReadOnlyCollection<CompletionCallback>? CompletionCallbacks { get; internal set; }
+        public IReadOnlyCollection<CompletionCallback>? CompletionCallbacks { get; set; }
     }
 }

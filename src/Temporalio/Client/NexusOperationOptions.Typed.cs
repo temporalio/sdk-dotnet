@@ -7,7 +7,7 @@ namespace Temporalio.Client
     /// </summary>
     /// <typeparam name="TOutput">The type of the operation's result.</typeparam>
     /// <remarks>WARNING: This API is experimental and may change.</remarks>
-    public class NexusOperationOptions<TOutput> : NexusOperationOptionsBase
+    public sealed class NexusOperationOptions<TOutput> : NexusOperationOptionsBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NexusOperationOptions{TOutput}"/> class.

@@ -60,6 +60,19 @@ namespace Temporalio.Client
             {
                 try
                 {
+                    if (input.Options.CompletionCallbacks is { } callbacks)
+                    {
+                        foreach (var callback in callbacks)
+                        {
+                            if (callback.OutputType != typeof(TResult) && callback.OutputType != typeof(RawValue))
+                            {
+                                throw new ArgumentException(
+                                    $"Callback {callback.Service}.{callback.Operation} expects {callback.OutputType}, " +
+                                    $"but the operation result type is {typeof(TResult)}",
+                                    nameof(input));
+                            }
+                        }
+                    }
                     var serializationContext = new ISerializationContext.Nexus(
                         Endpoint: input.Endpoint,
                         Service: input.Service,

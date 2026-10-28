@@ -57,6 +57,11 @@ namespace Temporalio.Nexus
         public object? SourceContext { get; }
 
         /// <summary>
+        /// Gets the type of the source operation's result accepted by this callback.
+        /// </summary>
+        internal abstract Type OutputType { get; }
+
+        /// <summary>
         /// Creates a callback from service and operation names.
         /// </summary>
         /// <param name="service">The name of the callback service.</param>
@@ -160,5 +165,8 @@ namespace Temporalio.Nexus
             : base(service, operation, taskQueue, sourceContext)
         {
         }
+
+        /// <inheritdoc />
+        internal override Type OutputType => typeof(TOutput);
     }
 }
