@@ -31,4 +31,25 @@
     <Left>lib/netstandard2.0/Temporalio.dll</Left>
     <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
   </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0009</DiagnosticId>
+    <Target>T:Temporalio.Client.NexusOperationOptions</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0009</DiagnosticId>
+    <Target>T:Temporalio.Client.NexusOperationOptions</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0009</DiagnosticId>
+    <Target>T:Temporalio.Client.NexusOperationOptions</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
 </Suppressions>
