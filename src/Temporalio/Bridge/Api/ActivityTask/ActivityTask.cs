@@ -28,47 +28,50 @@ namespace Temporalio.Bridge.Api.ActivityTask {
             "c2sucHJvdG8SFWNvcmVzZGsuYWN0aXZpdHlfdGFzaxoeZ29vZ2xlL3Byb3Rv",
             "YnVmL2R1cmF0aW9uLnByb3RvGh9nb29nbGUvcHJvdG9idWYvdGltZXN0YW1w",
             "LnByb3RvGiR0ZW1wb3JhbC9hcGkvY29tbW9uL3YxL21lc3NhZ2UucHJvdG8a",
-            "JXRlbXBvcmFsL3Nkay9jb3JlL2NvbW1vbi9jb21tb24ucHJvdG8ijQEKDEFj",
-            "dGl2aXR5VGFzaxISCgp0YXNrX3Rva2VuGAEgASgMEi0KBXN0YXJ0GAMgASgL",
-            "MhwuY29yZXNkay5hY3Rpdml0eV90YXNrLlN0YXJ0SAASLwoGY2FuY2VsGAQg",
-            "ASgLMh0uY29yZXNkay5hY3Rpdml0eV90YXNrLkNhbmNlbEgAQgkKB3Zhcmlh",
-            "bnQisQcKBVN0YXJ0EhoKEndvcmtmbG93X25hbWVzcGFjZRgBIAEoCRIVCg13",
-            "b3JrZmxvd190eXBlGAIgASgJEkUKEndvcmtmbG93X2V4ZWN1dGlvbhgDIAEo",
-            "CzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dFeGVjdXRpb24S",
-            "EwoLYWN0aXZpdHlfaWQYBCABKAkSFQoNYWN0aXZpdHlfdHlwZRgFIAEoCRJF",
-            "Cg1oZWFkZXJfZmllbGRzGAYgAygLMi4uY29yZXNkay5hY3Rpdml0eV90YXNr",
-            "LlN0YXJ0LkhlYWRlckZpZWxkc0VudHJ5Ei4KBWlucHV0GAcgAygLMh8udGVt",
-            "cG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkEjoKEWhlYXJ0YmVhdF9kZXRh",
-            "aWxzGAggAygLMh8udGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkEjIK",
-            "DnNjaGVkdWxlZF90aW1lGAkgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVz",
-            "dGFtcBJCCh5jdXJyZW50X2F0dGVtcHRfc2NoZWR1bGVkX3RpbWUYCiABKAsy",
-            "Gi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjAKDHN0YXJ0ZWRfdGltZRgL",
-            "IAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASDwoHYXR0ZW1wdBgM",
-            "IAEoDRI8ChlzY2hlZHVsZV90b19jbG9zZV90aW1lb3V0GA0gASgLMhkuZ29v",
-            "Z2xlLnByb3RvYnVmLkR1cmF0aW9uEjkKFnN0YXJ0X3RvX2Nsb3NlX3RpbWVv",
-            "dXQYDiABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SNAoRaGVhcnRi",
-            "ZWF0X3RpbWVvdXQYDyABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24S",
-            "OQoMcmV0cnlfcG9saWN5GBAgASgLMiMudGVtcG9yYWwuYXBpLmNvbW1vbi52",
-            "MS5SZXRyeVBvbGljeRIyCghwcmlvcml0eRgSIAEoCzIgLnRlbXBvcmFsLmFw",
-            "aS5jb21tb24udjEuUHJpb3JpdHkSEAoIaXNfbG9jYWwYESABKAgSDgoGcnVu",
-            "X2lkGBMgASgJGlQKEUhlYWRlckZpZWxkc0VudHJ5EgsKA2tleRgBIAEoCRIu",
-            "CgV2YWx1ZRgCIAEoCzIfLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9h",
-            "ZDoCOAEiigEKBkNhbmNlbBI7CgZyZWFzb24YASABKA4yKy5jb3Jlc2RrLmFj",
-            "dGl2aXR5X3Rhc2suQWN0aXZpdHlDYW5jZWxSZWFzb24SQwoHZGV0YWlscxgC",
-            "IAEoCzIyLmNvcmVzZGsuYWN0aXZpdHlfdGFzay5BY3Rpdml0eUNhbmNlbGxh",
-            "dGlvbkRldGFpbHMioAEKG0FjdGl2aXR5Q2FuY2VsbGF0aW9uRGV0YWlscxIU",
-            "Cgxpc19ub3RfZm91bmQYASABKAgSFAoMaXNfY2FuY2VsbGVkGAIgASgIEhEK",
-            "CWlzX3BhdXNlZBgDIAEoCBIUCgxpc190aW1lZF9vdXQYBCABKAgSGgoSaXNf",
-            "d29ya2VyX3NodXRkb3duGAUgASgIEhAKCGlzX3Jlc2V0GAYgASgIKm8KFEFj",
-            "dGl2aXR5Q2FuY2VsUmVhc29uEg0KCU5PVF9GT1VORBAAEg0KCUNBTkNFTExF",
-            "RBABEg0KCVRJTUVEX09VVBACEhMKD1dPUktFUl9TSFVURE9XThADEgoKBlBB",
-            "VVNFRBAEEgkKBVJFU0VUEAVCMuoCL1RlbXBvcmFsaW86OkludGVybmFsOjpC",
-            "cmlkZ2U6OkFwaTo6QWN0aXZpdHlUYXNrYgZwcm90bzM="));
+            "I3RlbXBvcmFsL2FwaS9uZXh1cy92MS9tZXNzYWdlLnByb3RvGiV0ZW1wb3Jh",
+            "bC9zZGsvY29yZS9jb21tb24vY29tbW9uLnByb3RvIo0BCgxBY3Rpdml0eVRh",
+            "c2sSEgoKdGFza190b2tlbhgBIAEoDBItCgVzdGFydBgDIAEoCzIcLmNvcmVz",
+            "ZGsuYWN0aXZpdHlfdGFzay5TdGFydEgAEi8KBmNhbmNlbBgEIAEoCzIdLmNv",
+            "cmVzZGsuYWN0aXZpdHlfdGFzay5DYW5jZWxIAEIJCgd2YXJpYW50IpgICgVT",
+            "dGFydBIaChJ3b3JrZmxvd19uYW1lc3BhY2UYASABKAkSFQoNd29ya2Zsb3df",
+            "dHlwZRgCIAEoCRJFChJ3b3JrZmxvd19leGVjdXRpb24YAyABKAsyKS50ZW1w",
+            "b3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93RXhlY3V0aW9uEhMKC2FjdGl2",
+            "aXR5X2lkGAQgASgJEhUKDWFjdGl2aXR5X3R5cGUYBSABKAkSRQoNaGVhZGVy",
+            "X2ZpZWxkcxgGIAMoCzIuLmNvcmVzZGsuYWN0aXZpdHlfdGFzay5TdGFydC5I",
+            "ZWFkZXJGaWVsZHNFbnRyeRIuCgVpbnB1dBgHIAMoCzIfLnRlbXBvcmFsLmFw",
+            "aS5jb21tb24udjEuUGF5bG9hZBI6ChFoZWFydGJlYXRfZGV0YWlscxgIIAMo",
+            "CzIfLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZBIyCg5zY2hlZHVs",
+            "ZWRfdGltZRgJIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASQgoe",
+            "Y3VycmVudF9hdHRlbXB0X3NjaGVkdWxlZF90aW1lGAogASgLMhouZ29vZ2xl",
+            "LnByb3RvYnVmLlRpbWVzdGFtcBIwCgxzdGFydGVkX3RpbWUYCyABKAsyGi5n",
+            "b29nbGUucHJvdG9idWYuVGltZXN0YW1wEg8KB2F0dGVtcHQYDCABKA0SPAoZ",
+            "c2NoZWR1bGVfdG9fY2xvc2VfdGltZW91dBgNIAEoCzIZLmdvb2dsZS5wcm90",
+            "b2J1Zi5EdXJhdGlvbhI5ChZzdGFydF90b19jbG9zZV90aW1lb3V0GA4gASgL",
+            "MhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjQKEWhlYXJ0YmVhdF90aW1l",
+            "b3V0GA8gASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjkKDHJldHJ5",
+            "X3BvbGljeRgQIAEoCzIjLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUmV0cnlQ",
+            "b2xpY3kSMgoIcHJpb3JpdHkYEiABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9u",
+            "LnYxLlByaW9yaXR5EhAKCGlzX2xvY2FsGBEgASgIEg4KBnJ1bl9pZBgTIAEo",
+            "CRJlCiZwcm9wYWdhdGVkX25leHVzX3NlcmlhbGl6YXRpb25fY29udGV4dBgU",
+            "IAEoCzI1LnRlbXBvcmFsLmFwaS5uZXh1cy52MS5Qcm9wYWdhdGVkU2VyaWFs",
+            "aXphdGlvbkNvbnRleHQaVAoRSGVhZGVyRmllbGRzRW50cnkSCwoDa2V5GAEg",
+            "ASgJEi4KBXZhbHVlGAIgASgLMh8udGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Q",
+            "YXlsb2FkOgI4ASKKAQoGQ2FuY2VsEjsKBnJlYXNvbhgBIAEoDjIrLmNvcmVz",
+            "ZGsuYWN0aXZpdHlfdGFzay5BY3Rpdml0eUNhbmNlbFJlYXNvbhJDCgdkZXRh",
+            "aWxzGAIgASgLMjIuY29yZXNkay5hY3Rpdml0eV90YXNrLkFjdGl2aXR5Q2Fu",
+            "Y2VsbGF0aW9uRGV0YWlscyKgAQobQWN0aXZpdHlDYW5jZWxsYXRpb25EZXRh",
+            "aWxzEhQKDGlzX25vdF9mb3VuZBgBIAEoCBIUCgxpc19jYW5jZWxsZWQYAiAB",
+            "KAgSEQoJaXNfcGF1c2VkGAMgASgIEhQKDGlzX3RpbWVkX291dBgEIAEoCBIa",
+            "ChJpc193b3JrZXJfc2h1dGRvd24YBSABKAgSEAoIaXNfcmVzZXQYBiABKAgq",
+            "bwoUQWN0aXZpdHlDYW5jZWxSZWFzb24SDQoJTk9UX0ZPVU5EEAASDQoJQ0FO",
+            "Q0VMTEVEEAESDQoJVElNRURfT1VUEAISEwoPV09SS0VSX1NIVVRET1dOEAMS",
+            "CgoGUEFVU0VEEAQSCQoFUkVTRVQQBUIy6gIvVGVtcG9yYWxpbzo6SW50ZXJu",
+            "YWw6OkJyaWRnZTo6QXBpOjpBY3Rpdml0eVRhc2tiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Nexus.V1.MessageReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.ActivityTask.ActivityCancelReason), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityTask.ActivityTask), global::Temporalio.Bridge.Api.ActivityTask.ActivityTask.Parser, new[]{ "TaskToken", "Start", "Cancel" }, new[]{ "Variant" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityTask.Start), global::Temporalio.Bridge.Api.ActivityTask.Start.Parser, new[]{ "WorkflowNamespace", "WorkflowType", "WorkflowExecution", "ActivityId", "ActivityType", "HeaderFields", "Input", "HeartbeatDetails", "ScheduledTime", "CurrentAttemptScheduledTime", "StartedTime", "Attempt", "ScheduleToCloseTimeout", "StartToCloseTimeout", "HeartbeatTimeout", "RetryPolicy", "Priority", "IsLocal", "RunId" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityTask.Start), global::Temporalio.Bridge.Api.ActivityTask.Start.Parser, new[]{ "WorkflowNamespace", "WorkflowType", "WorkflowExecution", "ActivityId", "ActivityType", "HeaderFields", "Input", "HeartbeatDetails", "ScheduledTime", "CurrentAttemptScheduledTime", "StartedTime", "Attempt", "ScheduleToCloseTimeout", "StartToCloseTimeout", "HeartbeatTimeout", "RetryPolicy", "Priority", "IsLocal", "RunId", "PropagatedNexusSerializationContext" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityTask.Cancel), global::Temporalio.Bridge.Api.ActivityTask.Cancel.Parser, new[]{ "Reason", "Details" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityTask.ActivityCancellationDetails), global::Temporalio.Bridge.Api.ActivityTask.ActivityCancellationDetails.Parser, new[]{ "IsNotFound", "IsCancelled", "IsPaused", "IsTimedOut", "IsWorkerShutdown", "IsReset" }, null, null, null, null)
           }));
@@ -494,6 +497,7 @@ namespace Temporalio.Bridge.Api.ActivityTask {
       priority_ = other.priority_ != null ? other.priority_.Clone() : null;
       isLocal_ = other.isLocal_;
       runId_ = other.runId_;
+      propagatedNexusSerializationContext_ = other.propagatedNexusSerializationContext_ != null ? other.propagatedNexusSerializationContext_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -782,6 +786,23 @@ namespace Temporalio.Bridge.Api.ActivityTask {
       }
     }
 
+    /// <summary>Field number for the "propagated_nexus_serialization_context" field.</summary>
+    public const int PropagatedNexusSerializationContextFieldNumber = 20;
+    private global::Temporalio.Api.Nexus.V1.PropagatedSerializationContext propagatedNexusSerializationContext_;
+    /// <summary>
+    /// Serialization context of the Nexus operation handler that started this activity, if any.
+    /// Only set for standalone activities. Lang should use it to serialize the activity's result and
+    /// failure, which are returned to the Nexus caller.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Nexus.V1.PropagatedSerializationContext PropagatedNexusSerializationContext {
+      get { return propagatedNexusSerializationContext_; }
+      set {
+        propagatedNexusSerializationContext_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -816,6 +837,7 @@ namespace Temporalio.Bridge.Api.ActivityTask {
       if (!object.Equals(Priority, other.Priority)) return false;
       if (IsLocal != other.IsLocal) return false;
       if (RunId != other.RunId) return false;
+      if (!object.Equals(PropagatedNexusSerializationContext, other.PropagatedNexusSerializationContext)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -842,6 +864,7 @@ namespace Temporalio.Bridge.Api.ActivityTask {
       if (priority_ != null) hash ^= Priority.GetHashCode();
       if (IsLocal != false) hash ^= IsLocal.GetHashCode();
       if (RunId.Length != 0) hash ^= RunId.GetHashCode();
+      if (propagatedNexusSerializationContext_ != null) hash ^= PropagatedNexusSerializationContext.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -927,6 +950,10 @@ namespace Temporalio.Bridge.Api.ActivityTask {
         output.WriteRawTag(154, 1);
         output.WriteString(RunId);
       }
+      if (propagatedNexusSerializationContext_ != null) {
+        output.WriteRawTag(162, 1);
+        output.WriteMessage(PropagatedNexusSerializationContext);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1004,6 +1031,10 @@ namespace Temporalio.Bridge.Api.ActivityTask {
         output.WriteRawTag(154, 1);
         output.WriteString(RunId);
       }
+      if (propagatedNexusSerializationContext_ != null) {
+        output.WriteRawTag(162, 1);
+        output.WriteMessage(PropagatedNexusSerializationContext);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1064,6 +1095,9 @@ namespace Temporalio.Bridge.Api.ActivityTask {
       }
       if (RunId.Length != 0) {
         size += 2 + pb::CodedOutputStream.ComputeStringSize(RunId);
+      }
+      if (propagatedNexusSerializationContext_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(PropagatedNexusSerializationContext);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1154,6 +1188,12 @@ namespace Temporalio.Bridge.Api.ActivityTask {
       }
       if (other.RunId.Length != 0) {
         RunId = other.RunId;
+      }
+      if (other.propagatedNexusSerializationContext_ != null) {
+        if (propagatedNexusSerializationContext_ == null) {
+          PropagatedNexusSerializationContext = new global::Temporalio.Api.Nexus.V1.PropagatedSerializationContext();
+        }
+        PropagatedNexusSerializationContext.MergeFrom(other.PropagatedNexusSerializationContext);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1273,6 +1313,13 @@ namespace Temporalio.Bridge.Api.ActivityTask {
             RunId = input.ReadString();
             break;
           }
+          case 162: {
+            if (propagatedNexusSerializationContext_ == null) {
+              PropagatedNexusSerializationContext = new global::Temporalio.Api.Nexus.V1.PropagatedSerializationContext();
+            }
+            input.ReadMessage(PropagatedNexusSerializationContext);
+            break;
+          }
         }
       }
     #endif
@@ -1389,6 +1436,13 @@ namespace Temporalio.Bridge.Api.ActivityTask {
           }
           case 154: {
             RunId = input.ReadString();
+            break;
+          }
+          case 162: {
+            if (propagatedNexusSerializationContext_ == null) {
+              PropagatedNexusSerializationContext = new global::Temporalio.Api.Nexus.V1.PropagatedSerializationContext();
+            }
+            input.ReadMessage(PropagatedNexusSerializationContext);
             break;
           }
         }

@@ -28,39 +28,34 @@ namespace Temporalio.Bridge.Api.ActivityResult {
             "cmVzdWx0LnByb3RvEhdjb3Jlc2RrLmFjdGl2aXR5X3Jlc3VsdBoeZ29vZ2xl",
             "L3Byb3RvYnVmL2R1cmF0aW9uLnByb3RvGh9nb29nbGUvcHJvdG9idWYvdGlt",
             "ZXN0YW1wLnByb3RvGiR0ZW1wb3JhbC9hcGkvY29tbW9uL3YxL21lc3NhZ2Uu",
-            "cHJvdG8aJXRlbXBvcmFsL2FwaS9mYWlsdXJlL3YxL21lc3NhZ2UucHJvdG8i",
-            "lQIKF0FjdGl2aXR5RXhlY3V0aW9uUmVzdWx0EjUKCWNvbXBsZXRlZBgBIAEo",
-            "CzIgLmNvcmVzZGsuYWN0aXZpdHlfcmVzdWx0LlN1Y2Nlc3NIABIyCgZmYWls",
-            "ZWQYAiABKAsyIC5jb3Jlc2RrLmFjdGl2aXR5X3Jlc3VsdC5GYWlsdXJlSAAS",
-            "OgoJY2FuY2VsbGVkGAMgASgLMiUuY29yZXNkay5hY3Rpdml0eV9yZXN1bHQu",
-            "Q2FuY2VsbGF0aW9uSAASSQoTd2lsbF9jb21wbGV0ZV9hc3luYxgEIAEoCzIq",
-            "LmNvcmVzZGsuYWN0aXZpdHlfcmVzdWx0LldpbGxDb21wbGV0ZUFzeW5jSABC",
-            "CAoGc3RhdHVzIvwBChJBY3Rpdml0eVJlc29sdXRpb24SNQoJY29tcGxldGVk",
-            "GAEgASgLMiAuY29yZXNkay5hY3Rpdml0eV9yZXN1bHQuU3VjY2Vzc0gAEjIK",
-            "BmZhaWxlZBgCIAEoCzIgLmNvcmVzZGsuYWN0aXZpdHlfcmVzdWx0LkZhaWx1",
-            "cmVIABI6CgljYW5jZWxsZWQYAyABKAsyJS5jb3Jlc2RrLmFjdGl2aXR5X3Jl",
-            "c3VsdC5DYW5jZWxsYXRpb25IABI1CgdiYWNrb2ZmGAQgASgLMiIuY29yZXNk",
-            "ay5hY3Rpdml0eV9yZXN1bHQuRG9CYWNrb2ZmSABCCAoGc3RhdHVzIjoKB1N1",
-            "Y2Nlc3MSLwoGcmVzdWx0GAEgASgLMh8udGVtcG9yYWwuYXBpLmNvbW1vbi52",
-            "MS5QYXlsb2FkIn0KB0ZhaWx1cmUSMQoHZmFpbHVyZRgBIAEoCzIgLnRlbXBv",
-            "cmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUSPwoFY2F1c2UYAiABKA4yMC5j",
-            "b3Jlc2RrLmFjdGl2aXR5X3Jlc3VsdC5BY3Rpdml0eVRhc2tGYWlsZWRDYXVz",
-            "ZSJBCgxDYW5jZWxsYXRpb24SMQoHZmFpbHVyZRgBIAEoCzIgLnRlbXBvcmFs",
-            "LmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUiEwoRV2lsbENvbXBsZXRlQXN5bmMi",
-            "jQEKCURvQmFja29mZhIPCgdhdHRlbXB0GAEgASgNEjMKEGJhY2tvZmZfZHVy",
-            "YXRpb24YAiABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SOgoWb3Jp",
-            "Z2luYWxfc2NoZWR1bGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5U",
-            "aW1lc3RhbXAq8wEKF0FjdGl2aXR5VGFza0ZhaWxlZENhdXNlEioKJkFDVElW",
-            "SVRZX1RBU0tfRkFJTEVEX0NBVVNFX1VOU1BFQ0lGSUVEEAASMQotQUNUSVZJ",
-            "VFlfVEFTS19GQUlMRURfQ0FVU0VfUEFZTE9BRFNfVE9PX0xBUkdFEAESNwoz",
-            "QUNUSVZJVFlfVEFTS19GQUlMRURfQ0FVU0VfRVhURVJOQUxfU1RPUkFHRV9G",
-            "QUlMVVJFEAISQAo8QUNUSVZJVFlfVEFTS19GQUlMRURfQ0FVU0VfQUNUSVZJ",
-            "VFlfV09SS0VSX1VOSEFORExFRF9GQUlMVVJFEANCNOoCMVRlbXBvcmFsaW86",
-            "OkludGVybmFsOjpCcmlkZ2U6OkFwaTo6QWN0aXZpdHlSZXN1bHRiBnByb3Rv",
-            "Mw=="));
+            "cHJvdG8aKHRlbXBvcmFsL2FwaS9lbnVtcy92MS9mYWlsZWRfY2F1c2UucHJv",
+            "dG8aJXRlbXBvcmFsL2FwaS9mYWlsdXJlL3YxL21lc3NhZ2UucHJvdG8ilQIK",
+            "F0FjdGl2aXR5RXhlY3V0aW9uUmVzdWx0EjUKCWNvbXBsZXRlZBgBIAEoCzIg",
+            "LmNvcmVzZGsuYWN0aXZpdHlfcmVzdWx0LlN1Y2Nlc3NIABIyCgZmYWlsZWQY",
+            "AiABKAsyIC5jb3Jlc2RrLmFjdGl2aXR5X3Jlc3VsdC5GYWlsdXJlSAASOgoJ",
+            "Y2FuY2VsbGVkGAMgASgLMiUuY29yZXNkay5hY3Rpdml0eV9yZXN1bHQuQ2Fu",
+            "Y2VsbGF0aW9uSAASSQoTd2lsbF9jb21wbGV0ZV9hc3luYxgEIAEoCzIqLmNv",
+            "cmVzZGsuYWN0aXZpdHlfcmVzdWx0LldpbGxDb21wbGV0ZUFzeW5jSABCCAoG",
+            "c3RhdHVzIvwBChJBY3Rpdml0eVJlc29sdXRpb24SNQoJY29tcGxldGVkGAEg",
+            "ASgLMiAuY29yZXNkay5hY3Rpdml0eV9yZXN1bHQuU3VjY2Vzc0gAEjIKBmZh",
+            "aWxlZBgCIAEoCzIgLmNvcmVzZGsuYWN0aXZpdHlfcmVzdWx0LkZhaWx1cmVI",
+            "ABI6CgljYW5jZWxsZWQYAyABKAsyJS5jb3Jlc2RrLmFjdGl2aXR5X3Jlc3Vs",
+            "dC5DYW5jZWxsYXRpb25IABI1CgdiYWNrb2ZmGAQgASgLMiIuY29yZXNkay5h",
+            "Y3Rpdml0eV9yZXN1bHQuRG9CYWNrb2ZmSABCCAoGc3RhdHVzIjoKB1N1Y2Nl",
+            "c3MSLwoGcmVzdWx0GAEgASgLMh8udGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Q",
+            "YXlsb2FkInsKB0ZhaWx1cmUSMQoHZmFpbHVyZRgBIAEoCzIgLnRlbXBvcmFs",
+            "LmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUSPQoFY2F1c2UYAiABKA4yLi50ZW1w",
+            "b3JhbC5hcGkuZW51bXMudjEuQWN0aXZpdHlUYXNrRmFpbGVkQ2F1c2UiQQoM",
+            "Q2FuY2VsbGF0aW9uEjEKB2ZhaWx1cmUYASABKAsyIC50ZW1wb3JhbC5hcGku",
+            "ZmFpbHVyZS52MS5GYWlsdXJlIhMKEVdpbGxDb21wbGV0ZUFzeW5jIo0BCglE",
+            "b0JhY2tvZmYSDwoHYXR0ZW1wdBgBIAEoDRIzChBiYWNrb2ZmX2R1cmF0aW9u",
+            "GAIgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjoKFm9yaWdpbmFs",
+            "X3NjaGVkdWxlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0",
+            "YW1wQjTqAjFUZW1wb3JhbGlvOjpJbnRlcm5hbDo6QnJpZGdlOjpBcGk6OkFj",
+            "dGl2aXR5UmVzdWx0YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.FailedCauseReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, },
+          new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityResult.ActivityExecutionResult), global::Temporalio.Bridge.Api.ActivityResult.ActivityExecutionResult.Parser, new[]{ "Completed", "Failed", "Cancelled", "WillCompleteAsync" }, new[]{ "Status" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityResult.ActivityResolution), global::Temporalio.Bridge.Api.ActivityResult.ActivityResolution.Parser, new[]{ "Completed", "Failed", "Cancelled", "Backoff" }, new[]{ "Status" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityResult.Success), global::Temporalio.Bridge.Api.ActivityResult.Success.Parser, new[]{ "Result" }, null, null, null, null),
@@ -73,37 +68,6 @@ namespace Temporalio.Bridge.Api.ActivityResult {
     #endregion
 
   }
-  #region Enums
-  /// <summary>
-  ///
-  /// A well-known condition that caused an activity task to fail. Lang reports one alongside the
-  /// failure so core can categorize activity failures instead of treating them all alike; it becomes
-  /// the `failure_reason` metric label, so the set of values is deliberately small and bounded.
-  /// </summary>
-  internal enum ActivityTaskFailedCause {
-    [pbr::OriginalName("ACTIVITY_TASK_FAILED_CAUSE_UNSPECIFIED")] Unspecified = 0,
-    /// <summary>
-    /// A payload-bearing field on a request the worker sent for this activity task exceeded the
-    /// per-field size limit configured on the server for the namespace.
-    /// Check the activity task failure message for more information.
-    /// </summary>
-    [pbr::OriginalName("ACTIVITY_TASK_FAILED_CAUSE_PAYLOADS_TOO_LARGE")] PayloadsTooLarge = 1,
-    /// <summary>
-    /// The worker failed to offload a payload to, or retrieve one from, external storage while
-    /// processing this activity task.
-    /// Check the activity task failure message for more information.
-    /// </summary>
-    [pbr::OriginalName("ACTIVITY_TASK_FAILED_CAUSE_EXTERNAL_STORAGE_FAILURE")] ExternalStorageFailure = 2,
-    /// <summary>
-    /// The default cause for an activity task failure reported by a worker; a more specific cause
-    /// takes precedence whenever the condition is recognized.
-    /// Check the activity task failure message for more information.
-    /// </summary>
-    [pbr::OriginalName("ACTIVITY_TASK_FAILED_CAUSE_ACTIVITY_WORKER_UNHANDLED_FAILURE")] ActivityWorkerUnhandledFailure = 3,
-  }
-
-  #endregion
-
   #region Messages
   /// <summary>
   /// Used to report activity completions to core
@@ -1157,14 +1121,14 @@ namespace Temporalio.Bridge.Api.ActivityResult {
 
     /// <summary>Field number for the "cause" field.</summary>
     public const int CauseFieldNumber = 2;
-    private global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause cause_ = global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause.Unspecified;
+    private global::Temporalio.Api.Enums.V1.ActivityTaskFailedCause cause_ = global::Temporalio.Api.Enums.V1.ActivityTaskFailedCause.Unspecified;
     /// <summary>
     /// Only meaningful on ActivityExecutionResult (lang -> core); ignored on ActivityResolution,
     /// which reuses this message.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause Cause {
+    public global::Temporalio.Api.Enums.V1.ActivityTaskFailedCause Cause {
       get { return cause_; }
       set {
         cause_ = value;
@@ -1196,7 +1160,7 @@ namespace Temporalio.Bridge.Api.ActivityResult {
     public override int GetHashCode() {
       int hash = 1;
       if (failure_ != null) hash ^= Failure_.GetHashCode();
-      if (Cause != global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause.Unspecified) hash ^= Cause.GetHashCode();
+      if (Cause != global::Temporalio.Api.Enums.V1.ActivityTaskFailedCause.Unspecified) hash ^= Cause.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1219,7 +1183,7 @@ namespace Temporalio.Bridge.Api.ActivityResult {
         output.WriteRawTag(10);
         output.WriteMessage(Failure_);
       }
-      if (Cause != global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause.Unspecified) {
+      if (Cause != global::Temporalio.Api.Enums.V1.ActivityTaskFailedCause.Unspecified) {
         output.WriteRawTag(16);
         output.WriteEnum((int) Cause);
       }
@@ -1237,7 +1201,7 @@ namespace Temporalio.Bridge.Api.ActivityResult {
         output.WriteRawTag(10);
         output.WriteMessage(Failure_);
       }
-      if (Cause != global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause.Unspecified) {
+      if (Cause != global::Temporalio.Api.Enums.V1.ActivityTaskFailedCause.Unspecified) {
         output.WriteRawTag(16);
         output.WriteEnum((int) Cause);
       }
@@ -1254,7 +1218,7 @@ namespace Temporalio.Bridge.Api.ActivityResult {
       if (failure_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Failure_);
       }
-      if (Cause != global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause.Unspecified) {
+      if (Cause != global::Temporalio.Api.Enums.V1.ActivityTaskFailedCause.Unspecified) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Cause);
       }
       if (_unknownFields != null) {
@@ -1275,7 +1239,7 @@ namespace Temporalio.Bridge.Api.ActivityResult {
         }
         Failure_.MergeFrom(other.Failure_);
       }
-      if (other.Cause != global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause.Unspecified) {
+      if (other.Cause != global::Temporalio.Api.Enums.V1.ActivityTaskFailedCause.Unspecified) {
         Cause = other.Cause;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -1301,7 +1265,7 @@ namespace Temporalio.Bridge.Api.ActivityResult {
             break;
           }
           case 16: {
-            Cause = (global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause) input.ReadEnum();
+            Cause = (global::Temporalio.Api.Enums.V1.ActivityTaskFailedCause) input.ReadEnum();
             break;
           }
         }
@@ -1327,7 +1291,7 @@ namespace Temporalio.Bridge.Api.ActivityResult {
             break;
           }
           case 16: {
-            Cause = (global::Temporalio.Bridge.Api.ActivityResult.ActivityTaskFailedCause) input.ReadEnum();
+            Cause = (global::Temporalio.Api.Enums.V1.ActivityTaskFailedCause) input.ReadEnum();
             break;
           }
         }
