@@ -372,13 +372,53 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
+        public async Task StartNexusOperationAsync_NullCallback_RejectsBeforeEncoding(bool intercept)
+        {
+            var interceptor = new CallbackInterceptor
+            {
+                AdditionalCallbacks = intercept ? new CompletionCallback[] { null! } : null,
+            };
+            var codec = new RecordingCodec();
+            var client = TemporalClient.CreateLazy(new("localhost:1")
+            {
+                Namespace = "callbacks",
+                DataConverter = DataConverter.Default with { PayloadCodec = codec },
+                Interceptors = new IClientInterceptor[] { interceptor },
+            });
+            var callbacks = new List<CompletionCallback>
+            {
+                CompletionCallback.Create("Notifications", "OnCompleteRaw", "notifications", "raw-context"),
+            };
+            if (!intercept)
+            {
+                callbacks.Add(null!);
+            }
+            var options = new NexusOperationOptions("source-id")
+            {
+                CompletionCallbacks = callbacks,
+                Summary = "source summary",
+            };
+
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
+                client.CreateNexusClient<ISource>("source-endpoint").StartNexusOperationAsync(
+                    service => service.Run(), options));
+
+            Assert.Equal("input", exception.ParamName);
+            Assert.Contains("Completion callbacks must not contain null", exception.Message);
+            Assert.Empty(codec.Payloads);
+            Assert.Equal(intercept ? 1 : 2, callbacks.Count);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
         public async Task StartNexusOperationAsync_MismatchedCallback_RejectsBeforeEncoding(bool intercept)
         {
             var callback = CompletionCallback.Create(
                 (INotifications service, OnCompleteRequest<string, string> input) => service.OnComplete(input),
                 "notifications",
                 "mismatched-context");
-            var interceptor = new CallbackInterceptor { AdditionalCallback = intercept ? callback : null };
+            var interceptor = new CallbackInterceptor { AdditionalCallbacks = intercept ? new[] { callback } : null };
             var codec = new RecordingCodec();
             var client = TemporalClient.CreateLazy(new("localhost:1")
             {
@@ -425,7 +465,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                     (INotifications service, OnCompleteRequest<string, string> input) => service.OnComplete(input),
                     "notifications",
                     "interceptor-context");
-            var interceptor = new CallbackInterceptor { AdditionalCallback = callback };
+            var interceptor = new CallbackInterceptor { AdditionalCallbacks = new[] { callback } };
             var codec = new RecordingCodec();
             var client = TemporalClient.CreateLazy(new("localhost:1")
             {
@@ -707,7 +747,7 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
     {
         public IReadOnlyCollection<CompletionCallback>? Callbacks { get; private set; }
 
-        public CompletionCallback? AdditionalCallback { get; init; }
+        public IReadOnlyCollection<CompletionCallback>? AdditionalCallbacks { get; init; }
 
         public ClientOutboundInterceptor InterceptClient(ClientOutboundInterceptor next) =>
             new CallbackOutboundInterceptor(next, this);
@@ -723,11 +763,11 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
             public override Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 StartNexusOperationInput input)
             {
-                if (owner.AdditionalCallback is { } callback)
+                if (owner.AdditionalCallbacks is { } callbacks)
                 {
                     var options = (NexusOperationOptions)input.Options.Clone();
                     options.CompletionCallbacks = (options.CompletionCallbacks ?? Array.Empty<CompletionCallback>())
-                        .Append(callback).ToList();
+                        .Concat(callbacks).ToList();
                     input = input with { Options = options };
                 }
                 owner.Callbacks = input.Options.CompletionCallbacks;

@@ -64,6 +64,10 @@ namespace Temporalio.Client
                     {
                         foreach (var callback in callbacks)
                         {
+                            if (callback == null)
+                            {
+                                throw new ArgumentException("Completion callbacks must not contain null", nameof(input));
+                            }
                             if (callback.OutputType != typeof(TResult) && callback.OutputType != typeof(RawValue))
                             {
                                 throw new ArgumentException(
