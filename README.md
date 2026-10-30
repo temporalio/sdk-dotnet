@@ -59,14 +59,14 @@ Each package has its own README next to its project, which is also its NuGet pac
 ### Community packages
 
 The following packages are published from the [temporal-community](https://github.com/temporal-community) GitHub
-organization, in [temporal-dotnet-extensions](https://github.com/temporal-community/temporal-dotnet-extensions). They
-are not part of the Temporal .NET SDK and are not covered by any Temporal support policy. They are released and
-versioned independently of the SDK; please file issues in their repository.
+organization. They are not part of the Temporal .NET SDK and are not covered by any Temporal support policy. They are
+released and versioned independently of the SDK; please file issues in their respective repositories.
 
-| Package | Description |
-| ------- | ----------- |
-| [TemporalCommunity.Extensions.Analyzers](https://www.nuget.org/packages/TemporalCommunity.Extensions.Analyzers) | Roslyn analyzers for workflow code |
-| [TemporalCommunity.Templates](https://www.nuget.org/packages/TemporalCommunity.Templates) | `dotnet new` templates for workflows, activities, workers, and solutions |
+| Package | Description | Repository |
+| ------- | ----------- | ---------- |
+| [TemporalCommunity.Aspire.Hosting](https://www.nuget.org/packages/TemporalCommunity.Aspire.Hosting) | .NET Aspire integration for Temporal development servers and Temporal Cloud connections | [temporal-aspire](https://github.com/temporal-community/temporal-aspire) |
+| [TemporalCommunity.Extensions.Analyzers](https://www.nuget.org/packages/TemporalCommunity.Extensions.Analyzers) | Roslyn analyzers for workflow code | [temporal-dotnet-extensions](https://github.com/temporal-community/temporal-dotnet-extensions) |
+| [TemporalCommunity.Templates](https://www.nuget.org/packages/TemporalCommunity.Templates) | `dotnet new` templates for workflows, activities, workers, and solutions | [temporal-dotnet-extensions](https://github.com/temporal-community/temporal-dotnet-extensions) |
 
 ## Contributing
 
