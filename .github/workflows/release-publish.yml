@@ -37,14 +37,19 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Require main
+      # Patch releases are published from releases/* maintenance branches, which
+      # are protected by the same kind of ruleset as main.
+      - name: Require main or a release branch
         env:
           RELEASE_REF: ${{ github.ref }}
         run: |
-          if [ "$RELEASE_REF" != "refs/heads/main" ]; then
-            echo "Release publishing must be dispatched from main" >&2
-            exit 1
-          fi
+          case "$RELEASE_REF" in
+            refs/heads/main | refs/heads/releases/*) ;;
+            *)
+              echo "Release publishing must be dispatched from main or a releases/* branch" >&2
+              exit 1
+              ;;
+          esac
 
       - name: Setup release tooling
         uses: ./.github/actions/setup

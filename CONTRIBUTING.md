@@ -177,6 +177,13 @@ publishes the same verified artifact to the integration and production galleries
 Integration smoke tests must pass before production publishing, and production
 smoke tests must pass before draft release creation.
 
+Patch releases for an earlier minor version are published from a
+`releases/<major>.<minor>.x` branch cut from that version's tag. `prepare` only
+targets `main`, so open a PR against the release branch by hand that makes the same
+changes: `Version` and `AssemblyVersion`, a completed `CHANGELOG.md` section, and
+removal of any consumed fragments. After it merges, dispatch **Release Publish** from
+the release branch. Then add the patch's `CHANGELOG.md` section to `main`.
+
 The workflow creates a **draft** GitHub release with a tag targeting the dispatched
 commit, using notes from the shared changelog tool. Review the draft's tag,
 changelog, Core commit section, and prerelease status before publishing the GitHub
@@ -244,7 +251,7 @@ Recheck the policy if the publishing job is moved to a different workflow.
 
 In GitHub repository settings, protect the existing `nugetint` and `nugetprod`
 environments with required reviewers and deployment branch rules allowing only
-`main`. In particular, require approval before production publishing; prevent
+`main` and `releases/*`. In particular, require approval before production publishing; prevent
 self-approval or administrator bypass where supported by the repository's plan.
 Before approving `nugetprod`, check integration-gallery symbol indexing; check
 production symbol indexing again when reviewing the GitHub draft.
