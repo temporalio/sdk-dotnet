@@ -25,7 +25,7 @@ jobs:
           - os: ubuntu-arm
             runsOn: ubuntu-24.04-arm64-2-core
           - os: macos-arm
-            runsOn: macos-14
+            runsOn: macos-15
           - os: windows-arm
             runsOn: windows-11-arm
     runs-on: ${{ matrix.runsOn || matrix.os }}

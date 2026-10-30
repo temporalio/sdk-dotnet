@@ -56,7 +56,7 @@ jobs:
           - os: macos-arm
             out-file: libtemporalio_sdk_core_c_bridge.dylib
             out-prefix: osx-arm64
-            runsOn: macos-14
+            runsOn: macos-15
           - os: windows-latest
             out-file: temporalio_sdk_core_c_bridge.dll
             out-prefix: win-x64
@@ -211,7 +211,7 @@ jobs:
           - os: macos-intel
             runsOn: macos-15-intel
           - os: macos-arm
-            runsOn: macos-14
+            runsOn: macos-15
           - os: windows-arm
             runsOn: windows-11-arm
     runs-on: ${{ matrix.runsOn || matrix.os }}
