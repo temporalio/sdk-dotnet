@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using NexusRpc.Handlers;
 using Temporalio.Client;
+using Temporalio.Client.Interceptors;
 
 namespace Temporalio.Nexus
 {
@@ -21,6 +23,7 @@ namespace Temporalio.Nexus
     {
         private readonly OperationStartContext nexusStartContext;
         private readonly NexusOperationExecutionContext temporalContext;
+        private readonly Lazy<ITemporalClient> temporalClient;
         private bool asyncStarted;
 
         /// <summary>
@@ -34,10 +37,16 @@ namespace Temporalio.Nexus
         {
             this.nexusStartContext = nexusStartContext;
             this.temporalContext = temporalContext;
+            // A custom ITemporalClient cannot be rebuilt with an extra interceptor, so its signals are
+            // not deduplicated or limited.
+            temporalClient = new(() => temporalContext.TemporalClient is TemporalClient client ?
+                new TemporalClient(
+                    client, next => new SignalOnceInterceptor(next, nexusStartContext.RequestId)) :
+                temporalContext.TemporalClient);
         }
 
         /// <inheritdoc/>
-        public ITemporalClient TemporalClient => temporalContext.TemporalClient;
+        public ITemporalClient TemporalClient => temporalClient.Value;
 
         /// <inheritdoc/>
         public Task<TemporalOperationResult<TResult>> StartWorkflowAsync<TWorkflow, TResult>(
@@ -225,6 +234,61 @@ namespace Temporalio.Nexus
                 if (!keepSlot)
                 {
                     asyncStarted = false;
+                }
+            }
+        }
+
+        // Signals share the operation's request ID, so the server would silently drop a second
+        // one; reject it instead.
+        private sealed class SignalOnceInterceptor : ClientOutboundInterceptor
+        {
+            private readonly string requestId;
+            private int signaled;
+
+            internal SignalOnceInterceptor(ClientOutboundInterceptor next, string requestId)
+                : base(next) => this.requestId = requestId;
+
+            public override Task SignalWorkflowAsync(SignalWorkflowInput input)
+            {
+                var options = (WorkflowSignalOptions?)input.Options?.Clone() ?? new();
+                options.RequestId = requestId;
+                return SendOnceAsync(async () =>
+                {
+                    await base.SignalWorkflowAsync(input with { Options = options }).ConfigureAwait(false);
+                    return true;
+                });
+            }
+
+            public override Task<WorkflowHandle<TWorkflow, TResult>> StartWorkflowAsync<TWorkflow, TResult>(
+                StartWorkflowInput input)
+            {
+                if (input.Options.StartSignal == null)
+                {
+                    return base.StartWorkflowAsync<TWorkflow, TResult>(input);
+                }
+                var options = (WorkflowOptions)input.Options.Clone();
+                options.RequestId = requestId;
+                return SendOnceAsync(() =>
+                    base.StartWorkflowAsync<TWorkflow, TResult>(input with { Options = options }));
+            }
+
+            // Signals may be sent concurrently from one handler.
+            private async Task<T> SendOnceAsync<T>(Func<Task<T>> send)
+            {
+                if (Interlocked.CompareExchange(ref signaled, 1, 0) != 0)
+                {
+                    throw new HandlerException(
+                        HandlerErrorType.BadRequest,
+                        "only one signal can be sent per operation invocation");
+                }
+                try
+                {
+                    return await send().ConfigureAwait(false);
+                }
+                catch
+                {
+                    Volatile.Write(ref signaled, 0);
+                    throw;
                 }
             }
         }
