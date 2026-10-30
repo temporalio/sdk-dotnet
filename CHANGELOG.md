@@ -5,6 +5,12 @@ Pending changes belong in changelog/; see changelog/README.md.
 
 # Changelog
 
+## [1.21.1] - 2026-10-30
+
+### Security
+
+- Update the bridge’s Rust `zip` dependency to 9.1.3 to address a security vulnerability in `zip`.
+
 ## [1.21.0] - 2026-10-20
 
 ### Added
