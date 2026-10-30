@@ -1,0 +1,1 @@
+**Experimental**: A Temporal operation handler can now send only one signal or signal-with-start per invocation through `ITemporalNexusClient.TemporalClient`; a second throws a `BadRequest` `HandlerException` unless the first failed. Signals sent through `NexusOperationExecutionContext.Current.TemporalClient` are not limited.
