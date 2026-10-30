@@ -1,6 +1,9 @@
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using NexusRpc.Handlers;
+using Temporalio.Common;
 
 namespace Temporalio.Client
 {
@@ -9,6 +12,68 @@ namespace Temporalio.Client
     /// </summary>
     public static class NexusClientExtensions
     {
+        /// <summary>
+        /// Starts a void-returning Nexus operation with typed completion callbacks.
+        /// </summary>
+        /// <typeparam name="TService">The source service interface.</typeparam>
+        /// <param name="client">The Nexus client.</param>
+        /// <param name="operationStartCall">An expression that calls a no-value source operation.</param>
+        /// <param name="options">The operation options and completion callbacks.</param>
+        /// <returns>A handle to the started operation.</returns>
+        /// <exception cref="ArgumentException">The expression does not select a registered no-value operation.</exception>
+        /// <remarks>WARNING: This API is experimental and may change.</remarks>
+        public static Task<NexusOperationHandle> StartNexusOperationAsync<TService>(
+            this NexusClient<TService> client,
+            Expression<Action<TService>> operationStartCall,
+            NexusOperationOptions<NoValue> options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+            if (operationStartCall == null)
+            {
+                throw new ArgumentNullException(nameof(operationStartCall));
+            }
+            var (method, args) = ExpressionUtil.ExtractCall(operationStartCall);
+            var operation = client.ServiceDefinition.Operations.Values.FirstOrDefault(value => value.MethodInfo == method);
+            if (operation == null)
+            {
+                throw new ArgumentException(
+                    $"Method {method} not marked as a Nexus service operation", nameof(operationStartCall));
+            }
+            if (!NoValue.IsVoidType(operation.OutputType))
+            {
+                throw new ArgumentException(
+                    $"Operation {operation.Name} returns {operation.OutputType}, but the options require a no-value operation",
+                    nameof(operationStartCall));
+            }
+            if (args.Count > 1)
+            {
+                throw new ArgumentException("Can only have 0 or 1 Nexus argument", nameof(operationStartCall));
+            }
+            return client.StartNexusOperationAsync(operation.Name, args.SingleOrDefault(), options.ToUntyped());
+        }
+
+        /// <summary>
+        /// Runs a void-returning Nexus operation with typed completion callbacks and waits for completion.
+        /// </summary>
+        /// <typeparam name="TService">The source service interface.</typeparam>
+        /// <param name="client">The Nexus client.</param>
+        /// <param name="operationStartCall">An expression that calls a no-value source operation.</param>
+        /// <param name="options">The operation options and completion callbacks.</param>
+        /// <returns>A task representing completion of the operation.</returns>
+        /// <exception cref="ArgumentException">The expression does not select a registered no-value operation.</exception>
+        /// <remarks>WARNING: This API is experimental and may change.</remarks>
+        public static async Task ExecuteNexusOperationAsync<TService>(
+            this NexusClient<TService> client,
+            Expression<Action<TService>> operationStartCall,
+            NexusOperationOptions<NoValue> options)
+        {
+            var handle = await client.StartNexusOperationAsync(operationStartCall, options).ConfigureAwait(false);
+            await handle.GetResultAsync(options.Rpc).ConfigureAwait(false);
+        }
+
         /// <summary>
         /// Starts a named Nexus operation with typed completion callbacks.
         /// </summary>

@@ -370,6 +370,182 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
     public class RequestTests
     {
         [Theory]
+        [InlineData(false, 0)]
+        [InlineData(false, 1)]
+        [InlineData(false, 2)]
+        [InlineData(true, 0)]
+        [InlineData(true, 1)]
+        [InlineData(true, 2)]
+        public async Task VoidExtensions_PreserveUntypedCalls(bool execute, int optionsKind)
+        {
+            var codec = new RecordingCodec();
+            var client = TemporalClient.CreateLazy(new("localhost:1")
+            {
+                Namespace = "callbacks",
+                DataConverter = DataConverter.Default with { PayloadCodec = codec },
+            });
+            var nexusClient = client.CreateNexusClient<ISource>("source-endpoint");
+            Func<Task> call;
+            if (optionsKind == 0)
+            {
+                call = () => execute
+                    ? nexusClient.ExecuteNexusOperationAsync(service => service.DoSomethingWithInput(1))
+                    : nexusClient.StartNexusOperationAsync(service => service.DoSomethingWithInput(1));
+            }
+            else if (optionsKind == 1)
+            {
+                call = () => execute
+                    ? nexusClient.ExecuteNexusOperationAsync(service => service.DoSomethingWithInput(1), null)
+                    : nexusClient.StartNexusOperationAsync(service => service.DoSomethingWithInput(1), null);
+            }
+            else
+            {
+                var options = new NexusOperationOptions("source-id");
+                call = () => execute
+                    ? nexusClient.ExecuteNexusOperationAsync(service => service.DoSomethingWithInput(1), options)
+                    : nexusClient.StartNexusOperationAsync(service => service.DoSomethingWithInput(1), options);
+            }
+
+            if (optionsKind == 2)
+            {
+                var exception = await Assert.ThrowsAsync<InvalidOperationException>(call);
+                Assert.Equal("Stopped before RPC", exception.Message);
+                Assert.Equal("1", Assert.Single(codec.Payloads).Data.ToStringUtf8());
+            }
+            else
+            {
+                var exception = await Assert.ThrowsAsync<ArgumentException>(call);
+                Assert.Equal("ID required to start Nexus operation", exception.Message);
+                Assert.Empty(codec.Payloads);
+            }
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task TypedVoidOptions_NullOptionsAreRejected(bool execute)
+        {
+            var client = TemporalClient.CreateLazy(new("localhost:1"));
+            var nexusClient = client.CreateNexusClient<ISource>("source-endpoint");
+            NexusOperationOptions<NoValue> options = null!;
+
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => execute
+                ? nexusClient.ExecuteNexusOperationAsync(service => service.DoSomething(), options)
+                : nexusClient.StartNexusOperationAsync(service => service.DoSomething(), options));
+
+            Assert.Equal("options", exception.ParamName);
+        }
+
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public async Task TypedVoidOptions_AcceptsCallbacks(bool execute, bool raw)
+        {
+            var codec = new RecordingCodec();
+            var client = TemporalClient.CreateLazy(new("localhost:1")
+            {
+                Namespace = "callbacks",
+                DataConverter = DataConverter.Default with { PayloadCodec = codec },
+            });
+            var builder = new CompletionCallbackCollection<NoValue>.Builder();
+            if (raw)
+            {
+                builder.Add(
+                    (INotifications service, OnCompleteRequest<RawValue, string> input) => service.OnCompleteRaw(input),
+                    "notifications",
+                    "void-context");
+            }
+            else
+            {
+                builder.Add(
+                    (INotifications service, OnCompleteRequest<NoValue, string> input) => service.OnCompleteNoValue(input),
+                    "notifications",
+                    "void-context");
+            }
+            var options = new NexusOperationOptions<NoValue>("source-id") { CompletionCallbacks = builder.Build() };
+            var nexusClient = client.CreateNexusClient<ISource>("source-endpoint");
+
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => execute
+                ? nexusClient.ExecuteNexusOperationAsync(service => service.DoSomething(), options)
+                : nexusClient.StartNexusOperationAsync(service => service.DoSomething(), options));
+
+            Assert.Equal("Stopped before RPC", exception.Message);
+            Assert.Equal("\"void-context\"", Assert.Single(codec.Payloads).Data.ToStringUtf8());
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task TypedVoidOptions_RejectsValueReturningOperation(bool execute)
+        {
+            var codec = new RecordingCodec();
+            var client = TemporalClient.CreateLazy(new("localhost:1")
+            {
+                Namespace = "callbacks",
+                DataConverter = DataConverter.Default with { PayloadCodec = codec },
+            });
+            var options = new NexusOperationOptions<NoValue>("source-id") { Summary = "must not encode" };
+            var nexusClient = client.CreateNexusClient<ISource>("source-endpoint");
+
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() => execute
+                ? nexusClient.ExecuteNexusOperationAsync(service => service.Run(), options)
+                : nexusClient.StartNexusOperationAsync(service => service.Run(), options));
+
+            Assert.Equal("operationStartCall", exception.ParamName);
+            Assert.Contains(typeof(int).ToString(), exception.Message);
+            Assert.Contains("no-value operation", exception.Message);
+            Assert.Empty(codec.Payloads);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task TypedVoidOptions_EvaluatesArgumentsOnce(bool execute)
+        {
+            var codec = new RecordingCodec();
+            var client = TemporalClient.CreateLazy(new("localhost:1")
+            {
+                Namespace = "callbacks",
+                DataConverter = DataConverter.Default with { PayloadCodec = codec },
+            });
+            var options = new NexusOperationOptions<NoValue>("source-id");
+            var nexusClient = client.CreateNexusClient<ISource>("source-endpoint");
+            var inputs = new Queue<int>(new[] { 1, 2 });
+
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => execute
+                ? nexusClient.ExecuteNexusOperationAsync(service => service.DoSomethingWithInput(inputs.Dequeue()), options)
+                : nexusClient.StartNexusOperationAsync(service => service.DoSomethingWithInput(inputs.Dequeue()), options));
+
+            Assert.Equal("Stopped before RPC", exception.Message);
+            Assert.Equal("1", Assert.Single(codec.Payloads).Data.ToStringUtf8());
+            Assert.Equal(2, Assert.Single(inputs));
+        }
+
+        [Fact]
+        public async Task TypedVoidOptions_NoValueReturningOperation_PreservesTypedOverload()
+        {
+            var codec = new RecordingCodec();
+            var client = TemporalClient.CreateLazy(new("localhost:1")
+            {
+                Namespace = "callbacks",
+                DataConverter = DataConverter.Default with { PayloadCodec = codec },
+            });
+            var options = new NexusOperationOptions<NoValue>("source-id") { Summary = "no-value" };
+            var nexusClient = client.CreateNexusClient<ISource>("source-endpoint");
+
+            Task<NexusOperationHandle<NoValue>> start =
+                nexusClient.StartNexusOperationAsync(service => service.NoResult(), options);
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => start);
+            Assert.Equal("Stopped before RPC", exception.Message);
+
+            Task<NoValue> execute = nexusClient.ExecuteNexusOperationAsync(service => service.NoResult(), options);
+            exception = await Assert.ThrowsAsync<InvalidOperationException>(() => execute);
+            Assert.Equal("Stopped before RPC", exception.Message);
+        }
+
+        [Theory]
         [InlineData(false, typeof(NoValue))]
         [InlineData(true, typeof(NoValue))]
         [InlineData(false, typeof(ValueTuple))]
@@ -707,6 +883,12 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
 
             [NexusOperation]
             void DoSomething();
+
+            [NexusOperation]
+            void DoSomethingWithInput(int input);
+
+            [NexusOperation]
+            NoValue NoResult();
         }
 
         [NexusService("Notifications")]
