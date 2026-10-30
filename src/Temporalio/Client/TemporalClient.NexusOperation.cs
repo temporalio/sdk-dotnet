@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using NexusRpc;
+using NexusRpc.Handlers;
 using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Client.Interceptors;
 using Temporalio.Converters;
@@ -68,7 +69,9 @@ namespace Temporalio.Client
                             {
                                 throw new ArgumentException("Completion callbacks must not contain null", nameof(input));
                             }
-                            if (callback.OutputType != typeof(TResult) && callback.OutputType != typeof(RawValue))
+                            if (callback.OutputType != typeof(TResult) &&
+                                callback.OutputType != typeof(RawValue) &&
+                                !(NoValue.IsVoidType(typeof(TResult)) && NoValue.IsVoidType(callback.OutputType)))
                             {
                                 throw new ArgumentException(
                                     $"Callback {callback.Service}.{callback.Operation} expects {callback.OutputType}, " +

@@ -370,6 +370,88 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
     public class RequestTests
     {
         [Theory]
+        [InlineData(false, typeof(NoValue))]
+        [InlineData(true, typeof(NoValue))]
+        [InlineData(false, typeof(ValueTuple))]
+        [InlineData(true, typeof(ValueTuple))]
+        [InlineData(false, typeof(RawValue))]
+        [InlineData(true, typeof(RawValue))]
+        public async Task StartNexusOperationAsync_VoidOperation_AcceptsNoValueCallbacks(
+            bool byName, Type callbackOutputType)
+        {
+            CompletionCallback callback;
+            if (callbackOutputType == typeof(NoValue))
+            {
+                callback = CompletionCallback.Create(
+                    (INotifications service, OnCompleteRequest<NoValue, string> input) => service.OnCompleteNoValue(input),
+                    "notifications",
+                    "void-context");
+            }
+            else if (callbackOutputType == typeof(ValueTuple))
+            {
+                callback = CompletionCallback.Create(
+                    (INotifications service, OnCompleteRequest<ValueTuple, string> input) => service.OnCompleteTuple(input),
+                    "notifications",
+                    "void-context");
+            }
+            else
+            {
+                callback = CompletionCallback.Create(
+                    (INotifications service, OnCompleteRequest<RawValue, string> input) => service.OnCompleteRaw(input),
+                    "notifications",
+                    "void-context");
+            }
+            var codec = new RecordingCodec();
+            var client = TemporalClient.CreateLazy(new("localhost:1")
+            {
+                Namespace = "callbacks",
+                DataConverter = DataConverter.Default with { PayloadCodec = codec },
+            });
+            var options = new NexusOperationOptions("source-id")
+            {
+                CompletionCallbacks = new[] { callback },
+            };
+            var nexusClient = client.CreateNexusClient<ISource>("source-endpoint");
+
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => byName
+                ? nexusClient.StartNexusOperationAsync(nameof(ISource.DoSomething), null, options)
+                : nexusClient.StartNexusOperationAsync(service => service.DoSomething(), options));
+
+            Assert.Equal("Stopped before RPC", exception.Message);
+            Assert.Equal("\"void-context\"", Assert.Single(codec.Payloads).Data.ToStringUtf8());
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task StartNexusOperationAsync_VoidOperation_RejectsValueCallback(bool byName)
+        {
+            var callback = CompletionCallback.Create(
+                (INotifications service, OnCompleteRequest<string, string> input) => service.OnComplete(input),
+                "notifications",
+                "mismatched-context");
+            var codec = new RecordingCodec();
+            var client = TemporalClient.CreateLazy(new("localhost:1")
+            {
+                Namespace = "callbacks",
+                DataConverter = DataConverter.Default with { PayloadCodec = codec },
+            });
+            var options = new NexusOperationOptions("source-id")
+            {
+                CompletionCallbacks = new[] { callback },
+            };
+            var nexusClient = client.CreateNexusClient<ISource>("source-endpoint");
+
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() => byName
+                ? nexusClient.StartNexusOperationAsync(nameof(ISource.DoSomething), null, options)
+                : nexusClient.StartNexusOperationAsync(service => service.DoSomething(), options));
+
+            Assert.Contains("Notifications.OnComplete", exception.Message);
+            Assert.Contains(typeof(string).ToString(), exception.Message);
+            Assert.Empty(codec.Payloads);
+        }
+
+        [Theory]
         [InlineData(false)]
         [InlineData(true)]
         public async Task StartNexusOperationAsync_NullCallback_RejectsBeforeEncoding(bool intercept)
@@ -622,6 +704,9 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
 
             [NexusOperation]
             string Echo();
+
+            [NexusOperation]
+            void DoSomething();
         }
 
         [NexusService("Notifications")]
@@ -632,6 +717,12 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
 
             [NexusOperation]
             OnCompleteResponse OnCompleteRaw(OnCompleteRequest<RawValue, string> input);
+
+            [NexusOperation]
+            OnCompleteResponse OnCompleteNoValue(OnCompleteRequest<NoValue, string> input);
+
+            [NexusOperation]
+            OnCompleteResponse OnCompleteTuple(OnCompleteRequest<ValueTuple, string> input);
         }
 
         private sealed class RecordingCodec :
