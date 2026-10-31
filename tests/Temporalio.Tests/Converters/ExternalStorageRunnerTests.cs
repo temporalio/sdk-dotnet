@@ -382,7 +382,9 @@ public class ExternalStorageRunnerTests : TestBase
 
     private static ExternalStorageRunner Runner(ExternalStorage storage) =>
         new ExternalStorageRunner(
-            storage, new PassThroughLimiter<Payload>(), new PassThroughLimiter<StorageDriverClaim>());
+            storage,
+            UnboundedStorageDriverLimiter<Payload>.Instance,
+            UnboundedStorageDriverLimiter<StorageDriverClaim>.Instance);
 
     private static ExternalStorage Storage(IStorageDriver driver, int threshold) =>
         new ExternalStorage(driver) { PayloadSizeThreshold = threshold };
@@ -511,13 +513,6 @@ public class ExternalStorageRunnerTests : TestBase
             IReadOnlyCollection<StorageDriverClaim> claims,
             CancellationToken cancellationToken) =>
             retrieve(cancellationToken);
-    }
-
-    private sealed class PassThroughLimiter<TItem> : IStorageDriverLimiter<TItem>
-    {
-        public Task<TResult> RunAsync<TResult>(
-            TItem item, Func<Task<TResult>> operation, CancellationToken cancellationToken) =>
-            operation();
     }
 
     private sealed class MiscountDriver : IStorageDriver

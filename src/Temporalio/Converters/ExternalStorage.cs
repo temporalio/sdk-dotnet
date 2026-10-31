@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Temporalio.Converters
 {
@@ -14,7 +13,7 @@ namespace Temporalio.Converters
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    internal sealed class ExternalStorage
+    public sealed class ExternalStorage
     {
         private const int DefaultPayloadSizeThreshold = 256 * 1024;
 
@@ -157,19 +156,11 @@ namespace Temporalio.Converters
         /// suitable for most deployments.
         /// </summary>
         /// <exception cref="ArgumentNullException">If set to null.</exception>
-        public ExternalStorageConcurrency Concurrency
+        internal ExternalStorageConcurrency Concurrency
         {
             get => concurrency;
             init => concurrency = value ??
                 throw new ArgumentNullException(nameof(value));
         }
-
-        /// <summary>
-        /// Get the driver registered under the given name.
-        /// </summary>
-        /// <param name="name">Driver name recorded in the payload reference.</param>
-        /// <returns>The driver, or null if no driver is registered under that name.</returns>
-        public IStorageDriver? GetDriver(string name) =>
-            Drivers.FirstOrDefault(driver => driver.Name == name);
     }
 }

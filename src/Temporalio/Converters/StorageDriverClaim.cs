@@ -14,7 +14,7 @@ namespace Temporalio.Converters
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    internal sealed record StorageDriverClaim(IReadOnlyDictionary<string, string> ClaimData)
+    public sealed record StorageDriverClaim(IReadOnlyDictionary<string, string> ClaimData)
     {
         /// <summary>
         /// Whether this claim identifies the same stored payload as another.
