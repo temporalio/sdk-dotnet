@@ -22,6 +22,7 @@ namespace Temporalio.Bridge
         /// <param name="loggerFactory">Logger factory, used instead of the one in options by
         ///   anything in the bridge that needs it, since it's guaranteed to be set.</param>
         /// <param name="clientPlugins">Client plugins to include in heartbeat.</param>
+        /// <param name="storageDriverTypes">External storage driver types to report in heartbeat.</param>
         /// <exception cref="Exception">
         /// If any of the options are invalid including improperly defined workflows/activities.
         /// </exception>
@@ -30,8 +31,9 @@ namespace Temporalio.Bridge
             string @namespace,
             Temporalio.Worker.TemporalWorkerOptions options,
             ILoggerFactory loggerFactory,
-            IReadOnlyCollection<Temporalio.Client.ITemporalClientPlugin>? clientPlugins = null)
-            : this(client.Runtime, CreateWorkerHandle(client, @namespace, options, loggerFactory, clientPlugins))
+            IReadOnlyCollection<Temporalio.Client.ITemporalClientPlugin>? clientPlugins = null,
+            IReadOnlyCollection<string>? storageDriverTypes = null)
+            : this(client.Runtime, CreateWorkerHandle(client, @namespace, options, loggerFactory, clientPlugins, storageDriverTypes))
         {
         }
 
@@ -438,13 +440,14 @@ namespace Temporalio.Bridge
             string @namespace,
             Temporalio.Worker.TemporalWorkerOptions options,
             ILoggerFactory loggerFactory,
-            IReadOnlyCollection<Temporalio.Client.ITemporalClientPlugin>? clientPlugins)
+            IReadOnlyCollection<Temporalio.Client.ITemporalClientPlugin>? clientPlugins,
+            IReadOnlyCollection<string>? storageDriverTypes)
         {
             using Scope scope = new();
 
             var workerOrFail = Interop.Methods.temporal_core_worker_new(
                 scope.Pointer(client.Handle),
-                scope.Pointer(options.ToInteropOptions(scope, @namespace, loggerFactory, clientPlugins)));
+                scope.Pointer(options.ToInteropOptions(scope, @namespace, loggerFactory, clientPlugins, storageDriverTypes)));
 
             if (workerOrFail.fail != null)
             {
