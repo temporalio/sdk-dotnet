@@ -275,6 +275,18 @@ namespace Temporalio.Worker
                 }
             }
 
+            // External storage is independent of the codec, so this runs even when there is none.
+            try
+            {
+                await externalStorage.StoreAsync(
+                    PayloadVisitors.VisitAsync, comp, null, CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Failed storing completion payloads on workflow with run ID {RunId}", act.RunId);
+                comp.Failed = new() { Failure_ = new() { Message = $"Failed storing completion payloads: {e}" } };
+            }
+
             // Send completion
             logger.LogTrace("Sending workflow completion: {Completion}", comp);
             try
