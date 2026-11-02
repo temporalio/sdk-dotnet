@@ -71,7 +71,7 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
             {
                 DevServerOptions = new()
                 {
-                    DownloadVersion = "v1.9.2-nexus-handler-callbacks",
+                    DownloadVersion = "v1.9.3-nexus-serialization-context",
                     ExtraArgs = new List<string>
                     {
                         // Disable search attribute cache

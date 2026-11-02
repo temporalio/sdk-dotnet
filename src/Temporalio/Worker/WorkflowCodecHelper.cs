@@ -238,7 +238,7 @@ namespace Temporalio.Worker
                     }
                     break;
                 case WorkflowCommand.VariantOneofCase.CompleteWorkflowExecution:
-                    codec = context.CodecWorkflowContext;
+                    codec = ResultCodec(context);
                     if (cmd.CompleteWorkflowExecution.Result != null && codec != null)
                     {
                         await PayloadCodecHelper.EncodeAsync(
@@ -258,7 +258,7 @@ namespace Temporalio.Worker
                     }
                     break;
                 case WorkflowCommand.VariantOneofCase.FailWorkflowExecution:
-                    codec = context.CodecWorkflowContext;
+                    codec = ResultCodec(context);
                     if (cmd.FailWorkflowExecution.Failure != null && codec != null)
                     {
                         await codec.EncodeFailureAsync(
@@ -523,6 +523,13 @@ namespace Temporalio.Worker
                 }
             }
         }
+
+        // A workflow started by a Nexus operation handler returns its result and closing failure
+        // to the Nexus caller, which decodes them with the handler's Nexus context
+        private static IPayloadCodec? ResultCodec(WorkflowCodecContext context) =>
+            context.CodecNoContext is IWithSerializationContext<IPayloadCodec> withContext &&
+                context.Instance?.NexusSerializationContext is { } nexusContext ?
+                withContext.WithSerializationContext(nexusContext) : context.CodecWorkflowContext;
 
         internal record WorkflowCodecContext(
             IPayloadCodec? CodecNoContext,

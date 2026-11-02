@@ -102,6 +102,18 @@ namespace Temporalio.Nexus
         internal static AsyncLocal<NexusOperationExecutionContext?> AsyncLocalCurrent { get; } = new();
 
         /// <summary>
+        /// Gets the serialization context to send on workflow and activity start requests made by
+        /// the current Nexus start operation handler, or null outside of one.
+        /// </summary>
+        /// <remarks>
+        /// Executions started by the handler return their result and failure to the Nexus caller,
+        /// so the server propagates this context to the worker and to clients reading them.
+        /// </remarks>
+        internal static Api.Nexus.V1.PropagatedSerializationContext? CurrentPropagatedSerializationContext =>
+            AsyncLocalCurrent.Value is { HandlerContext: OperationStartContext } ctx ?
+                ctx.SerializationContext.ToProto() : null;
+
+        /// <summary>
         /// Gets the Nexus context.
         /// </summary>
         internal OperationContext HandlerContext { get; private init; }

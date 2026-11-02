@@ -104,6 +104,11 @@ namespace Temporalio.Client
                     throw new InvalidOperationException("Event set unexpectedly empty");
                 }
                 histRunId = null;
+                // A workflow started by a Nexus operation handler encodes its result and closing
+                // failure with the handler's Nexus context, which the server returns with the run
+                var closeDataConverter = page.NexusSerializationContext is { } nexusContext ?
+                    Client.Options.DataConverter.WithSerializationContext(nexusContext) :
+                    dataConverter;
                 foreach (var evt in page.Events)
                 {
                     switch (evt.AttributesCase)
@@ -126,9 +131,9 @@ namespace Temporalio.Client
                             {
                                 throw new InvalidOperationException("No result present");
                             }
-                            return await dataConverter.ToSingleValueAsync<TResult>(
+                            return await closeDataConverter.ToSingleValueAsync<TResult>(
                                 compAttr.Result.Payloads_,
-                                ExternalStorageContext.For(dataConverter)).ConfigureAwait(false);
+                                ExternalStorageContext.For(closeDataConverter)).ConfigureAwait(false);
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionFailedEventAttributes:
                             var failAttr = evt.WorkflowExecutionFailedEventAttributes;
                             if (!string.IsNullOrEmpty(failAttr.NewExecutionRunId) && followRuns)
@@ -137,9 +142,9 @@ namespace Temporalio.Client
                                 break;
                             }
                             throw new WorkflowFailedException(
-                                await dataConverter.ToExceptionAsync(
+                                await closeDataConverter.ToExceptionAsync(
                                     failAttr.Failure,
-                                    ExternalStorageContext.For(dataConverter)).ConfigureAwait(false));
+                                    ExternalStorageContext.For(closeDataConverter)).ConfigureAwait(false));
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionCanceledEventAttributes:
                             var cancelAttr = evt.WorkflowExecutionCanceledEventAttributes;
                             throw new WorkflowFailedException(new CanceledFailureException(
@@ -149,7 +154,7 @@ namespace Temporalio.Client
                                     CanceledFailureInfo = new() { Details = cancelAttr.Details },
                                 },
                                 null,
-                                dataConverter.PayloadConverter));
+                                closeDataConverter.PayloadConverter));
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionTerminatedEventAttributes:
                             var termAttr = evt.WorkflowExecutionTerminatedEventAttributes;
                             var message = string.IsNullOrEmpty(termAttr.Reason) ?

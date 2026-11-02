@@ -76,6 +76,23 @@ namespace Temporalio.Activities
         public bool IsWorkflowActivity => WorkflowId != null;
 
         /// <summary>
+        /// Gets the serialization context of the Nexus operation handler that started this
+        /// activity, if any.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Only set for standalone activities. The activity's result, failure, and heartbeat details
+        /// are encoded with this context, because they are returned to the Nexus caller. To complete
+        /// the activity asynchronously, store this context with the task token and pass it to
+        /// <see cref="Client.AsyncActivityHandle.WithSerializationContext"/>.
+        /// </para>
+        /// <para>
+        /// WARNING: This API is experimental and may change in the future.
+        /// </para>
+        /// </remarks>
+        public ISerializationContext.Nexus? NexusSerializationContext { get; init; }
+
+        /// <summary>
         /// Gets the value that is set on
         /// <see cref="Microsoft.Extensions.Logging.ILogger.BeginScope" /> before this activity is
         /// started.
