@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using NexusRpc;
+using NexusRpc.Handlers;
 using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Client.Interceptors;
 using Temporalio.Converters;
@@ -60,6 +61,25 @@ namespace Temporalio.Client
             {
                 try
                 {
+                    if (input.Options.CompletionCallbacks is { } callbacks)
+                    {
+                        foreach (var callback in callbacks)
+                        {
+                            if (callback == null)
+                            {
+                                throw new ArgumentException("Completion callbacks must not contain null", nameof(input));
+                            }
+                            if (callback.OutputType != typeof(TResult) &&
+                                callback.OutputType != typeof(RawValue) &&
+                                !(NoValue.IsVoidType(typeof(TResult)) && NoValue.IsVoidType(callback.OutputType)))
+                            {
+                                throw new ArgumentException(
+                                    $"Callback {callback.Service}.{callback.Operation} expects {callback.OutputType}, " +
+                                    $"but the operation result type is {typeof(TResult)}",
+                                    nameof(input));
+                            }
+                        }
+                    }
                     var serializationContext = new ISerializationContext.Nexus(
                         Endpoint: input.Endpoint,
                         Service: input.Service,
@@ -98,6 +118,14 @@ namespace Temporalio.Client
                     if (input.Headers != null)
                     {
                         req.NexusHeader.Add(input.Headers);
+                    }
+                    if (input.Options.CompletionCallbacks is { } completionCallbacks)
+                    {
+                        foreach (var callback in completionCallbacks)
+                        {
+                            req.CompletionCallbacks.Add(
+                                await callback.ToProtoAsync(dataConverter).ConfigureAwait(false));
+                        }
                     }
 
                     var resp = await Client.Connection.WorkflowService.StartNexusOperationExecutionAsync(
