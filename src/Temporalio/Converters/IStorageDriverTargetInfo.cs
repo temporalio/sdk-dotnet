@@ -13,7 +13,7 @@ namespace Temporalio.Converters
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    internal interface IStorageDriverTargetInfo
+    public interface IStorageDriverTargetInfo
     {
         /// <summary>
         /// Target for payloads stored on behalf of a workflow. Also used for workflow activities,

@@ -3,7 +3,6 @@ namespace Temporalio.Converters
     /// <summary>
     /// Context given to <see cref="IStorageDriver.RetrieveAsync" />.
     /// </summary>
-    /// <param name="Limiter">Limiter for this driver's retrieve requests.</param>
     /// <remarks>
     /// This deliberately carries no target. A payload must be retrievable from its
     /// <see cref="StorageDriverClaim" /> alone, since the same payload can be read from a different
@@ -12,10 +11,13 @@ namespace Temporalio.Converters
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    /// <remarks>
-    /// WARNING: This constructor may have required properties added. Do not rely on the exact
-    /// constructor, only use "with" clauses.
-    /// </remarks>
-    internal sealed record StorageDriverRetrieveContext(
-        IStorageDriverLimiter<StorageDriverClaim> Limiter);
+    public sealed class StorageDriverRetrieveContext
+    {
+        /// <summary>
+        /// Gets the limiter each retrieve request is run through. Internal until concurrency
+        /// limiting is part of the public API.
+        /// </summary>
+        internal IStorageDriverLimiter<StorageDriverClaim> Limiter { get; init; } =
+            UnboundedStorageDriverLimiter<StorageDriverClaim>.Instance;
+    }
 }

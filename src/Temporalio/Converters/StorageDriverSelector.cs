@@ -13,6 +13,6 @@ namespace Temporalio.Converters
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    internal delegate IStorageDriver? StorageDriverSelector(
+    public delegate IStorageDriver? StorageDriverSelector(
         StorageDriverSelectContext context, Payload payload);
 }

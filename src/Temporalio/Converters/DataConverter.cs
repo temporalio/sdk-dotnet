@@ -25,7 +25,7 @@ namespace Temporalio.Converters
         /// <remarks>
         /// WARNING: This API is experimental and may change in the future.
         /// </remarks>
-        internal ExternalStorage? ExternalStorage { get; init; }
+        public ExternalStorage? ExternalStorage { get; init; }
 
         /// <inheritdoc/>
         public virtual DataConverter WithSerializationContext(ISerializationContext context)
