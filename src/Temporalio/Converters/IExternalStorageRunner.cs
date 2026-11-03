@@ -8,10 +8,40 @@ using Temporalio.Worker;
 namespace Temporalio.Converters
 {
     /// <summary>
-    /// Retrieves external storage references from received payloads.
+    /// Offloads large payloads to external storage and retrieves references back.
     /// </summary>
     internal interface IExternalStorageRunner
     {
+        /// <summary>
+        /// Store the payloads in a message by visiting its payloads.
+        /// </summary>
+        /// <typeparam name="T">The message type being visited.</typeparam>
+        /// <param name="visit">
+        /// The generated <c>PayloadVisitors.VisitAsync</c> overload for <typeparamref name="T"/>,
+        /// passed as a method group.
+        /// </param>
+        /// <param name="message">The message to visit.</param>
+        /// <param name="target">The execution the payloads are stored for, when there is one.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>A task that completes when the message has been visited.</returns>
+        Task StoreAsync<T>(
+            Func<T, PayloadVisitors.PayloadVisitor, PayloadVisitors.PayloadsVisitor, Task> visit,
+            T message,
+            IStorageDriverTargetInfo? target,
+            CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Store the given payloads.
+        /// </summary>
+        /// <param name="payloads">Payloads of one field.</param>
+        /// <param name="target">The execution the payloads are stored for, when there is one.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>The resulting payloads.</returns>
+        Task<IReadOnlyCollection<Payload>> StoreAsync(
+            IReadOnlyCollection<Payload> payloads,
+            IStorageDriverTargetInfo? target,
+            CancellationToken cancellationToken);
+
         /// <summary>
         /// Retrieve the references in a message by visiting its payloads.
         /// </summary>

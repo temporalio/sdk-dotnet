@@ -71,6 +71,17 @@ namespace Temporalio.Converters
                 payload => RetrieveAsync(payload, cancellationToken),
                 payloads => RetrieveAsync(payloads, cancellationToken));
 
+        /// <inheritdoc />
+        public Task StoreAsync<T>(
+            Func<T, PayloadVisitors.PayloadVisitor, PayloadVisitors.PayloadsVisitor, Task> visit,
+            T message,
+            IStorageDriverTargetInfo? target,
+            CancellationToken cancellationToken) =>
+            visit(
+                message,
+                payload => StoreAsync(payload, target, cancellationToken),
+                payloads => StoreAsync(payloads, target, cancellationToken));
+
         /// <summary>
         /// Replace every payload at or above the configured size threshold with a reference,
         /// preserving order. Payloads below the threshold, or that the selector declines, are left
@@ -344,6 +355,19 @@ namespace Temporalio.Converters
 
                 return Task.FromResult(payloads);
             }
+
+            public Task StoreAsync<T>(
+                Func<T, PayloadVisitors.PayloadVisitor, PayloadVisitors.PayloadsVisitor, Task> visit,
+                T message,
+                IStorageDriverTargetInfo? target,
+                CancellationToken cancellationToken) =>
+                Task.CompletedTask;
+
+            public Task<IReadOnlyCollection<Payload>> StoreAsync(
+                IReadOnlyCollection<Payload> payloads,
+                IStorageDriverTargetInfo? target,
+                CancellationToken cancellationToken) =>
+                Task.FromResult(payloads);
 
             private static void RejectIfReference(Payload payload)
             {

@@ -32,7 +32,8 @@ namespace Temporalio.Converters
                 payloads = await converter.PayloadCodec.EncodeAsync(
                     payloads.ToList()).ConfigureAwait(false);
             }
-            return payloads.ToList();
+            return await ExternalStorageRunner.Create(converter.ExternalStorage)
+                .StoreAsync(payloads.ToList(), null, CancellationToken.None).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -50,7 +51,9 @@ namespace Temporalio.Converters
                 payload = (await converter.PayloadCodec.EncodeAsync(
                     new Payload[] { payload }).ConfigureAwait(false)).First();
             }
-            return payload;
+            return (await ExternalStorageRunner.Create(converter.ExternalStorage)
+                .StoreAsync(new[] { payload }, null, CancellationToken.None)
+                .ConfigureAwait(false)).First();
         }
 
         /// <summary>
@@ -160,6 +163,9 @@ namespace Temporalio.Converters
             {
                 await converter.PayloadCodec.EncodeFailureAsync(failure).ConfigureAwait(false);
             }
+            await ExternalStorageRunner.Create(converter.ExternalStorage)
+                .StoreAsync(PayloadVisitors.VisitAsync, failure, null, CancellationToken.None)
+                .ConfigureAwait(false);
             return failure;
         }
 
