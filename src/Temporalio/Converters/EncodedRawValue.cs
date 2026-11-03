@@ -12,9 +12,11 @@ namespace Temporalio.Converters
     public record EncodedRawValue(DataConverter DataConverter, Payload Payload) : IEncodedRawValue
     {
         /// <inheritdoc />
-        public Task<T> ToValueAsync<T>() => DataConverter.ToValueAsync<T>(Payload);
+        public Task<T> ToValueAsync<T>() =>
+            DataConverter.ToValueAsync<T>(Payload, ExternalStorageContext.For(DataConverter));
 
         /// <inheritdoc />
-        public Task<object?> ToValueAsync(Type type) => DataConverter.ToValueAsync(Payload, type);
+        public Task<object?> ToValueAsync(Type type) =>
+            DataConverter.ToValueAsync(Payload, type, ExternalStorageContext.For(DataConverter));
     }
 }

@@ -21,7 +21,9 @@ namespace Temporalio.Converters
         /// passed as a method group.
         /// </param>
         /// <param name="message">The message to visit.</param>
-        /// <param name="target">The execution the payloads are stored for, when there is one.</param>
+        /// <param name="target">
+        /// Execution the stored payloads are offloaded on behalf of, or null when none is known.
+        /// </param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>A task that completes when the message has been visited.</returns>
         Task StoreAsync<T>(
@@ -34,7 +36,9 @@ namespace Temporalio.Converters
         /// Store the given payloads.
         /// </summary>
         /// <param name="payloads">Payloads of one field.</param>
-        /// <param name="target">The execution the payloads are stored for, when there is one.</param>
+        /// <param name="target">
+        /// Execution the stored payloads are offloaded on behalf of, or null when none is known.
+        /// </param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>The resulting payloads.</returns>
         Task<IReadOnlyCollection<Payload>> StoreAsync(

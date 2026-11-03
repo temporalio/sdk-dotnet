@@ -124,6 +124,8 @@ namespace Temporalio.Activities
         /// <param name="index">Index of the value.</param>
         /// <returns>Converted value.</returns>
         public Task<T> HeartbeatDetailAtAsync<T>(int index) =>
-            DataConverter.ToValueAsync<T>(HeartbeatDetails.ElementAt(index));
+            DataConverter.ToValueAsync<T>(
+                HeartbeatDetails.ElementAt(index),
+                Converters.ExternalStorageContext.For(DataConverter));
     }
 }

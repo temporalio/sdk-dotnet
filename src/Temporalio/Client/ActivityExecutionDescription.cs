@@ -71,9 +71,10 @@ namespace Temporalio.Client
             StartToCloseTimeout = info.StartToCloseTimeout?.ToTimeSpan();
             TotalHeartbeatCount = info.TotalHeartbeatCount;
 #pragma warning disable VSTHRD011 // This should not be able to deadlock
-            userMetadata = new(() => dataConverter.FromUserMetadataAsync(info.UserMetadata));
-            lastFailure = new(async () => info.LastFailure == null ? null : await dataConverter.ToExceptionAsync(info.LastFailure.Clone()).ConfigureAwait(false));
-            outcomeFailure = new(async () => resp.Outcome?.Failure == null ? null : await dataConverter.ToExceptionAsync(resp.Outcome.Failure.Clone()).ConfigureAwait(false));
+            userMetadata = new(() => dataConverter.FromUserMetadataAsync(
+                info.UserMetadata, ExternalStorageContext.For(dataConverter)));
+            lastFailure = new(async () => info.LastFailure == null ? null : await dataConverter.ToExceptionAsync(info.LastFailure.Clone(), ExternalStorageContext.For(dataConverter)).ConfigureAwait(false));
+            outcomeFailure = new(async () => resp.Outcome?.Failure == null ? null : await dataConverter.ToExceptionAsync(resp.Outcome.Failure.Clone(), ExternalStorageContext.For(dataConverter)).ConfigureAwait(false));
 #pragma warning restore VSTHRD011
         }
 
@@ -302,7 +303,8 @@ namespace Temporalio.Client
             {
                 return default;
             }
-            return await dataConverter.ToSingleValueAsync<T>(RawOutcome!.Result.Payloads_).ConfigureAwait(false);
+            return await dataConverter.ToSingleValueAsync<T>(
+                RawOutcome!.Result.Payloads_, ExternalStorageContext.For(dataConverter)).ConfigureAwait(false);
         }
     }
 }

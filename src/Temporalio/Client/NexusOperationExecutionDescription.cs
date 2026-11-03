@@ -56,7 +56,8 @@ namespace Temporalio.Client
             ScheduleToCloseTimeout = info.ScheduleToCloseTimeout?.ToTimeSpan();
             State = info.State;
 #pragma warning disable VSTHRD011 // This should not be able to deadlock
-            userMetadata = new(() => dataConverter.FromUserMetadataAsync(info.UserMetadata));
+            userMetadata = new(() => dataConverter.FromUserMetadataAsync(
+                info.UserMetadata, ExternalStorageContext.For(dataConverter)));
 #pragma warning restore VSTHRD011
         }
 

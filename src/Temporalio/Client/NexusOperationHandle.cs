@@ -109,10 +109,12 @@ namespace Temporalio.Client
                             return default!;
                         }
                         return await dataConverter.ToSingleValueAsync<TResult>(
-                            new[] { resp.Result }).ConfigureAwait(false);
+                            new[] { resp.Result },
+                            ExternalStorageContext.For(dataConverter)).ConfigureAwait(false);
                     case PollNexusOperationExecutionResponse.OutcomeOneofCase.Failure:
                         var failure = await dataConverter.ToExceptionAsync(
-                            resp.Failure).ConfigureAwait(false);
+                            resp.Failure,
+                            ExternalStorageContext.For(dataConverter)).ConfigureAwait(false);
                         throw new NexusOperationFailedException(Id, resp.RunId, failure);
                     default:
                         throw new InvalidOperationException(

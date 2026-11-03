@@ -86,6 +86,9 @@ namespace Temporalio.Client
                         Operation: input.Operation);
                     var dataConverter = Client.Options.DataConverter.WithSerializationContext(
                         serializationContext);
+                    // Nexus has no storage target type yet, so the offload below is untargeted; the
+                    // endpoint, service, and operation would form the target once that lands.
+                    var storage = ExternalStorageContext.For(dataConverter, target: null);
 
                     var req = new StartNexusOperationExecutionRequest()
                     {
@@ -101,11 +104,11 @@ namespace Temporalio.Client
                         IdReusePolicy = input.Options.IdReusePolicy,
                         IdConflictPolicy = input.Options.IdConflictPolicy,
                         UserMetadata = await dataConverter.ToUserMetadataAsync(
-                            input.Options.Summary, null).ConfigureAwait(false),
+                            input.Options.Summary, null, storage).ConfigureAwait(false),
                     };
                     if (input.Arg != null)
                     {
-                        req.Input = await dataConverter.ToPayloadAsync(input.Arg).ConfigureAwait(false);
+                        req.Input = await dataConverter.ToPayloadAsync(input.Arg, storage).ConfigureAwait(false);
                     }
                     if (input.Options.ScheduleToCloseTimeout is TimeSpan s2c)
                     {
@@ -124,7 +127,7 @@ namespace Temporalio.Client
                         foreach (var callback in completionCallbacks)
                         {
                             req.CompletionCallbacks.Add(
-                                await callback.ToProtoAsync(dataConverter).ConfigureAwait(false));
+                                await callback.ToProtoAsync(dataConverter, storage).ConfigureAwait(false));
                         }
                     }
 

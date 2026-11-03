@@ -54,9 +54,9 @@ namespace Temporalio.Converters
         /// </param>
         /// <returns>A runner over the given storage, never null.</returns>
         public static IExternalStorageRunner Create(ExternalStorage? storage) =>
-            storage is null ?
-                UnconfiguredRunner.Instance :
-                new ExternalStorageRunner(
+            storage is null
+                ? UnconfiguredRunner.Instance
+                : new ExternalStorageRunner(
                     storage,
                     UnboundedStorageDriverLimiter<Payload>.Instance,
                     UnboundedStorageDriverLimiter<StorageDriverClaim>.Instance);
@@ -88,7 +88,10 @@ namespace Temporalio.Converters
         /// as they are.
         /// </summary>
         /// <param name="payloads">Payloads of one field.</param>
-        /// <param name="target">The execution the payloads are stored for, when there is one.</param>
+        /// <param name="target">
+        /// Execution the stored payloads are offloaded on behalf of, carried on the store contexts
+        /// handed to drivers. Null when no target is known.
+        /// </param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>The payloads with each stored one replaced by a reference.</returns>
         public async Task<IReadOnlyCollection<Payload>> StoreAsync(
@@ -166,7 +169,10 @@ namespace Temporalio.Converters
         /// Store a single payload, replacing its contents in place if it is stored.
         /// </summary>
         /// <param name="payload">Payload to store, modified in place.</param>
-        /// <param name="target">The execution the payload is stored for, when there is one.</param>
+        /// <param name="target">
+        /// Execution the stored payload is offloaded on behalf of, carried on the store contexts
+        /// handed to drivers. Null when no target is known.
+        /// </param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>A task that completes when the payload is stored.</returns>
         public async Task StoreAsync(

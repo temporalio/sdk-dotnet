@@ -285,9 +285,11 @@ namespace Temporalio.Worker
                     ? new CanceledFailureException(e.Message, e.InnerException)
                     : new ApplicationFailureException(
                         e.Message, e.InnerException, "OperationError", nonRetryable: true);
-                var opFailure = await worker.Client.Options.DataConverter
-                    .WithSerializationContext(executionContext.SerializationContext)
-                    .ToFailureAsync(convertedException).ConfigureAwait(false);
+                var failureConverter = worker.Client.Options.DataConverter
+                    .WithSerializationContext(executionContext.SerializationContext);
+                var opFailure = await failureConverter.ToFailureAsync(
+                    convertedException,
+                    Converters.ExternalStorageContext.For(failureConverter)).ConfigureAwait(false);
                 return new() { Failure = opFailure };
             }
             catch (Exception e)
@@ -388,7 +390,11 @@ namespace Temporalio.Worker
                 {
                     dataConverter = dataConverter.WithSerializationContext(failureContext);
                 }
-                var failure = await dataConverter.ToFailureAsync(handlerException).ConfigureAwait(false);
+                // Nexus has no storage target type yet, so the failure offload is untargeted; the
+                // endpoint, service, and operation would form the target once that lands.
+                var failure = await dataConverter.ToFailureAsync(
+                    handlerException,
+                    Converters.ExternalStorageContext.For(dataConverter)).ConfigureAwait(false);
                 return new()
                 {
                     TaskToken = task.TaskToken,
