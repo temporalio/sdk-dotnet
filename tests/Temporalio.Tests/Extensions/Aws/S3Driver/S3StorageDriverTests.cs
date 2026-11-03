@@ -171,10 +171,10 @@ public class S3StorageDriverTests
         var retrieveLimiter = new RecordingLimiter<StorageDriverClaim>();
 
         var claims = await driver.StoreAsync(
-            new(WorkflowTarget, storeLimiter),
+            new() { Target = WorkflowTarget, Limiter = storeLimiter },
             new[] { NewPayload("one"), NewPayload("two"), NewPayload("one") },
             default);
-        await driver.RetrieveAsync(new(retrieveLimiter), claims, default);
+        await driver.RetrieveAsync(new() { Limiter = retrieveLimiter }, claims, default);
 
         Assert.Equal(
             new[] { NewPayload("one"), NewPayload("two") },
@@ -189,10 +189,10 @@ public class S3StorageDriverTests
         var driver = new S3StorageDriver(client, "my-bucket");
 
         var claims = await driver.StoreAsync(
-            new(null, new PermitFlaggingLimiter<Payload>()),
+            new() { Limiter = new PermitFlaggingLimiter<Payload>() },
             new[] { NewPayload("one"), NewPayload("two") },
             default);
-        await driver.RetrieveAsync(new(new PermitFlaggingLimiter<StorageDriverClaim>()), claims, default);
+        await driver.RetrieveAsync(new() { Limiter = new PermitFlaggingLimiter<StorageDriverClaim>() }, claims, default);
 
         Assert.Equal(6, client.RequestCount);
         Assert.Equal(0, client.RequestsWithoutPermitCount);
@@ -208,7 +208,7 @@ public class S3StorageDriverTests
 
         // The client holds requests until two are in flight, so a driver that did not fan out
         // would never finish
-        await driver.StoreAsync(new(null, limiter), payloads, default).WaitAsync(TimeSpan.FromSeconds(10));
+        await driver.StoreAsync(new() { Limiter = limiter }, payloads, default).WaitAsync(TimeSpan.FromSeconds(10));
 
         Assert.Equal(2, client.MaxInFlight);
         Assert.Equal(4, client.RequestCount);
@@ -326,10 +326,10 @@ public class S3StorageDriverTests
         Convert.ToHexStringLower(SHA256.HashData(NewPayload(data).ToByteArray()));
 
     private static StorageDriverStoreContext StoreContext(IStorageDriverTargetInfo? target = null) =>
-        new(target, new RecordingLimiter<Payload>());
+        new() { Target = target, Limiter = new RecordingLimiter<Payload>() };
 
     private static StorageDriverRetrieveContext RetrieveContext() =>
-        new(new RecordingLimiter<StorageDriverClaim>());
+        new() { Limiter = new RecordingLimiter<StorageDriverClaim>() };
 
     private static async Task<string> StoreKeyAsync(IStorageDriverTargetInfo? target, string data)
     {
