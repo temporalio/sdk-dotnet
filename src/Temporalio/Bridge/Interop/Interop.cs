@@ -1231,6 +1231,24 @@ namespace Temporalio.Bridge.Interop
         public TemporalCorePollerBehaviorAutoscaling* autoscaling;
     }
 
+    internal partial struct TemporalCorePluginInfo
+    {
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef name;
+
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef version;
+    }
+
+    internal unsafe partial struct TemporalCorePluginInfoArray
+    {
+        [NativeTypeName("const struct TemporalCorePluginInfo *")]
+        public TemporalCorePluginInfo* data;
+
+        [NativeTypeName("size_t")]
+        public UIntPtr size;
+    }
+
     internal partial struct TemporalCoreWorkerOptions
     {
         [NativeTypeName("struct TemporalCoreByteArrayRef")]
@@ -1287,8 +1305,8 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct TemporalCoreByteArrayRefArray")]
         public TemporalCoreByteArrayRefArray nondeterminism_as_workflow_fail_for_types;
 
-        [NativeTypeName("struct TemporalCoreByteArrayRefArray")]
-        public TemporalCoreByteArrayRefArray plugins;
+        [NativeTypeName("struct TemporalCorePluginInfoArray")]
+        public TemporalCorePluginInfoArray plugins;
 
         [NativeTypeName("struct TemporalCoreByteArrayRefArray")]
         public TemporalCoreByteArrayRefArray storage_drivers;
