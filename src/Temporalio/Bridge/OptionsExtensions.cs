@@ -708,15 +708,15 @@ namespace Temporalio.Bridge
             // struct is passed with both pointers null, which the core bridge treats as "unset":
             // it applies the default behavior and marks the poller eligible for automatic
             // enrollment into poller autoscaling.
-            if (options.WorkflowTaskPollerBehavior is null && options.MaxConcurrentWorkflowTaskPolls is { } wfPolls)
+            if (options.WorkflowTaskPollerBehavior is null && options.MaxConcurrentWorkflowTaskPollsIfSet is { } wfPolls)
             {
                 options.WorkflowTaskPollerBehavior = new PollerBehavior.SimpleMaximum(wfPolls);
             }
-            if (options.ActivityTaskPollerBehavior is null && options.MaxConcurrentActivityTaskPolls is { } actPolls)
+            if (options.ActivityTaskPollerBehavior is null && options.MaxConcurrentActivityTaskPollsIfSet is { } actPolls)
             {
                 options.ActivityTaskPollerBehavior = new PollerBehavior.SimpleMaximum(actPolls);
             }
-            if (options.NexusTaskPollerBehavior is null && options.MaxConcurrentNexusTaskPolls is { } nexusPolls)
+            if (options.NexusTaskPollerBehavior is null && options.MaxConcurrentNexusTaskPollsIfSet is { } nexusPolls)
             {
                 options.NexusTaskPollerBehavior = new PollerBehavior.SimpleMaximum(nexusPolls);
             }

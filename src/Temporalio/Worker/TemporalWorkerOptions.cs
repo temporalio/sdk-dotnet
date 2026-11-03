@@ -28,6 +28,11 @@ namespace Temporalio.Worker
         private IList<WorkflowDefinition> workflows = new List<WorkflowDefinition>();
         private IList<ServiceHandlerInstance> nexusServices = new List<ServiceHandlerInstance>();
 
+        // Null until set, so an unset poll count can be told apart from an explicit 5.
+        private int? maxConcurrentWorkflowTaskPolls;
+        private int? maxConcurrentActivityTaskPolls;
+        private int? maxConcurrentNexusTaskPolls;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalWorkerOptions"/> class.
         /// </summary>
@@ -230,7 +235,11 @@ namespace Temporalio.Worker
         /// becomes eligible for automatic enrollment into poller autoscaling if the namespace
         /// advertises support for it.
         /// </summary>
-        public int? MaxConcurrentWorkflowTaskPolls { get; set; }
+        public int MaxConcurrentWorkflowTaskPolls
+        {
+            get => maxConcurrentWorkflowTaskPolls ?? 5;
+            set => maxConcurrentWorkflowTaskPolls = value;
+        }
 
         /// <summary>
         /// Gets or sets the sticky poll ratio. <see cref="MaxConcurrentWorkflowTaskPolls" /> times
@@ -249,7 +258,11 @@ namespace Temporalio.Worker
         /// becomes eligible for automatic enrollment into poller autoscaling if the namespace
         /// advertises support for it.
         /// </summary>
-        public int? MaxConcurrentActivityTaskPolls { get; set; }
+        public int MaxConcurrentActivityTaskPolls
+        {
+            get => maxConcurrentActivityTaskPolls ?? 5;
+            set => maxConcurrentActivityTaskPolls = value;
+        }
 
         /// <summary>
         /// Gets or sets the maximum number of concurrent poll Nexus task requests we will perform
@@ -258,7 +271,11 @@ namespace Temporalio.Worker
         /// becomes eligible for automatic enrollment into poller autoscaling if the namespace
         /// advertises support for it.
         /// </summary>
-        public int? MaxConcurrentNexusTaskPolls { get; set; }
+        public int MaxConcurrentNexusTaskPolls
+        {
+            get => maxConcurrentNexusTaskPolls ?? 5;
+            set => maxConcurrentNexusTaskPolls = value;
+        }
 
         /// <summary>
         /// Gets or sets the behavior of the workflow task poller.
@@ -413,6 +430,21 @@ namespace Temporalio.Worker
         /// </remarks>
         internal Func<WorkflowInstanceDetails, IWorkflowInstance> WorkflowInstanceFactory { get; set; } =
             DefaultWorkflowInstanceFactory;
+
+        /// <summary>
+        /// Gets the explicitly set <see cref="MaxConcurrentWorkflowTaskPolls"/>, or null if unset.
+        /// </summary>
+        internal int? MaxConcurrentWorkflowTaskPollsIfSet => maxConcurrentWorkflowTaskPolls;
+
+        /// <summary>
+        /// Gets the explicitly set <see cref="MaxConcurrentActivityTaskPolls"/>, or null if unset.
+        /// </summary>
+        internal int? MaxConcurrentActivityTaskPollsIfSet => maxConcurrentActivityTaskPolls;
+
+        /// <summary>
+        /// Gets the explicitly set <see cref="MaxConcurrentNexusTaskPolls"/>, or null if unset.
+        /// </summary>
+        internal int? MaxConcurrentNexusTaskPollsIfSet => maxConcurrentNexusTaskPolls;
 
         /// <summary>
         /// Add the given delegate with <see cref="ActivityAttribute" /> as an activity. This is
