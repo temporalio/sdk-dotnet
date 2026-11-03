@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Temporalio.Common;
+using Temporalio.Converters;
 using Temporalio.Worker.Interceptors;
 
 namespace Temporalio.Worker
@@ -74,7 +75,8 @@ namespace Temporalio.Worker
                     client.Options.Namespace,
                     options,
                     loggerFactory,
-                    client.Options.Plugins);
+                    client.Options.Plugins,
+                    client.Options.DataConverter.ExternalStorage?.GetDistinctDriverTypes());
 
                 MetricMeter = MetricMeterBridge.LazyFromRuntime(BridgeWorker.Runtime);
 

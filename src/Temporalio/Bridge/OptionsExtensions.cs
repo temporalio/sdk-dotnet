@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Temporalio.Client;
+using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Temporalio.Worker.Tuning;
 
@@ -566,13 +567,16 @@ namespace Temporalio.Bridge
         /// <param name="namespace_">Namespace for the worker.</param>
         /// <param name="loggerFactory">Logger factory.</param>
         /// <param name="clientPlugins">Client plugins to include for worker heartbeat.</param>
+        /// <param name="storageDriverTypes">External storage driver types to report in worker
+        /// heartbeats.</param>
         /// <returns>Converted options.</returns>
         public static Interop.TemporalCoreWorkerOptions ToInteropOptions(
             this Temporalio.Worker.TemporalWorkerOptions options,
             Scope scope,
             string namespace_,
             ILoggerFactory loggerFactory,
-            IReadOnlyCollection<Temporalio.Client.ITemporalClientPlugin>? clientPlugins = null)
+            IReadOnlyCollection<Temporalio.Client.ITemporalClientPlugin>? clientPlugins = null,
+            IReadOnlyCollection<string>? storageDriverTypes = null)
         {
             if (options.TaskQueue == null)
             {
@@ -712,7 +716,7 @@ namespace Temporalio.Bridge
                 .Concat(clientPluginNames)
                 .Distinct()
                 .ToArray();
-            var storageDrivers = Array.Empty<string>();
+            var storageDrivers = storageDriverTypes?.ToArray() ?? Array.Empty<string>();
             return new()
             {
                 namespace_ = scope.ByteArray(namespace_),
@@ -768,7 +772,8 @@ namespace Temporalio.Bridge
                 .Select(p => p.Name)
                 .Distinct()
                 .ToArray() ?? Array.Empty<string>();
-            var storageDrivers = Array.Empty<string>();
+            var storageDrivers = options.DataConverter.ExternalStorage?.GetDistinctDriverTypes() ??
+                Array.Empty<string>();
             return new()
             {
                 namespace_ = scope.ByteArray(options.Namespace),

@@ -220,15 +220,33 @@ public class ExternalStorageTests : TestBase
             new StorageDriverClaim(new Dictionary<string, string> { ["key"] = "k", ["extra"] = "e" }));
     }
 
+    [Fact]
+    public void DriverTypes_ReportsDistinctTypes()
+    {
+        var s3 = new StubStorageDriver("s3", "aws.s3driver");
+        var gcsA = new StubStorageDriver("gcs-a", "gcp.gcsdriver");
+        var gcsB = new StubStorageDriver("gcs-b", "gcp.gcsdriver");
+        var storage = new ExternalStorage(
+            new IStorageDriver[] { s3, gcsA, gcsB }, (context, payload) => s3);
+
+        // Two drivers share the gcs type, so it is reported once.
+        Assert.Equal(new[] { "aws.s3driver", "gcp.gcsdriver" }, storage.GetDistinctDriverTypes());
+    }
+
     private class StubStorageDriver : IStorageDriver
     {
         private readonly string name;
+        private readonly string type;
 
-        public StubStorageDriver(string name = "stub") => this.name = name;
+        public StubStorageDriver(string name = "stub", string type = "test.stubdriver")
+        {
+            this.name = name;
+            this.type = type;
+        }
 
         public string Name => name;
 
-        public string Type => "test.stubdriver";
+        public string Type => type;
 
         public Task<IReadOnlyCollection<StorageDriverClaim>> StoreAsync(
             StorageDriverStoreContext context,
