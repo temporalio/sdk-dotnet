@@ -33,6 +33,7 @@ namespace Temporalio.Worker
         private readonly ConcurrentDictionary<ByteString, RunningActivity> runningActivities = new();
 
         private readonly CancellationTokenSource workerShutdownTokenSource = new();
+        private readonly IExternalStorageRunner externalStorage;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActivityWorker"/> class.
@@ -42,6 +43,8 @@ namespace Temporalio.Worker
         {
             this.worker = worker;
             logger = worker.LoggerFactory.CreateLogger<ActivityWorker>();
+            externalStorage = ExternalStorageRunner.Create(
+                worker.Client.Options.DataConverter.ExternalStorage);
             activities = new(worker.Options.Activities.Count);
             foreach (var defn in worker.Options.Activities)
             {
@@ -364,6 +367,9 @@ namespace Temporalio.Worker
             ActivityExecutionContext.AsyncLocalCurrent.Value = act.Context;
             try
             {
+                await externalStorage.RetrieveAsync(
+                    PayloadVisitors.VisitAsync, tsk, act.Context.CancellationToken).ConfigureAwait(false);
+
                 // Find activity or fail
                 if (!activities.TryGetValue(act.Context.Info.ActivityType, out var defn))
                 {

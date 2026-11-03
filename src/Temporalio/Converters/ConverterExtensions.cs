@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Failure.V1;
 using Temporalio.Api.Sdk.V1;
+using Temporalio.Worker;
 
 namespace Temporalio.Converters
 {
@@ -105,6 +107,9 @@ namespace Temporalio.Converters
         public static async Task<object?> ToSingleValueAsync(
             this DataConverter converter, IReadOnlyCollection<Payload> payloads, Type type)
         {
+            payloads = await ExternalStorageRunner.Create(converter.ExternalStorage)
+                .RetrieveAsync(payloads, CancellationToken.None).ConfigureAwait(false);
+
             // Decode, then expect single payload
             if (converter.PayloadCodec != null)
             {
@@ -128,6 +133,10 @@ namespace Temporalio.Converters
         public static async Task<Exception> ToExceptionAsync(
             this DataConverter converter, Failure failure)
         {
+            var externalStorage = ExternalStorageRunner.Create(converter.ExternalStorage);
+            await externalStorage.RetrieveAsync(
+                PayloadVisitors.VisitAsync, failure, CancellationToken.None).ConfigureAwait(false);
+
             // Decode then convert
             if (converter.PayloadCodec != null)
             {

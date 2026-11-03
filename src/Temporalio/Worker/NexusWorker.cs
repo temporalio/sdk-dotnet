@@ -46,6 +46,7 @@ namespace Temporalio.Worker
         private readonly ILogger logger;
         private readonly Handler handler;
         private readonly ConcurrentDictionary<ByteString, RunningTask> runningTasks = new();
+        private readonly IExternalStorageRunner externalStorage;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NexusWorker"/> class.
@@ -55,6 +56,8 @@ namespace Temporalio.Worker
         {
             this.worker = worker;
             logger = worker.LoggerFactory.CreateLogger<NexusWorker>();
+            externalStorage = ExternalStorageRunner.Create(
+                worker.Client.Options.DataConverter.ExternalStorage);
 
             // Create middleware from interceptors
             var middleware = Array.Empty<IOperationMiddleware>();
@@ -340,6 +343,9 @@ namespace Temporalio.Worker
             Converters.ISerializationContext.Nexus? serializationContext = null;
             try
             {
+                await externalStorage.RetrieveAsync(
+                    PayloadVisitors.VisitAsync, task, running.CancellationTokenSource.Token).ConfigureAwait(false);
+
                 // Handle each case
                 switch (task.Request.VariantCase)
                 {

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Temporalio.Api.Common.V1;
 using Temporalio.Exceptions;
+using Temporalio.Worker;
 
 namespace Temporalio.Converters
 {
@@ -18,7 +19,7 @@ namespace Temporalio.Converters
     /// history unencrypted. The payload codec is not applied to references, and the configured
     /// concurrency limits are not enforced.
     /// </remarks>
-    internal sealed class ExternalStorageRunner
+    internal sealed class ExternalStorageRunner : IExternalStorageRunner
     {
         private readonly ExternalStorage storage;
         private readonly IStorageDriverLimiter<Payload> storeLimiter;
@@ -41,6 +42,34 @@ namespace Temporalio.Converters
             this.storeLimiter = storeLimiter;
             this.retrieveLimiter = retrieveLimiter;
         }
+
+        /// <summary>
+        /// Create a runner for the given configuration, or one that rejects references when it is
+        /// null. The concurrency limits are not yet enforced, so a configured runner hands drivers
+        /// limiters that run every request immediately.
+        /// </summary>
+        /// <param name="storage">
+        /// Configured drivers, selector, and size threshold, or null when external storage is not
+        /// configured.
+        /// </param>
+        /// <returns>A runner over the given storage, never null.</returns>
+        public static IExternalStorageRunner Create(ExternalStorage? storage) =>
+            storage is null ?
+                UnconfiguredRunner.Instance :
+                new ExternalStorageRunner(
+                    storage,
+                    new UnlimitedLimiter<Payload>(),
+                    new UnlimitedLimiter<StorageDriverClaim>());
+
+        /// <inheritdoc />
+        public Task RetrieveAsync<T>(
+            Func<T, PayloadVisitors.PayloadVisitor, PayloadVisitors.PayloadsVisitor, Task> visit,
+            T message,
+            CancellationToken cancellationToken) =>
+            visit(
+                message,
+                payload => RetrieveAsync(payload, cancellationToken),
+                payloads => RetrieveAsync(payloads, cancellationToken));
 
         /// <summary>
         /// Replace every payload at or above the configured size threshold with a reference,
@@ -268,6 +297,59 @@ namespace Temporalio.Converters
                     // failure WhenAll surfaces may be that task's response rather than the cause.
                     firstFailure?.Throw();
                     throw;
+                }
+            }
+        }
+
+        private sealed class UnlimitedLimiter<TItem> : IStorageDriverLimiter<TItem>
+        {
+            public Task<TResult> RunAsync<TResult>(
+                TItem item, Func<Task<TResult>> operation, CancellationToken cancellationToken) =>
+                operation();
+        }
+
+        // Rejects references when no external storage is configured, since nothing can retrieve them.
+        private sealed class UnconfiguredRunner : IExternalStorageRunner
+        {
+            public static readonly UnconfiguredRunner Instance = new();
+
+            public Task RetrieveAsync<T>(
+                Func<T, PayloadVisitors.PayloadVisitor, PayloadVisitors.PayloadsVisitor, Task> visit,
+                T message,
+                CancellationToken cancellationToken) =>
+                visit(
+                    message,
+                    payload =>
+                    {
+                        RejectIfReference(payload);
+                        return Task.CompletedTask;
+                    },
+                    payloads =>
+                    {
+                        foreach (var payload in payloads)
+                        {
+                            RejectIfReference(payload);
+                        }
+
+                        return Task.FromResult(payloads);
+                    });
+
+            public Task<IReadOnlyCollection<Payload>> RetrieveAsync(
+                IReadOnlyCollection<Payload> payloads, CancellationToken cancellationToken)
+            {
+                foreach (var payload in payloads)
+                {
+                    RejectIfReference(payload);
+                }
+
+                return Task.FromResult(payloads);
+            }
+
+            private static void RejectIfReference(Payload payload)
+            {
+                if (ExternalStorageReferences.NeedsRetrieval(payload))
+                {
+                    throw new ExternalStorageNotConfiguredException();
                 }
             }
         }

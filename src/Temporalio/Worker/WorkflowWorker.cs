@@ -33,6 +33,7 @@ namespace Temporalio.Worker
         private readonly TimeSpan deadlockTimeout;
         private readonly Dictionary<string, WorkflowDefinition> workflows = new();
         private readonly WorkflowDefinition? dynamicWorkflow;
+        private readonly IExternalStorageRunner externalStorage;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowWorker"/> class.
@@ -46,6 +47,7 @@ namespace Temporalio.Worker
             this.options = options;
             this.onEviction = onEviction;
             logger = options.LoggerFactory.CreateLogger<WorkflowWorker>();
+            externalStorage = ExternalStorageRunner.Create(options.DataConverter.ExternalStorage);
             foreach (var defn in options.Workflows)
             {
                 if (!defn.Instantiable)
@@ -181,6 +183,9 @@ namespace Temporalio.Worker
                         TaskQueue: options.TaskQueue,
                         Instance: instanceForCodec);
                 }
+                // External storage is independent of the codec, so this runs even when there is none.
+                await externalStorage.RetrieveAsync(
+                    PayloadVisitors.VisitAsync, act, CancellationToken.None).ConfigureAwait(false);
                 if (codecContext != null)
                 {
                     await WorkflowCodecHelper.DecodeAsync(codecContext, act).ConfigureAwait(false);
