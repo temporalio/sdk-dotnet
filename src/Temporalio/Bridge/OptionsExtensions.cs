@@ -706,16 +706,10 @@ namespace Temporalio.Bridge
             options.WorkflowTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentWorkflowTaskPolls);
             options.ActivityTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentActivityTaskPolls);
             options.NexusTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentNexusTaskPolls);
-            var workerPluginNames = options.Plugins?
-                .Select(p => p.Name)
-                ?? Enumerable.Empty<string>();
-            var clientPluginNames = clientPlugins?
-                .Select(p => p.Name)
-                ?? Enumerable.Empty<string>();
-            var pluginNames = workerPluginNames
-                .Concat(clientPluginNames)
-                .Distinct()
-                .ToArray();
+            var workerPluginInfos = options.Plugins?.Select(PluginInfo.FromPlugin)
+                ?? Enumerable.Empty<PluginInfo>();
+            var clientPluginInfos = clientPlugins?.Select(PluginInfo.FromPlugin)
+                ?? Enumerable.Empty<PluginInfo>();
             var storageDrivers = storageDriverTypes?.ToArray() ?? Array.Empty<string>();
             return new()
             {
@@ -744,7 +738,7 @@ namespace Temporalio.Bridge
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
                     AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
-                plugins = scope.ByteArrayArray(pluginNames),
+                plugins = ToInteropPlugins(workerPluginInfos.Concat(clientPluginInfos), scope),
                 storage_drivers = scope.ByteArrayArray(storageDrivers),
                 disable_payload_error_limit = (byte)(options.DisablePayloadErrorLimit ? 1 : 0),
                 max_eager_activity_reservations_per_workflow_task =
@@ -768,10 +762,8 @@ namespace Temporalio.Bridge
                     throw new ArgumentException("Unable to get assembly manifest ID for build ID");
                 buildId = entryAssembly.ManifestModule.ModuleVersionId.ToString();
             }
-            var pluginNames = options.Plugins?
-                .Select(p => p.Name)
-                .Distinct()
-                .ToArray() ?? Array.Empty<string>();
+            var plugins = options.Plugins?.Select(PluginInfo.FromPlugin)
+                ?? Enumerable.Empty<PluginInfo>();
             var storageDrivers = options.DataConverter.ExternalStorage?.GetDistinctDriverTypes() ??
                 Array.Empty<string>();
             return new()
@@ -810,8 +802,27 @@ namespace Temporalio.Bridge
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
                     AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
-                plugins = scope.ByteArrayArray(pluginNames),
+                plugins = ToInteropPlugins(plugins, scope),
                 storage_drivers = scope.ByteArrayArray(storageDrivers),
+            };
+        }
+
+        private static unsafe Interop.TemporalCorePluginInfoArray ToInteropPlugins(
+            IEnumerable<PluginInfo> plugins, Scope scope)
+        {
+            // A plugin that is both a client and worker plugin appears in both lists.
+            var infos = plugins
+                .Distinct()
+                .Select(p => new Interop.TemporalCorePluginInfo
+                {
+                    name = scope.ByteArray(p.Name),
+                    version = scope.ByteArray(p.Version),
+                })
+                .ToArray();
+            return new()
+            {
+                data = scope.ArrayPointer(infos),
+                size = (UIntPtr)infos.Length,
             };
         }
 
