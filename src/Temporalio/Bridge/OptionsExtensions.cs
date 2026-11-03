@@ -703,11 +703,6 @@ namespace Temporalio.Bridge
                         "MaxConcurrentActivities, MaxConcurrentLocalActivities, or MaxConcurrentNexusTasks.");
                 }
             }
-            // Only synthesize a fixed-size behavior when the user provided a poll count. When both
-            // the count and the behavior are left unset, the behavior stays null so the interop
-            // struct is passed with both pointers null, which the core bridge treats as "unset":
-            // it applies the default behavior and marks the poller eligible for automatic
-            // enrollment into poller autoscaling.
             if (options.WorkflowTaskPollerBehavior is null && options.MaxConcurrentWorkflowTaskPollsIfSet is { } wfPolls)
             {
                 options.WorkflowTaskPollerBehavior = new PollerBehavior.SimpleMaximum(wfPolls);

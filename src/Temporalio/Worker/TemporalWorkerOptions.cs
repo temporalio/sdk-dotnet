@@ -28,7 +28,6 @@ namespace Temporalio.Worker
         private IList<WorkflowDefinition> workflows = new List<WorkflowDefinition>();
         private IList<ServiceHandlerInstance> nexusServices = new List<ServiceHandlerInstance>();
 
-        // Null until set, so an unset poll count can be told apart from an explicit 5.
         private int? maxConcurrentWorkflowTaskPolls;
         private int? maxConcurrentActivityTaskPolls;
         private int? maxConcurrentNexusTaskPolls;
@@ -230,10 +229,7 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the maximum number of concurrent poll workflow task requests we will
-        /// perform at a time on this worker's task queue. Default is 5 when neither this nor
-        /// <see cref="WorkflowTaskPollerBehavior"/> is set. When both are left unset, the worker
-        /// becomes eligible for automatic enrollment into poller autoscaling if the namespace
-        /// advertises support for it.
+        /// perform at a time on this worker's task queue. Default is 5.
         /// </summary>
         public int MaxConcurrentWorkflowTaskPolls
         {
@@ -253,10 +249,7 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the maximum number of concurrent poll activity task requests we will
-        /// perform at a time on this worker's task queue. Default is 5 when neither this nor
-        /// <see cref="ActivityTaskPollerBehavior"/> is set. When both are left unset, the worker
-        /// becomes eligible for automatic enrollment into poller autoscaling if the namespace
-        /// advertises support for it.
+        /// perform at a time on this worker's task queue. Default is 5.
         /// </summary>
         public int MaxConcurrentActivityTaskPolls
         {
@@ -266,10 +259,7 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the maximum number of concurrent poll Nexus task requests we will perform
-        /// at a time on this worker's task queue. Default is 5 when neither this nor
-        /// <see cref="NexusTaskPollerBehavior"/> is set. When both are left unset, the worker
-        /// becomes eligible for automatic enrollment into poller autoscaling if the namespace
-        /// advertises support for it.
+        /// at a time on this worker's task queue. Default is 5.
         /// </summary>
         public int MaxConcurrentNexusTaskPolls
         {
