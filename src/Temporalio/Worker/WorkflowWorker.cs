@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Temporalio.Bridge.Api.WorkflowActivation;
+using Temporalio.Bridge.Api.WorkflowCommands;
 using Temporalio.Bridge.Api.WorkflowCompletion;
 using Temporalio.Common;
 using Temporalio.Converters;
@@ -128,6 +129,99 @@ namespace Temporalio.Worker
             }
         }
 
+        // A proto string field is the empty string when unset; a target field is null when unknown.
+        private static string? NullIfEmpty(string value) =>
+            string.IsNullOrEmpty(value) ? null : value;
+
+        // The storage target for a single completion command. A workflow task's base target is the
+        // current workflow, and the commands below name something else, since the payload they
+        // carry is read back by a different execution. Every command variant is listed so a new
+        // one fails here rather than silently inheriting the current workflow.
+        private static IStorageDriverTargetInfo.Workflow? StorageTargetForCommand(
+            WorkflowCommand command,
+            IStorageDriverTargetInfo.Workflow? currentWorkflow,
+            WorkflowInfo.ParentInfo? parent) =>
+            command.VariantCase switch
+            {
+                // The child being started, which the server has not yet assigned a run to.
+                WorkflowCommand.VariantOneofCase.StartChildWorkflowExecution =>
+                    new IStorageDriverTargetInfo.Workflow(
+                        command.StartChildWorkflowExecution.Namespace,
+                        command.StartChildWorkflowExecution.WorkflowId,
+                        RunId: null,
+                        command.StartChildWorkflowExecution.WorkflowType),
+
+                // The workflow the signal addresses.
+                WorkflowCommand.VariantOneofCase.SignalExternalWorkflowExecution =>
+                    StorageTargetForSignalExternal(
+                        command.SignalExternalWorkflowExecution, currentWorkflow),
+
+                // The successor run, which has the same id, no run yet, and a type only when set.
+                WorkflowCommand.VariantOneofCase.ContinueAsNewWorkflowExecution =>
+                    currentWorkflow is null ? null : currentWorkflow with
+                    {
+                        RunId = null,
+                        WorkflowType = NullIfEmpty(command.ContinueAsNewWorkflowExecution.WorkflowType),
+                    },
+
+                // A child's result is read by its parent.
+                WorkflowCommand.VariantOneofCase.CompleteWorkflowExecution when parent is not null =>
+                    new IStorageDriverTargetInfo.Workflow(
+                        parent.Namespace, parent.WorkflowId, parent.RunId, WorkflowType: null),
+
+                // No Nexus target kind exists yet, so a Nexus operation offloads without one.
+                WorkflowCommand.VariantOneofCase.ScheduleNexusOperation => null,
+
+                // The remaining commands read their payloads back as the current workflow, or
+                // carry none and so never reach a driver.
+                WorkflowCommand.VariantOneofCase.None or
+                WorkflowCommand.VariantOneofCase.StartTimer or
+                WorkflowCommand.VariantOneofCase.ScheduleActivity or
+                WorkflowCommand.VariantOneofCase.RespondToQuery or
+                WorkflowCommand.VariantOneofCase.RequestCancelActivity or
+                WorkflowCommand.VariantOneofCase.CancelTimer or
+                WorkflowCommand.VariantOneofCase.CompleteWorkflowExecution or
+                WorkflowCommand.VariantOneofCase.FailWorkflowExecution or
+                WorkflowCommand.VariantOneofCase.CancelWorkflowExecution or
+                WorkflowCommand.VariantOneofCase.SetPatchMarker or
+                WorkflowCommand.VariantOneofCase.CancelChildWorkflowExecution or
+                WorkflowCommand.VariantOneofCase.RequestCancelExternalWorkflowExecution or
+                WorkflowCommand.VariantOneofCase.CancelSignalWorkflow or
+                WorkflowCommand.VariantOneofCase.ScheduleLocalActivity or
+                WorkflowCommand.VariantOneofCase.RequestCancelLocalActivity or
+                WorkflowCommand.VariantOneofCase.UpsertWorkflowSearchAttributes or
+                WorkflowCommand.VariantOneofCase.ModifyWorkflowProperties or
+                WorkflowCommand.VariantOneofCase.UpdateResponse or
+                WorkflowCommand.VariantOneofCase.RequestCancelNexusOperation => currentWorkflow,
+
+                _ => throw new InvalidOperationException(
+                    $"Workflow command {command.VariantCase} has no assigned external storage target"),
+            };
+
+        private static IStorageDriverTargetInfo.Workflow? StorageTargetForSignalExternal(
+            SignalExternalWorkflowExecution signal,
+            IStorageDriverTargetInfo.Workflow? currentWorkflow) =>
+            signal.TargetCase switch
+            {
+                SignalExternalWorkflowExecution.TargetOneofCase.WorkflowExecution =>
+                    new IStorageDriverTargetInfo.Workflow(
+                        signal.WorkflowExecution.Namespace,
+                        signal.WorkflowExecution.WorkflowId,
+                        RunId: NullIfEmpty(signal.WorkflowExecution.RunId),
+                        WorkflowType: null),
+
+                // A child addressed by id alone, in the current workflow's namespace.
+                SignalExternalWorkflowExecution.TargetOneofCase.ChildWorkflowId =>
+                    currentWorkflow is null ? null : currentWorkflow with
+                    {
+                        WorkflowId = signal.ChildWorkflowId,
+                        RunId = null,
+                        WorkflowType = null,
+                    },
+
+                _ => currentWorkflow,
+            };
+
         private async Task HandleActivationAsync(WorkflowActivation act)
         {
             // Do eviction if requested and exit early
@@ -145,6 +239,10 @@ namespace Temporalio.Worker
             DataConverter dataConverterNoContext = options.DataConverter;
             DataConverter? dataConverterWorkflowContext = null;
             WorkflowCodecHelper.WorkflowCodecContext? codecContext = null;
+            // The current workflow's identity, kept for building per-command storage targets after
+            // the try block. Null only if the activation could not be associated with a workflow.
+            string? completionWorkflowId = null;
+            string? completionWorkflowType = null;
 
             // Catch any exception as a completion failure
             try
@@ -168,6 +266,8 @@ namespace Temporalio.Worker
                 {
                     throw new InvalidOperationException("Missing workflow start (unexpectedly evicted?)");
                 }
+                completionWorkflowId = workflowId;
+                completionWorkflowType = workflowType;
                 dataConverterWorkflowContext = dataConverterNoContext.WithSerializationContext(
                     new ISerializationContext.Workflow(options.Namespace, WorkflowId: workflowId));
                 // We'll only apply codec if one of the two converters has one
@@ -278,8 +378,16 @@ namespace Temporalio.Worker
             // External storage is independent of the codec, so this runs even when there is none.
             try
             {
-                await externalStorage.StoreAsync(
-                    PayloadVisitors.VisitAsync, comp, null, CancellationToken.None).ConfigureAwait(false);
+                var completionTarget = completionWorkflowId == null ? null :
+                    new IStorageDriverTargetInfo.Workflow(
+                        options.Namespace, completionWorkflowId, act.RunId, completionWorkflowType);
+                // A continue-as-new successor inherits the parent info but does not deliver its
+                // completion to that parent, so only a run that is not a successor targets it.
+                var parent = runningWorkflows.TryGetValue(act.RunId, out var instForTarget) &&
+                    instForTarget.Info.ContinuedRunId == null
+                    ? instForTarget.Info.Parent : null;
+                await StoreCompletionPayloadsAsync(comp, completionTarget, parent)
+                    .ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -296,6 +404,32 @@ namespace Temporalio.Worker
             catch (Exception e)
             {
                 logger.LogError(e, "Failed completing activation on {RunId}", act.RunId);
+            }
+        }
+
+        // Offloads a completion one command at a time, each under the target naming the execution
+        // that reads its payloads. The whole-completion failure takes the current workflow.
+        private async Task StoreCompletionPayloadsAsync(
+            WorkflowActivationCompletion comp,
+            IStorageDriverTargetInfo.Workflow? currentWorkflow,
+            WorkflowInfo.ParentInfo? parent)
+        {
+            if (comp.Successful != null)
+            {
+                foreach (var command in comp.Successful.Commands)
+                {
+                    var target = StorageTargetForCommand(command, currentWorkflow, parent);
+                    await externalStorage.StoreAsync(
+                        PayloadVisitors.VisitAsync, command, target, CancellationToken.None)
+                        .ConfigureAwait(false);
+                }
+            }
+
+            if (comp.Failed != null)
+            {
+                await externalStorage.StoreAsync(
+                    PayloadVisitors.VisitAsync, comp.Failed, currentWorkflow, CancellationToken.None)
+                    .ConfigureAwait(false);
             }
         }
 

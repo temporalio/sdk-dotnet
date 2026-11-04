@@ -74,6 +74,41 @@ public class ExternalStorageTargetTests : WorkflowEnvironmentTestBase
                 new() { StartToCloseTimeout = TimeSpan.FromMinutes(1), ActivityId = ActivityId });
     }
 
+    [Workflow]
+    public class TargetChildWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync(string input) => $"child: {input}";
+    }
+
+    [Workflow]
+    public class TargetParentWorkflow
+    {
+        internal const string ChildId = "target-child";
+
+        [WorkflowRun]
+        public async Task<string> RunAsync(string input) =>
+            await Workflow.ExecuteChildWorkflowAsync(
+                (TargetChildWorkflow wf) => wf.RunAsync(input),
+                new() { Id = ChildId });
+    }
+
+    [Workflow]
+    public class TargetContinueWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync(string input)
+        {
+            if (Workflow.Info.ContinuedRunId != null)
+            {
+                return $"continued: {input}";
+            }
+
+            throw Workflow.CreateContinueAsNewException(
+                (TargetContinueWorkflow wf) => wf.RunAsync(input));
+        }
+    }
+
     [Fact]
     public async Task ClientStartInput_TargetsWorkflowWithTypeButNoRun()
     {
@@ -183,14 +218,111 @@ public class ExternalStorageTargetTests : WorkflowEnvironmentTestBase
                 Assert.Equal(handle.Id, target.WorkflowId);
                 Assert.Equal(handle.ResultRunId, target.RunId);
                 Assert.Equal("TargetActivityWorkflow", target.WorkflowType);
-
-                // The activity arg rides the whole-workflow-task completion, which has no
-                // per-command target yet, so it is offloaded without one.
-                var scheduled = await FirstEventAsync(
-                    handle, e => e.ActivityTaskScheduledEventAttributes != null);
-                Assert.Null(driver.TargetFor(scheduled.ActivityTaskScheduledEventAttributes.Input));
             },
             new TemporalWorkerOptions().AddActivity(TargetActivityWorkflow.Echo));
+    }
+
+    [Fact]
+    public async Task WorkflowActivityInput_TargetsOwningWorkflowWithAllFields()
+    {
+        var (client, driver) = ClientWithCapture();
+        await ExecuteWorkerAsync<TargetActivityWorkflow>(
+            client,
+            async worker =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (TargetActivityWorkflow wf) => wf.RunAsync("hi"), NewOptions(worker));
+                Assert.Equal("activity: hi", await handle.GetResultAsync());
+
+                // The activity's input rides the scheduling command on the workflow task
+                // completion, which keeps the owning workflow as its target.
+                var scheduled = await FirstEventAsync(
+                    handle, e => e.ActivityTaskScheduledEventAttributes != null);
+                var target = Assert.IsType<IStorageDriverTargetInfo.Workflow>(
+                    driver.TargetFor(scheduled.ActivityTaskScheduledEventAttributes.Input));
+                Assert.Equal(client.Options.Namespace, target.Namespace);
+                Assert.Equal(handle.Id, target.WorkflowId);
+                Assert.Equal(handle.ResultRunId, target.RunId);
+                Assert.Equal("TargetActivityWorkflow", target.WorkflowType);
+            },
+            new TemporalWorkerOptions().AddActivity(TargetActivityWorkflow.Echo));
+    }
+
+    [Fact]
+    public async Task ChildWorkflowStart_TargetsChildWithTypeButNoRun()
+    {
+        var (client, driver) = ClientWithCapture();
+        await ExecuteWorkerAsync<TargetParentWorkflow>(
+            client,
+            async worker =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (TargetParentWorkflow wf) => wf.RunAsync("hi"), NewOptions(worker));
+                Assert.Equal("child: hi", await handle.GetResultAsync());
+
+                // The child's input names the child being started; the server has not assigned it
+                // a run yet.
+                var initiated = await FirstEventAsync(
+                    handle, e => e.StartChildWorkflowExecutionInitiatedEventAttributes != null);
+                var target = Assert.IsType<IStorageDriverTargetInfo.Workflow>(
+                    driver.TargetFor(
+                        initiated.StartChildWorkflowExecutionInitiatedEventAttributes.Input));
+                Assert.Equal(client.Options.Namespace, target.Namespace);
+                Assert.Equal(TargetParentWorkflow.ChildId, target.WorkflowId);
+                Assert.Null(target.RunId);
+                Assert.Equal("TargetChildWorkflow", target.WorkflowType);
+            },
+            new TemporalWorkerOptions().AddWorkflow<TargetChildWorkflow>());
+    }
+
+    [Fact]
+    public async Task ChildWorkflowResult_TargetsParent()
+    {
+        var (client, driver) = ClientWithCapture();
+        await ExecuteWorkerAsync<TargetParentWorkflow>(
+            client,
+            async worker =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (TargetParentWorkflow wf) => wf.RunAsync("hi"), NewOptions(worker));
+                Assert.Equal("child: hi", await handle.GetResultAsync());
+
+                // The child's result is read by its parent, so the child's worker offloads it
+                // against the parent rather than the child itself.
+                var childHandle = client.GetWorkflowHandle(TargetParentWorkflow.ChildId);
+                var completed = await FirstEventAsync(
+                    childHandle, e => e.WorkflowExecutionCompletedEventAttributes != null);
+                var target = Assert.IsType<IStorageDriverTargetInfo.Workflow>(
+                    driver.TargetFor(completed.WorkflowExecutionCompletedEventAttributes.Result));
+                Assert.Equal(client.Options.Namespace, target.Namespace);
+                Assert.Equal(handle.Id, target.WorkflowId);
+                Assert.Equal(handle.ResultRunId, target.RunId);
+                Assert.Null(target.WorkflowType);
+            },
+            new TemporalWorkerOptions().AddWorkflow<TargetChildWorkflow>());
+    }
+
+    [Fact]
+    public async Task ContinueAsNewArg_TargetsSameWorkflowWithTypeButNoRun()
+    {
+        var (client, driver) = ClientWithCapture();
+        await ExecuteWorkerAsync<TargetContinueWorkflow>(client, async worker =>
+        {
+            var handle = await client.StartWorkflowAsync(
+                (TargetContinueWorkflow wf) => wf.RunAsync("hi"), NewOptions(worker));
+            Assert.Equal("continued: hi", await handle.GetResultAsync());
+
+            // The continue-as-new arg names the same workflow id and new type, with no run yet.
+            var firstRun = handle with { RunId = handle.FirstExecutionRunId };
+            var continued = await FirstEventAsync(
+                firstRun, e => e.WorkflowExecutionContinuedAsNewEventAttributes != null);
+            var target = Assert.IsType<IStorageDriverTargetInfo.Workflow>(
+                driver.TargetFor(continued.WorkflowExecutionContinuedAsNewEventAttributes.Input));
+            Assert.Equal(client.Options.Namespace, target.Namespace);
+            Assert.Equal(handle.Id, target.WorkflowId);
+            Assert.Null(target.RunId);
+            Assert.Equal("TargetContinueWorkflow", target.WorkflowType);
+        });
     }
 
     [Fact]
