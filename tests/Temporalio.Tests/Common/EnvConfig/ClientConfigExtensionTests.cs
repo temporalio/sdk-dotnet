@@ -63,6 +63,31 @@ address = ""other-address""
         }
 
         [Fact]
+        public void ToFromDictionary_WithExt_RoundTrips()
+        {
+            var config = ClientEnvConfig.Load(new()
+            {
+                ConfigSource = DataSource.FromUTF8String(TomlConfigExt),
+                OverrideEnvVars = new Dictionary<string, string>(),
+            });
+
+            var dictionary = config.ToDictionary();
+            var ext = Assert.IsAssignableFrom<IReadOnlyDictionary<string, object?>>(dictionary["default"]["ext"]);
+            var first = Assert.IsAssignableFrom<IReadOnlyDictionary<string, object?>>(ext["first"]);
+            Assert.Equal("first-value", first["value"]);
+            var nested = Assert.IsAssignableFrom<IReadOnlyDictionary<string, object?>>(first["nested"]);
+            Assert.Equal(new List<object?> { 1L, 2L }, nested["list"]);
+            Assert.Equal(true, nested["flag"]);
+            Assert.False(dictionary["other"].ContainsKey("ext"));
+
+            var restored = ClientEnvConfig.FromDictionary(dictionary);
+            Assert.Equal(
+                JsonSerializer.Serialize(config.Profiles["default"].Ext),
+                JsonSerializer.Serialize(restored.Profiles["default"].Ext));
+            Assert.Null(restored.Profiles["other"].Ext);
+        }
+
+        [Fact]
         public void Load_StrictModeWithExt_StillRejectsUnknownKeys()
         {
             var ex = Assert.Throws<InvalidOperationException>(() =>
