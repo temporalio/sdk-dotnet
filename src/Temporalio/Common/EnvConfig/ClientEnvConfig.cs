@@ -128,7 +128,11 @@ namespace Temporalio.Common.EnvConfig
             }
             return options.OverrideEnvVars ?? Environment.GetEnvironmentVariables()
                 .Cast<DictionaryEntry>()
-                .ToDictionary(e => (string)e.Key, e => (string?)e.Value ?? string.Empty);
+                .ToDictionary(
+                    e => (string)e.Key,
+                    e => (string?)e.Value ?? string.Empty,
+                    // Env var names are case-insensitive on Windows and case-sensitive elsewhere
+                    Environment.OSVersion.Platform == PlatformID.Win32NT ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
         }
 
         /// <summary>
