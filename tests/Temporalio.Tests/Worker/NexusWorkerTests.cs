@@ -8,6 +8,7 @@ using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.History.V1;
 using Temporalio.Client;
+using Temporalio.Client.Interceptors;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
@@ -3173,10 +3174,11 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
     public async Task ExecuteNexusOperationAsync_GenericHandlerSignal_DedupedAcrossHandlerRetry(
-        bool signalWithStart)
+        bool signalWithStart, bool replaceSignalOptions)
     {
         // The handler fails after signaling so the Nexus task is redelivered. Both attempts must
         // signal with the operation's request ID so the server delivers the signal only once.
@@ -3213,13 +3215,22 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                     return TemporalOperationResult<string>.SyncResult($"signaled-{input}");
                 }));
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
-
-        await RunInWorkflowAsync(workerOptions, async () =>
+        var clientOptions = (TemporalClientOptions)Client.Options.Clone();
+        if (replaceSignalOptions)
         {
-            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
-                ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
-            Assert.Equal("signaled-some-name", result);
-        });
+            clientOptions.Interceptors = new[] { new ReplaceSignalOptionsInterceptor() };
+        }
+
+        await RunInWorkflowAsync<object?>(
+            workerOptions,
+            async () =>
+            {
+                var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+                Assert.Equal("signaled-some-name", result);
+                return null;
+            },
+            client: new TemporalClient(Client.Connection, clientOptions));
 
         Assert.Equal(2, attempts);
         Assert.Single(
@@ -3287,7 +3298,27 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         foreach (var exc in new[] { secondSignalExc, signalWithStartExc })
         {
             Assert.Equal(HandlerErrorType.BadRequest, Assert.IsType<HandlerException>(exc).ErrorType);
-            Assert.Contains("only one signal can be sent per operation invocation", exc.Message);
+            Assert.Contains("only one signal can be sent per Nexus Operation invocation", exc.Message);
+        }
+    }
+
+    // Replaces rather than clones the options, which would drop the internal request ID if the
+    // Nexus signal interceptor ran outside of this one.
+    private sealed class ReplaceSignalOptionsInterceptor : IClientInterceptor
+    {
+        public ClientOutboundInterceptor InterceptClient(ClientOutboundInterceptor nextInterceptor) =>
+            new Outbound(nextInterceptor);
+
+        private sealed class Outbound : ClientOutboundInterceptor
+        {
+            public Outbound(ClientOutboundInterceptor next)
+                : base(next)
+            {
+            }
+
+            public override Task SignalWorkflowAsync(SignalWorkflowInput input) =>
+                base.SignalWorkflowAsync(
+                    input with { Options = new WorkflowSignalOptions { Rpc = input.Options?.Rpc } });
         }
     }
 

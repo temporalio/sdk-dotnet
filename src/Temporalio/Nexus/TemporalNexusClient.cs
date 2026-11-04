@@ -37,9 +37,11 @@ namespace Temporalio.Nexus
         {
             this.nexusStartContext = nexusStartContext;
             this.temporalContext = temporalContext;
-            // A custom ITemporalClient cannot be rebuilt with an extra interceptor, so its signals are
-            // not deduplicated or limited.
-            temporalClient = new(() => temporalContext.TemporalClient is TemporalClient client ?
+            // A custom ITemporalClient or TemporalClient subclass cannot be rebuilt with an extra
+            // interceptor without losing its type, so its signals are not deduplicated or limited.
+            temporalClient = new(() =>
+                temporalContext.TemporalClient is TemporalClient client &&
+                    client.GetType() == typeof(TemporalClient) ?
                 new TemporalClient(
                     client, next => new SignalOnceInterceptor(next, nexusStartContext.RequestId)) :
                 temporalContext.TemporalClient);
@@ -279,7 +281,7 @@ namespace Temporalio.Nexus
                 {
                     throw new HandlerException(
                         HandlerErrorType.BadRequest,
-                        "only one signal can be sent per operation invocation");
+                        "only one signal can be sent per Nexus Operation invocation");
                 }
                 try
                 {
