@@ -163,8 +163,6 @@ namespace Temporalio.Common.EnvConfig
             /// <remarks>
             /// WARNING: This API is experimental and may change in the future.
             /// </remarks>
-            // Added after the positional parameters shipped, so it's a property to keep the
-            // existing constructor and Deconstruct signatures binary compatible.
             public IReadOnlyDictionary<string, JsonElement>? Ext { get; init; }
 
             /// <summary>
