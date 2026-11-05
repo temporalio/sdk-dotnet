@@ -5,7 +5,7 @@ namespace Temporalio.Converters
     /// <summary>
     /// The Temporal execution a payload is being stored on behalf of, made available to
     /// <see cref="IStorageDriver.StoreAsync" /> so drivers can organize storage by execution. The
-    /// two implementations used by the SDK are <see cref="Workflow" /> and <see cref="Activity" />.
+    /// implementations used by the SDK are <see cref="Workflow" /> and <see cref="Activity" />.
     /// </summary>
     /// <remarks>
     /// A target is not always known, so drivers must handle a null target and null members.

@@ -84,11 +84,13 @@ namespace Temporalio.Client
                             return default!;
                         }
                         return await dataConverter.ToSingleValueAsync<TResult>(
-                            resp.Outcome.Result.Payloads_).ConfigureAwait(false);
+                            resp.Outcome.Result.Payloads_,
+                            ExternalStorageContext.For(dataConverter)).ConfigureAwait(false);
                     case Api.Activity.V1.ActivityExecutionOutcome.ValueOneofCase.Failure:
                         throw new ActivityFailedException(
                             await dataConverter.ToExceptionAsync(
-                                resp.Outcome.Failure).ConfigureAwait(false));
+                                resp.Outcome.Failure,
+                                ExternalStorageContext.For(dataConverter)).ConfigureAwait(false));
                     default:
                         throw new InvalidOperationException(
                             $"Unexpected activity outcome type: {resp.Outcome.ValueCase}");

@@ -101,7 +101,8 @@ namespace Temporalio.Client.Schedules
                 kvp => kvp.Key,
                 kvp => (IEncodedRawValue)new EncodedRawValue(dataConverter, kvp.Value));
             var (staticSummary, staticDetails) =
-                await dataConverter.FromUserMetadataAsync(proto.UserMetadata).ConfigureAwait(false);
+                await dataConverter.FromUserMetadataAsync(
+                    proto.UserMetadata, ExternalStorageContext.For(dataConverter)).ConfigureAwait(false);
             return new(
                 Workflow: proto.WorkflowType.Name,
                 Args: args,
@@ -154,6 +155,10 @@ namespace Temporalio.Client.Schedules
                 new ISerializationContext.Workflow(
                     Namespace: clientNamespace,
                     WorkflowId: Options.Id ?? throw new ArgumentException("ID required on workflow action")));
+            var storage = ExternalStorageContext.For(
+                dataConverter,
+                new IStorageDriverTargetInfo.Workflow(
+                    clientNamespace, Options.Id, RunId: null, WorkflowType: Workflow));
 
             // Build input. We have to go one payload at a time here because half could be encoded
             // and half not (e.g. they just changed the second parameter).
@@ -163,7 +168,7 @@ namespace Temporalio.Client.Schedules
                 {
                     return Task.FromResult(raw.Payload);
                 }
-                return dataConverter.ToPayloadAsync(arg);
+                return dataConverter.ToPayloadAsync(arg, storage);
             }).ToList()).ConfigureAwait(false);
 
             var workflow = new Api.Workflow.V1.NewWorkflowExecutionInfo()
@@ -184,7 +189,7 @@ namespace Temporalio.Client.Schedules
                     Duration.FromTimeSpan(taskTimeout) : null,
                 RetryPolicy = Options.RetryPolicy?.ToProto(),
                 UserMetadata = await dataConverter.ToUserMetadataAsync(
-                    Options.StaticSummary, Options.StaticDetails).ConfigureAwait(false),
+                    Options.StaticSummary, Options.StaticDetails, storage).ConfigureAwait(false),
             };
             if (Options.Memo != null && Options.Memo.Count > 0)
             {
@@ -196,7 +201,7 @@ namespace Temporalio.Client.Schedules
                         throw new ArgumentException($"Memo value for {field.Key} is null");
                     }
                     var value = field.Value is IEncodedRawValue raw ? raw.Payload :
-                        await dataConverter.ToPayloadAsync(field.Value).ConfigureAwait(false);
+                        await dataConverter.ToPayloadAsync(field.Value, storage).ConfigureAwait(false);
                     workflow.Memo.Fields.Add(field.Key, value);
                 }
             }

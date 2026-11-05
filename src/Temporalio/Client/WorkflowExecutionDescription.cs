@@ -25,7 +25,8 @@ namespace Temporalio.Client
             RawDescription = rawDescription;
 #pragma warning disable VSTHRD011 // This should not be able to deadlock
             userMetadata = new(() => dataConverter.FromUserMetadataAsync(
-                rawDescription.ExecutionConfig?.UserMetadata));
+                rawDescription.ExecutionConfig?.UserMetadata,
+                ExternalStorageContext.For(dataConverter)));
 #pragma warning restore VSTHRD011
         }
 

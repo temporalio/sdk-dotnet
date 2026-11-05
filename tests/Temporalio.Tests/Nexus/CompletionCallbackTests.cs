@@ -517,7 +517,8 @@ public class CompletionCallbackTests
         var codec = new Base64PayloadCodec();
         var converter = DataConverter.Default with { PayloadCodec = codec };
 
-        var proto = await callback.ToProtoAsync(converter);
+        var proto = await callback.ToProtoAsync(
+            converter, ExternalStorageContext.For(converter));
 
         Assert.Equal("svc", proto.NexusHandler.Service);
         Assert.Equal("op", proto.NexusHandler.Operation);

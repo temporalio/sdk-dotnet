@@ -212,13 +212,21 @@ namespace Temporalio.Client
                         input.Options.StartWorkflowOperation.Options,
                         dataConverter,
                         input.Options.StartWorkflowOperation.Headers).ConfigureAwait(false);
+                    var updateStorage = ExternalStorageContext.For(
+                        dataConverter,
+                        new IStorageDriverTargetInfo.Workflow(
+                            Client.Options.Namespace,
+                            input.Options.StartWorkflowOperation.Options.Id,
+                            RunId: null,
+                            WorkflowType: input.Options.StartWorkflowOperation.Workflow));
                     var updateReq = await CreateUpdateWorkflowRequestAsync(
                         input.Update,
                         input.Args,
                         input.Options,
                         input.Options.WaitForStage,
                         dataConverter,
-                        input.Headers).ConfigureAwait(false);
+                        input.Headers,
+                        updateStorage).ConfigureAwait(false);
                     updateReq.WorkflowExecution = new() { WorkflowId = startReq.WorkflowId };
                     var req = new ExecuteMultiOperationRequest() { Namespace = Client.Options.Namespace };
                     req.Operations.Add(
@@ -337,6 +345,10 @@ namespace Temporalio.Client
                     new ISerializationContext.Workflow(
                         Namespace: Client.Options.Namespace,
                         WorkflowId: input.Id));
+                var storage = ExternalStorageContext.For(
+                    dataConverter,
+                    new IStorageDriverTargetInfo.Workflow(
+                        Client.Options.Namespace, input.Id, RunId: input.RunId, WorkflowType: null));
                 var req = new SignalWorkflowExecutionRequest()
                 {
                     Namespace = Client.Options.Namespace,
@@ -353,7 +365,7 @@ namespace Temporalio.Client
                 {
                     req.Input = new Payloads();
                     req.Input.Payloads_.AddRange(
-                        await dataConverter.ToPayloadsAsync(input.Args).ConfigureAwait(false));
+                        await dataConverter.ToPayloadsAsync(input.Args, storage).ConfigureAwait(false));
                 }
                 if (input.Headers != null)
                 {
@@ -383,6 +395,10 @@ namespace Temporalio.Client
                     new ISerializationContext.Workflow(
                         Namespace: Client.Options.Namespace,
                         WorkflowId: input.Id));
+                var storage = ExternalStorageContext.For(
+                    dataConverter,
+                    new IStorageDriverTargetInfo.Workflow(
+                        Client.Options.Namespace, input.Id, RunId: input.RunId, WorkflowType: null));
                 var req = new QueryWorkflowRequest()
                 {
                     Namespace = Client.Options.Namespace,
@@ -397,7 +413,7 @@ namespace Temporalio.Client
                 {
                     req.Query.QueryArgs = new Payloads();
                     req.Query.QueryArgs.Payloads_.AddRange(
-                        await dataConverter.ToPayloadsAsync(input.Args).ConfigureAwait(false));
+                        await dataConverter.ToPayloadsAsync(input.Args, storage).ConfigureAwait(false));
                 }
                 if (input.Options?.RejectCondition != null)
                 {
@@ -451,7 +467,7 @@ namespace Temporalio.Client
                     return default!;
                 }
                 return await dataConverter.ToSingleValueAsync<TResult>(
-                    resp.QueryResult.Payloads_).ConfigureAwait(false);
+                    resp.QueryResult.Payloads_, ExternalStorageContext.For(dataConverter)).ConfigureAwait(false);
             }
 
             /// <inheritdoc />
@@ -473,8 +489,12 @@ namespace Temporalio.Client
                         Namespace: Client.Options.Namespace,
                         WorkflowId: input.Id));
                 // Build request
+                var storage = ExternalStorageContext.For(
+                    dataConverter,
+                    new IStorageDriverTargetInfo.Workflow(
+                        Client.Options.Namespace, input.Id, RunId: input.RunId, WorkflowType: null));
                 var req = await CreateUpdateWorkflowRequestAsync(
-                    input.Update, input.Args, input.Options, input.Options.WaitForStage, dataConverter, input.Headers).ConfigureAwait(false);
+                    input.Update, input.Args, input.Options, input.Options.WaitForStage, dataConverter, input.Headers, storage).ConfigureAwait(false);
                 req.WorkflowExecution = new()
                 {
                     WorkflowId = input.Id,
@@ -579,9 +599,13 @@ namespace Temporalio.Client
                         new ISerializationContext.Workflow(
                             Namespace: Client.Options.Namespace,
                             WorkflowId: input.Id));
+                    var storage = ExternalStorageContext.For(
+                        dataConverter,
+                        new IStorageDriverTargetInfo.Workflow(
+                            Client.Options.Namespace, input.Id, RunId: input.RunId, WorkflowType: null));
                     req.Details = new Payloads();
                     req.Details.Payloads_.AddRange(
-                        await dataConverter.ToPayloadsAsync(input.Options.Details).ConfigureAwait(false));
+                        await dataConverter.ToPayloadsAsync(input.Options.Details, storage).ConfigureAwait(false));
                 }
                 await Client.Connection.WorkflowService.TerminateWorkflowExecutionAsync(
                     req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
@@ -822,8 +846,15 @@ namespace Temporalio.Client
                 if (input.Options.StartSignalArgs != null && input.Options.StartSignalArgs.Count > 0)
                 {
                     signalReq.SignalInput = new Payloads();
+                    var signalStorage = ExternalStorageContext.For(
+                        dataConverter,
+                        new IStorageDriverTargetInfo.Workflow(
+                            Client.Options.Namespace,
+                            req.WorkflowId,
+                            RunId: null,
+                            req.WorkflowType.Name));
                     signalReq.SignalInput.Payloads_.AddRange(
-                        await dataConverter.ToPayloadsAsync(input.Options.StartSignalArgs).ConfigureAwait(false));
+                        await dataConverter.ToPayloadsAsync(input.Options.StartSignalArgs, signalStorage).ConfigureAwait(false));
                 }
                 ForwardNexusRequestLinks(signalReq.Links);
                 var signalResp = await Client.Connection.WorkflowService.SignalWithStartWorkflowExecutionAsync(
@@ -843,11 +874,16 @@ namespace Temporalio.Client
                 DataConverter dataConverter,
                 IDictionary<string, Payload>? headers)
             {
+                var workflowId = options.Id ??
+                    throw new ArgumentException("ID required to start workflow");
+                var storage = ExternalStorageContext.For(
+                    dataConverter,
+                    new IStorageDriverTargetInfo.Workflow(
+                        Client.Options.Namespace, workflowId, RunId: null, WorkflowType: workflow));
                 var req = new StartWorkflowExecutionRequest()
                 {
                     Namespace = Client.Options.Namespace,
-                    WorkflowId = options.Id ??
-                        throw new ArgumentException("ID required to start workflow"),
+                    WorkflowId = workflowId,
                     WorkflowType = new WorkflowType() { Name = workflow },
                     TaskQueue = new TaskQueue()
                     {
@@ -861,8 +897,7 @@ namespace Temporalio.Client
                     RetryPolicy = options.RetryPolicy?.ToProto(),
                     RequestEagerExecution = options.RequestEagerStart,
                     UserMetadata = await dataConverter.ToUserMetadataAsync(
-                        options.StaticSummary, options.StaticDetails).
-                        ConfigureAwait(false),
+                        options.StaticSummary, options.StaticDetails, storage).ConfigureAwait(false),
                     Priority = options.Priority?.ToProto(),
                     VersioningOverride = options.VersioningOverride?.ToProto(),
                     OnConflictOptions = options.OnConflictOptions,
@@ -871,7 +906,7 @@ namespace Temporalio.Client
                 {
                     req.Input = new Payloads();
                     req.Input.Payloads_.AddRange(await dataConverter.ToPayloadsAsync(
-                        args).ConfigureAwait(false));
+                        args, storage).ConfigureAwait(false));
                 }
                 if (options.ExecutionTimeout != null)
                 {
@@ -903,7 +938,7 @@ namespace Temporalio.Client
                         }
                         req.Memo.Fields.Add(
                             field.Key,
-                            await dataConverter.ToPayloadAsync(field.Value).ConfigureAwait(false));
+                            await dataConverter.ToPayloadAsync(field.Value, storage).ConfigureAwait(false));
                     }
                 }
                 if (options.TypedSearchAttributes != null && options.TypedSearchAttributes.Count > 0)
@@ -945,7 +980,8 @@ namespace Temporalio.Client
                 WorkflowUpdateOptions options,
                 WorkflowUpdateStage waitForStage,
                 DataConverter dataConverter,
-                IDictionary<string, Payload>? headers)
+                IDictionary<string, Payload>? headers,
+                ExternalStorageContext storage)
             {
                 if (waitForStage == WorkflowUpdateStage.None)
                 {
@@ -978,7 +1014,7 @@ namespace Temporalio.Client
                 {
                     req.Request.Input.Args = new Payloads();
                     req.Request.Input.Args.Payloads_.AddRange(
-                        await dataConverter.ToPayloadsAsync(args).ConfigureAwait(false));
+                        await dataConverter.ToPayloadsAsync(args, storage).ConfigureAwait(false));
                 }
                 if (headers != null)
                 {

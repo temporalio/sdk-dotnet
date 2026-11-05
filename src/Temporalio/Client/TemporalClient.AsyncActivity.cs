@@ -26,6 +26,8 @@ namespace Temporalio.Client
             public override async Task HeartbeatAsyncActivityAsync(HeartbeatAsyncActivityInput input)
             {
                 var converter = DataConverterForAsyncActivity(input.DataConverterOverride);
+                var storage = ExternalStorageContext.For(
+                    converter, StorageTargetForAsyncActivity(input.Activity));
                 Payloads? details = null;
                 if (input.Options?.Details != null && input.Options.Details.Count > 0)
                 {
@@ -33,7 +35,7 @@ namespace Temporalio.Client
                     {
                         Payloads_ =
                         {
-                            await converter.ToPayloadsAsync(input.Options.Details).ConfigureAwait(false),
+                            await converter.ToPayloadsAsync(input.Options.Details, storage).ConfigureAwait(false),
                         },
                     };
                 }
@@ -81,7 +83,9 @@ namespace Temporalio.Client
             public override async Task CompleteAsyncActivityAsync(CompleteAsyncActivityInput input)
             {
                 var converter = DataConverterForAsyncActivity(input.DataConverterOverride);
-                var result = await converter.ToPayloadAsync(input.Result).ConfigureAwait(false);
+                var storage = ExternalStorageContext.For(
+                    converter, StorageTargetForAsyncActivity(input.Activity));
+                var result = await converter.ToPayloadAsync(input.Result, storage).ConfigureAwait(false);
                 if (input.Activity is AsyncActivityHandle.IdReference idRef)
                 {
                     await Client.Connection.WorkflowService.RespondActivityTaskCompletedByIdAsync(
@@ -118,7 +122,9 @@ namespace Temporalio.Client
             public override async Task FailAsyncActivityAsync(FailAsyncActivityInput input)
             {
                 var converter = DataConverterForAsyncActivity(input.DataConverterOverride);
-                var failure = await converter.ToFailureAsync(input.Exception).ConfigureAwait(false);
+                var storage = ExternalStorageContext.For(
+                    converter, StorageTargetForAsyncActivity(input.Activity));
+                var failure = await converter.ToFailureAsync(input.Exception, storage).ConfigureAwait(false);
                 Payloads? lastHeartbeatDetails = null;
                 if (input.Options?.LastHeartbeatDetails != null &&
                     input.Options.LastHeartbeatDetails.Count > 0)
@@ -128,7 +134,7 @@ namespace Temporalio.Client
                         Payloads_ =
                         {
                             await converter.ToPayloadsAsync(
-                                input.Options.LastHeartbeatDetails).ConfigureAwait(false),
+                                input.Options.LastHeartbeatDetails, storage).ConfigureAwait(false),
                         },
                     };
                 }
@@ -171,6 +177,8 @@ namespace Temporalio.Client
                 ReportCancellationAsyncActivityInput input)
             {
                 var converter = DataConverterForAsyncActivity(input.DataConverterOverride);
+                var storage = ExternalStorageContext.For(
+                    converter, StorageTargetForAsyncActivity(input.Activity));
                 Payloads? details = null;
                 if (input.Options?.Details != null && input.Options.Details.Count > 0)
                 {
@@ -178,7 +186,7 @@ namespace Temporalio.Client
                     {
                         Payloads_ =
                         {
-                            await converter.ToPayloadsAsync(input.Options.Details).ConfigureAwait(false),
+                            await converter.ToPayloadsAsync(input.Options.Details, storage).ConfigureAwait(false),
                         },
                     };
                 }
@@ -218,6 +226,15 @@ namespace Temporalio.Client
                 dataConverterOverride == null ?
                     Client.Options.DataConverter :
                     TemporalTransferTypePayloadConverter.Wrap(dataConverterOverride);
+
+            // An activity reported by its workflow identity stores on behalf of the scheduling
+            // workflow; a task token carries no identity to build a target from.
+            private IStorageDriverTargetInfo.Workflow? StorageTargetForAsyncActivity(
+                AsyncActivityHandle.Reference activity) =>
+                activity is AsyncActivityHandle.IdReference idRef
+                    ? new IStorageDriverTargetInfo.Workflow(
+                        Client.Options.Namespace, idRef.WorkflowId, idRef.RunId, WorkflowType: null)
+                    : null;
         }
     }
 }

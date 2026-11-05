@@ -59,7 +59,8 @@ namespace Temporalio.Client
             if (KnownOutcome!.Failure is { } failure)
             {
                 throw new WorkflowUpdateFailedException(
-                    await dataConverter.ToExceptionAsync(failure).ConfigureAwait(false));
+                    await dataConverter.ToExceptionAsync(
+                        failure, ExternalStorageContext.For(dataConverter)).ConfigureAwait(false));
             }
             else if (KnownOutcome.Success is { } success)
             {
@@ -70,7 +71,7 @@ namespace Temporalio.Client
                     return default!;
                 }
                 return await dataConverter.ToSingleValueAsync<TResult>(
-                    success.Payloads_).ConfigureAwait(false);
+                    success.Payloads_, ExternalStorageContext.For(dataConverter)).ConfigureAwait(false);
             }
             throw new InvalidOperationException($"Unrecognized outcome case: {KnownOutcome.ValueCase}");
         }

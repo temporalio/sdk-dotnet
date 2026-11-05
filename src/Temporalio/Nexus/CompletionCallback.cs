@@ -127,8 +127,10 @@ namespace Temporalio.Nexus
         /// Converts the callback to a protobuf message with the supplied data converter.
         /// </summary>
         /// <param name="converter">The data converter that encodes the source context.</param>
+        /// <param name="storage">External storage to offload a large source context through.</param>
         /// <returns>The protobuf callback message.</returns>
-        internal async Task<CallbackProto> ToProtoAsync(DataConverter converter) =>
+        internal async Task<CallbackProto> ToProtoAsync(
+            DataConverter converter, ExternalStorageContext storage) =>
             new()
             {
                 NexusHandler = new()
@@ -136,7 +138,7 @@ namespace Temporalio.Nexus
                     Service = Service,
                     Operation = Operation,
                     TaskQueueName = TaskQueue,
-                    SourceContext = await converter.ToPayloadAsync(SourceContext).ConfigureAwait(false),
+                    SourceContext = await converter.ToPayloadAsync(SourceContext, storage).ConfigureAwait(false),
                 },
             };
     }

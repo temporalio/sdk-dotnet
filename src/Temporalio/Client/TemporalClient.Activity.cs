@@ -110,6 +110,13 @@ namespace Temporalio.Client
                             ActivityType: input.Activity,
                             ActivityTaskQueue: input.Options.TaskQueue ?? throw new ArgumentException("Task queue required to start activity"),
                             IsLocal: false));
+                    var storage = ExternalStorageContext.For(
+                        dataConverter,
+                        new IStorageDriverTargetInfo.Activity(
+                            Client.Options.Namespace,
+                            input.Options.Id!,
+                            RunId: null,
+                            input.Activity));
 
                     var req = new StartActivityExecutionRequest()
                     {
@@ -126,7 +133,7 @@ namespace Temporalio.Client
                         IdConflictPolicy = input.Options.IdConflictPolicy,
                         RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                         UserMetadata = await dataConverter.ToUserMetadataAsync(
-                            input.Options.Summary, input.Options.StaticDetails).
+                            input.Options.Summary, input.Options.StaticDetails, storage).
                             ConfigureAwait(false),
                         Priority = input.Options.Priority?.ToProto(),
                         OnConflictOptions = input.Options.OnConflictOptions,
@@ -143,7 +150,7 @@ namespace Temporalio.Client
                     {
                         req.Input = new Payloads();
                         req.Input.Payloads_.AddRange(
-                            await dataConverter.ToPayloadsAsync(input.Args).ConfigureAwait(false));
+                            await dataConverter.ToPayloadsAsync(input.Args, storage).ConfigureAwait(false));
                     }
                     if (input.Options.ScheduleToCloseTimeout is TimeSpan s2c)
                     {

@@ -127,7 +127,8 @@ namespace Temporalio.Client
                                 throw new InvalidOperationException("No result present");
                             }
                             return await dataConverter.ToSingleValueAsync<TResult>(
-                                compAttr.Result.Payloads_).ConfigureAwait(false);
+                                compAttr.Result.Payloads_,
+                                ExternalStorageContext.For(dataConverter)).ConfigureAwait(false);
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionFailedEventAttributes:
                             var failAttr = evt.WorkflowExecutionFailedEventAttributes;
                             if (!string.IsNullOrEmpty(failAttr.NewExecutionRunId) && followRuns)
@@ -136,7 +137,9 @@ namespace Temporalio.Client
                                 break;
                             }
                             throw new WorkflowFailedException(
-                                await dataConverter.ToExceptionAsync(failAttr.Failure).ConfigureAwait(false));
+                                await dataConverter.ToExceptionAsync(
+                                    failAttr.Failure,
+                                    ExternalStorageContext.For(dataConverter)).ConfigureAwait(false));
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionCanceledEventAttributes:
                             var cancelAttr = evt.WorkflowExecutionCanceledEventAttributes;
                             throw new WorkflowFailedException(new CanceledFailureException(

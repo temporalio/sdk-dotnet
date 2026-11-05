@@ -53,6 +53,10 @@ namespace Temporalio.Client
                 if (input.Options?.Memo != null && input.Options.Memo.Count > 0)
                 {
                     req.Memo = new();
+                    // A schedule's own memo is not stored on behalf of any execution, so it has no
+                    // target.
+                    var storage = ExternalStorageContext.For(
+                        Client.Options.DataConverter, target: null);
                     foreach (var field in input.Options.Memo)
                     {
                         if (field.Value == null)
@@ -61,7 +65,7 @@ namespace Temporalio.Client
                         }
                         req.Memo.Fields.Add(
                             field.Key,
-                            await Client.Options.DataConverter.ToPayloadAsync(field.Value).ConfigureAwait(false));
+                            await Client.Options.DataConverter.ToPayloadAsync(field.Value, storage).ConfigureAwait(false));
                     }
                 }
                 if (input.Options?.TypedSearchAttributes != null && input.Options.TypedSearchAttributes.Count > 0)
