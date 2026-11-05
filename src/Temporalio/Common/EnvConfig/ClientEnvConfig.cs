@@ -49,7 +49,10 @@ namespace Temporalio.Common.EnvConfig
                 return connectOptions;
             }
 
-            var context = new ClientConfigExtensionContext(clientProfile, ExtensionEnv(options));
+            var context = new ClientConfigExtensionContext(clientProfile)
+            {
+                Env = ExtensionEnv(options),
+            };
             var plugins = new List<ITemporalClientPlugin>();
             foreach (var extension in extensions)
             {

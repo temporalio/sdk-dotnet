@@ -36,16 +36,31 @@ namespace Temporalio.Common.EnvConfig
     /// <summary>
     /// Input to <see cref="IClientConfigExtension.CreateClientPlugin" />.
     /// </summary>
-    /// <param name="Profile">The loaded profile, with core environment variables already
-    /// applied. The extension's config is in <see cref="ClientEnvConfig.Profile.Ext" />.</param>
-    /// <param name="Env">Environment variables to read extension environment variables from, or
-    /// null if environment loading is disabled. This is
-    /// <see cref="ClientEnvConfig.ProfileLoadOptions.OverrideEnvVars" /> if set, otherwise the
-    /// process environment.</param>
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    public sealed record ClientConfigExtensionContext(
-        ClientEnvConfig.Profile Profile,
-        IReadOnlyDictionary<string, string>? Env);
+    public sealed class ClientConfigExtensionContext
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClientConfigExtensionContext"/> class.
+        /// </summary>
+        /// <param name="profile">The loaded profile.</param>
+        // Add new fields as init-only properties, not constructor parameters, to keep this
+        // constructor compatible.
+        public ClientConfigExtensionContext(ClientEnvConfig.Profile profile) => Profile = profile;
+
+        /// <summary>
+        /// Gets the loaded profile, with core environment variables already applied. The
+        /// extension's config is in <see cref="ClientEnvConfig.Profile.Ext" />.
+        /// </summary>
+        public ClientEnvConfig.Profile Profile { get; }
+
+        /// <summary>
+        /// Gets the environment variables to read extension environment variables from, or null
+        /// if environment loading is disabled. This is
+        /// <see cref="ClientEnvConfig.ProfileLoadOptions.OverrideEnvVars" /> if set, otherwise the
+        /// process environment.
+        /// </summary>
+        public IReadOnlyDictionary<string, string>? Env { get; init; }
+    }
 }
