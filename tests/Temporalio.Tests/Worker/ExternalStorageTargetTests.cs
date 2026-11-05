@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.History.V1;
+using Temporalio.Bridge.Api.WorkflowCommands;
 using Temporalio.Client;
 using Temporalio.Client.Schedules;
 using Temporalio.Converters;
@@ -435,6 +436,94 @@ public class ExternalStorageTargetTests : WorkflowEnvironmentTestBase
         {
             await handle.DeleteAsync();
         }
+    }
+
+    // The command-to-target switch lists every command variant and throws on an unclassified one.
+    // The compiler cannot enforce that over the generated oneof, so this exercises every variant to
+    // catch a newly added command that nobody classified, rather than waiting for it to throw in a
+    // running worker.
+    [Fact]
+    public void StorageTargetForCommand_ClassifiesEveryCommandVariant()
+    {
+        var currentWorkflow = new IStorageDriverTargetInfo.Workflow("ns", "wf", "run", "WorkflowType");
+        var parent = new WorkflowInfo.ParentInfo("parent-ns", "parent-run", "parent-wf");
+        foreach (var variant in Enum.GetValues<WorkflowCommand.VariantOneofCase>())
+        {
+            // The unset variant carries no command to classify.
+            if (variant == WorkflowCommand.VariantOneofCase.None)
+            {
+                continue;
+            }
+
+            var command = CommandWithVariant(variant);
+            try
+            {
+                WorkflowWorker.StorageTargetForCommand(command, currentWorkflow, parent);
+            }
+            catch (InvalidOperationException e)
+            {
+                // Reaching the switch's fail-loud arm means the variant is unclassified.
+                Assert.Fail($"Command variant {variant} is not classified: {e.Message}");
+            }
+        }
+    }
+
+    // The signal-target switch lists every target variant and throws on an unhandled one. As with
+    // the command switch, this exercises every variant so a newly added target that nobody
+    // classified fails here rather than in a running worker.
+    [Fact]
+    public void StorageTargetForSignalExternal_TargetsEverySignalVariant()
+    {
+        var currentWorkflow = new IStorageDriverTargetInfo.Workflow("ns", "wf", "run", "WorkflowType");
+        foreach (var target in Enum.GetValues<SignalExternalWorkflowExecution.TargetOneofCase>())
+        {
+            // The unset target addresses no execution, so it alone has no target to assert.
+            if (target == SignalExternalWorkflowExecution.TargetOneofCase.None)
+            {
+                continue;
+            }
+
+            var signal = SignalWithTarget(target);
+            try
+            {
+                Assert.NotNull(
+                    WorkflowWorker.StorageTargetForSignalExternal(signal, currentWorkflow));
+            }
+            catch (InvalidOperationException e)
+            {
+                // Reaching the switch's fail-loud arm means the target is unhandled.
+                Assert.Fail($"Signal target {target} is not handled: {e.Message}");
+            }
+        }
+    }
+
+    // Builds a command with the given variant selected. The oneof property shares the variant's
+    // name, and setting it selects the variant.
+    private static WorkflowCommand CommandWithVariant(WorkflowCommand.VariantOneofCase variant)
+    {
+        var property = typeof(WorkflowCommand).GetProperty(variant.ToString())
+            ?? throw new InvalidOperationException($"No property for command variant {variant}");
+        var message = Activator.CreateInstance(property.PropertyType)
+            ?? throw new InvalidOperationException($"Could not build message for variant {variant}");
+        var command = new WorkflowCommand();
+        property.SetValue(command, message);
+        return command;
+    }
+
+    // Builds a signal with the given target selected. The oneof property shares the target's name,
+    // and setting it selects the target.
+    private static SignalExternalWorkflowExecution SignalWithTarget(
+        SignalExternalWorkflowExecution.TargetOneofCase target)
+    {
+        var property = typeof(SignalExternalWorkflowExecution).GetProperty(target.ToString())
+            ?? throw new InvalidOperationException($"No property for signal target {target}");
+        var value = property.PropertyType == typeof(string)
+            ? "child"
+            : Activator.CreateInstance(property.PropertyType)
+                ?? throw new InvalidOperationException($"Could not build value for signal target {target}");
+        var signal = new SignalExternalWorkflowExecution();
+        property.SetValue(signal, value);
+        return signal;
     }
 
     private static WorkflowOptions NewOptions(TemporalWorker worker) =>

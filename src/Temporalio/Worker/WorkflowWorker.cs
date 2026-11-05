@@ -129,15 +129,17 @@ namespace Temporalio.Worker
             }
         }
 
-        // A proto string field is the empty string when unset; a target field is null when unknown.
-        private static string? NullIfEmpty(string value) =>
-            string.IsNullOrEmpty(value) ? null : value;
-
-        // The storage target for a single completion command. A workflow task's base target is the
-        // current workflow, and the commands below name something else, since the payload they
-        // carry is read back by a different execution. Every command variant is listed so a new
-        // one fails here rather than silently inheriting the current workflow.
-        private static IStorageDriverTargetInfo.Workflow? StorageTargetForCommand(
+        /// <summary>
+        /// Determines the storage target for a single completion command. A workflow task's base
+        /// target is the current workflow; the commands handled below name another execution that
+        /// reads the payload back. Every command variant is listed so a newly added one fails here
+        /// rather than silently inheriting the current workflow.
+        /// </summary>
+        /// <param name="command">Command whose payloads are being offloaded.</param>
+        /// <param name="currentWorkflow">Target for the workflow producing this completion.</param>
+        /// <param name="parent">Parent of the current workflow, if it has one.</param>
+        /// <returns>Target to offload the command's payloads under, or null for no target.</returns>
+        internal static IStorageDriverTargetInfo.Workflow? StorageTargetForCommand(
             WorkflowCommand command,
             IStorageDriverTargetInfo.Workflow? currentWorkflow,
             WorkflowInfo.ParentInfo? parent) =>
@@ -198,7 +200,14 @@ namespace Temporalio.Worker
                     $"Workflow command {command.VariantCase} has no assigned external storage target"),
             };
 
-        private static IStorageDriverTargetInfo.Workflow? StorageTargetForSignalExternal(
+        /// <summary>
+        /// Determines the storage target for a signal to an external workflow, which is the workflow
+        /// the signal addresses. Every target variant is listed so a newly added one fails here.
+        /// </summary>
+        /// <param name="signal">Signal command whose payloads are being offloaded.</param>
+        /// <param name="currentWorkflow">Target for the workflow sending the signal.</param>
+        /// <returns>Target to offload the signal's payloads under, or null for no target.</returns>
+        internal static IStorageDriverTargetInfo.Workflow? StorageTargetForSignalExternal(
             SignalExternalWorkflowExecution signal,
             IStorageDriverTargetInfo.Workflow? currentWorkflow) =>
             signal.TargetCase switch
@@ -219,8 +228,16 @@ namespace Temporalio.Worker
                         WorkflowType = null,
                     },
 
-                _ => currentWorkflow,
+                // The signal addresses no one, so there is no execution to target.
+                SignalExternalWorkflowExecution.TargetOneofCase.None => null,
+
+                _ => throw new InvalidOperationException(
+                    $"Signal to external workflow has an unhandled target {signal.TargetCase}"),
             };
+
+        // A proto string field is the empty string when unset; a target field is null when unknown.
+        private static string? NullIfEmpty(string value) =>
+            string.IsNullOrEmpty(value) ? null : value;
 
         private async Task HandleActivationAsync(WorkflowActivation act)
         {
