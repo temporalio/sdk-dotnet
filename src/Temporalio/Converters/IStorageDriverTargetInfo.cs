@@ -8,7 +8,9 @@ namespace Temporalio.Converters
     /// implementations used by the SDK are <see cref="Workflow" /> and <see cref="Activity" />.
     /// </summary>
     /// <remarks>
-    /// A target is not always known, so drivers must handle a null target and null members.
+    /// A target is not always known, so drivers must handle a null target and null members. The
+    /// target execution may also already be closed, so drivers must not assume it is still running
+    /// or tie the lifetime of stored payloads to it.
     /// </remarks>
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
