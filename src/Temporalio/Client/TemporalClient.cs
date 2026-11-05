@@ -34,13 +34,25 @@ namespace Temporalio.Client
             options.DataConverter = TemporalTransferTypePayloadConverter.Wrap(options.DataConverter);
             Connection = connection;
             Options = options;
-            OutboundInterceptor = new Impl(this);
-            // Build from interceptors in reverse
-            if (options.Interceptors != null)
-            {
-                OutboundInterceptor = options.Interceptors.Reverse().Aggregate(
-                    OutboundInterceptor, (v, impl) => impl.InterceptClient(v));
-            }
+            OutboundInterceptor = NewOutboundInterceptor(impl => impl);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TemporalClient"/> class sharing another
+        /// client's connection and already-configured options, with an extra innermost interceptor.
+        /// </summary>
+        /// <param name="client">Client to share connection and options with.</param>
+        /// <param name="interceptImpl">Function wrapping the client's base implementation, beneath
+        /// all configured interceptors.</param>
+        internal TemporalClient(
+            TemporalClient client,
+            Func<Interceptors.ClientOutboundInterceptor, Interceptors.ClientOutboundInterceptor> interceptImpl)
+        {
+            Connection = client.Connection;
+            // Options are reused rather than passed through the public constructor so plugins do
+            // not configure them a second time.
+            Options = client.Options;
+            OutboundInterceptor = NewOutboundInterceptor(interceptImpl);
         }
 
         /// <inheritdoc />
@@ -119,6 +131,23 @@ namespace Temporalio.Client
             var newOptions = (RpcOptions)origOptions.Clone();
             newOptions.Retry = true;
             return newOptions;
+        }
+
+        // Rebuilt rather than shared per client so handles created through the chain reference
+        // this client.
+        private Interceptors.ClientOutboundInterceptor NewOutboundInterceptor(
+            Func<Interceptors.ClientOutboundInterceptor, Interceptors.ClientOutboundInterceptor> interceptImpl)
+        {
+            // Wrapped beneath configured interceptors so internal option values it sets cannot be
+            // dropped by an interceptor that replaces the options rather than cloning them.
+            var interceptor = interceptImpl(new Impl(this));
+            // Build from interceptors in reverse
+            if (Options.Interceptors != null)
+            {
+                interceptor = Options.Interceptors.Reverse().Aggregate(
+                    interceptor, (v, impl) => impl.InterceptClient(v));
+            }
+            return interceptor;
         }
 
         internal partial class Impl : Interceptors.ClientOutboundInterceptor

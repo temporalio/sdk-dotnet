@@ -1,0 +1,1 @@
+**Experimental**: Signals and signal-with-start calls sent through `ITemporalNexusClient.TemporalClient` in a Temporal operation handler now reuse the operation's request ID, so a retried Nexus task no longer delivers the same signal twice.

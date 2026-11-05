@@ -36,6 +36,14 @@ namespace Temporalio.Nexus
         /// Gets the underlying Temporal client for advanced use cases such as sending signals
         /// or queries.
         /// </summary>
+        /// <remarks>
+        /// When the worker's client is a <see cref="Client.TemporalClient"/>, signals and
+        /// signal-with-start calls through this client reuse the operation's request ID so a retried
+        /// Nexus task does not deliver them twice. Only one may be sent per invocation; a second
+        /// throws a <see cref="HandlerErrorType.BadRequest"/> <see cref="HandlerException"/> unless
+        /// the first failed. <see cref="NexusOperationExecutionContext.TemporalClient"/> has neither
+        /// behavior.
+        /// </remarks>
         ITemporalClient TemporalClient { get; }
 
         /// <summary>
