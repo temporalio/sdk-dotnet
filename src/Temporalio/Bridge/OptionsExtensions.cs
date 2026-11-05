@@ -703,9 +703,18 @@ namespace Temporalio.Bridge
                         "MaxConcurrentActivities, MaxConcurrentLocalActivities, or MaxConcurrentNexusTasks.");
                 }
             }
-            options.WorkflowTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentWorkflowTaskPolls);
-            options.ActivityTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentActivityTaskPolls);
-            options.NexusTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentNexusTaskPolls);
+            if (options.WorkflowTaskPollerBehavior is null && options.MaxConcurrentWorkflowTaskPollsIfSet is { } wfPolls)
+            {
+                options.WorkflowTaskPollerBehavior = new PollerBehavior.SimpleMaximum(wfPolls);
+            }
+            if (options.ActivityTaskPollerBehavior is null && options.MaxConcurrentActivityTaskPollsIfSet is { } actPolls)
+            {
+                options.ActivityTaskPollerBehavior = new PollerBehavior.SimpleMaximum(actPolls);
+            }
+            if (options.NexusTaskPollerBehavior is null && options.MaxConcurrentNexusTaskPollsIfSet is { } nexusPolls)
+            {
+                options.NexusTaskPollerBehavior = new PollerBehavior.SimpleMaximum(nexusPolls);
+            }
             var workerPluginNames = options.Plugins?
                 .Select(p => p.Name)
                 ?? Enumerable.Empty<string>();
@@ -736,10 +745,10 @@ namespace Temporalio.Bridge
                 max_task_queue_activities_per_second = options.MaxTaskQueueActivitiesPerSecond ?? 0,
                 graceful_shutdown_period_millis =
                     (ulong)options.GracefulShutdownTimeout.TotalMilliseconds,
-                workflow_task_poller_behavior = options.WorkflowTaskPollerBehavior.ToInteropPollerBehavior(scope),
+                workflow_task_poller_behavior = options.WorkflowTaskPollerBehavior?.ToInteropPollerBehavior(scope) ?? default,
                 nonsticky_to_sticky_poll_ratio = options.NonStickyToStickyPollRatio,
-                activity_task_poller_behavior = options.ActivityTaskPollerBehavior.ToInteropPollerBehavior(scope),
-                nexus_task_poller_behavior = options.NexusTaskPollerBehavior.ToInteropPollerBehavior(scope),
+                activity_task_poller_behavior = options.ActivityTaskPollerBehavior?.ToInteropPollerBehavior(scope) ?? default,
+                nexus_task_poller_behavior = options.NexusTaskPollerBehavior?.ToInteropPollerBehavior(scope) ?? default,
                 nondeterminism_as_workflow_fail =
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
