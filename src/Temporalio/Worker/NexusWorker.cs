@@ -346,7 +346,10 @@ namespace Temporalio.Worker
             try
             {
                 await externalStorage.RetrieveAsync(
-                    PayloadVisitors.VisitAsync, task, running.CancellationTokenSource.Token).ConfigureAwait(false);
+                    PayloadVisitors.VisitAsync,
+                    task,
+                    metrics: null,
+                    running.CancellationTokenSource.Token).ConfigureAwait(false);
 
                 // Handle each case
                 switch (task.Request.VariantCase)

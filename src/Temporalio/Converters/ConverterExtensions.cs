@@ -173,7 +173,7 @@ namespace Temporalio.Converters
                     payloads.ToList()).ConfigureAwait(false);
             }
             return await storage.Runner
-                .StoreAsync(payloads.ToList(), storage.Target, CancellationToken.None)
+                .StoreAsync(payloads.ToList(), storage.Target, metrics: null, CancellationToken.None)
                 .ConfigureAwait(false);
         }
 
@@ -195,7 +195,7 @@ namespace Temporalio.Converters
                     new Payload[] { payload }).ConfigureAwait(false)).First();
             }
             return (await storage.Runner
-                .StoreAsync(new[] { payload }, storage.Target, CancellationToken.None)
+                .StoreAsync(new[] { payload }, storage.Target, metrics: null, CancellationToken.None)
                 .ConfigureAwait(false)).First();
         }
 
@@ -258,7 +258,7 @@ namespace Temporalio.Converters
             ExternalStorageContext storage)
         {
             payloads = await storage.Runner
-                .RetrieveAsync(payloads, CancellationToken.None).ConfigureAwait(false);
+                .RetrieveAsync(payloads, metrics: null, CancellationToken.None).ConfigureAwait(false);
 
             // Decode, then expect single payload
             if (converter.PayloadCodec != null)
@@ -286,7 +286,8 @@ namespace Temporalio.Converters
             this DataConverter converter, Failure failure, ExternalStorageContext storage)
         {
             await storage.Runner.RetrieveAsync(
-                PayloadVisitors.VisitAsync, failure, CancellationToken.None).ConfigureAwait(false);
+                PayloadVisitors.VisitAsync, failure, metrics: null, CancellationToken.None)
+                .ConfigureAwait(false);
 
             // Decode then convert
             if (converter.PayloadCodec != null)
@@ -317,6 +318,7 @@ namespace Temporalio.Converters
                     PayloadVisitors.VisitAsync,
                     failure,
                     storage.Target,
+                    metrics: null,
                     CancellationToken.None)
                 .ConfigureAwait(false);
             return failure;
