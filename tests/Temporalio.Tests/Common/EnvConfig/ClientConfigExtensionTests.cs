@@ -114,19 +114,19 @@ value = ""first-value""
                 ["TEMPORAL_EXT_FIRST_VALUE"] = "env-value",
             };
             var calls = new List<string>();
-            var first = new TestExtension("first", req =>
+            var first = new TestExtension("first", ctx =>
             {
                 calls.Add("first");
                 // Env vars have already been applied to the profile
-                Assert.Equal("env-address", req.Profile.Address);
-                Assert.Equal("file-value", req.Profile.Ext!["first"].GetProperty("value").GetString());
-                Assert.Same(env, req.Env);
-                return new SimplePlugin($"first-{req.Env!["TEMPORAL_EXT_FIRST_VALUE"]}");
+                Assert.Equal("env-address", ctx.Profile.Address);
+                Assert.Equal("file-value", ctx.Profile.Ext!["first"].GetProperty("value").GetString());
+                Assert.Same(env, ctx.Env);
+                return new SimplePlugin($"first-{ctx.Env!["TEMPORAL_EXT_FIRST_VALUE"]}");
             });
-            var noop = new TestExtension("noop", req =>
+            var noop = new TestExtension("noop", ctx =>
             {
                 calls.Add("noop");
-                Assert.False(req.Profile.Ext!.ContainsKey("noop"));
+                Assert.False(ctx.Profile.Ext!.ContainsKey("noop"));
                 return null;
             });
             var second = new TestExtension("second", _ =>
@@ -179,9 +179,9 @@ value = ""file-value""
             var gotEnvs = new List<IReadOnlyDictionary<string, string>?>();
             var extensions = new[]
             {
-                new TestExtension("ext", req =>
+                new TestExtension("ext", ctx =>
                 {
-                    gotEnvs.Add(req.Env);
+                    gotEnvs.Add(ctx.Env);
                     return null;
                 }),
             };
@@ -320,10 +320,10 @@ path = {JsonSerializer.Serialize(keyPath)}
 
         private sealed class TestExtension : IClientConfigExtension
         {
-            private readonly Func<ClientConfigExtensionRequest, ITemporalClientPlugin?> createClientPlugin;
+            private readonly Func<ClientConfigExtensionContext, ITemporalClientPlugin?> createClientPlugin;
 
             public TestExtension(
-                string name, Func<ClientConfigExtensionRequest, ITemporalClientPlugin?> createClientPlugin)
+                string name, Func<ClientConfigExtensionContext, ITemporalClientPlugin?> createClientPlugin)
             {
                 Name = name;
                 this.createClientPlugin = createClientPlugin;
@@ -331,8 +331,8 @@ path = {JsonSerializer.Serialize(keyPath)}
 
             public string Name { get; }
 
-            public ITemporalClientPlugin? CreateClientPlugin(ClientConfigExtensionRequest request) =>
-                createClientPlugin(request);
+            public ITemporalClientPlugin? CreateClientPlugin(ClientConfigExtensionContext context) =>
+                createClientPlugin(context);
         }
 
         /// <summary>
@@ -347,10 +347,10 @@ path = {JsonSerializer.Serialize(keyPath)}
         {
             public string Name => "api_key_file";
 
-            public ITemporalClientPlugin? CreateClientPlugin(ClientConfigExtensionRequest request)
+            public ITemporalClientPlugin? CreateClientPlugin(ClientConfigExtensionContext context)
             {
                 string? keyPath = null;
-                if (request.Profile.Ext?.TryGetValue(Name, out var config) == true &&
+                if (context.Profile.Ext?.TryGetValue(Name, out var config) == true &&
                     config.TryGetProperty("path", out var raw))
                 {
                     if (raw.ValueKind != JsonValueKind.String)
@@ -359,7 +359,7 @@ path = {JsonSerializer.Serialize(keyPath)}
                     }
                     keyPath = raw.GetString();
                 }
-                if (request.Env?.TryGetValue("TEMPORAL_EXT_API_KEY_FILE_PATH", out var envPath) == true)
+                if (context.Env?.TryGetValue("TEMPORAL_EXT_API_KEY_FILE_PATH", out var envPath) == true)
                 {
                     keyPath = envPath;
                 }

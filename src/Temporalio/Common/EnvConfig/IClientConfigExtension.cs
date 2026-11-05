@@ -28,9 +28,9 @@ namespace Temporalio.Common.EnvConfig
         /// Read this extension's config from the profile and env, and create a plugin that applies
         /// it to the client.
         /// </summary>
-        /// <param name="request">The loaded profile and env.</param>
+        /// <param name="context">The loaded profile and env.</param>
         /// <returns>The plugin, or null if there's nothing to apply.</returns>
-        ITemporalClientPlugin? CreateClientPlugin(ClientConfigExtensionRequest request);
+        ITemporalClientPlugin? CreateClientPlugin(ClientConfigExtensionContext context);
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ namespace Temporalio.Common.EnvConfig
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    public sealed record ClientConfigExtensionRequest(
+    public sealed record ClientConfigExtensionContext(
         ClientEnvConfig.Profile Profile,
         IReadOnlyDictionary<string, string>? Env);
 }

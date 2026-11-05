@@ -49,14 +49,14 @@ namespace Temporalio.Common.EnvConfig
                 return connectOptions;
             }
 
-            var request = new ClientConfigExtensionRequest(clientProfile, ExtensionEnv(options));
+            var context = new ClientConfigExtensionContext(clientProfile, ExtensionEnv(options));
             var plugins = new List<ITemporalClientPlugin>();
             foreach (var extension in extensions)
             {
                 ITemporalClientPlugin? plugin;
                 try
                 {
-                    plugin = extension.CreateClientPlugin(request);
+                    plugin = extension.CreateClientPlugin(context);
                 }
                 catch (Exception e)
                 {
