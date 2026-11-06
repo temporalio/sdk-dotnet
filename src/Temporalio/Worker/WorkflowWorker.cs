@@ -313,7 +313,7 @@ namespace Temporalio.Worker
                 }
                 // External storage is independent of the codec, so this runs even when there is none.
                 await externalStorage.RetrieveAsync(
-                    PayloadVisitors.VisitAsync, act, downloadMetrics, CancellationToken.None)
+                    PayloadVisitors.Walk, act, downloadMetrics, CancellationToken.None)
                     .ConfigureAwait(false);
                 if (codecContext != null)
                 {
@@ -471,7 +471,7 @@ namespace Temporalio.Worker
                 {
                     var target = StorageTargetForCommand(command, currentWorkflow, parent);
                     await externalStorage.StoreAsync(
-                        PayloadVisitors.VisitAsync, command, target, metrics, CancellationToken.None)
+                        PayloadVisitors.Walk, command, target, metrics, CancellationToken.None)
                         .ConfigureAwait(false);
                 }
             }
@@ -479,7 +479,7 @@ namespace Temporalio.Worker
             if (comp.Failed != null)
             {
                 await externalStorage.StoreAsync(
-                    PayloadVisitors.VisitAsync,
+                    PayloadVisitors.Walk,
                     comp.Failed,
                     currentWorkflow,
                     metrics,

@@ -64,26 +64,40 @@ namespace Temporalio.Converters
 
         /// <inheritdoc />
         public Task RetrieveAsync<T>(
-            Func<T, PayloadVisitors.PayloadVisitor, PayloadVisitors.PayloadsVisitor, Task> visit,
+            Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
             T message,
             StorageOperationMetricsBuilder? metrics,
             CancellationToken cancellationToken) =>
-            visit(
+            PayloadVisitors.VisitAsync(
                 message,
-                payload => RetrieveAsync(payload, metrics, cancellationToken),
-                payloads => RetrieveAsync(payloads, metrics, cancellationToken));
+                walk,
+                new PayloadVisitors.VisitOptions(
+                    async (payload, ct) => (await RetrieveAsync(new[] { payload }, metrics, ct)
+                        .ConfigureAwait(false)).Single(),
+                    (payloads, ct) => RetrieveAsync(payloads, metrics, ct))
+                {
+                    MaxConcurrency = storage.Concurrency.MaxOperationsPerMessage,
+                    CancellationToken = cancellationToken,
+                });
 
         /// <inheritdoc />
         public Task StoreAsync<T>(
-            Func<T, PayloadVisitors.PayloadVisitor, PayloadVisitors.PayloadsVisitor, Task> visit,
+            Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
             T message,
             IStorageDriverTargetInfo? target,
             StorageOperationMetricsBuilder? metrics,
             CancellationToken cancellationToken) =>
-            visit(
+            PayloadVisitors.VisitAsync(
                 message,
-                payload => StoreAsync(payload, target, metrics, cancellationToken),
-                payloads => StoreAsync(payloads, target, metrics, cancellationToken));
+                walk,
+                new PayloadVisitors.VisitOptions(
+                    async (payload, ct) => (await StoreAsync(new[] { payload }, target, metrics, ct)
+                        .ConfigureAwait(false)).Single(),
+                    (payloads, ct) => StoreAsync(payloads, target, metrics, ct))
+                {
+                    MaxConcurrency = storage.Concurrency.MaxOperationsPerMessage,
+                    CancellationToken = cancellationToken,
+                });
 
         /// <summary>
         /// Replace every payload at or above the configured size threshold with a reference,
@@ -189,34 +203,6 @@ namespace Temporalio.Converters
         }
 
         /// <summary>
-        /// Store a single payload, replacing its contents in place if it is stored.
-        /// </summary>
-        /// <param name="payload">Payload to store, modified in place.</param>
-        /// <param name="target">
-        /// Execution the stored payload is offloaded on behalf of, carried on the store contexts
-        /// handed to drivers. Null when no target is known.
-        /// </param>
-        /// <param name="metrics">Accumulates what was stored, or null to not measure it.</param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>A task that completes when the payload is stored.</returns>
-        public async Task StoreAsync(
-            Payload payload,
-            IStorageDriverTargetInfo? target,
-            StorageOperationMetricsBuilder? metrics,
-            CancellationToken cancellationToken)
-        {
-            // The driver may keep the payload it is handed, and this one is overwritten below, so it
-            // gets a copy. Cloning shares the immutable data bytes, so only the metadata is copied.
-            var copy = payload.Clone();
-            var result = (await StoreAsync(new[] { copy }, target, metrics, cancellationToken)
-                .ConfigureAwait(false)).Single();
-            if (!ReferenceEquals(result, copy))
-            {
-                payload.ReplaceWith(result);
-            }
-        }
-
-        /// <summary>
         /// Replace every reference with the payload the driver returns for it, preserving order.
         /// </summary>
         /// <param name="payloads">Payloads of one field.</param>
@@ -313,26 +299,6 @@ namespace Temporalio.Converters
             return result;
         }
 
-        /// <summary>
-        /// Retrieve a single reference, replacing its contents in place.
-        /// </summary>
-        /// <param name="payload">Payload to retrieve if it is a reference, modified in place.</param>
-        /// <param name="metrics">Accumulates what was retrieved, or null to not measure it.</param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>A task that completes when the payload is retrieved.</returns>
-        public async Task RetrieveAsync(
-            Payload payload,
-            StorageOperationMetricsBuilder? metrics,
-            CancellationToken cancellationToken)
-        {
-            var result = (await RetrieveAsync(new[] { payload }, metrics, cancellationToken)
-                .ConfigureAwait(false)).Single();
-            if (!ReferenceEquals(result, payload))
-            {
-                payload.ReplaceWith(result);
-            }
-        }
-
         // A cancellation that matches the token is the caller stopping the work, such as a worker
         // shutting down, and must propagate as cancellation rather than become a storage failure. A
         // driver that raises cancellation for its own reason while the token is not set is a real
@@ -385,25 +351,30 @@ namespace Temporalio.Converters
             public static readonly UnconfiguredRunner Instance = new();
 
             public Task RetrieveAsync<T>(
-                Func<T, PayloadVisitors.PayloadVisitor, PayloadVisitors.PayloadsVisitor, Task> visit,
+                Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
                 T message,
                 StorageOperationMetricsBuilder? metrics,
                 CancellationToken cancellationToken) =>
-                visit(
+                PayloadVisitors.VisitAsync(
                     message,
-                    payload =>
-                    {
-                        RejectIfReference(payload);
-                        return Task.CompletedTask;
-                    },
-                    payloads =>
-                    {
-                        foreach (var payload in payloads)
+                    walk,
+                    new PayloadVisitors.VisitOptions(
+                        (payload, _) =>
                         {
                             RejectIfReference(payload);
-                        }
+                            return Task.FromResult(payload);
+                        },
+                        (payloads, _) =>
+                        {
+                            foreach (var payload in payloads)
+                            {
+                                RejectIfReference(payload);
+                            }
 
-                        return Task.FromResult(payloads);
+                            return Task.FromResult(payloads);
+                        })
+                    {
+                        CancellationToken = cancellationToken,
                     });
 
             public Task<IReadOnlyCollection<Payload>> RetrieveAsync(
@@ -420,7 +391,7 @@ namespace Temporalio.Converters
             }
 
             public Task StoreAsync<T>(
-                Func<T, PayloadVisitors.PayloadVisitor, PayloadVisitors.PayloadsVisitor, Task> visit,
+                Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
                 T message,
                 IStorageDriverTargetInfo? target,
                 StorageOperationMetricsBuilder? metrics,

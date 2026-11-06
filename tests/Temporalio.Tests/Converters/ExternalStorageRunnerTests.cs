@@ -173,56 +173,6 @@ public class ExternalStorageRunnerTests : TestBase
     }
 
     [Fact]
-    public async Task StoreAsync_SinglePayload_ReplacesInPlace()
-    {
-        var runner = Runner(Storage(new MapDriver("mem"), threshold: 1));
-        var payload = Sized(50);
-
-        await runner.StoreAsync(payload, null, metrics: null, default);
-
-        Assert.True(ExternalStorageReferences.IsPlainReference(payload));
-    }
-
-    [Fact]
-    public async Task StoreAsync_SinglePayloadBelowThreshold_LeavesItUnchanged()
-    {
-        var runner = Runner(Storage(new MapDriver("mem"), threshold: 1_000_000));
-        var payload = Sized(8);
-        var before = payload.Clone();
-
-        await runner.StoreAsync(payload, null, metrics: null, default);
-
-        Assert.Equal(before, payload);
-    }
-
-    [Fact]
-    public async Task StoreAsync_SinglePayload_LeavesTheDriversPayloadIntact()
-    {
-        var driver = new MapDriver("mem");
-        var runner = Runner(Storage(driver, threshold: 1));
-        var payload = Sized(50);
-        var before = payload.Clone();
-
-        await runner.StoreAsync(payload, null, metrics: null, default);
-
-        Assert.Equal(before, driver.Stored.Single().Value);
-    }
-
-    [Fact]
-    public async Task RetrieveAsync_SinglePayload_ReplacesInPlace()
-    {
-        var runner = Runner(Storage(new MapDriver("mem"), threshold: 1));
-        var payload = Sized(50);
-        var expected = payload.Clone();
-
-        await runner.StoreAsync(payload, null, metrics: null, default);
-        Assert.True(ExternalStorageReferences.IsPlainReference(payload));
-        await runner.RetrieveAsync(payload, metrics: null, default);
-
-        Assert.Equal(expected, payload);
-    }
-
-    [Fact]
     public async Task RetrieveAsync_TwoDrivers_RunConcurrently()
     {
         // Both drivers share a two-party barrier: each retrieve blocks until the other is also
@@ -327,9 +277,10 @@ public class ExternalStorageRunnerTests : TestBase
             "my-driver",
             new Dictionary<string, string> { ["key"] = "k" },
             originalSizeBytes: 1024);
+        var payloads = new Payloads { Payloads_ = { reference } };
 
         var error = await Assert.ThrowsAsync<ExternalStorageNotConfiguredException>(
-            () => runner.RetrieveAsync(PayloadVisitors.VisitAsync, reference, metrics: null, CancellationToken.None));
+            () => runner.RetrieveAsync(PayloadVisitors.Walk, payloads, metrics: null, CancellationToken.None));
         Assert.Contains("[TMPRL1105]", error.Message);
     }
 
@@ -338,9 +289,10 @@ public class ExternalStorageRunnerTests : TestBase
     {
         var runner = ExternalStorageRunner.Create(null);
         var plain = new Payload { Data = ByteString.CopyFromUtf8("not a reference") };
+        var payloads = new Payloads { Payloads_ = { plain } };
 
         // Must not throw.
-        await runner.RetrieveAsync(PayloadVisitors.VisitAsync, plain, metrics: null, CancellationToken.None);
+        await runner.RetrieveAsync(PayloadVisitors.Walk, payloads, metrics: null, CancellationToken.None);
     }
 
     [Fact]
@@ -356,7 +308,7 @@ public class ExternalStorageRunnerTests : TestBase
             },
         };
 
-        await runner.RetrieveAsync(PayloadVisitors.VisitAsync, payloads, metrics: null, CancellationToken.None);
+        await runner.RetrieveAsync(PayloadVisitors.Walk, payloads, metrics: null, CancellationToken.None);
 
         Assert.Equal(2, payloads.Payloads_.Count);
         Assert.Equal("a", payloads.Payloads_[0].Data.ToStringUtf8());
@@ -374,11 +326,12 @@ public class ExternalStorageRunnerTests : TestBase
             "my-driver",
             new Dictionary<string, string> { ["key"] = "k" },
             originalSizeBytes: 1024);
+        var payloads = new Payloads { Payloads_ = { reference } };
 
-        await runner.RetrieveAsync(PayloadVisitors.VisitAsync, reference, metrics: null, CancellationToken.None);
+        await runner.RetrieveAsync(PayloadVisitors.Walk, payloads, metrics: null, CancellationToken.None);
 
-        // Configured storage retrieves the reference in place from the driver.
-        Assert.Equal("retrieved", reference.Data.ToStringUtf8());
+        // Configured storage retrieves the reference from the driver.
+        Assert.Equal("retrieved", payloads.Payloads_[0].Data.ToStringUtf8());
     }
 
     [Fact]
@@ -457,7 +410,7 @@ public class ExternalStorageRunnerTests : TestBase
         var message = new Payloads { Payloads_ = { Sized(100), Sized(100) } };
         var metrics = new StorageOperationMetricsBuilder();
 
-        await runner.StoreAsync(PayloadVisitors.VisitAsync, message, null, metrics, default);
+        await runner.StoreAsync(PayloadVisitors.Walk, message, null, metrics, default);
 
         var proto = metrics.ToProto();
         Assert.NotNull(proto);
@@ -470,10 +423,10 @@ public class ExternalStorageRunnerTests : TestBase
     {
         var runner = Runner(Storage(new MapDriver("mem"), threshold: 1));
         var message = new Payloads { Payloads_ = { Sized(100) } };
-        await runner.StoreAsync(PayloadVisitors.VisitAsync, message, null, metrics: null, default);
+        await runner.StoreAsync(PayloadVisitors.Walk, message, null, metrics: null, default);
         var metrics = new StorageOperationMetricsBuilder();
 
-        await runner.RetrieveAsync(PayloadVisitors.VisitAsync, message, metrics, default);
+        await runner.RetrieveAsync(PayloadVisitors.Walk, message, metrics, default);
 
         var proto = metrics.ToProto();
         Assert.NotNull(proto);
