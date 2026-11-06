@@ -1,0 +1,1 @@
+`DefaultFailureConverter.WithEncodedCommonAttributes` now also encodes the message and stack trace of nested causes when a previously received failure exception is thrown again. Previously the decoded cause messages were sent in plain text.
