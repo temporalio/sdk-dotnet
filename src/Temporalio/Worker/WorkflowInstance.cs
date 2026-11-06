@@ -218,9 +218,11 @@ namespace Temporalio.Worker
                     RunId: start.RootWorkflow.RunId,
                     WorkflowId: start.RootWorkflow.WorkflowId);
             }
+            // A retry run receives the previous run's closing failure, which was encoded with the
+            // same context as this run's
             var lastFailure = start.ContinuedFailure == null ?
-                null : failureConverterWorkflowContext.ToException(
-                    start.ContinuedFailure, payloadConverterWorkflowContext);
+                null : failureConverterResultContext.ToException(
+                    start.ContinuedFailure, payloadConverterResultContext);
             var lastResult = start.LastCompletionResult?.Payloads_.Select(v => new RawValue(v)).ToArray();
             static string? NonEmptyOrNull(string s) => string.IsNullOrEmpty(s) ? null : s;
             Info = new(

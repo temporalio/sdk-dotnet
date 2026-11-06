@@ -215,7 +215,7 @@ namespace Temporalio.Worker
                     case WorkflowActivationJob.VariantOneofCase.InitializeWorkflow:
                         if (context.CodecWorkflowContext != null)
                         {
-                            await DecodeAsync(context.CodecWorkflowContext, job.InitializeWorkflow).ConfigureAwait(false);
+                            await DecodeAsync(context, context.CodecWorkflowContext, job.InitializeWorkflow).ConfigureAwait(false);
                         }
                         break;
                 }
@@ -493,12 +493,20 @@ namespace Temporalio.Worker
             }
         }
 
-        private static async Task DecodeAsync(IPayloadCodec codec, InitializeWorkflow init)
+        private static async Task DecodeAsync(
+            WorkflowCodecContext context, IPayloadCodec codec, InitializeWorkflow init)
         {
+            // A retry or cron run receives the previous run's closing failure or result, which that
+            // run encoded with the Nexus context of the handler that started it. The server carries
+            // the context over to the new run. The instance does not exist yet on this activation,
+            // so the context comes from the job.
+            var previousOutcomeCodec = context.CodecNoContext is IWithSerializationContext<IPayloadCodec> withContext &&
+                ISerializationContext.Nexus.FromProto(init.PropagatedNexusSerializationContext) is { } nexusContext ?
+                withContext.WithSerializationContext(nexusContext) : codec;
             await PayloadCodecHelper.DecodeAsync(codec, init.Arguments).ConfigureAwait(false);
             if (init.ContinuedFailure != null)
             {
-                await codec.DecodeFailureAsync(init.ContinuedFailure).ConfigureAwait(false);
+                await previousOutcomeCodec.DecodeFailureAsync(init.ContinuedFailure).ConfigureAwait(false);
             }
             if (init.Memo != null)
             {
@@ -508,7 +516,7 @@ namespace Temporalio.Worker
             if (init.LastCompletionResult != null)
             {
                 await PayloadCodecHelper.DecodeAsync(
-                    codec, init.LastCompletionResult.Payloads_).ConfigureAwait(false);
+                    previousOutcomeCodec, init.LastCompletionResult.Payloads_).ConfigureAwait(false);
             }
         }
 

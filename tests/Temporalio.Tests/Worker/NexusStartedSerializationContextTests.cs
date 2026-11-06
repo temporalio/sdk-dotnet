@@ -43,6 +43,7 @@ public class NexusStartedSerializationContextTests : WorkflowEnvironmentTestBase
         Failure,
         ContinueAsNew,
         Async,
+        Retry,
     }
 
     [NexusService]
@@ -73,6 +74,21 @@ public class NexusStartedSerializationContextTests : WorkflowEnvironmentTestBase
             {
                 return Task.FromException<string>(new ApplicationFailureException(
                     "nexus-started-failure", details: new object?[] { "failure-detail" }, nonRetryable: true));
+            }
+            if (input.Outcome == Outcome.Retry)
+            {
+                if (Workflow.Info.Attempt == 1)
+                {
+                    return Task.FromException<string>(new ApplicationFailureException(
+                        "retry", details: new object?[] { "retry-detail" }));
+                }
+                // The first run encoded this failure with the Nexus context
+                var lastFailure = Workflow.Info.LastFailure as ApplicationFailureException;
+                if (lastFailure?.Details.ElementAt<string>(0) != "retry-detail")
+                {
+                    return Task.FromException<string>(new ApplicationFailureException(
+                        $"unexpected last failure: {Workflow.Info.LastFailure}", nonRetryable: true));
+                }
             }
             return Task.FromResult(input.Value);
         }
@@ -119,7 +135,13 @@ public class NexusStartedSerializationContextTests : WorkflowEnvironmentTestBase
         public Task<TemporalOperationResult<string>> StartWorkflow(
             TemporalOperationStartContext ctx, ITemporalNexusClient client, NexusStartedInput input) =>
             client.StartWorkflowAsync(
-                (NexusStartedWorkflow wf) => wf.RunAsync(input), new() { Id = input.Id });
+                (NexusStartedWorkflow wf) => wf.RunAsync(input),
+                new()
+                {
+                    Id = input.Id,
+                    RetryPolicy = input.Outcome == Outcome.Retry ?
+                        new() { InitialInterval = TimeSpan.FromMilliseconds(100), MaximumAttempts = 2 } : null,
+                });
 
         [TemporalOperation]
         public Task<TemporalOperationResult<string>> StartActivity(
@@ -181,6 +203,22 @@ public class NexusStartedSerializationContextTests : WorkflowEnvironmentTestBase
                 closeEvent.WorkflowExecutionFailedEventAttributes.Failure.ApplicationFailureInfo.Details.Payloads_.First() :
                 closeEvent.WorkflowExecutionCompletedEventAttributes.Result.Payloads_.First();
             Assert.Equal(SigningRecordingCodec.Signature(context), SigningRecordingCodec.SignatureOf(closePayload));
+        });
+    }
+
+    [Fact]
+    public async Task Workflow_StartedByNexusHandler_RetryDecodesTheLastFailureWithTheNexusContext()
+    {
+        await RunAsync(nameof(INexusStartedService.StartWorkflow), async (client, nexusClient, context) =>
+        {
+            var workflowId = $"nexus-started-workflow-{Guid.NewGuid()}";
+            // Decoding the last failure under the wrong context fails every task of the second run,
+            // so this times out instead of completing
+            Assert.Equal(
+                "nexus-value",
+                await nexusClient.ExecuteNexusOperationAsync(
+                    svc => svc.StartWorkflow(new(workflowId, "nexus-value", Outcome.Retry)),
+                    new($"op-{Guid.NewGuid()}") { ScheduleToCloseTimeout = TimeSpan.FromSeconds(20) }));
         });
     }
 
