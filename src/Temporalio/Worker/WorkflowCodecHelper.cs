@@ -390,7 +390,12 @@ namespace Temporalio.Worker
                     codec = context.CodecWorkflowContext;
                     break;
                 case WorkflowCommand.VariantOneofCase.UpdateResponse:
-                    codec = context.CodecWorkflowContext;
+                    // An update sent by a Nexus operation handler returns its result and failure
+                    // to the Nexus caller, which decodes them with the handler's Nexus context
+                    codec = context.CodecNoContext is IWithSerializationContext<IPayloadCodec> withUpdate &&
+                        context.Instance?.GetUpdateNexusSerializationContext(
+                            cmd.UpdateResponse.ProtocolInstanceId) is { } updateContext ?
+                        withUpdate.WithSerializationContext(updateContext) : context.CodecWorkflowContext;
                     if (cmd.UpdateResponse.Completed is { } updateCompleted && codec != null)
                     {
                         await PayloadCodecHelper.EncodeAsync(codec, updateCompleted).ConfigureAwait(false);
