@@ -14,6 +14,12 @@ namespace Temporalio.Worker
         WorkflowInfo Info { get; }
 
         /// <summary>
+        /// Gets the serialization context of the Nexus operation handler that started this
+        /// workflow, if any. The workflow's result and closing failure are encoded with it.
+        /// </summary>
+        ISerializationContext.Nexus? NexusSerializationContext { get; }
+
+        /// <summary>
         /// Gets the pending activity serialization context for the given sequence.
         /// </summary>
         /// <param name="seq">Sequence.</param>

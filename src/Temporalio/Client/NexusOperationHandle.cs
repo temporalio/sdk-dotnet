@@ -75,10 +75,6 @@ namespace Temporalio.Client
         public virtual async Task<TResult> GetResultAsync<TResult>(
             RpcOptions? rpcOptions = null)
         {
-            var dataConverter = SerializationContext is { } context ?
-                Client.Options.DataConverter.WithSerializationContext(context) :
-                Client.Options.DataConverter;
-
             // Continually poll until outcome is available
             var req = new PollNexusOperationExecutionRequest()
             {
@@ -98,6 +94,13 @@ namespace Temporalio.Client
                 {
                     continue;
                 }
+
+                // The start context is a fallback for older servers that don't return the context,
+                // and is missing on a handle obtained by operation ID
+                var dataConverter = (ISerializationContext.Nexus.FromProto(
+                    resp.PropagatedNexusSerializationContext) ?? SerializationContext) is { } context ?
+                    Client.Options.DataConverter.WithSerializationContext(context) :
+                    Client.Options.DataConverter;
 
                 // Handle outcome
                 switch (resp.OutcomeCase)

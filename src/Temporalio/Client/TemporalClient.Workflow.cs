@@ -630,11 +630,16 @@ namespace Temporalio.Client
                     HistoryEventFilterType = input.EventFilterType,
                     SkipArchival = input.SkipArchival,
                 };
+                // The server only returns the Nexus context on the first page of a run's history,
+                // which may have no events, so keep it while following page tokens
+                ISerializationContext.Nexus? nexusContext = null;
                 // While there is a next token and no events, keep trying
                 while (true)
                 {
                     var resp = await Client.Connection.WorkflowService.GetWorkflowExecutionHistoryAsync(
                         req, DefaultRetryOptions(input.Rpc)).ConfigureAwait(false);
+                    nexusContext = ISerializationContext.Nexus.FromProto(
+                        resp.PropagatedNexusSerializationContext) ?? nexusContext;
                     // We don't support raw history
                     if (resp.RawHistory.Count > 0)
                     {
@@ -658,7 +663,10 @@ namespace Temporalio.Client
                     {
                         return new WorkflowHistoryEventPage(
                             resp.History?.Events?.ToList().AsReadOnly() ?? emptyEvents,
-                            resp.NextPageToken.IsEmpty ? null : resp.NextPageToken.ToByteArray());
+                            resp.NextPageToken.IsEmpty ? null : resp.NextPageToken.ToByteArray())
+                        {
+                            NexusSerializationContext = nexusContext,
+                        };
                     }
                     req.NextPageToken = resp.NextPageToken;
                 }
@@ -901,6 +909,8 @@ namespace Temporalio.Client
                     Priority = options.Priority?.ToProto(),
                     VersioningOverride = options.VersioningOverride?.ToProto(),
                     OnConflictOptions = options.OnConflictOptions,
+                    PropagatedNexusSerializationContext =
+                        NexusOperationExecutionContext.CurrentPropagatedSerializationContext,
                 };
                 if (args.Count > 0)
                 {

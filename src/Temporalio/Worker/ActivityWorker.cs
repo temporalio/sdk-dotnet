@@ -240,6 +240,14 @@ namespace Temporalio.Worker
                     ActivityType: start.ActivityType,
                     ActivityTaskQueue: worker.Options.TaskQueue!,
                     IsLocal: start.IsLocal));
+            // A standalone activity started by a Nexus operation handler returns its result,
+            // failure, and heartbeat details (which the server copies into a heartbeat timeout
+            // failure) to the Nexus caller, which decodes them with the handler's Nexus context.
+            // The input keeps the activity context.
+            var nexusContext = ISerializationContext.Nexus.FromProto(
+                start.PropagatedNexusSerializationContext);
+            var resultDataConverter = nexusContext == null ?
+                dataConverter : worker.Client.Options.DataConverter.WithSerializationContext(nexusContext);
             var info = new ActivityInfo(
                 ActivityId: start.ActivityId,
                 ActivityType: start.ActivityType,
@@ -247,7 +255,7 @@ namespace Temporalio.Worker
                 // TODO(cretz): CurrentAttemptScheduledTime is not set for standalone
                 // activities. Use zero time as fallback until server populates this.
                 CurrentAttemptScheduledTime: start.CurrentAttemptScheduledTime?.ToDateTime() ?? DateTime.MinValue,
-                DataConverter: dataConverter,
+                DataConverter: resultDataConverter,
                 HeartbeatDetails: start.HeartbeatDetails,
                 HeartbeatTimeout: OptionalTimeSpan(start.HeartbeatTimeout),
                 IsLocal: start.IsLocal,
@@ -263,7 +271,10 @@ namespace Temporalio.Worker
                 WorkflowId: workflowId,
                 WorkflowNamespace: workflowId != null ? start.WorkflowNamespace : null,
                 WorkflowRunId: workflowId != null ? start.WorkflowExecution!.RunId : null,
-                WorkflowType: workflowId != null ? start.WorkflowType : null);
+                WorkflowType: workflowId != null ? start.WorkflowType : null)
+            {
+                NexusSerializationContext = nexusContext,
+            };
             // Create context
             var cancelTokenSource = new CancellationTokenSource();
             var context = new ActivityExecutionContext(
@@ -283,11 +294,11 @@ namespace Temporalio.Worker
                 // shutdown which could never run until after this (and the primary execute) are
                 // done. So we don't have to worry about the dictionary having an activity without
                 // a task even though we're late-binding it here.
-                var act = new RunningActivity(context, cancelTokenSource, dataConverter, storageTarget);
+                var act = new RunningActivity(context, cancelTokenSource, resultDataConverter, storageTarget);
                 runningActivities[tsk.TaskToken] = act;
 #pragma warning disable CA2008 // We don't have to pass a scheduler, factory already implies one
                 act.Task = worker.Options.ActivityTaskFactory.StartNew(
-                    () => ExecuteActivityAsync(act, tsk, dataConverter, storageTarget)).Unwrap();
+                    () => ExecuteActivityAsync(act, tsk, dataConverter, resultDataConverter, storageTarget)).Unwrap();
 #pragma warning restore CA2008
             }
         }
@@ -296,6 +307,7 @@ namespace Temporalio.Worker
             RunningActivity act,
             Bridge.Api.ActivityTask.ActivityTask tsk,
             DataConverter dataConverter,
+            DataConverter resultDataConverter,
             IStorageDriverTargetInfo? storageTarget)
         {
             // Try to build a completion, but if it fails then manually build one with the failure
@@ -303,7 +315,7 @@ namespace Temporalio.Worker
             try
             {
                 completion = await ExecuteActivityInternalAsync(
-                    act, tsk, dataConverter, storageTarget).ConfigureAwait(false);
+                    act, tsk, dataConverter, resultDataConverter, storageTarget).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -367,6 +379,7 @@ namespace Temporalio.Worker
             RunningActivity act,
             Bridge.Api.ActivityTask.ActivityTask tsk,
             DataConverter dataConverter,
+            DataConverter resultDataConverter,
             IStorageDriverTargetInfo? storageTarget)
         {
             act.Context.Logger.LogDebug(
@@ -466,7 +479,7 @@ namespace Temporalio.Worker
                     result = null;
                 }
                 completion.Result.Completed.Result =
-                    await dataConverter.ToPayloadAsync(result, storage).ConfigureAwait(false);
+                    await resultDataConverter.ToPayloadAsync(result, storage).ConfigureAwait(false);
             }
             catch (CompleteAsyncException)
             {
@@ -483,7 +496,7 @@ namespace Temporalio.Worker
                     act.Context.Info.ActivityType);
                 completion.Result.Failed = new()
                 {
-                    Failure_ = await dataConverter.ToFailureAsync(
+                    Failure_ = await resultDataConverter.ToFailureAsync(
                         new ApplicationFailureException(
                             "Activity paused", e, "ActivityPause"),
                         storage).ConfigureAwait(false),
@@ -497,7 +510,7 @@ namespace Temporalio.Worker
                     act.Context.Info.ActivityType);
                 completion.Result.Failed = new()
                 {
-                    Failure_ = await dataConverter.ToFailureAsync(
+                    Failure_ = await resultDataConverter.ToFailureAsync(
                         new ApplicationFailureException(
                             "Activity reset", e, "ActivityReset"),
                         storage).ConfigureAwait(false),
@@ -510,7 +523,7 @@ namespace Temporalio.Worker
                     act.Context.Info.ActivityType);
                 completion.Result.Cancelled = new()
                 {
-                    Failure = await dataConverter.ToFailureAsync(
+                    Failure = await resultDataConverter.ToFailureAsync(
                         new CanceledFailureException("Cancelled"), storage).ConfigureAwait(false),
                 };
             }
@@ -521,7 +534,7 @@ namespace Temporalio.Worker
                     act.Context.Info.ActivityType);
                 completion.Result.Failed = new()
                 {
-                    Failure_ = await dataConverter.ToFailureAsync(
+                    Failure_ = await resultDataConverter.ToFailureAsync(
                         act.HeartbeatFailureException, storage).ConfigureAwait(false),
                 };
             }
@@ -535,7 +548,7 @@ namespace Temporalio.Worker
                 // Encode the failure through the codec but skip offload, which just failed.
                 completion.Result.Failed = new()
                 {
-                    Failure_ = await dataConverter.ToFailureAsync(
+                    Failure_ = await resultDataConverter.ToFailureAsync(
                         e, ExternalStorageContext.For(dataConverter, skipStore: true))
                         .ConfigureAwait(false),
                     Cause = Api.Enums.V1.ActivityTaskFailedCause.ExternalStorageFailure,
@@ -561,7 +574,7 @@ namespace Temporalio.Worker
 
                 completion.Result.Failed = new()
                 {
-                    Failure_ = await dataConverter.ToFailureAsync(e, storage).ConfigureAwait(false),
+                    Failure_ = await resultDataConverter.ToFailureAsync(e, storage).ConfigureAwait(false),
                 };
             }
             finally
