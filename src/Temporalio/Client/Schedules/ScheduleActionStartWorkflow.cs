@@ -27,6 +27,12 @@ namespace Temporalio.Client.Schedules
         IReadOnlyDictionary<string, IEncodedRawValue>? Headers = null) : ScheduleAction
     {
         /// <summary>
+        /// Gets the user metadata this action was described with, and the summary and details it
+        /// decoded to.
+        /// </summary>
+        internal (string? Summary, string? Details, Api.Sdk.V1.UserMetadata Proto)? OriginalUserMetadata { get; init; }
+
+        /// <summary>
         /// Create a scheduled action that starts a workflow via lambda invoking the run method.
         /// </summary>
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
@@ -122,7 +128,11 @@ namespace Temporalio.Client.Schedules
                     StaticSummary = staticSummary,
                     StaticDetails = staticDetails,
                 },
-                Headers: headers);
+                Headers: headers)
+            {
+                OriginalUserMetadata = proto.UserMetadata == null ? null :
+                    (staticSummary, staticDetails, proto.UserMetadata),
+            };
         }
 
         /// <inheritdoc />
@@ -171,6 +181,23 @@ namespace Temporalio.Client.Schedules
                 return dataConverter.ToPayloadAsync(arg, storage);
             }).ToList()).ConfigureAwait(false);
 
+            // An unchanged value goes back as the payload it was described from, since encoding it
+            // again would store another copy on every update.
+            async Task<Api.Common.V1.Payload?> UserMetadataPayloadAsync(
+                string? value, string? original, Api.Common.V1.Payload? originalPayload) =>
+                value == null ? null :
+                    value == original ? originalPayload :
+                    await dataConverter.ToPayloadAsync(value, storage).ConfigureAwait(false);
+
+            var summary = await UserMetadataPayloadAsync(
+                Options.StaticSummary,
+                OriginalUserMetadata?.Summary,
+                OriginalUserMetadata?.Proto.Summary).ConfigureAwait(false);
+            var details = await UserMetadataPayloadAsync(
+                Options.StaticDetails,
+                OriginalUserMetadata?.Details,
+                OriginalUserMetadata?.Proto.Details).ConfigureAwait(false);
+
             var workflow = new Api.Workflow.V1.NewWorkflowExecutionInfo()
             {
                 WorkflowId = Options.Id,
@@ -188,8 +215,8 @@ namespace Temporalio.Client.Schedules
                 WorkflowTaskTimeout = Options.TaskTimeout is TimeSpan taskTimeout ?
                     Duration.FromTimeSpan(taskTimeout) : null,
                 RetryPolicy = Options.RetryPolicy?.ToProto(),
-                UserMetadata = await dataConverter.ToUserMetadataAsync(
-                    Options.StaticSummary, Options.StaticDetails, storage).ConfigureAwait(false),
+                UserMetadata = summary == null && details == null ? null :
+                    new() { Summary = summary, Details = details },
             };
             if (Options.Memo != null && Options.Memo.Count > 0)
             {
