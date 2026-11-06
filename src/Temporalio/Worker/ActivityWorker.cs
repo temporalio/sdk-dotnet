@@ -548,7 +548,7 @@ namespace Temporalio.Worker
                 // Encode the failure through the codec but skip offload, which just failed.
                 completion.Result.Failed = new()
                 {
-                    Failure_ = await dataConverter.ToFailureAsync(
+                    Failure_ = await resultDataConverter.ToFailureAsync(
                         e, ExternalStorageContext.For(dataConverter, skipStore: true))
                         .ConfigureAwait(false),
                     Cause = Api.Enums.V1.ActivityTaskFailedCause.ExternalStorageFailure,
