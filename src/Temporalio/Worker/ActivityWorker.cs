@@ -537,7 +537,7 @@ namespace Temporalio.Worker
                     Failure_ = await dataConverter.ToFailureAsync(
                         e, ExternalStorageContext.For(dataConverter, skipStore: true))
                         .ConfigureAwait(false),
-                    Cause = Bridge.Api.ActivityResult.ActivityTaskFailedCause.ExternalStorageFailure,
+                    Cause = Api.Enums.V1.ActivityTaskFailedCause.ExternalStorageFailure,
                 };
             }
             catch (Exception e)
