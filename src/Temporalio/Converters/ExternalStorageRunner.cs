@@ -74,6 +74,7 @@ namespace Temporalio.Converters
                         .ConfigureAwait(false)).Single(),
                     (payloads, ct) => RetrieveAsync(payloads, ct))
                 {
+                    MaxConcurrency = storage.Concurrency.MaxOperationsPerMessage,
                     CancellationToken = cancellationToken,
                 });
 
@@ -91,6 +92,7 @@ namespace Temporalio.Converters
                         .ConfigureAwait(false)).Single(),
                     (payloads, ct) => StoreAsync(payloads, target, ct))
                 {
+                    MaxConcurrency = storage.Concurrency.MaxOperationsPerMessage,
                     CancellationToken = cancellationToken,
                 });
 
