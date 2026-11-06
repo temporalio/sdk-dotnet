@@ -239,6 +239,12 @@ namespace Temporalio.Worker
         private static string? NullIfEmpty(string value) =>
             string.IsNullOrEmpty(value) ? null : value;
 
+        // An external storage failure reports its own cause; any other failure leaves it unspecified.
+        private static Api.Enums.V1.WorkflowTaskFailedCause ForceCauseForFailure(Exception e) =>
+            e is ExternalStorageException
+                ? Api.Enums.V1.WorkflowTaskFailedCause.ExternalStorageFailure
+                : Api.Enums.V1.WorkflowTaskFailedCause.Unspecified;
+
         private async Task HandleActivationAsync(WorkflowActivation act)
         {
             // Do eviction if requested and exit early
@@ -260,6 +266,11 @@ namespace Temporalio.Worker
             // the try block. Null only if the activation could not be associated with a workflow.
             string? completionWorkflowId = null;
             string? completionWorkflowType = null;
+            // External storage activity for this task, reported to core on the completion. What a
+            // failing pass moved before it failed is still reported, so these are read back and set
+            // whatever the outcome.
+            var downloadMetrics = new StorageOperationMetricsBuilder();
+            var uploadMetrics = new StorageOperationMetricsBuilder();
 
             // Catch any exception as a completion failure
             try
@@ -302,7 +313,8 @@ namespace Temporalio.Worker
                 }
                 // External storage is independent of the codec, so this runs even when there is none.
                 await externalStorage.RetrieveAsync(
-                    PayloadVisitors.VisitAsync, act, CancellationToken.None).ConfigureAwait(false);
+                    PayloadVisitors.VisitAsync, act, downloadMetrics, CancellationToken.None)
+                    .ConfigureAwait(false);
                 if (codecContext != null)
                 {
                     await WorkflowCodecHelper.DecodeAsync(codecContext, act).ConfigureAwait(false);
@@ -373,6 +385,7 @@ namespace Temporalio.Worker
                     logger.LogError(inner, "Failed converting activation exception on workflow with run ID {RunId}", act.RunId);
                     comp.Failed.Failure_ = new() { Message = $"Failed converting exception: {inner}" };
                 }
+                comp.Failed.ForceCause = ForceCauseForFailure(e);
             }
 
             // Always set the run ID of the completion
@@ -403,14 +416,34 @@ namespace Temporalio.Worker
                 var parent = runningWorkflows.TryGetValue(act.RunId, out var instForTarget) &&
                     instForTarget.Info.ContinuedRunId == null
                     ? instForTarget.Info.Parent : null;
-                await StoreCompletionPayloadsAsync(comp, completionTarget, parent)
+                await StoreCompletionPayloadsAsync(comp, completionTarget, parent, uploadMetrics)
                     .ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 logger.LogError(e, "Failed storing completion payloads on workflow with run ID {RunId}", act.RunId);
-                comp.Failed = new() { Failure_ = new() { Message = $"Failed storing completion payloads: {e}" } };
+                comp.Failed = new() { ForceCause = ForceCauseForFailure(e) };
+                try
+                {
+                    // Encode the failure through the codec but skip offload: the offload just
+                    // failed, and if this was not a storage fault it was a bug in the offload path
+                    // that would recur.
+                    var dataConverterForFailure = dataConverterWorkflowContext ?? dataConverterNoContext;
+                    comp.Failed.Failure_ = await dataConverterForFailure.ToFailureAsync(
+                        e, ExternalStorageContext.For(dataConverterForFailure, skipStore: true))
+                        .ConfigureAwait(false);
+                }
+                catch (Exception inner)
+                {
+                    logger.LogError(inner, "Failed converting storage exception on workflow with run ID {RunId}", act.RunId);
+                    comp.Failed.Failure_ = new() { Message = $"Failed storing completion payloads: {e}" };
+                }
             }
+
+            // Report what external storage moved, including anything a failing pass moved before it
+            // failed. A pass that moved nothing produces null, leaving the field unset.
+            comp.PayloadDownloadMetrics = downloadMetrics.ToProto();
+            comp.PayloadUploadMetrics = uploadMetrics.ToProto();
 
             // Send completion
             logger.LogTrace("Sending workflow completion: {Completion}", comp);
@@ -429,7 +462,8 @@ namespace Temporalio.Worker
         private async Task StoreCompletionPayloadsAsync(
             WorkflowActivationCompletion comp,
             IStorageDriverTargetInfo.Workflow? currentWorkflow,
-            WorkflowInfo.ParentInfo? parent)
+            WorkflowInfo.ParentInfo? parent,
+            StorageOperationMetricsBuilder metrics)
         {
             if (comp.Successful != null)
             {
@@ -437,7 +471,7 @@ namespace Temporalio.Worker
                 {
                     var target = StorageTargetForCommand(command, currentWorkflow, parent);
                     await externalStorage.StoreAsync(
-                        PayloadVisitors.VisitAsync, command, target, CancellationToken.None)
+                        PayloadVisitors.VisitAsync, command, target, metrics, CancellationToken.None)
                         .ConfigureAwait(false);
                 }
             }
@@ -445,7 +479,11 @@ namespace Temporalio.Worker
             if (comp.Failed != null)
             {
                 await externalStorage.StoreAsync(
-                    PayloadVisitors.VisitAsync, comp.Failed, currentWorkflow, CancellationToken.None)
+                    PayloadVisitors.VisitAsync,
+                    comp.Failed,
+                    currentWorkflow,
+                    metrics,
+                    CancellationToken.None)
                     .ConfigureAwait(false);
             }
         }

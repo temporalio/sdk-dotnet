@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using Temporalio.Client;
 
 namespace Temporalio.Common.EnvConfig
@@ -25,14 +27,55 @@ namespace Temporalio.Common.EnvConfig
         }
 
         /// <summary>
-        /// Load client connection options directly from configuration.
+        /// Load client connection options directly from configuration, then apply any
+        /// <see cref="ProfileLoadOptions.Extensions" />. Extensions are called in order, and the
+        /// plugins they return are set as <see cref="TemporalClientConnectOptions.Plugins" />.
         /// </summary>
         /// <param name="options">Options for loading the configuration profile.</param>
         /// <returns>Client connection options.</returns>
+        /// <exception cref="ArgumentException">Thrown for an invalid extension list.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when loading fails, including when an
+        /// extension throws (as the inner exception).</exception>
         public static TemporalClientConnectOptions LoadClientConnectOptions(ProfileLoadOptions? options = null)
         {
+            options ??= new ProfileLoadOptions();
+            var extensions = options.Extensions ?? Array.Empty<IClientConfigExtension>();
+            ValidateExtensions(extensions);
+
             var clientProfile = Profile.Load(options);
-            return clientProfile.ToClientConnectionOptions();
+            var connectOptions = clientProfile.ToClientConnectionOptions();
+            if (extensions.Count == 0)
+            {
+                return connectOptions;
+            }
+
+            var context = new ClientConfigExtensionContext(clientProfile)
+            {
+                Env = ExtensionEnv(options),
+            };
+            var plugins = new List<ITemporalClientPlugin>();
+            foreach (var extension in extensions)
+            {
+                ITemporalClientPlugin? plugin;
+                try
+                {
+                    plugin = extension.CreateClientPlugin(context);
+                }
+                catch (Exception e)
+                {
+                    throw new InvalidOperationException(
+                        $"Client config extension \"{extension.Name}\": {e.Message}", e);
+                }
+                if (plugin != null)
+                {
+                    plugins.Add(plugin);
+                }
+            }
+            if (plugins.Count > 0)
+            {
+                connectOptions.Plugins = plugins;
+            }
+            return connectOptions;
         }
 
         /// <summary>
@@ -58,6 +101,43 @@ namespace Temporalio.Common.EnvConfig
             return new ClientEnvConfig(profiles);
         }
 
+        private static void ValidateExtensions(IReadOnlyCollection<IClientConfigExtension> extensions)
+        {
+            var names = new HashSet<string>();
+            var index = 0;
+            foreach (var extension in extensions)
+            {
+                if (extension == null)
+                {
+                    throw new ArgumentException($"Client config extension at index {index} is null");
+                }
+                if (string.IsNullOrEmpty(extension.Name))
+                {
+                    throw new ArgumentException($"Client config extension at index {index} has empty name");
+                }
+                if (!names.Add(extension.Name))
+                {
+                    throw new ArgumentException($"Duplicate client config extension name \"{extension.Name}\"");
+                }
+                index++;
+            }
+        }
+
+        private static IReadOnlyDictionary<string, string>? ExtensionEnv(ProfileLoadOptions options)
+        {
+            if (options.DisableEnv)
+            {
+                return null;
+            }
+            return options.OverrideEnvVars ?? Environment.GetEnvironmentVariables()
+                .Cast<DictionaryEntry>()
+                .ToDictionary(
+                    e => (string)e.Key,
+                    e => (string?)e.Value ?? string.Empty,
+                    // Env var names are case-insensitive on Windows and case-sensitive elsewhere
+                    Environment.OSVersion.Platform == PlatformID.Win32NT ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+        }
+
         /// <summary>
         /// Represents a client configuration profile.
         /// </summary>
@@ -75,6 +155,19 @@ namespace Temporalio.Common.EnvConfig
             Tls? Tls = null,
             IReadOnlyDictionary<string, string>? GrpcMeta = null)
         {
+            /// <summary>
+            /// Gets the raw extension config from <c>profile.{profile}.ext</c>, keyed by
+            /// extension name. Each value is a JSON object holding that extension's TOML table, with
+            /// TOML datetimes as ISO 8601 strings and non-finite floats as null. Extensions decode
+            /// their own entry. Environment variables don't modify this. <see cref="ToDictionary" />
+            /// converts it to plain dictionaries, lists and primitives under <c>ext</c>, and
+            /// <see cref="FromDictionary" /> converts it back.
+            /// </summary>
+            /// <remarks>
+            /// WARNING: This API is experimental and may change in the future.
+            /// </remarks>
+            public IReadOnlyDictionary<string, JsonElement>? Ext { get; init; }
+
             /// <summary>
             /// Loads a specific profile with environment variable overrides.
             /// </summary>
@@ -96,7 +189,12 @@ namespace Temporalio.Common.EnvConfig
                     Namespace: dictionary.TryGetValue("namespace", out var nameSpace) ? (string?)nameSpace : null,
                     ApiKey: dictionary.TryGetValue("api_key", out var apiKey) ? (string?)apiKey : null,
                     Tls: dictionary.TryGetValue("tls", out var tls) && tls is IReadOnlyDictionary<string, object> tlsDict ? Tls.FromDictionary(tlsDict) : null,
-                    GrpcMeta: dictionary.TryGetValue("grpc_meta", out var grpcMeta) ? (IReadOnlyDictionary<string, string>?)grpcMeta : null);
+                    GrpcMeta: dictionary.TryGetValue("grpc_meta", out var grpcMeta) ? (IReadOnlyDictionary<string, string>?)grpcMeta : null)
+                {
+                    Ext = dictionary.TryGetValue("ext", out var ext) && ext is IReadOnlyDictionary<string, object> extDict
+                        ? extDict.ToDictionary(kvp => kvp.Key, kvp => ToJsonElement(kvp.Value))
+                        : null,
+                };
 
             /// <summary>
             /// Create a <see cref="TemporalClientConnectOptions"/> from this profile.
@@ -167,7 +265,37 @@ namespace Temporalio.Common.EnvConfig
                     result["grpc_meta"] = GrpcMeta;
                 }
 
+                if (Ext is { Count: > 0 })
+                {
+                    result["ext"] = Ext.ToDictionary(kvp => kvp.Key, kvp => FromJsonElement(kvp.Value));
+                }
+
                 return result;
+            }
+
+            // System.Text.Json has no built-in inverse that yields plain objects:
+            // JsonSerializer.Deserialize<object> returns another JsonElement, and dictionary or list
+            // targets only unwrap the top level, leaving nested values as JsonElement. TOML
+            // serializers don't understand JsonElement, so do the conversion ourselves.
+            private static object? FromJsonElement(JsonElement element) =>
+                element.ValueKind switch
+                {
+                    JsonValueKind.Object => element.EnumerateObject().ToDictionary(p => p.Name, p => FromJsonElement(p.Value)),
+                    JsonValueKind.Array => element.EnumerateArray().Select(FromJsonElement).ToList(),
+                    JsonValueKind.String => element.GetString(),
+                    // Casts keep integers as long instead of widening the whole conditional to double
+                    JsonValueKind.Number => element.TryGetInt64(out var l) ? (object)l : (object)element.GetDouble(),
+                    JsonValueKind.True => true,
+                    JsonValueKind.False => false,
+                    _ => null,
+                };
+
+            // JsonSerializer.SerializeToElement would do this directly, but it isn't in the
+            // System.Text.Json built into netcoreapp3.1.
+            private static JsonElement ToJsonElement(object? value)
+            {
+                using var doc = JsonDocument.Parse(JsonSerializer.SerializeToUtf8Bytes(value));
+                return doc.RootElement.Clone();
             }
         }
 
@@ -296,6 +424,16 @@ namespace Temporalio.Common.EnvConfig
             /// Gets or sets environment variables to use, or null to use system environment.
             /// </summary>
             public IReadOnlyDictionary<string, string>? OverrideEnvVars { get; set; }
+
+            /// <summary>
+            /// Gets or sets extensions to apply to the loaded profile. Only
+            /// <see cref="LoadClientConnectOptions" /> uses these;
+            /// <see cref="ClientEnvConfig.Profile.Load" /> ignores them. Names must be unique.
+            /// </summary>
+            /// <remarks>
+            /// WARNING: This API is experimental and may change in the future.
+            /// </remarks>
+            public IReadOnlyCollection<IClientConfigExtension>? Extensions { get; set; }
 
             /// <summary>
             /// Create a shallow copy of these options.

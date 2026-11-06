@@ -385,7 +385,8 @@ namespace Temporalio.Worker
             try
             {
                 await externalStorage.RetrieveAsync(
-                    PayloadVisitors.VisitAsync, tsk, act.Context.CancellationToken).ConfigureAwait(false);
+                    PayloadVisitors.VisitAsync, tsk, metrics: null, act.Context.CancellationToken)
+                    .ConfigureAwait(false);
 
                 // Find activity or fail
                 if (!activities.TryGetValue(act.Context.Info.ActivityType, out var defn))
@@ -522,6 +523,22 @@ namespace Temporalio.Worker
                 {
                     Failure_ = await dataConverter.ToFailureAsync(
                         act.HeartbeatFailureException, storage).ConfigureAwait(false),
+                };
+            }
+            catch (ExternalStorageException e)
+            {
+                act.Context.Logger.LogWarning(
+                    e,
+                    "Completing activity {ActivityType} as failed due to external storage",
+                    act.Context.Info.ActivityType);
+
+                // Encode the failure through the codec but skip offload, which just failed.
+                completion.Result.Failed = new()
+                {
+                    Failure_ = await dataConverter.ToFailureAsync(
+                        e, ExternalStorageContext.For(dataConverter, skipStore: true))
+                        .ConfigureAwait(false),
+                    Cause = Api.Enums.V1.ActivityTaskFailedCause.ExternalStorageFailure,
                 };
             }
             catch (Exception e)

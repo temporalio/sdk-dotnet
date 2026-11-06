@@ -172,9 +172,12 @@ namespace Temporalio.Converters
                 payloads = await converter.PayloadCodec.EncodeAsync(
                     payloads.ToList()).ConfigureAwait(false);
             }
-            return await storage.Runner
-                .StoreAsync(payloads.ToList(), storage.Target, CancellationToken.None)
-                .ConfigureAwait(false);
+            var toStore = payloads.ToList();
+            return storage.SkipStore
+                ? toStore
+                : await storage.Runner
+                    .StoreAsync(toStore, storage.Target, metrics: null, CancellationToken.None)
+                    .ConfigureAwait(false);
         }
 
         /// <summary>
@@ -194,9 +197,11 @@ namespace Temporalio.Converters
                 payload = (await converter.PayloadCodec.EncodeAsync(
                     new Payload[] { payload }).ConfigureAwait(false)).First();
             }
-            return (await storage.Runner
-                .StoreAsync(new[] { payload }, storage.Target, CancellationToken.None)
-                .ConfigureAwait(false)).First();
+            return storage.SkipStore
+                ? payload
+                : (await storage.Runner
+                    .StoreAsync(new[] { payload }, storage.Target, metrics: null, CancellationToken.None)
+                    .ConfigureAwait(false)).First();
         }
 
         /// <summary>
@@ -258,7 +263,7 @@ namespace Temporalio.Converters
             ExternalStorageContext storage)
         {
             payloads = await storage.Runner
-                .RetrieveAsync(payloads, CancellationToken.None).ConfigureAwait(false);
+                .RetrieveAsync(payloads, metrics: null, CancellationToken.None).ConfigureAwait(false);
 
             // Decode, then expect single payload
             if (converter.PayloadCodec != null)
@@ -286,7 +291,8 @@ namespace Temporalio.Converters
             this DataConverter converter, Failure failure, ExternalStorageContext storage)
         {
             await storage.Runner.RetrieveAsync(
-                PayloadVisitors.VisitAsync, failure, CancellationToken.None).ConfigureAwait(false);
+                PayloadVisitors.VisitAsync, failure, metrics: null, CancellationToken.None)
+                .ConfigureAwait(false);
 
             // Decode then convert
             if (converter.PayloadCodec != null)
@@ -312,13 +318,17 @@ namespace Temporalio.Converters
             {
                 await converter.PayloadCodec.EncodeFailureAsync(failure).ConfigureAwait(false);
             }
-            await storage.Runner
-                .StoreAsync(
-                    PayloadVisitors.VisitAsync,
-                    failure,
-                    storage.Target,
-                    CancellationToken.None)
-                .ConfigureAwait(false);
+            if (!storage.SkipStore)
+            {
+                await storage.Runner
+                    .StoreAsync(
+                        PayloadVisitors.VisitAsync,
+                        failure,
+                        storage.Target,
+                        metrics: null,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+            }
             return failure;
         }
 

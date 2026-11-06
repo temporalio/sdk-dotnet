@@ -13,7 +13,7 @@ namespace Temporalio.Exceptions
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    internal sealed class InvalidExternalStorageReferenceException : TemporalException
+    internal sealed class InvalidExternalStorageReferenceException : ExternalStorageException
     {
         /// <summary>
         /// Initializes a new instance of the
