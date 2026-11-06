@@ -107,7 +107,10 @@ namespace Temporalio.Bridge
                 profileJson.Namespace,
                 profileJson.ApiKey,
                 CreateTlsConfig(profileJson.Tls),
-                profileJson.GrpcMeta);
+                profileJson.GrpcMeta)
+            {
+                Ext = profileJson.Ext,
+            };
         }
 
         private static ClientEnvConfig.Tls? CreateTlsConfig(TlsJson? tlsJson)
@@ -220,7 +223,7 @@ namespace Temporalio.Bridge
                 json = byteArray.ToUTF8();
             }
 
-            var profileJson = JsonSerializer.Deserialize<ProfileJson>(json) ?? new ProfileJson(null, null, null, null, null);
+            var profileJson = JsonSerializer.Deserialize<ProfileJson>(json) ?? new ProfileJson(null, null, null, null, null, null);
 
             return CreateClientConfigProfile(profileJson);
         }
@@ -233,7 +236,8 @@ namespace Temporalio.Bridge
             [property: JsonPropertyName("namespace")] string? Namespace,
             [property: JsonPropertyName("api_key")] string? ApiKey,
             [property: JsonPropertyName("tls")] TlsJson? Tls,
-            [property: JsonPropertyName("grpc_meta")] Dictionary<string, string>? GrpcMeta);
+            [property: JsonPropertyName("grpc_meta")] Dictionary<string, string>? GrpcMeta,
+            [property: JsonPropertyName("ext")] Dictionary<string, JsonElement>? Ext);
 
         /// <summary>
         /// JSON DTO for TLS configuration from Rust core.
