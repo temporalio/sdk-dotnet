@@ -392,9 +392,22 @@ namespace Temporalio.Worker
                 }
                 // Nexus has no storage target type yet, so the failure offload is untargeted; the
                 // endpoint, service, and operation would form the target once that lands.
-                var failure = await dataConverter.ToFailureAsync(
-                    handlerException,
-                    Converters.ExternalStorageContext.For(dataConverter)).ConfigureAwait(false);
+                Api.Failure.V1.Failure failure;
+                try
+                {
+                    failure = await dataConverter.ToFailureAsync(
+                        handlerException,
+                        Converters.ExternalStorageContext.For(dataConverter)).ConfigureAwait(false);
+                }
+                catch (ExternalStorageException)
+                {
+                    // Offloading the failure itself failed; encode it through the codec but skip
+                    // the offload rather than retry what just failed.
+                    failure = await dataConverter.ToFailureAsync(
+                        handlerException,
+                        Converters.ExternalStorageContext.For(dataConverter, skipStore: true))
+                        .ConfigureAwait(false);
+                }
                 return new()
                 {
                     TaskToken = task.TaskToken,
@@ -472,6 +485,16 @@ namespace Temporalio.Worker
                 var retry = NonRetryableRpcStatusCodes.Contains(rpcExc.Code) ?
                         HandlerErrorRetryBehavior.NonRetryable : HandlerErrorRetryBehavior.Unspecified;
                 return new(errType, "Handler failed with RPC error", rpcExc, retry);
+            }
+            else if (exc is ExternalStorageException)
+            {
+                // The handler did not fail; external storage did. It is the SDK's own failure, so
+                // the task is failed retryably (the request type carries no cause to set).
+                return new(
+                    HandlerErrorType.Internal,
+                    "External storage failure",
+                    exc,
+                    HandlerErrorRetryBehavior.Retryable);
             }
             else
             {

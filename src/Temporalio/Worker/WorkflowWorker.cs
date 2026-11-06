@@ -239,6 +239,12 @@ namespace Temporalio.Worker
         private static string? NullIfEmpty(string value) =>
             string.IsNullOrEmpty(value) ? null : value;
 
+        // An external storage failure reports its own cause; any other failure leaves it unspecified.
+        private static Api.Enums.V1.WorkflowTaskFailedCause ForceCauseForFailure(Exception e) =>
+            e is ExternalStorageException
+                ? Api.Enums.V1.WorkflowTaskFailedCause.ExternalStorageFailure
+                : Api.Enums.V1.WorkflowTaskFailedCause.Unspecified;
+
         private async Task HandleActivationAsync(WorkflowActivation act)
         {
             // Do eviction if requested and exit early
@@ -373,6 +379,7 @@ namespace Temporalio.Worker
                     logger.LogError(inner, "Failed converting activation exception on workflow with run ID {RunId}", act.RunId);
                     comp.Failed.Failure_ = new() { Message = $"Failed converting exception: {inner}" };
                 }
+                comp.Failed.ForceCause = ForceCauseForFailure(e);
             }
 
             // Always set the run ID of the completion
@@ -409,7 +416,22 @@ namespace Temporalio.Worker
             catch (Exception e)
             {
                 logger.LogError(e, "Failed storing completion payloads on workflow with run ID {RunId}", act.RunId);
-                comp.Failed = new() { Failure_ = new() { Message = $"Failed storing completion payloads: {e}" } };
+                comp.Failed = new() { ForceCause = ForceCauseForFailure(e) };
+                try
+                {
+                    // Encode the failure through the codec but skip offload: the offload just
+                    // failed, and if this was not a storage fault it was a bug in the offload path
+                    // that would recur.
+                    var dataConverterForFailure = dataConverterWorkflowContext ?? dataConverterNoContext;
+                    comp.Failed.Failure_ = await dataConverterForFailure.ToFailureAsync(
+                        e, ExternalStorageContext.For(dataConverterForFailure, skipStore: true))
+                        .ConfigureAwait(false);
+                }
+                catch (Exception inner)
+                {
+                    logger.LogError(inner, "Failed converting storage exception on workflow with run ID {RunId}", act.RunId);
+                    comp.Failed.Failure_ = new() { Message = $"Failed storing completion payloads: {e}" };
+                }
             }
 
             // Send completion
