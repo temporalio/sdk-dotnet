@@ -8,6 +8,7 @@ using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.History.V1;
 using Temporalio.Client;
+using Temporalio.Client.Interceptors;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
@@ -3170,6 +3171,155 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var handlerExc = Assert.IsType<HandlerException>(nexusExc.InnerException);
         Assert.Contains("boom: hi", handlerExc.Message);
         Assert.DoesNotContain("TargetInvocationException", handlerExc.Message);
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    public async Task ExecuteNexusOperationAsync_GenericHandlerSignal_DedupedAcrossHandlerRetry(
+        bool signalWithStart, bool replaceSignalOptions)
+    {
+        // The handler fails after signaling so the Nexus task is redelivered. Both attempts must
+        // signal with the operation's request ID so the server delivers the signal only once.
+        var targetTaskQueue = $"tq-target-{Guid.NewGuid()}";
+        var targetWorkflowId = $"target-{Guid.NewGuid()}";
+        if (!signalWithStart)
+        {
+            await Client.StartWorkflowAsync(
+                (WaitForSignalWorkflow wf) => wf.RunAsync("target"),
+                new(targetWorkflowId, targetTaskQueue));
+        }
+        var attempts = 0;
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new TemporalOperationStringService(
+                async (context, client, input) =>
+                {
+                    if (signalWithStart)
+                    {
+                        var options = new WorkflowOptions(targetWorkflowId, targetTaskQueue);
+                        options.SignalWithStart((WaitForSignalWorkflow wf) => wf.SignalAsync());
+                        await client.TemporalClient.StartWorkflowAsync(
+                            (WaitForSignalWorkflow wf) => wf.RunAsync("target"), options);
+                    }
+                    else
+                    {
+                        await client.TemporalClient.GetWorkflowHandle<WaitForSignalWorkflow>(
+                            targetWorkflowId).SignalAsync(wf => wf.SignalAsync());
+                    }
+                    if (++attempts == 1)
+                    {
+                        throw new HandlerException(
+                            HandlerErrorType.Internal, "force handler redelivery after signaling");
+                    }
+                    return TemporalOperationResult<string>.SyncResult($"signaled-{input}");
+                }));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        var clientOptions = (TemporalClientOptions)Client.Options.Clone();
+        if (replaceSignalOptions)
+        {
+            clientOptions.Interceptors = new[] { new ReplaceSignalOptionsInterceptor() };
+        }
+
+        await RunInWorkflowAsync<object?>(
+            workerOptions,
+            async () =>
+            {
+                var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+                Assert.Equal("signaled-some-name", result);
+                return null;
+            },
+            client: new TemporalClient(Client.Connection, clientOptions));
+
+        Assert.Equal(2, attempts);
+        Assert.Single(
+            (await Client.GetWorkflowHandle(targetWorkflowId).FetchHistoryAsync()).Events,
+            evt => evt.WorkflowExecutionSignaledEventAttributes != null);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_GenericHandlerSecondSignal_Rejected()
+    {
+        // Every signal in an invocation carries the operation's request ID, so a second one could
+        // be deduped against the first and reported as delivered without reaching the workflow.
+        var targetTaskQueue = $"tq-target-{Guid.NewGuid()}";
+        var targetWorkflowId = $"target-{Guid.NewGuid()}";
+        var otherWorkflowId = $"other-{Guid.NewGuid()}";
+        foreach (var id in new[] { targetWorkflowId, otherWorkflowId })
+        {
+            await Client.StartWorkflowAsync(
+                (WaitForSignalWorkflow wf) => wf.RunAsync("target"), new(id, targetTaskQueue));
+        }
+        Exception? missingSignalExc = null;
+        Exception? secondSignalExc = null;
+        Exception? signalWithStartExc = null;
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new TemporalOperationStringService(
+                async (context, client, input) =>
+                {
+                    // A failed signal must not use up the invocation's only signal.
+                    missingSignalExc = await Record.ExceptionAsync(() =>
+                        client.TemporalClient.GetWorkflowHandle<WaitForSignalWorkflow>(
+                            $"missing-{Guid.NewGuid()}").SignalAsync(wf => wf.SignalAsync()));
+                    await client.TemporalClient.GetWorkflowHandle<WaitForSignalWorkflow>(
+                        targetWorkflowId).SignalAsync(wf => wf.SignalAsync());
+                    secondSignalExc = await Record.ExceptionAsync(() =>
+                        client.TemporalClient.GetWorkflowHandle<WaitForSignalWorkflow>(
+                            otherWorkflowId).SignalAsync(wf => wf.SignalAsync()));
+                    var options = new WorkflowOptions(otherWorkflowId, targetTaskQueue);
+                    options.SignalWithStart((WaitForSignalWorkflow wf) => wf.SignalAsync());
+                    signalWithStartExc = await Record.ExceptionAsync(() =>
+                        client.TemporalClient.StartWorkflowAsync(
+                            (WaitForSignalWorkflow wf) => wf.RunAsync("target"), options));
+                    // The operation context's client is not scoped to the invocation, so it can
+                    // still signal, even the workflow that already got the scoped signal.
+                    await NexusOperationExecutionContext.Current.TemporalClient.
+                        GetWorkflowHandle<WaitForSignalWorkflow>(targetWorkflowId).
+                        SignalAsync(wf => wf.SignalAsync());
+                    return TemporalOperationResult<string>.SyncResult($"signaled-{input}");
+                }));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+            Assert.Equal("signaled-some-name", result);
+        });
+
+        Assert.IsType<RpcException>(missingSignalExc);
+        // The context client's signal must not share the operation's request ID, or the server
+        // would have silently deduplicated it against the scoped signal.
+        Assert.Equal(
+            2,
+            (await Client.GetWorkflowHandle(targetWorkflowId).FetchHistoryAsync()).Events.
+                Count(evt => evt.WorkflowExecutionSignaledEventAttributes != null));
+        foreach (var exc in new[] { secondSignalExc, signalWithStartExc })
+        {
+            Assert.Equal(HandlerErrorType.BadRequest, Assert.IsType<HandlerException>(exc).ErrorType);
+            Assert.Contains("only one signal can be sent per Nexus Operation invocation", exc.Message);
+        }
+    }
+
+    // Replaces rather than clones the options, which would drop the internal request ID if the
+    // Nexus signal interceptor ran outside of this one.
+    private sealed class ReplaceSignalOptionsInterceptor : IClientInterceptor
+    {
+        public ClientOutboundInterceptor InterceptClient(ClientOutboundInterceptor nextInterceptor) =>
+            new Outbound(nextInterceptor);
+
+        private sealed class Outbound : ClientOutboundInterceptor
+        {
+            public Outbound(ClientOutboundInterceptor next)
+                : base(next)
+            {
+            }
+
+            public override Task SignalWorkflowAsync(SignalWorkflowInput input) =>
+                base.SignalWorkflowAsync(
+                    input with { Options = new WorkflowSignalOptions { Rpc = input.Options?.Rpc } });
+        }
     }
 
     private class CancelOverrideHandler : TemporalOperationHandler<string, string>

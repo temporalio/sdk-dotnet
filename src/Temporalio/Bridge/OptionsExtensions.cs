@@ -753,7 +753,7 @@ namespace Temporalio.Bridge
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
                     AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
-                plugins = scope.ByteArrayArray(pluginNames),
+                plugins = scope.PluginInfoArray(pluginNames),
                 storage_drivers = scope.ByteArrayArray(storageDrivers),
                 disable_payload_error_limit = (byte)(options.DisablePayloadErrorLimit ? 1 : 0),
                 max_eager_activity_reservations_per_workflow_task =
@@ -819,7 +819,7 @@ namespace Temporalio.Bridge
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
                     AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
-                plugins = scope.ByteArrayArray(pluginNames),
+                plugins = scope.PluginInfoArray(pluginNames),
                 storage_drivers = scope.ByteArrayArray(storageDrivers),
             };
         }
