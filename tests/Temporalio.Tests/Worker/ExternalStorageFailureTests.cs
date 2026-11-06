@@ -1,5 +1,7 @@
 namespace Temporalio.Tests.Worker;
 
+using NexusRpc;
+using NexusRpc.Handlers;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
@@ -46,6 +48,34 @@ public class ExternalStorageFailureTests : WorkflowEnvironmentTestBase
                     StartToCloseTimeout = TimeSpan.FromSeconds(10),
                     RetryPolicy = new() { MaximumAttempts = 1 },
                 });
+    }
+
+    [NexusService]
+    public interface IEchoService
+    {
+        [NexusOperation]
+        string Echo(string input);
+    }
+
+    [NexusServiceHandler(typeof(IEchoService))]
+    public class EchoService
+    {
+        [NexusOperationHandler]
+        public IOperationHandler<string, string> Echo() =>
+            OperationHandler.Sync<string, string>((context, input) => $"nexus: {input}");
+    }
+
+    [Workflow]
+    public class NexusCallerWorkflow
+    {
+        // A long schedule-to-close so the operation stays pending and keeps retrying while the test
+        // reads its last-attempt failure, rather than timing out and erasing the cause.
+        [WorkflowRun]
+        public async Task<string> RunAsync(string endpoint) =>
+            await Workflow.CreateNexusWorkflowClient<IEchoService>(endpoint)
+                .ExecuteNexusOperationAsync(
+                    svc => svc.Echo("hi"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
     }
 
     [Fact]
@@ -111,6 +141,51 @@ public class ExternalStorageFailureTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.NeedsCloudAdaptation,
+        "Creates a local Nexus endpoint bound to the handler worker's task queue.")]
+    public async Task NexusResultStoreFailure_FailsOperationHandler()
+    {
+        // The handler runs on a worker whose storage fails; the caller workflow runs on a separate
+        // worker with working storage. So only the handler's result offload fails, exercising the
+        // Nexus handler-error path without the caller's own completion also failing to store.
+        var handlerClient = ClientWithFailingStorage();
+        var handlerTaskQueue = $"tq-handler-{Guid.NewGuid()}";
+        var callerTaskQueue = $"tq-caller-{Guid.NewGuid()}";
+        var endpoint = $"nexus-endpoint-{handlerTaskQueue}";
+        await Env.TestEnv.CreateNexusEndpointAsync(endpoint, handlerTaskQueue);
+
+        var handlerOptions = new TemporalWorkerOptions(handlerTaskQueue)
+            .AddNexusService(new EchoService());
+        var callerOptions = new TemporalWorkerOptions(callerTaskQueue)
+            .AddWorkflow<NexusCallerWorkflow>();
+        callerOptions.Interceptors ??= new[] { new XunitExceptionInterceptor() };
+
+        using var handlerWorker = new TemporalWorker(handlerClient, handlerOptions);
+        using var callerWorker = new TemporalWorker((TemporalClient)Client, callerOptions);
+        await handlerWorker.ExecuteAsync(() => callerWorker.ExecuteAsync(async () =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (NexusCallerWorkflow wf) => wf.RunAsync(endpoint),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: callerTaskQueue));
+            try
+            {
+                // Each attempt fails because the result cannot be stored, so the operation stays
+                // pending and retrying; its last-attempt failure names external storage as the cause.
+                var failure = await WaitForNexusOperationFailureAsync(handle);
+                Assert.Equal("External storage failure", failure.Message);
+                Assert.Equal(
+                    nameof(Temporalio.Exceptions.ExternalStorageException),
+                    failure.Cause.ApplicationFailureInfo.Type);
+            }
+            finally
+            {
+                await TerminateQuietlyAsync(handle);
+            }
+        }));
+    }
+
     // Cleanup for a workflow that may still be retrying its unstorable completion, or may have
     // already closed out on its own; either way a leftover workflow should not fail the test.
     private static async Task TerminateQuietlyAsync(WorkflowHandle handle)
@@ -122,6 +197,30 @@ public class ExternalStorageFailureTests : WorkflowEnvironmentTestBase
         catch (Temporalio.Exceptions.RpcException)
         {
         }
+    }
+
+    // Polls the workflow's pending Nexus operations for a recorded last-attempt failure, which the
+    // server keeps while the operation retries. RawDescription carries the pending-operation info the
+    // typed description does not surface.
+    private static async Task<Api.Failure.V1.Failure> WaitForNexusOperationFailureAsync(
+        WorkflowHandle handle)
+    {
+        var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(15);
+        while (DateTime.UtcNow < deadline)
+        {
+            var description = await handle.DescribeAsync();
+            foreach (var op in description.RawDescription.PendingNexusOperations)
+            {
+                if (op.LastAttemptFailure != null)
+                {
+                    return op.LastAttemptFailure;
+                }
+            }
+
+            await Task.Delay(200);
+        }
+
+        throw new InvalidOperationException("Nexus operation failure did not appear in time.");
     }
 
     private static async Task<HistoryEvent> WaitForEventAsync(
