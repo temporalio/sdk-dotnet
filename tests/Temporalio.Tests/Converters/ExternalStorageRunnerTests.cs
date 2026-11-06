@@ -326,9 +326,10 @@ public class ExternalStorageRunnerTests : TestBase
             "my-driver",
             new Dictionary<string, string> { ["key"] = "k" },
             originalSizeBytes: 1024);
+        var payloads = new Payloads { Payloads_ = { reference } };
 
         var error = await Assert.ThrowsAsync<ExternalStorageNotConfiguredException>(
-            () => runner.RetrieveAsync(PayloadVisitors.VisitAsync, reference, CancellationToken.None));
+            () => runner.RetrieveAsync(PayloadVisitors.Walk, payloads, CancellationToken.None));
         Assert.Contains("[TMPRL1105]", error.Message);
     }
 
@@ -337,9 +338,10 @@ public class ExternalStorageRunnerTests : TestBase
     {
         var runner = ExternalStorageRunner.Create(null);
         var plain = new Payload { Data = ByteString.CopyFromUtf8("not a reference") };
+        var payloads = new Payloads { Payloads_ = { plain } };
 
         // Must not throw.
-        await runner.RetrieveAsync(PayloadVisitors.VisitAsync, plain, CancellationToken.None);
+        await runner.RetrieveAsync(PayloadVisitors.Walk, payloads, CancellationToken.None);
     }
 
     [Fact]
@@ -355,7 +357,7 @@ public class ExternalStorageRunnerTests : TestBase
             },
         };
 
-        await runner.RetrieveAsync(PayloadVisitors.VisitAsync, payloads, CancellationToken.None);
+        await runner.RetrieveAsync(PayloadVisitors.Walk, payloads, CancellationToken.None);
 
         Assert.Equal(2, payloads.Payloads_.Count);
         Assert.Equal("a", payloads.Payloads_[0].Data.ToStringUtf8());
@@ -373,11 +375,12 @@ public class ExternalStorageRunnerTests : TestBase
             "my-driver",
             new Dictionary<string, string> { ["key"] = "k" },
             originalSizeBytes: 1024);
+        var payloads = new Payloads { Payloads_ = { reference } };
 
-        await runner.RetrieveAsync(PayloadVisitors.VisitAsync, reference, CancellationToken.None);
+        await runner.RetrieveAsync(PayloadVisitors.Walk, payloads, CancellationToken.None);
 
-        // Configured storage retrieves the reference in place from the driver.
-        Assert.Equal("retrieved", reference.Data.ToStringUtf8());
+        // Configured storage retrieves the reference from the driver.
+        Assert.Equal("retrieved", payloads.Payloads_[0].Data.ToStringUtf8());
     }
 
     private static ExternalStorageRunner Runner(ExternalStorage storage) =>

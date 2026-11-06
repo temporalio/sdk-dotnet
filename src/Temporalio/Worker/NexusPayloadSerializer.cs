@@ -56,7 +56,7 @@ namespace Temporalio.Worker
             var isSystemPayload = SystemNexusPayloads.IsSystemPayload(payload);
 
             if (isSystemPayload &&
-                !PayloadVisitors.TryGetEnvelopeVisitor(payload, out var messageType, out _))
+                !PayloadVisitors.TryGetEnvelopeWalk(payload, out var messageType, out _))
             {
                 throw new HandlerException(
                     HandlerErrorType.Internal,

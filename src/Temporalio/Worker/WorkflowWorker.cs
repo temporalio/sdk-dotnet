@@ -302,7 +302,7 @@ namespace Temporalio.Worker
                 }
                 // External storage is independent of the codec, so this runs even when there is none.
                 await externalStorage.RetrieveAsync(
-                    PayloadVisitors.VisitAsync, act, CancellationToken.None).ConfigureAwait(false);
+                    PayloadVisitors.Walk, act, CancellationToken.None).ConfigureAwait(false);
                 if (codecContext != null)
                 {
                     await WorkflowCodecHelper.DecodeAsync(codecContext, act).ConfigureAwait(false);
@@ -437,7 +437,7 @@ namespace Temporalio.Worker
                 {
                     var target = StorageTargetForCommand(command, currentWorkflow, parent);
                     await externalStorage.StoreAsync(
-                        PayloadVisitors.VisitAsync, command, target, CancellationToken.None)
+                        PayloadVisitors.Walk, command, target, CancellationToken.None)
                         .ConfigureAwait(false);
                 }
             }
@@ -445,7 +445,7 @@ namespace Temporalio.Worker
             if (comp.Failed != null)
             {
                 await externalStorage.StoreAsync(
-                    PayloadVisitors.VisitAsync, comp.Failed, currentWorkflow, CancellationToken.None)
+                    PayloadVisitors.Walk, comp.Failed, currentWorkflow, CancellationToken.None)
                     .ConfigureAwait(false);
             }
         }

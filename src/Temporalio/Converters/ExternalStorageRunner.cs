@@ -63,24 +63,36 @@ namespace Temporalio.Converters
 
         /// <inheritdoc />
         public Task RetrieveAsync<T>(
-            Func<T, PayloadVisitors.PayloadVisitor, PayloadVisitors.PayloadsVisitor, Task> visit,
+            Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
             T message,
             CancellationToken cancellationToken) =>
-            visit(
+            PayloadVisitors.VisitAsync(
                 message,
-                payload => RetrieveAsync(payload, cancellationToken),
-                payloads => RetrieveAsync(payloads, cancellationToken));
+                walk,
+                new PayloadVisitors.VisitOptions(
+                    async (payload, ct) => (await RetrieveAsync(new[] { payload }, ct)
+                        .ConfigureAwait(false)).Single(),
+                    (payloads, ct) => RetrieveAsync(payloads, ct))
+                {
+                    CancellationToken = cancellationToken,
+                });
 
         /// <inheritdoc />
         public Task StoreAsync<T>(
-            Func<T, PayloadVisitors.PayloadVisitor, PayloadVisitors.PayloadsVisitor, Task> visit,
+            Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
             T message,
             IStorageDriverTargetInfo? target,
             CancellationToken cancellationToken) =>
-            visit(
+            PayloadVisitors.VisitAsync(
                 message,
-                payload => StoreAsync(payload, target, cancellationToken),
-                payloads => StoreAsync(payloads, target, cancellationToken));
+                walk,
+                new PayloadVisitors.VisitOptions(
+                    async (payload, ct) => (await StoreAsync(new[] { payload }, target, ct)
+                        .ConfigureAwait(false)).Single(),
+                    (payloads, ct) => StoreAsync(payloads, target, ct))
+                {
+                    CancellationToken = cancellationToken,
+                });
 
         /// <summary>
         /// Replace every payload at or above the configured size threshold with a reference,
@@ -324,24 +336,29 @@ namespace Temporalio.Converters
             public static readonly UnconfiguredRunner Instance = new();
 
             public Task RetrieveAsync<T>(
-                Func<T, PayloadVisitors.PayloadVisitor, PayloadVisitors.PayloadsVisitor, Task> visit,
+                Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
                 T message,
                 CancellationToken cancellationToken) =>
-                visit(
+                PayloadVisitors.VisitAsync(
                     message,
-                    payload =>
-                    {
-                        RejectIfReference(payload);
-                        return Task.CompletedTask;
-                    },
-                    payloads =>
-                    {
-                        foreach (var payload in payloads)
+                    walk,
+                    new PayloadVisitors.VisitOptions(
+                        (payload, _) =>
                         {
                             RejectIfReference(payload);
-                        }
+                            return Task.FromResult(payload);
+                        },
+                        (payloads, _) =>
+                        {
+                            foreach (var payload in payloads)
+                            {
+                                RejectIfReference(payload);
+                            }
 
-                        return Task.FromResult(payloads);
+                            return Task.FromResult(payloads);
+                        })
+                    {
+                        CancellationToken = cancellationToken,
                     });
 
             public Task<IReadOnlyCollection<Payload>> RetrieveAsync(
@@ -356,7 +373,7 @@ namespace Temporalio.Converters
             }
 
             public Task StoreAsync<T>(
-                Func<T, PayloadVisitors.PayloadVisitor, PayloadVisitors.PayloadsVisitor, Task> visit,
+                Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
                 T message,
                 IStorageDriverTargetInfo? target,
                 CancellationToken cancellationToken) =>

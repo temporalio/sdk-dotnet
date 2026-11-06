@@ -171,8 +171,8 @@ static void GeneratePayloadVisitor(
     builder.AppendLine("    [GeneratedCode(\"Temporalio.SystemNexus.Generator\", null)]");
     builder.AppendLine("    internal static partial class PayloadVisitors");
     builder.AppendLine("    {");
-    builder.AppendLine("        private static readonly IReadOnlyDictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, Task>> EnvelopeVisitors =");
-    builder.AppendLine("            new Dictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, Task>>");
+    builder.AppendLine("        private static readonly IReadOnlyDictionary<string, Func<Payload, WalkEnv, Task<Payload>>> EnvelopeVisitors =");
+    builder.AppendLine("            new Dictionary<string, Func<Payload, WalkEnv, Task<Payload>>>");
     builder.AppendLine("            {");
     foreach (var operation in operationMessages)
     {
@@ -187,10 +187,12 @@ static void GeneratePayloadVisitor(
 
     builder.AppendLine("            };");
     builder.AppendLine();
-    builder.AppendLine("        private static Task VisitNoPayloadEnvelopeAsync<T>(");
+    builder.AppendLine("        private static void VisitNoPayloadEnvelopeAsync<T>(");
     builder.AppendLine("            T value,");
-    builder.AppendLine("            PayloadVisitor visitPayload,");
-    builder.AppendLine("            PayloadsVisitor visitPayloads) => Task.CompletedTask;");
+    builder.AppendLine("            WalkEnv env,");
+    builder.AppendLine("            VisitState state)");
+    builder.AppendLine("        {");
+    builder.AppendLine("        }");
     builder.AppendLine();
 
     var roots = operationMessages
@@ -374,14 +376,13 @@ static void EmitEnvelopeVisitor(
     }
 
     var visitMethod = ContainsPayload(message, messages, containsPayloadMemo) ?
-        "VisitAsync" :
+        "Walk" :
         "VisitNoPayloadEnvelopeAsync";
-    builder.AppendLine($"                [\"{message.FullName}\"] = (payload, visitPayload, visitPayloads) =>");
+    builder.AppendLine($"                [\"{message.FullName}\"] = (payload, env) =>");
     builder.AppendLine($"                    VisitEnvelopeAsync<{message.CsharpType}>(");
     builder.AppendLine("                        payload,");
     builder.AppendLine($"                        {visitMethod},");
-    builder.AppendLine("                        visitPayload,");
-    builder.AppendLine("                        visitPayloads),");
+    builder.AppendLine("                        env),");
 }
 
 static void EmitVisitMethod(
@@ -403,26 +404,14 @@ static void EmitVisitMethod(
     }
 
     var fieldLines = VisitFieldLines(message, messages, containsPayloadMemo).ToList();
-    var hasAwaits = fieldLines.Any(line => line.Contains("await ", StringComparison.Ordinal));
-    builder.Append("        internal static ");
-    if (hasAwaits)
-    {
-        builder.Append("async ");
-    }
-
-    builder.AppendLine("Task VisitAsync(");
+    builder.AppendLine("        internal static void Walk(");
     builder.AppendLine($"            {message.CsharpType} value,");
-    builder.AppendLine("            PayloadVisitor visitPayload,");
-    builder.AppendLine("            PayloadsVisitor visitPayloads)");
+    builder.AppendLine("            WalkEnv env,");
+    builder.AppendLine("            VisitState state)");
     builder.AppendLine("        {");
     foreach (var line in fieldLines)
     {
         builder.AppendLine($"            {line}");
-    }
-
-    if (!hasAwaits)
-    {
-        builder.AppendLine("            return Task.CompletedTask;");
     }
 
     builder.AppendLine("        }");
@@ -502,13 +491,22 @@ static IEnumerable<string> VisitFieldLines(
                 continue;
             }
 
-            var valueName = UniqueLocalName(message, field, "item");
-            yield return $"foreach (var {valueName} in value.{propertyName}.Values)";
+            var pairName = UniqueLocalName(message, field, "pair");
+            yield return $"foreach (var {pairName} in value.{propertyName})";
             yield return "{";
-            yield return $"    if ({valueName} != null)";
-            yield return "    {";
-            yield return $"        await VisitAsync({valueName}, visitPayload, visitPayloads).ConfigureAwait(false);";
-            yield return "    }";
+            if (IsPayload(valueMessage))
+            {
+                // The replacement is written back under the same key once the transform completes.
+                yield return $"    VisitSingle(state, env, {pairName}.Value, replacement => value.{propertyName}[{pairName}.Key] = replacement);";
+            }
+            else
+            {
+                yield return $"    if ({pairName}.Value != null)";
+                yield return "    {";
+                yield return $"        Walk({pairName}.Value, env, state);";
+                yield return "    }";
+            }
+
             yield return "}";
             continue;
         }
@@ -520,29 +518,22 @@ static IEnumerable<string> VisitFieldLines(
 
         if (IsPayload(fieldMessage))
         {
-            // Argument lists are visited as one collection so visitPayloads sees the whole
-            // batch, which codecs that pack or split payloads depend on. The API wraps argument
-            // lists in Payloads, but core protos use a bare repeated Payload; any other bare
-            // repeated Payload in the API holds independent values, so each is visited alone.
+            // Argument lists are visited as one batch so a transform sees the whole field, which
+            // codecs that pack or split payloads depend on. The API wraps argument lists in
+            // Payloads, but core protos use a bare repeated Payload; any other bare repeated
+            // Payload in the API holds independent values, so each is visited alone.
             if (field.Label == FieldDescriptorProto.Types.Label.Repeated &&
                 (IsPayloads(message) || message.FullName.StartsWith("coresdk.", StringComparison.Ordinal)))
             {
-                yield return $"await VisitAsync(value.{propertyName}, visitPayload, visitPayloads).ConfigureAwait(false);";
+                yield return $"VisitBatch(state, env, value.{propertyName});";
             }
             else if (field.Label == FieldDescriptorProto.Types.Label.Repeated)
             {
-                var valueName = UniqueLocalName(message, field, "payload");
-                yield return $"foreach (var {valueName} in value.{propertyName})";
-                yield return "{";
-                yield return $"    await VisitAsync({valueName}, visitPayload, visitPayloads).ConfigureAwait(false);";
-                yield return "}";
+                yield return $"VisitEach(state, env, value.{propertyName});";
             }
             else
             {
-                yield return $"if (value.{propertyName} != null)";
-                yield return "{";
-                yield return $"    await VisitAsync(value.{propertyName}, visitPayload, visitPayloads).ConfigureAwait(false);";
-                yield return "}";
+                yield return $"VisitSingle(state, env, value.{propertyName}, replacement => value.{propertyName} = replacement);";
             }
         }
         else if (IsPayloads(fieldMessage))
@@ -552,14 +543,14 @@ static IEnumerable<string> VisitFieldLines(
                 var valueName = UniqueLocalName(message, field, "payloads");
                 yield return $"foreach (var {valueName} in value.{propertyName})";
                 yield return "{";
-                yield return $"    await VisitAsync({valueName}.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);";
+                yield return $"    VisitBatch(state, env, {valueName}.Payloads_);";
                 yield return "}";
             }
             else
             {
                 yield return $"if (value.{propertyName} != null)";
                 yield return "{";
-                yield return $"    await VisitAsync(value.{propertyName}.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);";
+                yield return $"    VisitBatch(state, env, value.{propertyName}.Payloads_);";
                 yield return "}";
             }
         }
@@ -568,14 +559,14 @@ static IEnumerable<string> VisitFieldLines(
             var valueName = UniqueLocalName(message, field, "item");
             yield return $"foreach (var {valueName} in value.{propertyName})";
             yield return "{";
-            yield return $"    await VisitAsync({valueName}, visitPayload, visitPayloads).ConfigureAwait(false);";
+            yield return $"    Walk({valueName}, env, state);";
             yield return "}";
         }
         else
         {
             yield return $"if (value.{propertyName} != null)";
             yield return "{";
-            yield return $"    await VisitAsync(value.{propertyName}, visitPayload, visitPayloads).ConfigureAwait(false);";
+            yield return $"    Walk(value.{propertyName}, env, state);";
             yield return "}";
         }
     }
