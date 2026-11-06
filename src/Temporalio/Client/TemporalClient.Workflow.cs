@@ -359,7 +359,7 @@ namespace Temporalio.Client
                     },
                     SignalName = input.Signal,
                     Identity = Client.Connection.Options.Identity,
-                    RequestId = Guid.NewGuid().ToString(),
+                    RequestId = input.Options?.RequestId ?? Guid.NewGuid().ToString(),
                 };
                 if (input.Args.Count > 0)
                 {

@@ -525,6 +525,22 @@ namespace Temporalio.Worker
                         act.HeartbeatFailureException, storage).ConfigureAwait(false),
                 };
             }
+            catch (ExternalStorageException e)
+            {
+                act.Context.Logger.LogWarning(
+                    e,
+                    "Completing activity {ActivityType} as failed due to external storage",
+                    act.Context.Info.ActivityType);
+
+                // Encode the failure through the codec but skip offload, which just failed.
+                completion.Result.Failed = new()
+                {
+                    Failure_ = await dataConverter.ToFailureAsync(
+                        e, ExternalStorageContext.For(dataConverter, skipStore: true))
+                        .ConfigureAwait(false),
+                    Cause = Api.Enums.V1.ActivityTaskFailedCause.ExternalStorageFailure,
+                };
+            }
             catch (Exception e)
             {
                 // Downgrade log level to DEBUG for benign application errors.
