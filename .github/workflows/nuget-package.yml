@@ -170,6 +170,10 @@ jobs:
             src/Temporalio.Extensions.Aws.Lambda/bin/Release/*.snupkg
             src/Temporalio.Extensions.Aws.Lambda.OpenTelemetry/bin/Release/*.nupkg
             src/Temporalio.Extensions.Aws.Lambda.OpenTelemetry/bin/Release/*.snupkg
+            src/Temporalio.Extensions.Aws.S3Driver/bin/Release/*.nupkg
+            src/Temporalio.Extensions.Aws.S3Driver/bin/Release/*.snupkg
+            src/Temporalio.Extensions.Aws.S3Driver.AwsSdk/bin/Release/*.nupkg
+            src/Temporalio.Extensions.Aws.S3Driver.AwsSdk/bin/Release/*.snupkg
             src/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/bin/Release/*.nupkg
             src/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/bin/Release/*.snupkg
             src/Temporalio.Extensions.Gcp.CloudRun.Id/bin/Release/*.nupkg
