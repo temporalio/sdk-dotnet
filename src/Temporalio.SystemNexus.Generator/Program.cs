@@ -187,7 +187,7 @@ static void GeneratePayloadVisitor(
 
     builder.AppendLine("            };");
     builder.AppendLine();
-    builder.AppendLine("        private static void VisitNoPayloadEnvelopeAsync<T>(");
+    builder.AppendLine("        private static void VisitNoPayloadEnvelope<T>(");
     builder.AppendLine("            T value,");
     builder.AppendLine("            WalkEnv env,");
     builder.AppendLine("            VisitState state)");
@@ -377,7 +377,7 @@ static void EmitEnvelopeVisitor(
 
     var visitMethod = ContainsPayload(message, messages, containsPayloadMemo) ?
         "Walk" :
-        "VisitNoPayloadEnvelopeAsync";
+        "VisitNoPayloadEnvelope";
     builder.AppendLine($"                [\"{message.FullName}\"] = (payload, env) =>");
     builder.AppendLine($"                    VisitEnvelopeAsync<{message.CsharpType}>(");
     builder.AppendLine("                        payload,");

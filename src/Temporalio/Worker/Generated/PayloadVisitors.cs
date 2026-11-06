@@ -356,7 +356,7 @@ namespace Temporalio.Worker
                 ["temporal.api.workflowservice.v1.SignalWithStartWorkflowExecutionResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse>(
                         payload,
-                        VisitNoPayloadEnvelopeAsync,
+                        VisitNoPayloadEnvelope,
                         env),
                 ["temporal.api.notificationservice.v1.OnCompleteRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.NotificationService.V1.OnCompleteRequest>(
@@ -366,11 +366,11 @@ namespace Temporalio.Worker
                 ["temporal.api.notificationservice.v1.OnCompleteResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.NotificationService.V1.OnCompleteResponse>(
                         payload,
-                        VisitNoPayloadEnvelopeAsync,
+                        VisitNoPayloadEnvelope,
                         env),
             };
 
-        private static void VisitNoPayloadEnvelopeAsync<T>(
+        private static void VisitNoPayloadEnvelope<T>(
             T value,
             WalkEnv env,
             VisitState state)
