@@ -185,6 +185,34 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
+        /// Create a plugin info array from plugin names.
+        /// </summary>
+        /// <param name="names">Plugin names.</param>
+        /// <returns>Created plugin info array.</returns>
+        public Interop.TemporalCorePluginInfoArray PluginInfoArray(IReadOnlyCollection<string> names)
+        {
+            if (names.Count == 0)
+            {
+                return default;
+            }
+
+            // .NET plugins do not report a version, which Core represents as an empty version.
+            var arr = names.Select(name => new Interop.TemporalCorePluginInfo
+            {
+                name = ByteArray(name),
+                version = ByteArrayRef.Empty.Ref,
+            }).ToArray();
+            unsafe
+            {
+                return new()
+                {
+                    data = ArrayPointer(arr),
+                    size = (UIntPtr)arr.Length,
+                };
+            }
+        }
+
+        /// <summary>
         /// Create a cancellation token.
         /// </summary>
         /// <param name="token">Cancellation token to create from.</param>

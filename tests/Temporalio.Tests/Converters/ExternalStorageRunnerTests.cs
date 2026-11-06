@@ -126,7 +126,7 @@ public class ExternalStorageRunnerTests : TestBase
         };
         var runner = Runner(storage);
 
-        var err = await Assert.ThrowsAsync<InvalidOperationException>(
+        var err = await Assert.ThrowsAsync<ExternalStorageException>(
             () => runner.StoreAsync(new[] { Sized(50) }, null, default));
         Assert.Contains("not registered", err.Message);
     }
@@ -136,7 +136,7 @@ public class ExternalStorageRunnerTests : TestBase
     {
         var runner = Runner(Storage(new MiscountDriver("mem"), threshold: 1));
 
-        var err = await Assert.ThrowsAsync<InvalidOperationException>(
+        var err = await Assert.ThrowsAsync<ExternalStorageException>(
             () => runner.StoreAsync(new[] { Sized(50) }, null, default));
         Assert.Contains("1 payloads", err.Message);
     }
@@ -218,11 +218,12 @@ public class ExternalStorageRunnerTests : TestBase
         var refFails = ExternalStorageReferences.CreateReferencePayload(
             "fails", new Dictionary<string, string> { ["key"] = "two" }, 1);
 
-        var err = await Assert.ThrowsAsync<InvalidOperationException>(
+        var err = await Assert.ThrowsAsync<ExternalStorageException>(
             () => Task.Run(() => runner.RetrieveAsync(new[] { refWaits, refFails }, default))
                 .WaitAsync(TimeSpan.FromSeconds(5)));
 
-        Assert.Equal("Driver broke", err.Message);
+        // The first driver's failure is wrapped and surfaced, not the sibling's cancellation.
+        Assert.Equal("Driver broke", err.InnerException?.Message);
         Assert.True(abandoned.Task.IsFaulted);
     }
 
@@ -248,7 +249,7 @@ public class ExternalStorageRunnerTests : TestBase
         var reference = ExternalStorageReferences.CreateReferencePayload(
             "mem", new Dictionary<string, string> { ["key"] = "k0" }, 10);
 
-        var err = await Assert.ThrowsAsync<InvalidOperationException>(
+        var err = await Assert.ThrowsAsync<ExternalStorageException>(
             () => runner.RetrieveAsync(new[] { reference }, default));
         Assert.Contains("1 claims", err.Message);
     }

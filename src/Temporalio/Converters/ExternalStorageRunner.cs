@@ -138,7 +138,7 @@ namespace Temporalio.Converters
                 // Checked by reference, so a driver built to look like a registered one is rejected.
                 if (!ReferenceEquals(storage.GetDriver(driver.Name), driver))
                 {
-                    throw new InvalidOperationException(
+                    throw new ExternalStorageException(
                         "Storage driver selector returned a driver that is not registered: " +
                         $"'{driver.Name}'.");
                 }
@@ -161,11 +161,21 @@ namespace Temporalio.Converters
                 async (group, token) =>
                 {
                     var toStore = group.Items.Select(item => result[item.Index]).ToArray();
-                    var claims = await group.Driver
-                        .StoreAsync(context, toStore, token).ConfigureAwait(false);
+                    IReadOnlyCollection<StorageDriverClaim> claims;
+                    try
+                    {
+                        claims = await group.Driver
+                            .StoreAsync(context, toStore, token).ConfigureAwait(false);
+                    }
+                    catch (Exception e) when (
+                        e is not ExternalStorageException && !IsExpectedCancellation(e, token))
+                    {
+                        throw new ExternalStorageException(
+                            $"Storage driver '{group.Driver.Name}' failed to store payloads.", e);
+                    }
                     if (claims.Count != group.Items.Count)
                     {
-                        throw new InvalidOperationException(
+                        throw new ExternalStorageException(
                             $"Storage driver '{group.Driver.Name}' returned {claims.Count} " +
                             $"claims for {group.Items.Count} payloads.");
                     }
@@ -234,11 +244,21 @@ namespace Temporalio.Converters
                 async (entry, token) =>
                 {
                     var claims = entry.Items.Select(item => item.Claim).ToArray();
-                    var retrieved = await entry.Driver
-                        .RetrieveAsync(context, claims, token).ConfigureAwait(false);
+                    IReadOnlyCollection<Payload> retrieved;
+                    try
+                    {
+                        retrieved = await entry.Driver
+                            .RetrieveAsync(context, claims, token).ConfigureAwait(false);
+                    }
+                    catch (Exception e) when (
+                        e is not ExternalStorageException && !IsExpectedCancellation(e, token))
+                    {
+                        throw new ExternalStorageException(
+                            $"Storage driver '{entry.Driver.Name}' failed to retrieve payloads.", e);
+                    }
                     if (retrieved.Count != entry.Items.Count)
                     {
-                        throw new InvalidOperationException(
+                        throw new ExternalStorageException(
                             $"Storage driver '{entry.Driver.Name}' returned {retrieved.Count} " +
                             $"payloads for {entry.Items.Count} claims.");
                     }
@@ -252,6 +272,13 @@ namespace Temporalio.Converters
                 cancellationToken).ConfigureAwait(false);
             return result;
         }
+
+        // A cancellation that matches the token is the caller stopping the work, such as a worker
+        // shutting down, and must propagate as cancellation rather than become a storage failure. A
+        // driver that raises cancellation for its own reason while the token is not set is a real
+        // failure, which is why the source is confirmed rather than assumed from the type alone.
+        private static bool IsExpectedCancellation(Exception e, CancellationToken token) =>
+            e is OperationCanceledException && token.IsCancellationRequested;
 
         private static async Task WhenAllCancelOnFailureAsync<T>(
             IEnumerable<T> items,

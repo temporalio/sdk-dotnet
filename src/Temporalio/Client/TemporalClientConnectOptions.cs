@@ -73,7 +73,7 @@ namespace Temporalio.Client
 
         /// <summary>
         /// Create client options from a subset of these options for use in
-        /// <see cref="TemporalClient.TemporalClient" />.
+        /// <see cref="TemporalClient.TemporalClient(ITemporalConnection, TemporalClientOptions)" />.
         /// </summary>
         /// <returns>Client options.</returns>
         public TemporalClientOptions ToClientOptions() =>
