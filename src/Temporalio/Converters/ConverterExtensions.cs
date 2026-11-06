@@ -176,7 +176,7 @@ namespace Temporalio.Converters
             return storage.SkipStore
                 ? toStore
                 : await storage.Runner
-                    .StoreAsync(toStore, storage.Target, CancellationToken.None)
+                    .StoreAsync(toStore, storage.Target, metrics: null, CancellationToken.None)
                     .ConfigureAwait(false);
         }
 
@@ -200,7 +200,7 @@ namespace Temporalio.Converters
             return storage.SkipStore
                 ? payload
                 : (await storage.Runner
-                    .StoreAsync(new[] { payload }, storage.Target, CancellationToken.None)
+                    .StoreAsync(new[] { payload }, storage.Target, metrics: null, CancellationToken.None)
                     .ConfigureAwait(false)).First();
         }
 
@@ -263,7 +263,7 @@ namespace Temporalio.Converters
             ExternalStorageContext storage)
         {
             payloads = await storage.Runner
-                .RetrieveAsync(payloads, CancellationToken.None).ConfigureAwait(false);
+                .RetrieveAsync(payloads, metrics: null, CancellationToken.None).ConfigureAwait(false);
 
             // Decode, then expect single payload
             if (converter.PayloadCodec != null)
@@ -291,7 +291,8 @@ namespace Temporalio.Converters
             this DataConverter converter, Failure failure, ExternalStorageContext storage)
         {
             await storage.Runner.RetrieveAsync(
-                PayloadVisitors.VisitAsync, failure, CancellationToken.None).ConfigureAwait(false);
+                PayloadVisitors.VisitAsync, failure, metrics: null, CancellationToken.None)
+                .ConfigureAwait(false);
 
             // Decode then convert
             if (converter.PayloadCodec != null)
@@ -324,6 +325,7 @@ namespace Temporalio.Converters
                         PayloadVisitors.VisitAsync,
                         failure,
                         storage.Target,
+                        metrics: null,
                         CancellationToken.None)
                     .ConfigureAwait(false);
             }

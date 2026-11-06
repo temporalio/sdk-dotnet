@@ -266,6 +266,11 @@ namespace Temporalio.Worker
             // the try block. Null only if the activation could not be associated with a workflow.
             string? completionWorkflowId = null;
             string? completionWorkflowType = null;
+            // External storage activity for this task, reported to core on the completion. What a
+            // failing pass moved before it failed is still reported, so these are read back and set
+            // whatever the outcome.
+            var downloadMetrics = new StorageOperationMetricsBuilder();
+            var uploadMetrics = new StorageOperationMetricsBuilder();
 
             // Catch any exception as a completion failure
             try
@@ -308,7 +313,8 @@ namespace Temporalio.Worker
                 }
                 // External storage is independent of the codec, so this runs even when there is none.
                 await externalStorage.RetrieveAsync(
-                    PayloadVisitors.VisitAsync, act, CancellationToken.None).ConfigureAwait(false);
+                    PayloadVisitors.VisitAsync, act, downloadMetrics, CancellationToken.None)
+                    .ConfigureAwait(false);
                 if (codecContext != null)
                 {
                     await WorkflowCodecHelper.DecodeAsync(codecContext, act).ConfigureAwait(false);
@@ -410,7 +416,7 @@ namespace Temporalio.Worker
                 var parent = runningWorkflows.TryGetValue(act.RunId, out var instForTarget) &&
                     instForTarget.Info.ContinuedRunId == null
                     ? instForTarget.Info.Parent : null;
-                await StoreCompletionPayloadsAsync(comp, completionTarget, parent)
+                await StoreCompletionPayloadsAsync(comp, completionTarget, parent, uploadMetrics)
                     .ConfigureAwait(false);
             }
             catch (Exception e)
@@ -434,6 +440,11 @@ namespace Temporalio.Worker
                 }
             }
 
+            // Report what external storage moved, including anything a failing pass moved before it
+            // failed. A pass that moved nothing produces null, leaving the field unset.
+            comp.PayloadDownloadMetrics = downloadMetrics.ToProto();
+            comp.PayloadUploadMetrics = uploadMetrics.ToProto();
+
             // Send completion
             logger.LogTrace("Sending workflow completion: {Completion}", comp);
             try
@@ -451,7 +462,8 @@ namespace Temporalio.Worker
         private async Task StoreCompletionPayloadsAsync(
             WorkflowActivationCompletion comp,
             IStorageDriverTargetInfo.Workflow? currentWorkflow,
-            WorkflowInfo.ParentInfo? parent)
+            WorkflowInfo.ParentInfo? parent,
+            StorageOperationMetricsBuilder metrics)
         {
             if (comp.Successful != null)
             {
@@ -459,7 +471,7 @@ namespace Temporalio.Worker
                 {
                     var target = StorageTargetForCommand(command, currentWorkflow, parent);
                     await externalStorage.StoreAsync(
-                        PayloadVisitors.VisitAsync, command, target, CancellationToken.None)
+                        PayloadVisitors.VisitAsync, command, target, metrics, CancellationToken.None)
                         .ConfigureAwait(false);
                 }
             }
@@ -467,7 +479,11 @@ namespace Temporalio.Worker
             if (comp.Failed != null)
             {
                 await externalStorage.StoreAsync(
-                    PayloadVisitors.VisitAsync, comp.Failed, currentWorkflow, CancellationToken.None)
+                    PayloadVisitors.VisitAsync,
+                    comp.Failed,
+                    currentWorkflow,
+                    metrics,
+                    CancellationToken.None)
                     .ConfigureAwait(false);
             }
         }
