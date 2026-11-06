@@ -7,6 +7,7 @@ using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.History.V1;
 using Temporalio.Client;
+using Temporalio.Client.Schedules;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Temporalio.Worker;
@@ -346,6 +347,61 @@ public class ExternalStorageEndToEndTests : WorkflowEnvironmentTestBase
         }
     }
 
+    [Fact]
+    public async Task ScheduleUpdate_StoresOnlyChangedSummaryOrDetails()
+    {
+        var driver = new InMemoryStorageDriver("mem");
+        var client = ClientWithExternalStorage(driver);
+        var action = ScheduleActionStartWorkflow.Create(
+            "ResultWorkflow",
+            new object?[] { "hi" },
+            new(id: $"workflow-{Guid.NewGuid()}", taskQueue: $"tq-{Guid.NewGuid()}")
+            {
+                StaticSummary = "summary",
+                StaticDetails = "details",
+            });
+        var schedule = new Schedule(
+            Action: action,
+            Spec: new() { Calendars = new List<ScheduleCalendarSpec> { new() } })
+        {
+            State = new() { Paused = true },
+        };
+        var handle = await client.CreateScheduleAsync($"schedule-{Guid.NewGuid()}", schedule);
+
+        try
+        {
+            var storedOnCreate = driver.StoreCount;
+
+            await handle.UpdateAsync(input =>
+            {
+                var described = Assert.IsType<ScheduleActionStartWorkflow>(
+                    input.Description.Schedule.Action);
+                described.Options.TaskTimeout = TimeSpan.FromMinutes(7);
+                return new(input.Description.Schedule);
+            });
+            Assert.Equal(storedOnCreate, driver.StoreCount);
+
+            await handle.UpdateAsync(input =>
+            {
+                var described = Assert.IsType<ScheduleActionStartWorkflow>(
+                    input.Description.Schedule.Action);
+                described.Options.StaticSummary = "new summary";
+                return new(input.Description.Schedule);
+            });
+            Assert.Equal(storedOnCreate + 1, driver.StoreCount);
+
+            var updated = Assert.IsType<ScheduleActionStartWorkflow>(
+                (await handle.DescribeAsync()).Schedule.Action);
+            Assert.Equal("new summary", updated.Options.StaticSummary);
+            Assert.Equal("details", updated.Options.StaticDetails);
+            Assert.Equal(TimeSpan.FromMinutes(7), updated.Options.TaskTimeout);
+        }
+        finally
+        {
+            await handle.DeleteAsync();
+        }
+    }
+
     private static WorkflowOptions NewOptions(TemporalWorker worker) =>
         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!);
 
@@ -369,13 +425,16 @@ public class ExternalStorageEndToEndTests : WorkflowEnvironmentTestBase
     private static void AssertReference(Payload payload) =>
         Assert.True(ExternalStorageReferences.IsPlainReference(payload));
 
-    private TemporalClient ClientWithExternalStorage()
+    private TemporalClient ClientWithExternalStorage(InMemoryStorageDriver? driver = null)
     {
         var options = (TemporalClientOptions)Client.Options.Clone();
         options.DataConverter = DataConverter.Default with
         {
             ExternalStorage =
-                new ExternalStorage(new InMemoryStorageDriver("mem")) { PayloadSizeThreshold = 1 },
+                new ExternalStorage(driver ?? new InMemoryStorageDriver("mem"))
+                {
+                    PayloadSizeThreshold = 1,
+                },
         };
         return new TemporalClient(Client.Connection, options);
     }
@@ -403,6 +462,8 @@ public class ExternalStorageEndToEndTests : WorkflowEnvironmentTestBase
         public string Name { get; }
 
         public string Type => "test.inmemory";
+
+        public int StoreCount => stored.Count;
 
         public Task<IReadOnlyCollection<StorageDriverClaim>> StoreAsync(
             StorageDriverStoreContext context,
