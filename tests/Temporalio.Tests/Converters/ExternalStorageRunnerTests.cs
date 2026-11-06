@@ -173,56 +173,6 @@ public class ExternalStorageRunnerTests : TestBase
     }
 
     [Fact]
-    public async Task StoreAsync_SinglePayload_ReplacesInPlace()
-    {
-        var runner = Runner(Storage(new MapDriver("mem"), threshold: 1));
-        var payload = Sized(50);
-
-        await runner.StoreAsync(payload, null, default);
-
-        Assert.True(ExternalStorageReferences.IsPlainReference(payload));
-    }
-
-    [Fact]
-    public async Task StoreAsync_SinglePayloadBelowThreshold_LeavesItUnchanged()
-    {
-        var runner = Runner(Storage(new MapDriver("mem"), threshold: 1_000_000));
-        var payload = Sized(8);
-        var before = payload.Clone();
-
-        await runner.StoreAsync(payload, null, default);
-
-        Assert.Equal(before, payload);
-    }
-
-    [Fact]
-    public async Task StoreAsync_SinglePayload_LeavesTheDriversPayloadIntact()
-    {
-        var driver = new MapDriver("mem");
-        var runner = Runner(Storage(driver, threshold: 1));
-        var payload = Sized(50);
-        var before = payload.Clone();
-
-        await runner.StoreAsync(payload, null, default);
-
-        Assert.Equal(before, driver.Stored.Single().Value);
-    }
-
-    [Fact]
-    public async Task RetrieveAsync_SinglePayload_ReplacesInPlace()
-    {
-        var runner = Runner(Storage(new MapDriver("mem"), threshold: 1));
-        var payload = Sized(50);
-        var expected = payload.Clone();
-
-        await runner.StoreAsync(payload, null, default);
-        Assert.True(ExternalStorageReferences.IsPlainReference(payload));
-        await runner.RetrieveAsync(payload, default);
-
-        Assert.Equal(expected, payload);
-    }
-
-    [Fact]
     public async Task RetrieveAsync_TwoDrivers_RunConcurrently()
     {
         // Both drivers share a two-party barrier: each retrieve blocks until the other is also

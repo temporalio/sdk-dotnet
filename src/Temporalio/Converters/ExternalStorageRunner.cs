@@ -180,30 +180,6 @@ namespace Temporalio.Converters
         }
 
         /// <summary>
-        /// Store a single payload, replacing its contents in place if it is stored.
-        /// </summary>
-        /// <param name="payload">Payload to store, modified in place.</param>
-        /// <param name="target">
-        /// Execution the stored payload is offloaded on behalf of, carried on the store contexts
-        /// handed to drivers. Null when no target is known.
-        /// </param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>A task that completes when the payload is stored.</returns>
-        public async Task StoreAsync(
-            Payload payload, IStorageDriverTargetInfo? target, CancellationToken cancellationToken)
-        {
-            // The driver may keep the payload it is handed, and this one is overwritten below, so it
-            // gets a copy. Cloning shares the immutable data bytes, so only the metadata is copied.
-            var copy = payload.Clone();
-            var result = (await StoreAsync(new[] { copy }, target, cancellationToken)
-                .ConfigureAwait(false)).Single();
-            if (!ReferenceEquals(result, copy))
-            {
-                payload.ReplaceWith(result);
-            }
-        }
-
-        /// <summary>
         /// Replace every reference with the payload the driver returns for it, preserving order.
         /// </summary>
         /// <param name="payloads">Payloads of one field.</param>
@@ -275,22 +251,6 @@ namespace Temporalio.Converters
                 },
                 cancellationToken).ConfigureAwait(false);
             return result;
-        }
-
-        /// <summary>
-        /// Retrieve a single reference, replacing its contents in place.
-        /// </summary>
-        /// <param name="payload">Payload to retrieve if it is a reference, modified in place.</param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>A task that completes when the payload is retrieved.</returns>
-        public async Task RetrieveAsync(Payload payload, CancellationToken cancellationToken)
-        {
-            var result = (await RetrieveAsync(new[] { payload }, cancellationToken)
-                .ConfigureAwait(false)).Single();
-            if (!ReferenceEquals(result, payload))
-            {
-                payload.ReplaceWith(result);
-            }
         }
 
         private static async Task WhenAllCancelOnFailureAsync<T>(
