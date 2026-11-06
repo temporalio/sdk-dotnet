@@ -385,7 +385,8 @@ namespace Temporalio.Worker
             try
             {
                 await externalStorage.RetrieveAsync(
-                    PayloadVisitors.Walk, tsk, act.Context.CancellationToken).ConfigureAwait(false);
+                    PayloadVisitors.Walk, tsk, metrics: null, act.Context.CancellationToken)
+                    .ConfigureAwait(false);
 
                 // Find activity or fail
                 if (!activities.TryGetValue(act.Context.Info.ActivityType, out var defn))

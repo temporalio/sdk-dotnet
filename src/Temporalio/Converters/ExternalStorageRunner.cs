@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
@@ -65,14 +66,15 @@ namespace Temporalio.Converters
         public Task RetrieveAsync<T>(
             Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
             T message,
+            StorageOperationMetricsBuilder? metrics,
             CancellationToken cancellationToken) =>
             PayloadVisitors.VisitAsync(
                 message,
                 walk,
                 new PayloadVisitors.VisitOptions(
-                    async (payload, ct) => (await RetrieveAsync(new[] { payload }, ct)
+                    async (payload, ct) => (await RetrieveAsync(new[] { payload }, metrics, ct)
                         .ConfigureAwait(false)).Single(),
-                    (payloads, ct) => RetrieveAsync(payloads, ct))
+                    (payloads, ct) => RetrieveAsync(payloads, metrics, ct))
                 {
                     MaxConcurrency = storage.Concurrency.MaxOperationsPerMessage,
                     CancellationToken = cancellationToken,
@@ -83,14 +85,15 @@ namespace Temporalio.Converters
             Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
             T message,
             IStorageDriverTargetInfo? target,
+            StorageOperationMetricsBuilder? metrics,
             CancellationToken cancellationToken) =>
             PayloadVisitors.VisitAsync(
                 message,
                 walk,
                 new PayloadVisitors.VisitOptions(
-                    async (payload, ct) => (await StoreAsync(new[] { payload }, target, ct)
+                    async (payload, ct) => (await StoreAsync(new[] { payload }, target, metrics, ct)
                         .ConfigureAwait(false)).Single(),
-                    (payloads, ct) => StoreAsync(payloads, target, ct))
+                    (payloads, ct) => StoreAsync(payloads, target, metrics, ct))
                 {
                     MaxConcurrency = storage.Concurrency.MaxOperationsPerMessage,
                     CancellationToken = cancellationToken,
@@ -106,11 +109,13 @@ namespace Temporalio.Converters
         /// Execution the stored payloads are offloaded on behalf of, carried on the store contexts
         /// handed to drivers. Null when no target is known.
         /// </param>
+        /// <param name="metrics">Accumulates what was stored, or null to not measure it.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>The payloads with each stored one replaced by a reference.</returns>
         public async Task<IReadOnlyCollection<Payload>> StoreAsync(
             IReadOnlyCollection<Payload> payloads,
             IStorageDriverTargetInfo? target,
+            StorageOperationMetricsBuilder? metrics,
             CancellationToken cancellationToken)
         {
             if (payloads.Count == 0)
@@ -161,6 +166,7 @@ namespace Temporalio.Converters
                 async (group, token) =>
                 {
                     var toStore = group.Items.Select(item => result[item.Index]).ToArray();
+                    var startTimestamp = Stopwatch.GetTimestamp();
                     IReadOnlyCollection<StorageDriverClaim> claims;
                     try
                     {
@@ -173,6 +179,7 @@ namespace Temporalio.Converters
                         throw new ExternalStorageException(
                             $"Storage driver '{group.Driver.Name}' failed to store payloads.", e);
                     }
+                    var endTimestamp = Stopwatch.GetTimestamp();
                     if (claims.Count != group.Items.Count)
                     {
                         throw new ExternalStorageException(
@@ -184,6 +191,12 @@ namespace Temporalio.Converters
                         result[item.Index] = ExternalStorageReferences.CreateReferencePayload(
                             group.Driver.Name, claim.ClaimData, item.Size);
                     }
+                    metrics?.Record(
+                        group.Driver.Name,
+                        group.Items.Count,
+                        group.Items.Sum(item => item.Size),
+                        startTimestamp,
+                        endTimestamp);
                 },
                 cancellationToken).ConfigureAwait(false);
             return result;
@@ -193,10 +206,13 @@ namespace Temporalio.Converters
         /// Replace every reference with the payload the driver returns for it, preserving order.
         /// </summary>
         /// <param name="payloads">Payloads of one field.</param>
+        /// <param name="metrics">Accumulates what was retrieved, or null to not measure it.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>The payloads with each reference replaced by its stored payload.</returns>
         public async Task<IReadOnlyCollection<Payload>> RetrieveAsync(
-            IReadOnlyCollection<Payload> payloads, CancellationToken cancellationToken)
+            IReadOnlyCollection<Payload> payloads,
+            StorageOperationMetricsBuilder? metrics,
+            CancellationToken cancellationToken)
         {
             if (payloads.Count == 0)
             {
@@ -244,6 +260,7 @@ namespace Temporalio.Converters
                 async (entry, token) =>
                 {
                     var claims = entry.Items.Select(item => item.Claim).ToArray();
+                    var startTimestamp = Stopwatch.GetTimestamp();
                     IReadOnlyCollection<Payload> retrieved;
                     try
                     {
@@ -256,18 +273,27 @@ namespace Temporalio.Converters
                         throw new ExternalStorageException(
                             $"Storage driver '{entry.Driver.Name}' failed to retrieve payloads.", e);
                     }
+                    var endTimestamp = Stopwatch.GetTimestamp();
                     if (retrieved.Count != entry.Items.Count)
                     {
                         throw new ExternalStorageException(
                             $"Storage driver '{entry.Driver.Name}' returned {retrieved.Count} " +
                             $"payloads for {entry.Items.Count} claims.");
                     }
+                    long totalSizeBytes = 0;
                     foreach (var (item, payload) in entry.Items.Zip(retrieved, (i, p) => (i, p)))
                     {
                         // Later passes modify payloads in place, which must not reach an instance
                         // the driver may still hold or have returned for another claim.
                         result[item.Index] = payload.Clone();
+                        totalSizeBytes += payload.CalculateSize();
                     }
+                    metrics?.Record(
+                        entry.Driver.Name,
+                        entry.Items.Count,
+                        totalSizeBytes,
+                        startTimestamp,
+                        endTimestamp);
                 },
                 cancellationToken).ConfigureAwait(false);
             return result;
@@ -327,6 +353,7 @@ namespace Temporalio.Converters
             public Task RetrieveAsync<T>(
                 Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
                 T message,
+                StorageOperationMetricsBuilder? metrics,
                 CancellationToken cancellationToken) =>
                 PayloadVisitors.VisitAsync(
                     message,
@@ -351,7 +378,9 @@ namespace Temporalio.Converters
                     });
 
             public Task<IReadOnlyCollection<Payload>> RetrieveAsync(
-                IReadOnlyCollection<Payload> payloads, CancellationToken cancellationToken)
+                IReadOnlyCollection<Payload> payloads,
+                StorageOperationMetricsBuilder? metrics,
+                CancellationToken cancellationToken)
             {
                 foreach (var payload in payloads)
                 {
@@ -365,12 +394,14 @@ namespace Temporalio.Converters
                 Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
                 T message,
                 IStorageDriverTargetInfo? target,
+                StorageOperationMetricsBuilder? metrics,
                 CancellationToken cancellationToken) =>
                 Task.CompletedTask;
 
             public Task<IReadOnlyCollection<Payload>> StoreAsync(
                 IReadOnlyCollection<Payload> payloads,
                 IStorageDriverTargetInfo? target,
+                StorageOperationMetricsBuilder? metrics,
                 CancellationToken cancellationToken) =>
                 Task.FromResult(payloads);
 
