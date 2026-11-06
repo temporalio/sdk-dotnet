@@ -531,11 +531,12 @@ namespace Temporalio.Worker
                     "Completing activity {ActivityType} as failed due to external storage",
                     act.Context.Info.ActivityType);
 
-                // Build the failure without external storage, which is what failed.
+                // Encode the failure through the codec but skip offload, which just failed.
                 completion.Result.Failed = new()
                 {
-                    Failure_ = dataConverter.FailureConverter.ToFailure(
-                        e, dataConverter.PayloadConverter),
+                    Failure_ = await dataConverter.ToFailureAsync(
+                        e, ExternalStorageContext.For(dataConverter, skipStore: true))
+                        .ConfigureAwait(false),
                     Cause = Bridge.Api.ActivityResult.ActivityTaskFailedCause.ExternalStorageFailure,
                 };
             }

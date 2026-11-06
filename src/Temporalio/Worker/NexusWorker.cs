@@ -401,9 +401,12 @@ namespace Temporalio.Worker
                 }
                 catch (ExternalStorageException)
                 {
-                    // Encode the failure without external storage, which is what failed.
-                    failure = dataConverter.FailureConverter.ToFailure(
-                        handlerException, dataConverter.PayloadConverter);
+                    // Offloading the failure itself failed; encode it through the codec but skip
+                    // the offload rather than retry what just failed.
+                    failure = await dataConverter.ToFailureAsync(
+                        handlerException,
+                        Converters.ExternalStorageContext.For(dataConverter, skipStore: true))
+                        .ConfigureAwait(false);
                 }
                 return new()
                 {

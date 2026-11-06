@@ -20,11 +20,15 @@ namespace Temporalio.Converters
         /// <param name="target">
         /// Execution the stored payloads are offloaded on behalf of, or null when none is known.
         /// </param>
+        /// <param name="skipStore">
+        /// When true, offload is skipped and payloads are left inline; retrieval is unaffected.
+        /// </param>
         internal ExternalStorageContext(
-            IExternalStorageRunner runner, IStorageDriverTargetInfo? target)
+            IExternalStorageRunner runner, IStorageDriverTargetInfo? target, bool skipStore = false)
         {
             Runner = runner;
             Target = target;
+            SkipStore = skipStore;
         }
 
         /// <summary>
@@ -39,6 +43,13 @@ namespace Temporalio.Converters
         internal IStorageDriverTargetInfo? Target { get; }
 
         /// <summary>
+        /// Gets a value indicating whether offload is skipped, leaving payloads inline. Used when
+        /// building a failure after an offload has already failed, so the codec still runs but the
+        /// store is not retried. Retrieval is unaffected.
+        /// </summary>
+        internal bool SkipStore { get; }
+
+        /// <summary>
         /// Create a context over the given converter's storage configuration, carrying the given
         /// target.
         /// </summary>
@@ -46,9 +57,14 @@ namespace Temporalio.Converters
         /// <param name="target">
         /// Execution the stored payloads are offloaded on behalf of, if any.
         /// </param>
+        /// <param name="skipStore">
+        /// When true, offload is skipped and payloads are left inline; retrieval is unaffected.
+        /// </param>
         /// <returns>A context, never null.</returns>
         internal static ExternalStorageContext For(
-            DataConverter converter, IStorageDriverTargetInfo? target = null) =>
-            new(ExternalStorageRunner.Create(converter.ExternalStorage), target);
+            DataConverter converter,
+            IStorageDriverTargetInfo? target = null,
+            bool skipStore = false) =>
+            new(ExternalStorageRunner.Create(converter.ExternalStorage), target, skipStore);
     }
 }

@@ -419,10 +419,13 @@ namespace Temporalio.Worker
                 comp.Failed = new() { ForceCause = ForceCauseForFailure(e) };
                 try
                 {
-                    // Build the failure without external storage, which is what failed.
+                    // Encode the failure through the codec but skip offload: the offload just
+                    // failed, and if this was not a storage fault it was a bug in the offload path
+                    // that would recur.
                     var dataConverterForFailure = dataConverterWorkflowContext ?? dataConverterNoContext;
-                    comp.Failed.Failure_ = dataConverterForFailure.FailureConverter.ToFailure(
-                        e, dataConverterForFailure.PayloadConverter);
+                    comp.Failed.Failure_ = await dataConverterForFailure.ToFailureAsync(
+                        e, ExternalStorageContext.For(dataConverterForFailure, skipStore: true))
+                        .ConfigureAwait(false);
                 }
                 catch (Exception inner)
                 {
