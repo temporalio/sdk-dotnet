@@ -29,7 +29,8 @@ namespace Temporalio.Workflows
                         $"Query handler name {name} cannot start with __enhanced_stack_trace");
                 }
                 if (name.StartsWith(TemporalRuntime.ReservedNamePrefix) &&
-                    name != TemporalRuntime.WorkflowStreamOffsetQueryName)
+                    name != TemporalRuntime.WorkflowStreamOffsetQueryName &&
+                    name != TemporalRuntime.WorkflowStreamPollQueryName)
                 {
                     throw new ArgumentException(
                         $"Query handler name {name} cannot start with {TemporalRuntime.ReservedNamePrefix}");
