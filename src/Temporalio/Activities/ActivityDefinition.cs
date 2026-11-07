@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
+using Temporalio.Common;
 using Temporalio.Runtime;
 
 namespace Temporalio.Activities
@@ -37,8 +38,9 @@ namespace Temporalio.Activities
         public string? Name { get; private init; }
 
         /// <summary>
-        /// Gets the return type for the definition. This may be a Task for async activities. This
-        /// is currently unused (callers are expected to provide the return type as needed).
+        /// Gets the return type for the definition. This may be a Task for async activities. When
+        /// this is a non-generic <see cref="Task" />, the activity completes with no result even if
+        /// the returned task is a <see cref="Task{TResult}" /> at runtime.
         /// </summary>
         public Type ReturnType { get; private init; }
 
@@ -84,7 +86,9 @@ namespace Temporalio.Activities
         /// Create an activity definition manually from the given values.
         /// </summary>
         /// <param name="name">Name to use for the activity or null for dynamic.</param>
-        /// <param name="returnType">Return type of the activity. This is currently unused.</param>
+        /// <param name="returnType">Return type of the activity. If this is a non-generic
+        /// <see cref="Task" />, the activity completes with no result regardless of what the
+        /// invoker returns.</param>
         /// <param name="parameterTypes">Parameter types for the invoker.</param>
         /// <param name="requiredParameterCount">Minimum number of parameters that must be provided
         /// to the invoker.</param>
@@ -189,8 +193,8 @@ namespace Temporalio.Activities
         /// Invoke this activity with the given parameters. Before calling this, callers should
         /// have already validated that the parameters match <see cref="ParameterTypes" /> and there
         /// are at least <see cref="RequiredParameterCount" /> parameters. If the activity returns
-        /// a Task, it is waited on and the result is extracted. If it is an untyped Task, the
-        /// successful result will be Task&lt;ValueTuple&gt;.
+        /// a Task, it is waited on and the result is extracted. If <see cref="ReturnType" /> is an
+        /// untyped Task, the successful result will be Task&lt;ValueTuple&gt;.
         /// </summary>
         /// <param name="parameters">Parameters for the call.</param>
         /// <returns>Task for result.</returns>
@@ -212,13 +216,7 @@ namespace Temporalio.Activities
             if (result is Task resultTask)
             {
                 await resultTask.ConfigureAwait(false);
-                // We have to use reflection to extract value if it's a Task<>
-                var resultTaskType = resultTask.GetType();
-                if (resultTaskType.IsGenericType)
-                {
-                    result = resultTaskType.GetProperty("Result")!.GetValue(resultTask);
-                }
-                else
+                if (!TaskResult.TryGetResult(resultTask, ReturnType, out result))
                 {
                     result = ValueTuple.Create();
                 }

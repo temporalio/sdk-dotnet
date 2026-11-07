@@ -196,6 +196,42 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public class DeclaredTaskWorkflow
+    {
+        [WorkflowRun]
+        public Task RunAsync() => Task.FromResult("unexpected");
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_DeclaredTaskWorkflow_HasNoResult()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                WorkflowRunOperationHandler.FromHandleFactory(
+                    (WorkflowRunOperationContext context, string input) =>
+                        context.StartWorkflowAsync<string>(
+                            "DeclaredTaskWorkflow",
+                            Array.Empty<object?>(),
+                            new() { Id = $"wf-{Guid.NewGuid()}" })))).
+            AddWorkflow<DeclaredTaskWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        var handle = await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+            Assert.Null(result);
+        });
+
+        var completedEvent = Assert.Single(
+            (await handle.FetchHistoryAsync()).Events,
+            evt => evt.NexusOperationCompletedEventAttributes != null);
+        Assert.Equal(
+            "binary/null",
+            completedEvent.NexusOperationCompletedEventAttributes.Result.Metadata["encoding"].ToStringUtf8());
+    }
+
+    [Workflow]
     public class WaitForeverWorkflow
     {
         [WorkflowRun]

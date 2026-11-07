@@ -144,4 +144,20 @@ public class ActivityScopeTests : WorkflowEnvironmentTestBase
             await host.StopAsync(tokenSource.Token);
         }
     }
+
+    public class ForwardingActivities
+    {
+        [Activity]
+        public Task Forward() => Task.FromResult("unexpected");
+    }
+
+    [Fact]
+    public async Task CreateTemporalActivityDefinition_DeclaredTaskReturningGenericTask_HasNoResult()
+    {
+        using var provider = new ServiceCollection().
+            AddScoped<ForwardingActivities>().
+            BuildServiceProvider();
+        var defn = Assert.Single(provider.CreateTemporalActivityDefinitions<ForwardingActivities>());
+        Assert.Equal(ValueTuple.Create(), await defn.InvokeAsync(Array.Empty<object?>()));
+    }
 }
