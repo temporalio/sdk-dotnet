@@ -8757,6 +8757,98 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await task;
     }
 
+    [Workflow]
+    public class DeclaredTaskWorkflow
+    {
+        private bool finish;
+
+        public DeclaredTaskWorkflow() =>
+            Workflow.Updates["ForwardingDelegateUpdate"] = WorkflowUpdateDefinition.CreateWithoutAttribute(
+                "ForwardingDelegateUpdate", Task () => Task.FromResult("unexpected"), null);
+
+        [WorkflowQuery]
+        public IList<string?> ActivityResults { get; } = new List<string?>();
+
+        [Activity]
+        public static Task ForwardingActivity() => ProduceAsync();
+
+        [Activity]
+        public static async Task PlainActivityAsync() => await Task.Yield();
+
+        [WorkflowRun]
+        public Task RunAsync() => RunWithResultAsync();
+
+        [WorkflowSignal]
+        public async Task FinishAsync() => finish = true;
+
+        [WorkflowUpdate]
+        public Task ForwardingUpdateAsync() => Task.FromResult("unexpected");
+
+        [WorkflowUpdate]
+        public async Task PlainUpdateAsync()
+        {
+        }
+
+        private static async Task<string> ProduceAsync()
+        {
+            await Task.Yield();
+            return "unexpected";
+        }
+
+        private async Task<string> RunWithResultAsync()
+        {
+            foreach (var name in new[] { "ForwardingActivity", "PlainActivity" })
+            {
+                ActivityResults.Add(await Workflow.ExecuteActivityAsync<string>(
+                    name,
+                    Array.Empty<object?>(),
+                    new() { StartToCloseTimeout = TimeSpan.FromMinutes(1) }));
+                ActivityResults.Add(await Workflow.ExecuteLocalActivityAsync<string>(
+                    name,
+                    Array.Empty<object?>(),
+                    new() { StartToCloseTimeout = TimeSpan.FromMinutes(1) }));
+            }
+            await Workflow.WaitConditionAsync(() => finish);
+            return "unexpected";
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_DeclaredTaskReturningGenericTask_HasNoResult()
+    {
+        await ExecuteWorkerAsync<DeclaredTaskWorkflow>(
+            async worker =>
+            {
+                var handle = await Env.Client.StartWorkflowAsync(
+                    (DeclaredTaskWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                foreach (var update in new[] { "ForwardingUpdate", "ForwardingDelegateUpdate", "PlainUpdate" })
+                {
+                    Assert.Null(await handle.ExecuteUpdateAsync<string>(update, Array.Empty<object?>()));
+                }
+                await handle.SignalAsync(wf => wf.FinishAsync());
+                Assert.Null(await handle.GetResultAsync<string>());
+                Assert.Equal(new string?[4], await handle.QueryAsync(wf => wf.ActivityResults));
+
+                // A typed caller reading null cannot tell binary/null apart from an empty JSON
+                // object, so confirm the recorded payloads directly
+                var history = await handle.FetchHistoryAsync();
+                var payloads = history.Events.SelectMany(evt =>
+                    evt.ActivityTaskCompletedEventAttributes?.Result.Payloads_ ??
+                    evt.WorkflowExecutionUpdateCompletedEventAttributes?.Outcome.Success.Payloads_ ??
+                    evt.WorkflowExecutionCompletedEventAttributes?.Result.Payloads_ ??
+                    Enumerable.Empty<Payload>()).ToList();
+                // 2 regular activities, 3 updates, and 1 workflow result. Local activity results
+                // live in markers and are covered by the query above.
+                Assert.Equal(6, payloads.Count);
+                Assert.All(payloads, payload =>
+                    Assert.Equal("binary/null", payload.Metadata["encoding"].ToStringUtf8()));
+            },
+            new TemporalWorkerOptions().
+                AddActivity(DeclaredTaskWorkflow.ForwardingActivity).
+                AddActivity(DeclaredTaskWorkflow.PlainActivityAsync));
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {

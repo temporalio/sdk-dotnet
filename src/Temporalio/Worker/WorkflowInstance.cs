@@ -2099,13 +2099,8 @@ namespace Temporalio.Worker
                     // Unreachable
                     return null;
                 }
-                var resultTaskType = resultTask.GetType();
-                // We have to use reflection to extract value if it's a Task<>
-                if (resultTaskType.IsGenericType)
-                {
-                    return resultTaskType.GetProperty("Result")!.GetValue(resultTask);
-                }
-                return null;
+                return TaskResult.TryGetResult(resultTask, input.RunMethod.ReturnType, out var result) ?
+                    result : null;
             }
 
             /// <inheritdoc />
@@ -2192,13 +2187,10 @@ namespace Temporalio.Worker
                     // Unreachable
                     return null;
                 }
-                var resultTaskType = resultTask.GetType();
-                // We have to use reflection to extract value if it's a Task<>
-                if (resultTaskType.IsGenericType)
-                {
-                    return resultTaskType.GetProperty("Result")!.GetValue(resultTask);
-                }
-                return null;
+                var declaredReturnType = input.Definition.Method?.ReturnType ??
+                    input.Definition.Delegate!.Method.ReturnType;
+                return TaskResult.TryGetResult(resultTask, declaredReturnType, out var result) ?
+                    result : null;
             }
         }
 

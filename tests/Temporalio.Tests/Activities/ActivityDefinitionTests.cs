@@ -124,6 +124,48 @@ public class ActivityDefinitionTests
     }
 
     [Fact]
+    public async Task InvokeAsync_TaskDelegateReturningGenericTask_HasNoResult()
+    {
+        var act = [Activity("MyActivity")] Task (int param) => Task.FromResult(param + 5);
+        Assert.Equal(
+            ValueTuple.Create(),
+            await ActivityDefinition.Create(act).InvokeAsync(new object?[] { 123 }));
+    }
+
+    [Fact]
+    public async Task InvokeAsync_AsyncTaskDelegate_HasNoResult()
+    {
+        var act = [Activity("MyActivity")] async Task () => await Task.Yield();
+        Assert.Equal(
+            ValueTuple.Create(),
+            await ActivityDefinition.Create(act).InvokeAsync(Array.Empty<object?>()));
+    }
+
+    [Fact]
+    public async Task InvokeAsync_ManualTaskInvokerReturningGenericTask_HasNoResult()
+    {
+        var defn = ActivityDefinition.Create(
+            "some-name",
+            typeof(Task),
+            Array.Empty<Type>(),
+            0,
+            _ => Task.FromResult(5));
+        Assert.Equal(ValueTuple.Create(), await defn.InvokeAsync(Array.Empty<object?>()));
+    }
+
+    [Fact]
+    public async Task InvokeAsync_ManualObjectInvokerReturningGenericTask_HasResult()
+    {
+        var defn = ActivityDefinition.Create(
+            "some-name",
+            typeof(object),
+            Array.Empty<Type>(),
+            0,
+            _ => Task.FromResult(5));
+        Assert.Equal(5, await defn.InvokeAsync(Array.Empty<object?>()));
+    }
+
+    [Fact]
     public async Task InvokeAsync_ManualInvoker_IsCalled()
     {
         var defn = ActivityDefinition.Create(

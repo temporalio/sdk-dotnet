@@ -1,0 +1,1 @@
+Activities, workflows, and update handlers declared to return non-generic `Task` now always complete with a `binary/null` result. Previously the runtime task type was inspected, so returning a `Task<T>` recorded its value, and plain `async Task` methods recorded an empty JSON object (`{}`).
