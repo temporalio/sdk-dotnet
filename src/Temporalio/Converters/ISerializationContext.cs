@@ -109,9 +109,9 @@ namespace Temporalio.Converters
         /// task.
         /// </para>
         /// <para>
-        /// Workflows and standalone activities started by a handler receive this context through
-        /// the server and use it for the payloads returned to the caller: results, failures, and
-        /// standalone activity heartbeat details. Clients decode these with the context the server
+        /// Workflows and standalone activities started by a handler, and workflow updates it sends,
+        /// receive this context through the server and use it for the payloads returned to the
+        /// caller: results, failures, and standalone activity heartbeat details. Clients decode these with the context the server
         /// returns. See <see cref="Activities.ActivityInfo.NexusSerializationContext"/> for
         /// asynchronous activity completion.
         /// </para>
