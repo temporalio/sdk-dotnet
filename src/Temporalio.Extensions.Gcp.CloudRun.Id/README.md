@@ -1,5 +1,9 @@
 # Google Cloud Run worker identity support
 
+> [!WARNING]
+> Google Cloud Run identity support is experimental. Its API may change
+> before it is declared stable.
+
 This extension provides `CloudRunIdPlugin`, a Temporal client/worker plugin that derives a client
 identity from Google Cloud Run instance metadata, for Cloud Run worker pools and services.
 

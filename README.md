@@ -47,11 +47,13 @@ Each package has its own README next to its project, which is also its NuGet pac
 | Package | Description |
 | ------- | ----------- |
 | [Temporalio](src/Temporalio/README.md) | The core SDK: clients, workers, workflows, activities, and Nexus operations |
-| [Temporalio.Extensions.Aws.Lambda](src/Temporalio.Extensions.Aws.Lambda/README.md) | Running a worker inside an AWS Lambda invocation |
-| [Temporalio.Extensions.Aws.Lambda.OpenTelemetry](src/Temporalio.Extensions.Aws.Lambda.OpenTelemetry/README.md) | OpenTelemetry helpers for workers running in AWS Lambda |
+| [Temporalio.Extensions.Aws.Lambda](src/Temporalio.Extensions.Aws.Lambda/README.md) | Experimental support for running a worker inside an AWS Lambda invocation |
+| [Temporalio.Extensions.Aws.Lambda.OpenTelemetry](src/Temporalio.Extensions.Aws.Lambda.OpenTelemetry/README.md) | Experimental OpenTelemetry helpers for workers running in AWS Lambda |
+| [Temporalio.Extensions.Aws.S3Driver](src/Temporalio.Extensions.Aws.S3Driver/README.md) | Experimental Amazon S3 external storage driver |
+| [Temporalio.Extensions.Aws.S3Driver.AwsSdk](src/Temporalio.Extensions.Aws.S3Driver.AwsSdk/README.md) | Experimental AWS SDK client for the Amazon S3 external storage driver |
 | [Temporalio.Extensions.DiagnosticSource](src/Temporalio.Extensions.DiagnosticSource/README.md) | `System.Diagnostics.Metrics` support for SDK metrics |
-| [Temporalio.Extensions.Gcp.CloudRun.Id](src/Temporalio.Extensions.Gcp.CloudRun.Id/README.md) | Client identity derived from Google Cloud Run instance metadata |
-| [Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry](src/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/README.md) | OpenTelemetry defaults for workers running on Google Cloud Run |
+| [Temporalio.Extensions.Gcp.CloudRun.Id](src/Temporalio.Extensions.Gcp.CloudRun.Id/README.md) | Experimental client identity derived from Google Cloud Run instance metadata |
+| [Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry](src/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/README.md) | Experimental OpenTelemetry defaults for workers running on Google Cloud Run |
 | [Temporalio.Extensions.Hosting](src/Temporalio.Extensions.Hosting/README.md) | Client dependency injection, activity dependency injection, and worker generic host support |
 | [Temporalio.Extensions.OpenTelemetry](src/Temporalio.Extensions.OpenTelemetry/README.md) | OpenTelemetry tracing support |
 | [Temporalio.Extensions.WorkflowStreams](src/Temporalio.Extensions.WorkflowStreams/README.md) | Experimental durable, offset-based workflow publish/subscribe streams |

@@ -1,5 +1,8 @@
 # AWS Lambda Worker OpenTelemetry Support
 
+> [!WARNING]
+> AWS Lambda OpenTelemetry support is experimental. Its API may change before it is declared stable.
+
 This extension adds OpenTelemetry helpers for Temporal workers running inside AWS Lambda.
 
 Add the `Temporalio.Extensions.Aws.Lambda.OpenTelemetry` package from
