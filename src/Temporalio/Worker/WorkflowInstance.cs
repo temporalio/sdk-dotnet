@@ -44,6 +44,8 @@ namespace Temporalio.Worker
         private readonly IPayloadConverter payloadConverterWorkflowContext;
         private readonly IFailureConverter failureConverterNoContext;
         private readonly IFailureConverter failureConverterWorkflowContext;
+        private readonly IPayloadConverter payloadConverterResultContext;
+        private readonly IFailureConverter failureConverterResultContext;
         private readonly Lazy<MetricMeter> metricMeter;
         private readonly Lazy<WorkflowInboundInterceptor> inbound;
         private readonly Lazy<WorkflowOutboundInterceptor> outbound;
@@ -119,6 +121,16 @@ namespace Temporalio.Worker
             payloadConverterWorkflowContext = details.PayloadConverterWorkflowContext;
             failureConverterNoContext = details.FailureConverterNoContext;
             failureConverterWorkflowContext = details.FailureConverterWorkflowContext;
+            NexusSerializationContext = ISerializationContext.Nexus.FromProto(
+                details.Init.PropagatedNexusSerializationContext);
+            // A workflow started by a Nexus operation handler returns its result and closing
+            // failure to the Nexus caller, which decodes them with the handler's Nexus context
+            payloadConverterResultContext = NexusSerializationContext is { } nexusContext &&
+                payloadConverterNoContext is IWithSerializationContext<IPayloadConverter> payloadWithContext ?
+                payloadWithContext.WithSerializationContext(nexusContext) : payloadConverterWorkflowContext;
+            failureConverterResultContext = NexusSerializationContext is { } nexusContext2 &&
+                failureConverterNoContext is IWithSerializationContext<IFailureConverter> failureWithContext ?
+                failureWithContext.WithSerializationContext(nexusContext2) : failureConverterWorkflowContext;
             var rootInbound = new InboundImpl(this);
             // Lazy so it can have the context when instantiating
             inbound = new(
@@ -206,9 +218,11 @@ namespace Temporalio.Worker
                     RunId: start.RootWorkflow.RunId,
                     WorkflowId: start.RootWorkflow.WorkflowId);
             }
+            // A retry run receives the previous run's closing failure, which was encoded with the
+            // same context as this run's
             var lastFailure = start.ContinuedFailure == null ?
-                null : failureConverterWorkflowContext.ToException(
-                    start.ContinuedFailure, payloadConverterWorkflowContext);
+                null : failureConverterResultContext.ToException(
+                    start.ContinuedFailure, payloadConverterResultContext);
             var lastResult = start.LastCompletionResult?.Payloads_.Select(v => new RawValue(v)).ToArray();
             static string? NonEmptyOrNull(string s) => string.IsNullOrEmpty(s) ? null : s;
             Info = new(
@@ -363,6 +377,9 @@ namespace Temporalio.Worker
 
         /// <inheritdoc />
         public WorkflowInfo Info { get; private init; }
+
+        /// <inheritdoc />
+        public ISerializationContext.Nexus? NexusSerializationContext { get; private init; }
 
         /// <inheritdoc />
         ///
@@ -1189,8 +1206,8 @@ namespace Temporalio.Worker
                 {
                     // We let this failure conversion throw if it cannot convert the failure
                     logger.LogDebug(e, "Workflow raised failure with run ID {RunId}", Info.RunId);
-                    var failure = failureConverterWorkflowContext.ToFailure(
-                        e, payloadConverterWorkflowContext);
+                    var failure = failureConverterResultContext.ToFailure(
+                        e, payloadConverterResultContext);
                     AddCommand(new() { FailWorkflowExecution = new() { Failure = failure } }, eventGroupMarkers: null);
                 }
             }
@@ -1838,7 +1855,7 @@ namespace Temporalio.Worker
                 // We no longer need start args after this point, so we are unsetting them
                 startArgs = null;
                 var resultObj = await inbound.Value.ExecuteWorkflowAsync(input).ConfigureAwait(true);
-                var result = payloadConverterWorkflowContext.ToPayload(resultObj);
+                var result = payloadConverterResultContext.ToPayload(resultObj);
                 AddCommand(new() { CompleteWorkflowExecution = new() { Result = result } }, eventGroupMarkers: null);
             }));
         }

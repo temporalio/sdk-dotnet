@@ -117,6 +117,7 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
             // Wait for deployment version to be registered and make it current
             var describe1 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV1);
             await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe1.ConflictToken, workerV1);
+            await TestUtils.WaitForRoutingConfigPropagationAsync(Client, deploymentName, workerV1.BuildId);
 
             // Start workflow 1 which will use v1 worker on auto-upgrade
             var wf1 = await Client.StartWorkflowAsync(
@@ -127,6 +128,7 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
             // Set v2 as current and start workflow 2
             var describe2 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV2);
             await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe2.ConflictToken, workerV2);
+            await TestUtils.WaitForRoutingConfigPropagationAsync(Client, deploymentName, workerV2.BuildId);
 
             var wf2 = await Client.StartWorkflowAsync(
                 (DeploymentVersioningWorkflowV2Pinned wf) => wf.RunAsync(),
@@ -136,6 +138,7 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
             // Set v3 as current and start workflow 3
             var describe3 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV3);
             await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe3.ConflictToken, workerV3);
+            await TestUtils.WaitForRoutingConfigPropagationAsync(Client, deploymentName, workerV3.BuildId);
 
             var wf3 = await Client.StartWorkflowAsync(
                 (DeploymentVersioningWorkflowV3AutoUpgrade wf) => wf.RunAsync(),
