@@ -25,7 +25,7 @@ namespace Temporalio.Extensions.Aws.S3Driver
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    internal sealed class S3StorageDriver : IStorageDriver
+    public sealed class S3StorageDriver : IStorageDriver
     {
         /// <summary>
         /// Driver type shared by every S3 driver instance across SDK languages.
