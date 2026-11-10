@@ -1,1 +1,1 @@
-Experimental `NexusOperationOptions` is now sealed and can no longer be subclassed.
+**Experimental**: `NexusOperationOptions` is now sealed and can no longer be subclassed.
