@@ -86,7 +86,8 @@ The following environment variables override the test environment to run against
 - For any user-facing change, add a fragment under the appropriate category in `changelog/`.
   Choose a fun, whimsical lowercase kebab-case filename. Keep entries concise, ideally one or two
   sentences. Each nonempty line is a separate entry; omit bullet markers and keep each entry on one
-  line. See `changelog/README.md` for categories. Internal-only changes (refactors, tests, CI, docs)
+  line. Start entries about experimental features with `**Experimental**: `. See
+  `changelog/README.md` for categories and formatting. Internal-only changes (refactors, tests, CI, docs)
   do not need an entry. `CHANGELOG.md` contains completed releases only.
 - Keep commit messages short and in the imperative mood.
 - Provide a clear PR description outlining what changed and why.
