@@ -1,1 +1,0 @@
-**Experimental**: Added client environment config extensions. Profiles expose raw extension config from `profile.<name>.ext` as `ClientEnvConfig.Profile.Ext`, and `IClientConfigExtension` implementations passed via `ProfileLoadOptions.Extensions` to `ClientEnvConfig.LoadClientConnectOptions` contribute client plugins to the returned options.
