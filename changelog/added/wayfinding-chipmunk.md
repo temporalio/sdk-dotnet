@@ -1,1 +1,0 @@
-External storage drivers now receive the Temporal execution a payload is being stored for through `StorageDriverStoreContext.Target`, so a driver can organize offloaded payloads by the workflow or activity that reads them back.
