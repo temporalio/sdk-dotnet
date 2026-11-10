@@ -14,7 +14,7 @@ namespace Temporalio.Extensions.Aws.S3Driver
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    internal interface IS3StorageDriverClient
+    public interface IS3StorageDriverClient
     {
         /// <summary>
         /// Upload data to the given bucket and key.
