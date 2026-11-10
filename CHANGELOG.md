@@ -10,56 +10,40 @@ Pending changes belong in changelog/; see changelog/README.md.
 ### Added
 
 - Nexus operation handlers now forward inbound callback links to the workflows and signals they start, instead of dropping them.
-
-- **Experimental**: Added Nexus Handler completion callbacks for standalone Nexus operations.
-
-- **Experimental**: External Storage is now in Public Preview: set `DataConverter.ExternalStorage` with an `IStorageDriver` to offload large payloads to an external store and retrieve them transparently. Drivers are told the workflow or activity each payload is stored for, and may receive concurrent requests. Tasks that fail on a storage error report the `EXTERNAL_STORAGE_FAILURE` cause.
-
 - Allow `[TemporalOperation]` handler method names to end with `Async` without changing the operation's wire name. Exact method-name matches take precedence.
-
-- Workers that don't configure poller behavior now auto-enroll in poller autoscaling when the server enables it (`frontend.pollerAutoscalingAutoEnroll`); otherwise they keep using a fixed 5-poller maximum.
-
-- **Experimental**: Added client environment config extensions. Profiles expose raw extension config from `profile.<name>.ext` as `ClientEnvConfig.Profile.Ext`, and `IClientConfigExtension` implementations passed via `ProfileLoadOptions.Extensions` to `ClientEnvConfig.LoadClientConnectOptions` contribute client plugins to the returned options.
-
 - Nexus operation handlers now propagate their Nexus serialization context to the workflows and standalone activities they start, which encode their results and failures (and a standalone activity's heartbeat details) with it because these are returned to the Nexus caller. Clients decode them with the context the server returns, including handles obtained by ID and standalone Nexus operation handles. Requires a server that propagates the context.
-- **Experimental**: Added `ActivityInfo.NexusSerializationContext`. To complete a Nexus-started standalone activity asynchronously, pass it to `AsyncActivityHandle.WithSerializationContext`.
-
-- **Experimental**: Added `Temporalio.Extensions.Aws.S3Driver` package with an S3 storage driver for external storage payloads, and an optional `Temporalio.Extensions.Aws.S3Driver.AwsSdk` package with an `AWSSDK.S3` backed client.
-
 - Nexus operation handlers now propagate their serialization context to the workflow updates they send, which encode their result, failure and rejection with it. Update handles decode them with the context the server returns. Requires a server that propagates the context.
-
+- Workers that don't configure poller behavior now auto-enroll in poller autoscaling when the server enables it (`frontend.pollerAutoscalingAutoEnroll`); otherwise they keep using a fixed 5-poller maximum.
 - Core: A local activity's `ActivityTask.Start` has `workflow_task` (field 21), with the started event id, attempt and start time of the workflow task in which Core dispatched it. `workflow_task` also has `previous_started_event_id`, `previous_attempt` and `previous_started_time`, which name the run's last completed workflow task, and `failed_tasks`, the started event ids of the run's last 100 failed or timed out workflow tasks. Retries that Core runs locally keep the value. Core leaves it unset for other activities.
 - Core: Client environment config profiles include the raw TOML tables under `profile.<name>.ext`, keyed by extension name, for SDK envconfig extensions. Strict mode accepts any content under `ext`. The C bridge's profile JSON includes them as an `ext` object, with TOML datetimes as strings.
+- **Experimental**: Added Nexus Handler completion callbacks for standalone Nexus operations.
+- **Experimental**: Added `ActivityInfo.NexusSerializationContext`. To complete a Nexus-started standalone activity asynchronously, pass it to `AsyncActivityHandle.WithSerializationContext`.
+- **Experimental**: Added client environment config extensions. Profiles expose raw extension config from `profile.<name>.ext` as `ClientEnvConfig.Profile.Ext`, and `IClientConfigExtension` implementations passed via `ProfileLoadOptions.Extensions` to `ClientEnvConfig.LoadClientConnectOptions` contribute client plugins to the returned options.
+- **Experimental**: External Storage is now in Public Preview: set `DataConverter.ExternalStorage` with an `IStorageDriver` to offload large payloads to an external store and retrieve them transparently. Drivers are told the workflow or activity each payload is stored for, and may receive concurrent requests. Tasks that fail on a storage error report the `EXTERNAL_STORAGE_FAILURE` cause.
+- **Experimental**: Added `Temporalio.Extensions.Aws.S3Driver` package with an S3 storage driver for external storage payloads, and an optional `Temporalio.Extensions.Aws.S3Driver.AwsSdk` package with an `AWSSDK.S3` backed client.
 
 ### Changed
 
 - Core: Poller pools now report their poller target to the server on each poll and in the worker heartbeat: the current target for autoscaling pools, the configured maximum for fixed-size pools.
-
 - Standalone Nexus Operations are now in Public Preview. `TemporalOperationHandler` remains experimental.
 
 ### :boom: Breaking Changes
 
 - **Experimental**: A Temporal operation handler can now send only one signal or signal-with-start per invocation through `ITemporalNexusClient.TemporalClient`; a second throws a `BadRequest` `HandlerException` unless the first failed. Signals sent through `NexusOperationExecutionContext.Current.TemporalClient` are not limited.
-
 - **Experimental**: `NexusOperationOptions` is now sealed and can no longer be subclassed.
 
 ### Fixed
 
-- Inbound Nexus links with an empty path segment, such as an empty workflow ID or run ID, are now dropped with a warning instead of being forwarded with empty identifiers.
-
-- Core: Downloading an ephemeral dev or test server binary now retries transient HTTP failures, such as a `503` returned while a release is rolling out, with backoff instead of failing on the first attempt.
-
 - Workflow wait conditions are no longer evaluated in a workflow task that only delivers updates and rejects all of them.
-
-- **Experimental**: Signals and signal-with-start calls sent through `ITemporalNexusClient.TemporalClient` in a Temporal operation handler now reuse the operation's request ID, so a retried Nexus task no longer delivers the same signal twice.
-
 - Core: Rejection-only update tasks no longer dispatch local activities resumed from replay before validation, allowing those tasks to remain unrecorded in workflow history.
 - Core: Preparing a legacy query now remains in replay mode, preventing unrecorded local activity attempts that could execute twice or leave the workflow stuck.
-
-- Core: A workflow task failure reported with the cause `WORKFLOW_TASK_FAILED_CAUSE_EXTERNAL_STORAGE_FAILURE` is now counted on `workflow_task_execution_failed` with `failure_reason="ExternalStorageError"`, matching activity failures with the storage cause. It was previously counted as `WorkflowError`.
-- Core: Ephemeral dev and test servers now complete the automatic port reservation handshake on Linux and macOS before starting, preventing intermittent address-in-use errors during TCP teardown.
-- Core: Resource-based worker tuners now read CPU usage and quotas from standard cgroup v1 mounts. Workers on cgroup v1 systems no longer fall back to host CPU usage and admit work based on understated container load.
 - Core: Preserve queued queries across workflow eviction so requests for the same run are answered instead of silently dropped.
+- Core: A workflow task failure reported with the cause `WORKFLOW_TASK_FAILED_CAUSE_EXTERNAL_STORAGE_FAILURE` is now counted on `workflow_task_execution_failed` with `failure_reason="ExternalStorageError"`, matching activity failures with the storage cause. It was previously counted as `WorkflowError`.
+- Core: Resource-based worker tuners now read CPU usage and quotas from standard cgroup v1 mounts. Workers on cgroup v1 systems no longer fall back to host CPU usage and admit work based on understated container load.
+- Core: Downloading an ephemeral dev or test server binary now retries transient HTTP failures, such as a `503` returned while a release is rolling out, with backoff instead of failing on the first attempt.
+- Core: Ephemeral dev and test servers now complete the automatic port reservation handshake on Linux and macOS before starting, preventing intermittent address-in-use errors during TCP teardown.
+- Inbound Nexus links with an empty path segment, such as an empty workflow ID or run ID, are now dropped with a warning instead of being forwarded with empty identifiers.
+- **Experimental**: Signals and signal-with-start calls sent through `ITemporalNexusClient.TemporalClient` in a Temporal operation handler now reuse the operation's request ID, so a retried Nexus task no longer delivers the same signal twice.
 
 ## [1.21.1] - 2026-10-30
 
