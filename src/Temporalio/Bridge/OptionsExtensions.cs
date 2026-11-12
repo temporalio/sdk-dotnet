@@ -715,14 +715,12 @@ namespace Temporalio.Bridge
             {
                 options.NexusTaskPollerBehavior = new PollerBehavior.SimpleMaximum(nexusPolls);
             }
-            var workerPluginNames = options.Plugins?
-                .Select(p => p.Name)
-                ?? Enumerable.Empty<string>();
-            var clientPluginNames = clientPlugins?
-                .Select(p => p.Name)
-                ?? Enumerable.Empty<string>();
-            var pluginNames = workerPluginNames
-                .Concat(clientPluginNames)
+            var workerPluginInfos = options.Plugins?.Select(PluginInfo.FromPlugin)
+                ?? Enumerable.Empty<PluginInfo>();
+            var clientPluginInfos = clientPlugins?.Select(PluginInfo.FromPlugin)
+                ?? Enumerable.Empty<PluginInfo>();
+            var plugins = workerPluginInfos
+                .Concat(clientPluginInfos)
                 .Distinct()
                 .ToArray();
             var storageDrivers = storageDriverTypes?.ToArray() ?? Array.Empty<string>();
@@ -753,7 +751,7 @@ namespace Temporalio.Bridge
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
                     AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
-                plugins = scope.PluginInfoArray(pluginNames),
+                plugins = scope.PluginInfoArray(plugins),
                 storage_drivers = scope.ByteArrayArray(storageDrivers),
                 disable_payload_error_limit = (byte)(options.DisablePayloadErrorLimit ? 1 : 0),
                 max_eager_activity_reservations_per_workflow_task =
@@ -777,10 +775,10 @@ namespace Temporalio.Bridge
                     throw new ArgumentException("Unable to get assembly manifest ID for build ID");
                 buildId = entryAssembly.ManifestModule.ModuleVersionId.ToString();
             }
-            var pluginNames = options.Plugins?
-                .Select(p => p.Name)
+            var plugins = options.Plugins?
+                .Select(PluginInfo.FromPlugin)
                 .Distinct()
-                .ToArray() ?? Array.Empty<string>();
+                .ToArray() ?? Array.Empty<PluginInfo>();
             var storageDrivers = options.DataConverter.ExternalStorage?.GetDistinctDriverTypes() ??
                 Array.Empty<string>();
             return new()
@@ -819,7 +817,7 @@ namespace Temporalio.Bridge
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
                     AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
-                plugins = scope.PluginInfoArray(pluginNames),
+                plugins = scope.PluginInfoArray(plugins),
                 storage_drivers = scope.ByteArrayArray(storageDrivers),
             };
         }

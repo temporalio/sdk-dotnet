@@ -15,7 +15,7 @@ namespace Temporalio.Common
     /// <summary>
     /// A simple plugin that implements both client and worker plugin interfaces.
     /// </summary>
-    public class SimplePlugin : ITemporalClientPlugin, ITemporalWorkerPlugin
+    public class SimplePlugin : ITemporalClientPlugin, ITemporalWorkerPlugin, ITemporalVersionedPlugin
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SimplePlugin"/> class.
@@ -37,6 +37,12 @@ namespace Temporalio.Common
         /// Gets the plugin name.
         /// </summary>
         public string Name { get; }
+
+        /// <summary>
+        /// Gets the plugin version from <see cref="SimplePluginOptions.Version"/>, or an empty
+        /// string if it is not set.
+        /// </summary>
+        public string Version => Options.Version ?? string.Empty;
 
         /// <summary>
         /// Configures the client options.
