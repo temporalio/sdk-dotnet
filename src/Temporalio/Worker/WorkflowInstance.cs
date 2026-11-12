@@ -2187,8 +2187,12 @@ namespace Temporalio.Worker
                     // Unreachable
                     return null;
                 }
+                // A method group returning Task<T> can be converted to a delegate returning Task,
+                // and Delegate.Method still reports the method's Task<T>. The delegate type's own
+                // signature is what was declared for the handler. An existing Func<Task<T>> stored
+                // in a Func<Task> variable is still a Func<Task<T>> object, so it keeps its result.
                 var declaredReturnType = input.Definition.Method?.ReturnType ??
-                    input.Definition.Delegate!.Method.ReturnType;
+                    input.Definition.Delegate!.GetType().GetMethod("Invoke")!.ReturnType;
                 return TaskResult.TryGetResult(resultTask, declaredReturnType, out var result) ?
                     result : null;
             }

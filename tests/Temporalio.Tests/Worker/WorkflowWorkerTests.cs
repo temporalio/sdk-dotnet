@@ -8762,9 +8762,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     {
         private bool finish;
 
-        public DeclaredTaskWorkflow() =>
+        public DeclaredTaskWorkflow()
+        {
             Workflow.Updates["ForwardingDelegateUpdate"] = WorkflowUpdateDefinition.CreateWithoutAttribute(
                 "ForwardingDelegateUpdate", Task () => Task.FromResult("unexpected"), null);
+            Workflow.Updates["ForwardingMethodGroupUpdate"] = WorkflowUpdateDefinition.CreateWithoutAttribute(
+                "ForwardingMethodGroupUpdate", (Func<Task>)ProduceForUpdateAsync, null);
+        }
 
         [WorkflowQuery]
         public IList<string?> ActivityResults { get; } = new List<string?>();
@@ -8795,6 +8799,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             return "unexpected";
         }
 
+        private static Task<string> ProduceForUpdateAsync() => Task.FromResult("unexpected");
+
         private async Task<string> RunWithResultAsync()
         {
             foreach (var name in new[] { "ForwardingActivity", "PlainActivity" })
@@ -8822,7 +8828,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var handle = await Env.Client.StartWorkflowAsync(
                     (DeclaredTaskWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-                foreach (var update in new[] { "ForwardingUpdate", "ForwardingDelegateUpdate", "PlainUpdate" })
+                foreach (var update in new[]
+                {
+                    "ForwardingUpdate", "ForwardingDelegateUpdate", "ForwardingMethodGroupUpdate", "PlainUpdate",
+                })
                 {
                     Assert.Null(await handle.ExecuteUpdateAsync<string>(update, Array.Empty<object?>()));
                 }
@@ -8838,9 +8847,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     evt.WorkflowExecutionUpdateCompletedEventAttributes?.Outcome.Success.Payloads_ ??
                     evt.WorkflowExecutionCompletedEventAttributes?.Result.Payloads_ ??
                     Enumerable.Empty<Payload>()).ToList();
-                // 2 regular activities, 3 updates, and 1 workflow result. Local activity results
+                // 2 regular activities, 4 updates, and 1 workflow result. Local activity results
                 // live in markers and are covered by the query above.
-                Assert.Equal(6, payloads.Count);
+                Assert.Equal(7, payloads.Count);
                 Assert.All(payloads, payload =>
                     Assert.Equal("binary/null", payload.Metadata["encoding"].ToStringUtf8()));
             },
