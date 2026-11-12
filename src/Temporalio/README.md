@@ -17,15 +17,19 @@ Also see:
 Extensions:
 
 * [Temporalio.Extensions.Aws.Lambda](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.Aws.Lambda) -
-  Running a worker inside an AWS Lambda invocation
+  Experimental support for running a worker inside an AWS Lambda invocation
 * [Temporalio.Extensions.Aws.Lambda.OpenTelemetry](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.Aws.Lambda.OpenTelemetry) -
-  OpenTelemetry helpers for workers running in AWS Lambda
+  Experimental OpenTelemetry helpers for workers running in AWS Lambda
+* [Temporalio.Extensions.Aws.S3Driver](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.Aws.S3Driver) -
+  Experimental Amazon S3 external storage driver
+* [Temporalio.Extensions.Aws.S3Driver.AwsSdk](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.Aws.S3Driver.AwsSdk) -
+  Experimental AWS SDK client for the Amazon S3 external storage driver
 * [Temporalio.Extensions.DiagnosticSource](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.DiagnosticSource) -
   `System.Diagnostics.Metrics` support for SDK metrics
 * [Temporalio.Extensions.Gcp.CloudRun.Id](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.Gcp.CloudRun.Id) -
-  Client identity derived from Google Cloud Run instance metadata
+  Experimental client identity derived from Google Cloud Run instance metadata
 * [Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry) -
-  OpenTelemetry defaults for workers running on Google Cloud Run
+  Experimental OpenTelemetry defaults for workers running on Google Cloud Run
 * [Temporalio.Extensions.Hosting](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.Hosting) -
   Client dependency injection, activity dependency injection, and worker generic host support
 * [Temporalio.Extensions.OpenTelemetry](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.OpenTelemetry) -

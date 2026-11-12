@@ -109,9 +109,11 @@ namespace Temporalio.Converters
         /// task.
         /// </para>
         /// <para>
-        /// The context is not propagated to the eventual result of an asynchronous operation,
-        /// because the operation is completed out of band rather than by the task the handler was
-        /// invoked for.
+        /// Workflows and standalone activities started by a handler, and workflow updates it sends,
+        /// receive this context through the server and use it for the payloads returned to the
+        /// caller: results, failures, and standalone activity heartbeat details. Clients decode these with the context the server
+        /// returns. See <see cref="Activities.ActivityInfo.NexusSerializationContext"/> for
+        /// asynchronous activity completion.
         /// </para>
         /// <para>
         /// Failure conversion is not symmetric: a failure is encoded by the handler and decoded by
@@ -134,6 +136,23 @@ namespace Temporalio.Converters
         public sealed record Nexus(
             string Endpoint,
             string Service,
-            string Operation) : ISerializationContext;
+            string Operation) : ISerializationContext
+        {
+            /// <summary>
+            /// Create a context from the form the server propagates to executions started by a
+            /// Nexus operation handler.
+            /// </summary>
+            /// <param name="proto">Propagated context, or null.</param>
+            /// <returns>Context, or null if none was propagated.</returns>
+            internal static Nexus? FromProto(Api.Nexus.V1.PropagatedSerializationContext? proto) =>
+                proto == null ? null : new(proto.Endpoint, proto.Service, proto.Operation);
+
+            /// <summary>
+            /// Convert to the form sent on requests made by a Nexus operation handler.
+            /// </summary>
+            /// <returns>Propagated context.</returns>
+            internal Api.Nexus.V1.PropagatedSerializationContext ToProto() =>
+                new() { Endpoint = Endpoint, Service = Service, Operation = Operation };
+        }
     }
 }

@@ -1,7 +1,7 @@
 # Amazon S3 External Storage Driver
 
 > [!WARNING]
-> This extension is experimental and may change in the future.
+> The Amazon S3 storage driver is experimental. Its API may change before it is declared stable.
 
 This extension stores and retrieves Temporal payloads in Amazon S3 using external storage.
 

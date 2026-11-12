@@ -1,5 +1,8 @@
 # AWS Lambda Worker Support
 
+> [!WARNING]
+> AWS Lambda support is experimental. Its API may change before it is declared stable.
+
 This extension adds an AWS Lambda handler helper for running a Temporal worker during a Lambda invocation.
 
 Add the `Temporalio.Extensions.Aws.Lambda` package from

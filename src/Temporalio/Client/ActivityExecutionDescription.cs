@@ -48,9 +48,13 @@ namespace Temporalio.Client
                     SearchAttributeCollection.Empty :
                     SearchAttributeCollection.FromProto(resp.Info.SearchAttributes))
         {
-            this.dataConverter = dataConverter;
             RawResponse = resp;
             var info = resp.Info;
+            // An activity started by a Nexus operation handler encodes its result and failures
+            // with the handler's Nexus context, which the server returns with the activity info
+            this.dataConverter = ISerializationContext.Nexus.FromProto(
+                info.PropagatedNexusSerializationContext) is { } nexusContext ?
+                dataConverter.WithSerializationContext(nexusContext) : dataConverter;
             Attempt = info.Attempt;
             CanceledReason = string.IsNullOrEmpty(info.CanceledReason) ? null : info.CanceledReason;
             CurrentRetryInterval = info.CurrentRetryInterval?.ToTimeSpan();
@@ -73,8 +77,8 @@ namespace Temporalio.Client
 #pragma warning disable VSTHRD011 // This should not be able to deadlock
             userMetadata = new(() => dataConverter.FromUserMetadataAsync(
                 info.UserMetadata, ExternalStorageContext.For(dataConverter)));
-            lastFailure = new(async () => info.LastFailure == null ? null : await dataConverter.ToExceptionAsync(info.LastFailure.Clone(), ExternalStorageContext.For(dataConverter)).ConfigureAwait(false));
-            outcomeFailure = new(async () => resp.Outcome?.Failure == null ? null : await dataConverter.ToExceptionAsync(resp.Outcome.Failure.Clone(), ExternalStorageContext.For(dataConverter)).ConfigureAwait(false));
+            lastFailure = new(async () => info.LastFailure == null ? null : await this.dataConverter.ToExceptionAsync(info.LastFailure.Clone(), ExternalStorageContext.For(this.dataConverter)).ConfigureAwait(false));
+            outcomeFailure = new(async () => resp.Outcome?.Failure == null ? null : await this.dataConverter.ToExceptionAsync(resp.Outcome.Failure.Clone(), ExternalStorageContext.For(this.dataConverter)).ConfigureAwait(false));
 #pragma warning restore VSTHRD011
         }
 

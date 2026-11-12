@@ -27,6 +27,13 @@ namespace Temporalio.Client
         internal Outcome? KnownOutcome { get; set; }
 
         /// <summary>
+        /// Gets or sets the serialization context the server returned with the known outcome, if
+        /// any. An update sent by a Nexus operation handler encodes its outcome with the handler's
+        /// Nexus context.
+        /// </summary>
+        internal ISerializationContext.Nexus? KnownOutcomeNexusContext { get; set; }
+
+        /// <summary>
         /// Gets or sets the link returned on the start-update response, if any. Only set by the SDK,
         /// e.g. when starting an update-workflow-backed Nexus operation.
         /// </summary>
@@ -50,9 +57,8 @@ namespace Temporalio.Client
         {
             await PollUntilOutcomeAsync(rpcOptions).ConfigureAwait(false);
 
-            // Workflow-specific data converter
             var dataConverter = Client.Options.DataConverter.WithSerializationContext(
-                new ISerializationContext.Workflow(
+                KnownOutcomeNexusContext ?? (ISerializationContext)new ISerializationContext.Workflow(
                     Namespace: Client.Options.Namespace,
                     WorkflowId: WorkflowId));
             // Convert outcome to result
@@ -119,7 +125,12 @@ namespace Temporalio.Client
                     // a single thread. We accept there is technically a race condition here since
                     // this is not an atomic CAS operation, but outcome is the same server side for
                     // the same update.
-                    KnownOutcome ??= resp.Outcome;
+                    if (KnownOutcome == null && resp.Outcome != null)
+                    {
+                        KnownOutcomeNexusContext = ISerializationContext.Nexus.FromProto(
+                            resp.PropagatedNexusSerializationContext);
+                        KnownOutcome = resp.Outcome;
+                    }
 #pragma warning restore CA1508
                 }
                 catch (Exception e) when (e is OperationCanceledException ||

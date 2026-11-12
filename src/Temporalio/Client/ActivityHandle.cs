@@ -72,6 +72,13 @@ namespace Temporalio.Client
                     continue;
                 }
 
+                // An activity started by a Nexus operation handler encodes its outcome with the
+                // handler's Nexus context, which the server returns with the outcome
+                var outcomeDataConverter = ISerializationContext.Nexus.FromProto(
+                    resp.PropagatedNexusSerializationContext) is { } nexusContext ?
+                    Client.Options.DataConverter.WithSerializationContext(nexusContext) :
+                    dataConverter;
+
                 // Handle outcome
                 switch (resp.Outcome.ValueCase)
                 {
@@ -83,14 +90,14 @@ namespace Temporalio.Client
                         {
                             return default!;
                         }
-                        return await dataConverter.ToSingleValueAsync<TResult>(
+                        return await outcomeDataConverter.ToSingleValueAsync<TResult>(
                             resp.Outcome.Result.Payloads_,
-                            ExternalStorageContext.For(dataConverter)).ConfigureAwait(false);
+                            ExternalStorageContext.For(outcomeDataConverter)).ConfigureAwait(false);
                     case Api.Activity.V1.ActivityExecutionOutcome.ValueOneofCase.Failure:
                         throw new ActivityFailedException(
-                            await dataConverter.ToExceptionAsync(
+                            await outcomeDataConverter.ToExceptionAsync(
                                 resp.Outcome.Failure,
-                                ExternalStorageContext.For(dataConverter)).ConfigureAwait(false));
+                                ExternalStorageContext.For(outcomeDataConverter)).ConfigureAwait(false));
                     default:
                         throw new InvalidOperationException(
                             $"Unexpected activity outcome type: {resp.Outcome.ValueCase}");

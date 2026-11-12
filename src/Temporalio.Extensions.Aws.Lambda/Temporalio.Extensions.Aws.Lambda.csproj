@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Temporal SDK .NET AWS Lambda Worker Extension</Description>
+    <Description>Experimental AWS Lambda worker extension for the Temporal .NET SDK</Description>
     <IncludeSymbols>true</IncludeSymbols>
     <LangVersion>9.0</LangVersion>
     <PackageReadmeFile>README.md</PackageReadmeFile>

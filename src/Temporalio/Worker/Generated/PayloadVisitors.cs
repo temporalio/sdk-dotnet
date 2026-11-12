@@ -15,3712 +15,3503 @@ namespace Temporalio.Worker
     [GeneratedCode("Temporalio.SystemNexus.Generator", null)]
     internal static partial class PayloadVisitors
     {
-        private static readonly IReadOnlyDictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, Task>> EnvelopeVisitors =
-            new Dictionary<string, Func<Payload, PayloadVisitor, PayloadsVisitor, Task>>
+        private static readonly IReadOnlyDictionary<string, Func<Payload, WalkEnv, Task<Payload>>> EnvelopeVisitors =
+            new Dictionary<string, Func<Payload, WalkEnv, Task<Payload>>>
             {
-                ["temporal.api.workflowservice.v1.StartWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                ["temporal.api.workflowservice.v1.StartWorkflowExecutionRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.StartWorkflowExecutionRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.StartWorkflowExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.StartWorkflowExecutionResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.StartWorkflowExecutionResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.ExecuteMultiOperationRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.ExecuteMultiOperationRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ExecuteMultiOperationRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.ExecuteMultiOperationResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.ExecuteMultiOperationResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ExecuteMultiOperationResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.GetWorkflowExecutionHistoryResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.GetWorkflowExecutionHistoryResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.GetWorkflowExecutionHistoryReverseResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.GetWorkflowExecutionHistoryReverseResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryReverseResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.PollWorkflowTaskQueueResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.PollWorkflowTaskQueueResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PollWorkflowTaskQueueResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RespondWorkflowTaskCompletedRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RespondWorkflowTaskCompletedRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondWorkflowTaskCompletedRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RespondWorkflowTaskCompletedResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RespondWorkflowTaskCompletedResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondWorkflowTaskCompletedResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RespondWorkflowTaskFailedRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RespondWorkflowTaskFailedRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondWorkflowTaskFailedRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.PollActivityTaskQueueResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.PollActivityTaskQueueResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PollActivityTaskQueueResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RecordActivityTaskHeartbeatRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RecordActivityTaskHeartbeatRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RecordActivityTaskHeartbeatRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RecordActivityTaskHeartbeatByIdRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RecordActivityTaskHeartbeatByIdRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RecordActivityTaskHeartbeatByIdRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RespondActivityTaskCompletedRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RespondActivityTaskCompletedRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCompletedRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RespondActivityTaskCompletedByIdRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RespondActivityTaskCompletedByIdRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCompletedByIdRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RespondActivityTaskFailedRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RespondActivityTaskFailedRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskFailedRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RespondActivityTaskFailedResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RespondActivityTaskFailedResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskFailedResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RespondActivityTaskFailedByIdRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RespondActivityTaskFailedByIdRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskFailedByIdRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RespondActivityTaskFailedByIdResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RespondActivityTaskFailedByIdResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskFailedByIdResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RespondActivityTaskCanceledRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RespondActivityTaskCanceledRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCanceledRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RespondActivityTaskCanceledByIdRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RespondActivityTaskCanceledByIdRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCanceledByIdRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.SignalWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.SignalWorkflowExecutionRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SignalWorkflowExecutionRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.SignalWithStartWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.SignalWithStartWorkflowExecutionRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.ResetWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.ResetWorkflowExecutionRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ResetWorkflowExecutionRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.TerminateWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.TerminateWorkflowExecutionRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.TerminateWorkflowExecutionRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.ListOpenWorkflowExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.ListOpenWorkflowExecutionsResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListOpenWorkflowExecutionsResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.ListClosedWorkflowExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.ListClosedWorkflowExecutionsResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListClosedWorkflowExecutionsResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.ListWorkflowExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.ListWorkflowExecutionsResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListWorkflowExecutionsResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.ListArchivedWorkflowExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.ListArchivedWorkflowExecutionsResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListArchivedWorkflowExecutionsResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.ScanWorkflowExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.ScanWorkflowExecutionsResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ScanWorkflowExecutionsResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.CountWorkflowExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.CountWorkflowExecutionsResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CountWorkflowExecutionsResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RespondQueryTaskCompletedRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RespondQueryTaskCompletedRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondQueryTaskCompletedRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.QueryWorkflowRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.QueryWorkflowRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.QueryWorkflowRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.QueryWorkflowResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.QueryWorkflowResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.QueryWorkflowResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.DescribeWorkflowExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.DescribeWorkflowExecutionResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeWorkflowExecutionResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.CreateScheduleRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.CreateScheduleRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CreateScheduleRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.DescribeScheduleResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.DescribeScheduleResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeScheduleResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.UpdateScheduleRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.UpdateScheduleRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateScheduleRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.ListSchedulesResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.ListSchedulesResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ListSchedulesResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.CountSchedulesResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.CountSchedulesResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CountSchedulesResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.DescribeDeploymentResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.DescribeDeploymentResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeDeploymentResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.DescribeWorkerDeploymentVersionResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.DescribeWorkerDeploymentVersionResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeWorkerDeploymentVersionResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.GetDeploymentReachabilityResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.GetDeploymentReachabilityResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetDeploymentReachabilityResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.GetCurrentDeploymentResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.GetCurrentDeploymentResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.GetCurrentDeploymentResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.SetCurrentDeploymentRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.SetCurrentDeploymentRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SetCurrentDeploymentRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.SetCurrentDeploymentResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.SetCurrentDeploymentResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SetCurrentDeploymentResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.CreateWorkerDeploymentVersionRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.CreateWorkerDeploymentVersionRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentVersionRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.UpdateWorkerDeploymentVersionComputeConfigRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.UpdateWorkerDeploymentVersionComputeConfigRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionComputeConfigRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.ValidateWorkerDeploymentVersionComputeConfigRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.ValidateWorkerDeploymentVersionComputeConfigRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.ValidateWorkerDeploymentVersionComputeConfigRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.UpdateWorkerDeploymentVersionMetadataRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.UpdateWorkerDeploymentVersionMetadataRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionMetadataRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.UpdateWorkerDeploymentVersionMetadataResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.UpdateWorkerDeploymentVersionMetadataResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionMetadataResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.UpdateWorkflowExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.UpdateWorkflowExecutionRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkflowExecutionRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.UpdateWorkflowExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.UpdateWorkflowExecutionResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.UpdateWorkflowExecutionResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.PollWorkflowExecutionUpdateResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.PollWorkflowExecutionUpdateResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PollWorkflowExecutionUpdateResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.StartBatchOperationRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.StartBatchOperationRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.StartBatchOperationRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.PollNexusTaskQueueResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.PollNexusTaskQueueResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PollNexusTaskQueueResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RespondNexusTaskCompletedRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RespondNexusTaskCompletedRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondNexusTaskCompletedRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.RespondNexusTaskFailedRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.RespondNexusTaskFailedRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.RespondNexusTaskFailedRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.StartActivityExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.StartActivityExecutionRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.StartActivityExecutionRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.StartActivityExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.StartActivityExecutionResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.StartActivityExecutionResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.StartNexusOperationExecutionRequest"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.StartNexusOperationExecutionRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.StartNexusOperationExecutionRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.DescribeActivityExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.DescribeActivityExecutionResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeActivityExecutionResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.DescribeNexusOperationExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.DescribeNexusOperationExecutionResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.DescribeNexusOperationExecutionResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.PollActivityExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.PollActivityExecutionResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PollActivityExecutionResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.PollNexusOperationExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.PollNexusOperationExecutionResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.PollNexusOperationExecutionResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.CountActivityExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.CountActivityExecutionsResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CountActivityExecutionsResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.CountNexusOperationExecutionsResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.CountNexusOperationExecutionsResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsResponse>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.workflowservice.v1.SignalWithStartWorkflowExecutionResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.workflowservice.v1.SignalWithStartWorkflowExecutionResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse>(
                         payload,
-                        VisitNoPayloadEnvelopeAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.notificationservice.v1.OnCompleteRequest"] = (payload, visitPayload, visitPayloads) =>
+                        VisitNoPayloadEnvelope,
+                        env),
+                ["temporal.api.notificationservice.v1.OnCompleteRequest"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.NotificationService.V1.OnCompleteRequest>(
                         payload,
-                        VisitAsync,
-                        visitPayload,
-                        visitPayloads),
-                ["temporal.api.notificationservice.v1.OnCompleteResponse"] = (payload, visitPayload, visitPayloads) =>
+                        Walk,
+                        env),
+                ["temporal.api.notificationservice.v1.OnCompleteResponse"] = (payload, env) =>
                     VisitEnvelopeAsync<global::Temporalio.Api.NotificationService.V1.OnCompleteResponse>(
                         payload,
-                        VisitNoPayloadEnvelopeAsync,
-                        visitPayload,
-                        visitPayloads),
+                        VisitNoPayloadEnvelope,
+                        env),
             };
 
-        private static Task VisitNoPayloadEnvelopeAsync<T>(
+        private static void VisitNoPayloadEnvelope<T>(
             T value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads) => Task.CompletedTask;
+            WalkEnv env,
+            VisitState state)
+        {
+        }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Common.V1.Memo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var item_temporal_api_common_v1_Memo_1 in value.Fields.Values)
+            foreach (var pair_temporal_api_common_v1_Memo_1 in value.Fields)
             {
-                if (item_temporal_api_common_v1_Memo_1 != null)
-                {
-                    await VisitAsync(item_temporal_api_common_v1_Memo_1, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_temporal_api_common_v1_Memo_1.Value, replacement => value.Fields[pair_temporal_api_common_v1_Memo_1.Key] = replacement);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Common.V1.Header value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var item_temporal_api_common_v1_Header_1 in value.Fields.Values)
+            foreach (var pair_temporal_api_common_v1_Header_1 in value.Fields)
             {
-                if (item_temporal_api_common_v1_Header_1 != null)
-                {
-                    await VisitAsync(item_temporal_api_common_v1_Header_1, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_temporal_api_common_v1_Header_1.Value, replacement => value.Fields[pair_temporal_api_common_v1_Header_1.Key] = replacement);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Failure.V1.ApplicationFailureInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Details != null)
             {
-                await VisitAsync(value.Details.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Details.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Failure.V1.TimeoutFailureInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.LastHeartbeatDetails != null)
             {
-                await VisitAsync(value.LastHeartbeatDetails.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.LastHeartbeatDetails.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Failure.V1.CanceledFailureInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Details != null)
             {
-                await VisitAsync(value.Details.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Details.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Failure.V1.ResetWorkflowFailureInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.LastHeartbeatDetails != null)
             {
-                await VisitAsync(value.LastHeartbeatDetails.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.LastHeartbeatDetails.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Failure.V1.Failure value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.EncodedAttributes != null)
-            {
-                await VisitAsync(value.EncodedAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.EncodedAttributes, replacement => value.EncodedAttributes = replacement);
             if (value.Cause != null)
             {
-                await VisitAsync(value.Cause, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Cause, env, state);
             }
             if (value.ApplicationFailureInfo != null)
             {
-                await VisitAsync(value.ApplicationFailureInfo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ApplicationFailureInfo, env, state);
             }
             if (value.TimeoutFailureInfo != null)
             {
-                await VisitAsync(value.TimeoutFailureInfo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.TimeoutFailureInfo, env, state);
             }
             if (value.CanceledFailureInfo != null)
             {
-                await VisitAsync(value.CanceledFailureInfo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.CanceledFailureInfo, env, state);
             }
             if (value.ResetWorkflowFailureInfo != null)
             {
-                await VisitAsync(value.ResetWorkflowFailureInfo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ResetWorkflowFailureInfo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Common.V1.Callback.Types.NexusHandler value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.SourceContext != null)
-            {
-                await VisitAsync(value.SourceContext, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.SourceContext, replacement => value.SourceContext = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Common.V1.Callback value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.NexusHandler != null)
             {
-                await VisitAsync(value.NexusHandler, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.NexusHandler, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Sdk.V1.UserMetadata value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Summary != null)
-            {
-                await VisitAsync(value.Summary, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
-            if (value.Details != null)
-            {
-                await VisitAsync(value.Details, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Summary, replacement => value.Summary = replacement);
+            VisitSingle(state, env, value.Details, replacement => value.Details = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.StartWorkflowExecutionRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.Memo != null)
             {
-                await VisitAsync(value.Memo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Memo, env, state);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             if (value.ContinuedFailure != null)
             {
-                await VisitAsync(value.ContinuedFailure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ContinuedFailure, env, state);
             }
             if (value.LastCompletionResult != null)
             {
-                await VisitAsync(value.LastCompletionResult.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.LastCompletionResult.Payloads_);
             }
             foreach (var item_temporal_api_workflowservice_v1_StartWorkflowExecutionRequest_21 in value.CompletionCallbacks)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_StartWorkflowExecutionRequest_21, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_StartWorkflowExecutionRequest_21, env, state);
             }
             if (value.UserMetadata != null)
             {
-                await VisitAsync(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UserMetadata, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Sdk.V1.EventGroupMarker.Types.Label value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Label_ != null)
-            {
-                await VisitAsync(value.Label_, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Label_, replacement => value.Label_ = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Sdk.V1.EventGroupMarker value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Label != null)
             {
-                await VisitAsync(value.Label, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Label, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowExecutionStartedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.ContinuedFailure != null)
             {
-                await VisitAsync(value.ContinuedFailure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ContinuedFailure, env, state);
             }
             if (value.LastCompletionResult != null)
             {
-                await VisitAsync(value.LastCompletionResult.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.LastCompletionResult.Payloads_);
             }
             if (value.Memo != null)
             {
-                await VisitAsync(value.Memo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Memo, env, state);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             foreach (var item_temporal_api_history_v1_WorkflowExecutionStartedEventAttributes_30 in value.CompletionCallbacks)
             {
-                await VisitAsync(item_temporal_api_history_v1_WorkflowExecutionStartedEventAttributes_30, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_history_v1_WorkflowExecutionStartedEventAttributes_30, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowExecutionCompletedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Result != null)
             {
-                await VisitAsync(value.Result.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Result.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowExecutionFailedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowTaskFailedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.ActivityTaskScheduledEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.ActivityTaskStartedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.LastFailure != null)
             {
-                await VisitAsync(value.LastFailure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.LastFailure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.ActivityTaskCompletedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Result != null)
             {
-                await VisitAsync(value.Result.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Result.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.ActivityTaskFailedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.ActivityTaskTimedOutEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.ActivityTaskCanceledEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Details != null)
             {
-                await VisitAsync(value.Details.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Details.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Common.V1.Payloads value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            await VisitAsync(value.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+            VisitBatch(state, env, value.Payloads_);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.MarkerRecordedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var item_temporal_api_history_v1_MarkerRecordedEventAttributes_2 in value.Details.Values)
+            foreach (var pair_temporal_api_history_v1_MarkerRecordedEventAttributes_2 in value.Details)
             {
-                if (item_temporal_api_history_v1_MarkerRecordedEventAttributes_2 != null)
+                if (pair_temporal_api_history_v1_MarkerRecordedEventAttributes_2.Value != null)
                 {
-                    await VisitAsync(item_temporal_api_history_v1_MarkerRecordedEventAttributes_2, visitPayload, visitPayloads).ConfigureAwait(false);
+                    Walk(pair_temporal_api_history_v1_MarkerRecordedEventAttributes_2.Value, env, state);
                 }
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowExecutionSignaledEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowExecutionTerminatedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Details != null)
             {
-                await VisitAsync(value.Details.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Details.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowExecutionCanceledEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Details != null)
             {
-                await VisitAsync(value.Details.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Details.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowExecutionContinuedAsNewEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
             if (value.LastCompletionResult != null)
             {
-                await VisitAsync(value.LastCompletionResult.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.LastCompletionResult.Payloads_);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             if (value.Memo != null)
             {
-                await VisitAsync(value.Memo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Memo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.StartChildWorkflowExecutionInitiatedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             if (value.Memo != null)
             {
-                await VisitAsync(value.Memo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Memo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.ChildWorkflowExecutionStartedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.ChildWorkflowExecutionCompletedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Result != null)
             {
-                await VisitAsync(value.Result.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Result.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.ChildWorkflowExecutionFailedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.ChildWorkflowExecutionCanceledEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Details != null)
             {
-                await VisitAsync(value.Details.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Details.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.SignalExternalWorkflowExecutionInitiatedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Update.V1.Input value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             if (value.Args != null)
             {
-                await VisitAsync(value.Args.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Args.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Update.V1.Request value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Input, env, state);
             }
             foreach (var item_temporal_api_update_v1_Request_4 in value.CompletionCallbacks)
             {
-                await VisitAsync(item_temporal_api_update_v1_Request_4, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_update_v1_Request_4, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowExecutionUpdateAcceptedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.AcceptedRequest != null)
             {
-                await VisitAsync(value.AcceptedRequest, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.AcceptedRequest, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowExecutionUpdateRejectedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.RejectedRequest != null)
             {
-                await VisitAsync(value.RejectedRequest, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.RejectedRequest, env, state);
             }
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Update.V1.Outcome value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Success != null)
             {
-                await VisitAsync(value.Success.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Success.Payloads_);
             }
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowExecutionUpdateCompletedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Outcome != null)
             {
-                await VisitAsync(value.Outcome, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Outcome, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowPropertiesModifiedExternallyEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.UpsertedMemo != null)
             {
-                await VisitAsync(value.UpsertedMemo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UpsertedMemo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowPropertiesModifiedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.UpsertedMemo != null)
             {
-                await VisitAsync(value.UpsertedMemo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UpsertedMemo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowExecutionUpdateAdmittedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Request != null)
             {
-                await VisitAsync(value.Request, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Request, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.NexusOperationScheduledEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Input != null)
-            {
-                await VisitAsync(value.Input, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Input, replacement => value.Input = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.NexusOperationCompletedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Result != null)
-            {
-                await VisitAsync(value.Result, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Result, replacement => value.Result = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.NexusOperationFailedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.NexusOperationCanceledEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.NexusOperationTimedOutEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowExecutionOptionsUpdatedEventAttributes.Types.WorkflowUpdateOptionsUpdate value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_WorkflowUpdateOptionsUpdate_3 in value.AttachedCompletionCallbacks)
             {
-                await VisitAsync(item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_WorkflowUpdateOptionsUpdate_3, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_WorkflowUpdateOptionsUpdate_3, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.WorkflowExecutionOptionsUpdatedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_4 in value.AttachedCompletionCallbacks)
             {
-                await VisitAsync(item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_4, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_4, env, state);
             }
             foreach (var item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_8 in value.WorkflowUpdateOptions)
             {
-                await VisitAsync(item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_8, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_8, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.NexusOperationCancelRequestFailedEventAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.HistoryEvent value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.UserMetadata != null)
             {
-                await VisitAsync(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UserMetadata, env, state);
             }
             foreach (var item_temporal_api_history_v1_HistoryEvent_304 in value.EventGroupMarkers)
             {
-                await VisitAsync(item_temporal_api_history_v1_HistoryEvent_304, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_history_v1_HistoryEvent_304, env, state);
             }
             if (value.WorkflowExecutionStartedEventAttributes != null)
             {
-                await VisitAsync(value.WorkflowExecutionStartedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowExecutionStartedEventAttributes, env, state);
             }
             if (value.WorkflowExecutionCompletedEventAttributes != null)
             {
-                await VisitAsync(value.WorkflowExecutionCompletedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowExecutionCompletedEventAttributes, env, state);
             }
             if (value.WorkflowExecutionFailedEventAttributes != null)
             {
-                await VisitAsync(value.WorkflowExecutionFailedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowExecutionFailedEventAttributes, env, state);
             }
             if (value.WorkflowTaskFailedEventAttributes != null)
             {
-                await VisitAsync(value.WorkflowTaskFailedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowTaskFailedEventAttributes, env, state);
             }
             if (value.ActivityTaskScheduledEventAttributes != null)
             {
-                await VisitAsync(value.ActivityTaskScheduledEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ActivityTaskScheduledEventAttributes, env, state);
             }
             if (value.ActivityTaskStartedEventAttributes != null)
             {
-                await VisitAsync(value.ActivityTaskStartedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ActivityTaskStartedEventAttributes, env, state);
             }
             if (value.ActivityTaskCompletedEventAttributes != null)
             {
-                await VisitAsync(value.ActivityTaskCompletedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ActivityTaskCompletedEventAttributes, env, state);
             }
             if (value.ActivityTaskFailedEventAttributes != null)
             {
-                await VisitAsync(value.ActivityTaskFailedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ActivityTaskFailedEventAttributes, env, state);
             }
             if (value.ActivityTaskTimedOutEventAttributes != null)
             {
-                await VisitAsync(value.ActivityTaskTimedOutEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ActivityTaskTimedOutEventAttributes, env, state);
             }
             if (value.ActivityTaskCanceledEventAttributes != null)
             {
-                await VisitAsync(value.ActivityTaskCanceledEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ActivityTaskCanceledEventAttributes, env, state);
             }
             if (value.MarkerRecordedEventAttributes != null)
             {
-                await VisitAsync(value.MarkerRecordedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.MarkerRecordedEventAttributes, env, state);
             }
             if (value.WorkflowExecutionSignaledEventAttributes != null)
             {
-                await VisitAsync(value.WorkflowExecutionSignaledEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowExecutionSignaledEventAttributes, env, state);
             }
             if (value.WorkflowExecutionTerminatedEventAttributes != null)
             {
-                await VisitAsync(value.WorkflowExecutionTerminatedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowExecutionTerminatedEventAttributes, env, state);
             }
             if (value.WorkflowExecutionCanceledEventAttributes != null)
             {
-                await VisitAsync(value.WorkflowExecutionCanceledEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowExecutionCanceledEventAttributes, env, state);
             }
             if (value.WorkflowExecutionContinuedAsNewEventAttributes != null)
             {
-                await VisitAsync(value.WorkflowExecutionContinuedAsNewEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowExecutionContinuedAsNewEventAttributes, env, state);
             }
             if (value.StartChildWorkflowExecutionInitiatedEventAttributes != null)
             {
-                await VisitAsync(value.StartChildWorkflowExecutionInitiatedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.StartChildWorkflowExecutionInitiatedEventAttributes, env, state);
             }
             if (value.ChildWorkflowExecutionStartedEventAttributes != null)
             {
-                await VisitAsync(value.ChildWorkflowExecutionStartedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ChildWorkflowExecutionStartedEventAttributes, env, state);
             }
             if (value.ChildWorkflowExecutionCompletedEventAttributes != null)
             {
-                await VisitAsync(value.ChildWorkflowExecutionCompletedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ChildWorkflowExecutionCompletedEventAttributes, env, state);
             }
             if (value.ChildWorkflowExecutionFailedEventAttributes != null)
             {
-                await VisitAsync(value.ChildWorkflowExecutionFailedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ChildWorkflowExecutionFailedEventAttributes, env, state);
             }
             if (value.ChildWorkflowExecutionCanceledEventAttributes != null)
             {
-                await VisitAsync(value.ChildWorkflowExecutionCanceledEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ChildWorkflowExecutionCanceledEventAttributes, env, state);
             }
             if (value.SignalExternalWorkflowExecutionInitiatedEventAttributes != null)
             {
-                await VisitAsync(value.SignalExternalWorkflowExecutionInitiatedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.SignalExternalWorkflowExecutionInitiatedEventAttributes, env, state);
             }
             if (value.WorkflowExecutionUpdateAcceptedEventAttributes != null)
             {
-                await VisitAsync(value.WorkflowExecutionUpdateAcceptedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowExecutionUpdateAcceptedEventAttributes, env, state);
             }
             if (value.WorkflowExecutionUpdateRejectedEventAttributes != null)
             {
-                await VisitAsync(value.WorkflowExecutionUpdateRejectedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowExecutionUpdateRejectedEventAttributes, env, state);
             }
             if (value.WorkflowExecutionUpdateCompletedEventAttributes != null)
             {
-                await VisitAsync(value.WorkflowExecutionUpdateCompletedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowExecutionUpdateCompletedEventAttributes, env, state);
             }
             if (value.WorkflowPropertiesModifiedExternallyEventAttributes != null)
             {
-                await VisitAsync(value.WorkflowPropertiesModifiedExternallyEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowPropertiesModifiedExternallyEventAttributes, env, state);
             }
             if (value.WorkflowPropertiesModifiedEventAttributes != null)
             {
-                await VisitAsync(value.WorkflowPropertiesModifiedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowPropertiesModifiedEventAttributes, env, state);
             }
             if (value.WorkflowExecutionUpdateAdmittedEventAttributes != null)
             {
-                await VisitAsync(value.WorkflowExecutionUpdateAdmittedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowExecutionUpdateAdmittedEventAttributes, env, state);
             }
             if (value.NexusOperationScheduledEventAttributes != null)
             {
-                await VisitAsync(value.NexusOperationScheduledEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.NexusOperationScheduledEventAttributes, env, state);
             }
             if (value.NexusOperationCompletedEventAttributes != null)
             {
-                await VisitAsync(value.NexusOperationCompletedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.NexusOperationCompletedEventAttributes, env, state);
             }
             if (value.NexusOperationFailedEventAttributes != null)
             {
-                await VisitAsync(value.NexusOperationFailedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.NexusOperationFailedEventAttributes, env, state);
             }
             if (value.NexusOperationCanceledEventAttributes != null)
             {
-                await VisitAsync(value.NexusOperationCanceledEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.NexusOperationCanceledEventAttributes, env, state);
             }
             if (value.NexusOperationTimedOutEventAttributes != null)
             {
-                await VisitAsync(value.NexusOperationTimedOutEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.NexusOperationTimedOutEventAttributes, env, state);
             }
             if (value.WorkflowExecutionOptionsUpdatedEventAttributes != null)
             {
-                await VisitAsync(value.WorkflowExecutionOptionsUpdatedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowExecutionOptionsUpdatedEventAttributes, env, state);
             }
             if (value.NexusOperationCancelRequestFailedEventAttributes != null)
             {
-                await VisitAsync(value.NexusOperationCancelRequestFailedEventAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.NexusOperationCancelRequestFailedEventAttributes, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.History.V1.History value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_history_v1_History_1 in value.Events)
             {
-                await VisitAsync(item_temporal_api_history_v1_History_1, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_history_v1_History_1, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Query.V1.WorkflowQuery value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.QueryArgs != null)
             {
-                await VisitAsync(value.QueryArgs.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.QueryArgs.Payloads_);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.PollWorkflowTaskQueueResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.History != null)
             {
-                await VisitAsync(value.History, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.History, env, state);
             }
             if (value.Query != null)
             {
-                await VisitAsync(value.Query, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Query, env, state);
             }
-            foreach (var item_temporal_api_workflowservice_v1_PollWorkflowTaskQueueResponse_14 in value.Queries.Values)
+            foreach (var pair_temporal_api_workflowservice_v1_PollWorkflowTaskQueueResponse_14 in value.Queries)
             {
-                if (item_temporal_api_workflowservice_v1_PollWorkflowTaskQueueResponse_14 != null)
+                if (pair_temporal_api_workflowservice_v1_PollWorkflowTaskQueueResponse_14.Value != null)
                 {
-                    await VisitAsync(item_temporal_api_workflowservice_v1_PollWorkflowTaskQueueResponse_14, visitPayload, visitPayloads).ConfigureAwait(false);
+                    Walk(pair_temporal_api_workflowservice_v1_PollWorkflowTaskQueueResponse_14.Value, env, state);
                 }
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.StartWorkflowExecutionResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.EagerWorkflowTask != null)
             {
-                await VisitAsync(value.EagerWorkflowTask, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.EagerWorkflowTask, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.UpdateWorkflowExecutionRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Request != null)
             {
-                await VisitAsync(value.Request, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Request, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.ExecuteMultiOperationRequest.Types.Operation value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.StartWorkflow != null)
             {
-                await VisitAsync(value.StartWorkflow, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.StartWorkflow, env, state);
             }
             if (value.UpdateWorkflow != null)
             {
-                await VisitAsync(value.UpdateWorkflow, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UpdateWorkflow, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.ExecuteMultiOperationRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_ExecuteMultiOperationRequest_2 in value.Operations)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_ExecuteMultiOperationRequest_2, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_ExecuteMultiOperationRequest_2, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.UpdateWorkflowExecutionResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Outcome != null)
             {
-                await VisitAsync(value.Outcome, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Outcome, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.ExecuteMultiOperationResponse.Types.Response value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.StartWorkflow != null)
             {
-                await VisitAsync(value.StartWorkflow, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.StartWorkflow, env, state);
             }
             if (value.UpdateWorkflow != null)
             {
-                await VisitAsync(value.UpdateWorkflow, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UpdateWorkflow, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.ExecuteMultiOperationResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_ExecuteMultiOperationResponse_1 in value.Responses)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_ExecuteMultiOperationResponse_1, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_ExecuteMultiOperationResponse_1, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.History != null)
             {
-                await VisitAsync(value.History, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.History, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryReverseResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.History != null)
             {
-                await VisitAsync(value.History, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.History, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Command.V1.ScheduleActivityTaskCommandAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Command.V1.CompleteWorkflowExecutionCommandAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Result != null)
             {
-                await VisitAsync(value.Result.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Result.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Command.V1.FailWorkflowExecutionCommandAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Command.V1.CancelWorkflowExecutionCommandAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Details != null)
             {
-                await VisitAsync(value.Details.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Details.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Command.V1.RecordMarkerCommandAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var item_temporal_api_command_v1_RecordMarkerCommandAttributes_2 in value.Details.Values)
+            foreach (var pair_temporal_api_command_v1_RecordMarkerCommandAttributes_2 in value.Details)
             {
-                if (item_temporal_api_command_v1_RecordMarkerCommandAttributes_2 != null)
+                if (pair_temporal_api_command_v1_RecordMarkerCommandAttributes_2.Value != null)
                 {
-                    await VisitAsync(item_temporal_api_command_v1_RecordMarkerCommandAttributes_2, visitPayload, visitPayloads).ConfigureAwait(false);
+                    Walk(pair_temporal_api_command_v1_RecordMarkerCommandAttributes_2.Value, env, state);
                 }
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Command.V1.ContinueAsNewWorkflowExecutionCommandAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
             if (value.LastCompletionResult != null)
             {
-                await VisitAsync(value.LastCompletionResult.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.LastCompletionResult.Payloads_);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             if (value.Memo != null)
             {
-                await VisitAsync(value.Memo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Memo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Command.V1.StartChildWorkflowExecutionCommandAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             if (value.Memo != null)
             {
-                await VisitAsync(value.Memo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Memo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Command.V1.SignalExternalWorkflowExecutionCommandAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Command.V1.ModifyWorkflowPropertiesCommandAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.UpsertedMemo != null)
             {
-                await VisitAsync(value.UpsertedMemo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UpsertedMemo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Command.V1.ScheduleNexusOperationCommandAttributes value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Input != null)
-            {
-                await VisitAsync(value.Input, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Input, replacement => value.Input = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Command.V1.Command value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.UserMetadata != null)
             {
-                await VisitAsync(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UserMetadata, env, state);
             }
             foreach (var item_temporal_api_command_v1_Command_302 in value.EventGroupMarkers)
             {
-                await VisitAsync(item_temporal_api_command_v1_Command_302, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_command_v1_Command_302, env, state);
             }
             if (value.ScheduleActivityTaskCommandAttributes != null)
             {
-                await VisitAsync(value.ScheduleActivityTaskCommandAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ScheduleActivityTaskCommandAttributes, env, state);
             }
             if (value.CompleteWorkflowExecutionCommandAttributes != null)
             {
-                await VisitAsync(value.CompleteWorkflowExecutionCommandAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.CompleteWorkflowExecutionCommandAttributes, env, state);
             }
             if (value.FailWorkflowExecutionCommandAttributes != null)
             {
-                await VisitAsync(value.FailWorkflowExecutionCommandAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.FailWorkflowExecutionCommandAttributes, env, state);
             }
             if (value.CancelWorkflowExecutionCommandAttributes != null)
             {
-                await VisitAsync(value.CancelWorkflowExecutionCommandAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.CancelWorkflowExecutionCommandAttributes, env, state);
             }
             if (value.RecordMarkerCommandAttributes != null)
             {
-                await VisitAsync(value.RecordMarkerCommandAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.RecordMarkerCommandAttributes, env, state);
             }
             if (value.ContinueAsNewWorkflowExecutionCommandAttributes != null)
             {
-                await VisitAsync(value.ContinueAsNewWorkflowExecutionCommandAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ContinueAsNewWorkflowExecutionCommandAttributes, env, state);
             }
             if (value.StartChildWorkflowExecutionCommandAttributes != null)
             {
-                await VisitAsync(value.StartChildWorkflowExecutionCommandAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.StartChildWorkflowExecutionCommandAttributes, env, state);
             }
             if (value.SignalExternalWorkflowExecutionCommandAttributes != null)
             {
-                await VisitAsync(value.SignalExternalWorkflowExecutionCommandAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.SignalExternalWorkflowExecutionCommandAttributes, env, state);
             }
             if (value.ModifyWorkflowPropertiesCommandAttributes != null)
             {
-                await VisitAsync(value.ModifyWorkflowPropertiesCommandAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ModifyWorkflowPropertiesCommandAttributes, env, state);
             }
             if (value.ScheduleNexusOperationCommandAttributes != null)
             {
-                await VisitAsync(value.ScheduleNexusOperationCommandAttributes, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ScheduleNexusOperationCommandAttributes, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Query.V1.WorkflowQueryResult value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Answer != null)
             {
-                await VisitAsync(value.Answer.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Answer.Payloads_);
             }
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RespondWorkflowTaskCompletedRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_RespondWorkflowTaskCompletedRequest_2 in value.Commands)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_RespondWorkflowTaskCompletedRequest_2, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_RespondWorkflowTaskCompletedRequest_2, env, state);
             }
-            foreach (var item_temporal_api_workflowservice_v1_RespondWorkflowTaskCompletedRequest_8 in value.QueryResults.Values)
+            foreach (var pair_temporal_api_workflowservice_v1_RespondWorkflowTaskCompletedRequest_8 in value.QueryResults)
             {
-                if (item_temporal_api_workflowservice_v1_RespondWorkflowTaskCompletedRequest_8 != null)
+                if (pair_temporal_api_workflowservice_v1_RespondWorkflowTaskCompletedRequest_8.Value != null)
                 {
-                    await VisitAsync(item_temporal_api_workflowservice_v1_RespondWorkflowTaskCompletedRequest_8, visitPayload, visitPayloads).ConfigureAwait(false);
+                    Walk(pair_temporal_api_workflowservice_v1_RespondWorkflowTaskCompletedRequest_8.Value, env, state);
                 }
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.PollActivityTaskQueueResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.HeartbeatDetails != null)
             {
-                await VisitAsync(value.HeartbeatDetails.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.HeartbeatDetails.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RespondWorkflowTaskCompletedResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.WorkflowTask != null)
             {
-                await VisitAsync(value.WorkflowTask, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowTask, env, state);
             }
             foreach (var item_temporal_api_workflowservice_v1_RespondWorkflowTaskCompletedResponse_2 in value.ActivityTasks)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_RespondWorkflowTaskCompletedResponse_2, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_RespondWorkflowTaskCompletedResponse_2, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RespondWorkflowTaskFailedRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RecordActivityTaskHeartbeatRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Details != null)
             {
-                await VisitAsync(value.Details.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Details.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RecordActivityTaskHeartbeatByIdRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Details != null)
             {
-                await VisitAsync(value.Details.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Details.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCompletedRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Result != null)
             {
-                await VisitAsync(value.Result.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Result.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCompletedByIdRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Result != null)
             {
-                await VisitAsync(value.Result.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Result.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskFailedRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
             if (value.LastHeartbeatDetails != null)
             {
-                await VisitAsync(value.LastHeartbeatDetails.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.LastHeartbeatDetails.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskFailedResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_RespondActivityTaskFailedResponse_1 in value.Failures)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_RespondActivityTaskFailedResponse_1, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_RespondActivityTaskFailedResponse_1, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskFailedByIdRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
             if (value.LastHeartbeatDetails != null)
             {
-                await VisitAsync(value.LastHeartbeatDetails.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.LastHeartbeatDetails.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskFailedByIdResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_RespondActivityTaskFailedByIdResponse_1 in value.Failures)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_RespondActivityTaskFailedByIdResponse_1, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_RespondActivityTaskFailedByIdResponse_1, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCanceledRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Details != null)
             {
-                await VisitAsync(value.Details.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Details.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RespondActivityTaskCanceledByIdRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Details != null)
             {
-                await VisitAsync(value.Details.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Details.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.SignalWorkflowExecutionRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.SignalInput != null)
             {
-                await VisitAsync(value.SignalInput.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.SignalInput.Payloads_);
             }
             if (value.Memo != null)
             {
-                await VisitAsync(value.Memo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Memo, env, state);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             if (value.UserMetadata != null)
             {
-                await VisitAsync(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UserMetadata, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Workflow.V1.PostResetOperation.Types.SignalWorkflow value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Workflow.V1.PostResetOperation value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.SignalWorkflow != null)
             {
-                await VisitAsync(value.SignalWorkflow, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.SignalWorkflow, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.ResetWorkflowExecutionRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_ResetWorkflowExecutionRequest_8 in value.PostResetOperations)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_ResetWorkflowExecutionRequest_8, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_ResetWorkflowExecutionRequest_8, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.TerminateWorkflowExecutionRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Details != null)
             {
-                await VisitAsync(value.Details.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Details.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Workflow.V1.WorkflowExecutionInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Memo != null)
             {
-                await VisitAsync(value.Memo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Memo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.ListOpenWorkflowExecutionsResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_ListOpenWorkflowExecutionsResponse_1 in value.Executions)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_ListOpenWorkflowExecutionsResponse_1, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_ListOpenWorkflowExecutionsResponse_1, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.ListClosedWorkflowExecutionsResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_ListClosedWorkflowExecutionsResponse_1 in value.Executions)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_ListClosedWorkflowExecutionsResponse_1, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_ListClosedWorkflowExecutionsResponse_1, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.ListWorkflowExecutionsResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_ListWorkflowExecutionsResponse_1 in value.Executions)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_ListWorkflowExecutionsResponse_1, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_ListWorkflowExecutionsResponse_1, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.ListArchivedWorkflowExecutionsResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_ListArchivedWorkflowExecutionsResponse_1 in value.Executions)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_ListArchivedWorkflowExecutionsResponse_1, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_ListArchivedWorkflowExecutionsResponse_1, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.ScanWorkflowExecutionsResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_ScanWorkflowExecutionsResponse_1 in value.Executions)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_ScanWorkflowExecutionsResponse_1, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_ScanWorkflowExecutionsResponse_1, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.CountWorkflowExecutionsResponse.Types.AggregationGroup value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var payload_temporal_api_workflowservice_v1_CountWorkflowExecutionsResponse_AggregationGroup_1 in value.GroupValues)
-            {
-                await VisitAsync(payload_temporal_api_workflowservice_v1_CountWorkflowExecutionsResponse_AggregationGroup_1, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitEach(state, env, value.GroupValues);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.CountWorkflowExecutionsResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_CountWorkflowExecutionsResponse_2 in value.Groups)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_CountWorkflowExecutionsResponse_2, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_CountWorkflowExecutionsResponse_2, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RespondQueryTaskCompletedRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.QueryResult != null)
             {
-                await VisitAsync(value.QueryResult.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.QueryResult.Payloads_);
             }
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.QueryWorkflowRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Query != null)
             {
-                await VisitAsync(value.Query, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Query, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.QueryWorkflowResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.QueryResult != null)
             {
-                await VisitAsync(value.QueryResult.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.QueryResult.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Workflow.V1.WorkflowExecutionConfig value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.UserMetadata != null)
             {
-                await VisitAsync(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UserMetadata, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Workflow.V1.PendingActivityInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.HeartbeatDetails != null)
             {
-                await VisitAsync(value.HeartbeatDetails.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.HeartbeatDetails.Payloads_);
             }
             if (value.LastFailure != null)
             {
-                await VisitAsync(value.LastFailure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.LastFailure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Workflow.V1.CallbackInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Callback != null)
             {
-                await VisitAsync(value.Callback, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Callback, env, state);
             }
             if (value.LastAttemptFailure != null)
             {
-                await VisitAsync(value.LastAttemptFailure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.LastAttemptFailure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Workflow.V1.NexusOperationCancellationInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.LastAttemptFailure != null)
             {
-                await VisitAsync(value.LastAttemptFailure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.LastAttemptFailure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Workflow.V1.PendingNexusOperationInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.LastAttemptFailure != null)
             {
-                await VisitAsync(value.LastAttemptFailure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.LastAttemptFailure, env, state);
             }
             if (value.CancellationInfo != null)
             {
-                await VisitAsync(value.CancellationInfo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.CancellationInfo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.DescribeWorkflowExecutionResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.ExecutionConfig != null)
             {
-                await VisitAsync(value.ExecutionConfig, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ExecutionConfig, env, state);
             }
             if (value.WorkflowExecutionInfo != null)
             {
-                await VisitAsync(value.WorkflowExecutionInfo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkflowExecutionInfo, env, state);
             }
             foreach (var item_temporal_api_workflowservice_v1_DescribeWorkflowExecutionResponse_3 in value.PendingActivities)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_DescribeWorkflowExecutionResponse_3, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_DescribeWorkflowExecutionResponse_3, env, state);
             }
             foreach (var item_temporal_api_workflowservice_v1_DescribeWorkflowExecutionResponse_6 in value.Callbacks)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_DescribeWorkflowExecutionResponse_6, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_DescribeWorkflowExecutionResponse_6, env, state);
             }
             foreach (var item_temporal_api_workflowservice_v1_DescribeWorkflowExecutionResponse_7 in value.PendingNexusOperations)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_DescribeWorkflowExecutionResponse_7, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_DescribeWorkflowExecutionResponse_7, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Workflow.V1.NewWorkflowExecutionInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.Memo != null)
             {
-                await VisitAsync(value.Memo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Memo, env, state);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             if (value.UserMetadata != null)
             {
-                await VisitAsync(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UserMetadata, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Schedule.V1.ScheduleAction value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.StartWorkflow != null)
             {
-                await VisitAsync(value.StartWorkflow, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.StartWorkflow, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Schedule.V1.Schedule value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Action != null)
             {
-                await VisitAsync(value.Action, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Action, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.CreateScheduleRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Schedule != null)
             {
-                await VisitAsync(value.Schedule, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Schedule, env, state);
             }
             if (value.Memo != null)
             {
-                await VisitAsync(value.Memo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Memo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.DescribeScheduleResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Schedule != null)
             {
-                await VisitAsync(value.Schedule, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Schedule, env, state);
             }
             if (value.Memo != null)
             {
-                await VisitAsync(value.Memo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Memo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.UpdateScheduleRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Schedule != null)
             {
-                await VisitAsync(value.Schedule, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Schedule, env, state);
             }
             if (value.Memo != null)
             {
-                await VisitAsync(value.Memo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Memo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Schedule.V1.ScheduleListEntry value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Memo != null)
             {
-                await VisitAsync(value.Memo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Memo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.ListSchedulesResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_ListSchedulesResponse_1 in value.Schedules)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_ListSchedulesResponse_1, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_ListSchedulesResponse_1, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.CountSchedulesResponse.Types.AggregationGroup value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var payload_temporal_api_workflowservice_v1_CountSchedulesResponse_AggregationGroup_1 in value.GroupValues)
-            {
-                await VisitAsync(payload_temporal_api_workflowservice_v1_CountSchedulesResponse_AggregationGroup_1, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitEach(state, env, value.GroupValues);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.CountSchedulesResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_CountSchedulesResponse_2 in value.Groups)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_CountSchedulesResponse_2, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_CountSchedulesResponse_2, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Deployment.V1.DeploymentInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var item_temporal_api_deployment_v1_DeploymentInfo_4 in value.Metadata.Values)
+            foreach (var pair_temporal_api_deployment_v1_DeploymentInfo_4 in value.Metadata)
             {
-                if (item_temporal_api_deployment_v1_DeploymentInfo_4 != null)
-                {
-                    await VisitAsync(item_temporal_api_deployment_v1_DeploymentInfo_4, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_temporal_api_deployment_v1_DeploymentInfo_4.Value, replacement => value.Metadata[pair_temporal_api_deployment_v1_DeploymentInfo_4.Key] = replacement);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.DescribeDeploymentResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.DeploymentInfo != null)
             {
-                await VisitAsync(value.DeploymentInfo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.DeploymentInfo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Deployment.V1.VersionMetadata value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var item_temporal_api_deployment_v1_VersionMetadata_1 in value.Entries.Values)
+            foreach (var pair_temporal_api_deployment_v1_VersionMetadata_1 in value.Entries)
             {
-                if (item_temporal_api_deployment_v1_VersionMetadata_1 != null)
-                {
-                    await VisitAsync(item_temporal_api_deployment_v1_VersionMetadata_1, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_temporal_api_deployment_v1_VersionMetadata_1.Value, replacement => value.Entries[pair_temporal_api_deployment_v1_VersionMetadata_1.Key] = replacement);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Compute.V1.ComputeProvider value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Details != null)
-            {
-                await VisitAsync(value.Details, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Details, replacement => value.Details = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Compute.V1.ComputeScaler value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Details != null)
-            {
-                await VisitAsync(value.Details, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Details, replacement => value.Details = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroup value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Provider != null)
             {
-                await VisitAsync(value.Provider, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Provider, env, state);
             }
             if (value.Scaler != null)
             {
-                await VisitAsync(value.Scaler, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Scaler, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Compute.V1.ComputeConfig value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var item_temporal_api_compute_v1_ComputeConfig_1 in value.ScalingGroups.Values)
+            foreach (var pair_temporal_api_compute_v1_ComputeConfig_1 in value.ScalingGroups)
             {
-                if (item_temporal_api_compute_v1_ComputeConfig_1 != null)
+                if (pair_temporal_api_compute_v1_ComputeConfig_1.Value != null)
                 {
-                    await VisitAsync(item_temporal_api_compute_v1_ComputeConfig_1, visitPayload, visitPayloads).ConfigureAwait(false);
+                    Walk(pair_temporal_api_compute_v1_ComputeConfig_1.Value, env, state);
                 }
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersionInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Metadata != null)
             {
-                await VisitAsync(value.Metadata, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Metadata, env, state);
             }
             if (value.ComputeConfig != null)
             {
-                await VisitAsync(value.ComputeConfig, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ComputeConfig, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.DescribeWorkerDeploymentVersionResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.WorkerDeploymentVersionInfo != null)
             {
-                await VisitAsync(value.WorkerDeploymentVersionInfo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.WorkerDeploymentVersionInfo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.GetDeploymentReachabilityResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.DeploymentInfo != null)
             {
-                await VisitAsync(value.DeploymentInfo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.DeploymentInfo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.GetCurrentDeploymentResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.CurrentDeploymentInfo != null)
             {
-                await VisitAsync(value.CurrentDeploymentInfo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.CurrentDeploymentInfo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Deployment.V1.UpdateDeploymentMetadata value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var item_temporal_api_deployment_v1_UpdateDeploymentMetadata_1 in value.UpsertEntries.Values)
+            foreach (var pair_temporal_api_deployment_v1_UpdateDeploymentMetadata_1 in value.UpsertEntries)
             {
-                if (item_temporal_api_deployment_v1_UpdateDeploymentMetadata_1 != null)
-                {
-                    await VisitAsync(item_temporal_api_deployment_v1_UpdateDeploymentMetadata_1, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_temporal_api_deployment_v1_UpdateDeploymentMetadata_1.Value, replacement => value.UpsertEntries[pair_temporal_api_deployment_v1_UpdateDeploymentMetadata_1.Key] = replacement);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.SetCurrentDeploymentRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.UpdateMetadata != null)
             {
-                await VisitAsync(value.UpdateMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UpdateMetadata, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.SetCurrentDeploymentResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.CurrentDeploymentInfo != null)
             {
-                await VisitAsync(value.CurrentDeploymentInfo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.CurrentDeploymentInfo, env, state);
             }
             if (value.PreviousDeploymentInfo != null)
             {
-                await VisitAsync(value.PreviousDeploymentInfo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.PreviousDeploymentInfo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentVersionRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.ComputeConfig != null)
             {
-                await VisitAsync(value.ComputeConfig, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ComputeConfig, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.ScalingGroup != null)
             {
-                await VisitAsync(value.ScalingGroup, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ScalingGroup, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionComputeConfigRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var item_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionComputeConfigRequest_6 in value.ComputeConfigScalingGroups.Values)
+            foreach (var pair_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionComputeConfigRequest_6 in value.ComputeConfigScalingGroups)
             {
-                if (item_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionComputeConfigRequest_6 != null)
+                if (pair_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionComputeConfigRequest_6.Value != null)
                 {
-                    await VisitAsync(item_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionComputeConfigRequest_6, visitPayload, visitPayloads).ConfigureAwait(false);
+                    Walk(pair_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionComputeConfigRequest_6.Value, env, state);
                 }
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.ValidateWorkerDeploymentVersionComputeConfigRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var item_temporal_api_workflowservice_v1_ValidateWorkerDeploymentVersionComputeConfigRequest_6 in value.ComputeConfigScalingGroups.Values)
+            foreach (var pair_temporal_api_workflowservice_v1_ValidateWorkerDeploymentVersionComputeConfigRequest_6 in value.ComputeConfigScalingGroups)
             {
-                if (item_temporal_api_workflowservice_v1_ValidateWorkerDeploymentVersionComputeConfigRequest_6 != null)
+                if (pair_temporal_api_workflowservice_v1_ValidateWorkerDeploymentVersionComputeConfigRequest_6.Value != null)
                 {
-                    await VisitAsync(item_temporal_api_workflowservice_v1_ValidateWorkerDeploymentVersionComputeConfigRequest_6, visitPayload, visitPayloads).ConfigureAwait(false);
+                    Walk(pair_temporal_api_workflowservice_v1_ValidateWorkerDeploymentVersionComputeConfigRequest_6.Value, env, state);
                 }
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionMetadataRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var item_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionMetadataRequest_3 in value.UpsertEntries.Values)
+            foreach (var pair_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionMetadataRequest_3 in value.UpsertEntries)
             {
-                if (item_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionMetadataRequest_3 != null)
-                {
-                    await VisitAsync(item_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionMetadataRequest_3, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionMetadataRequest_3.Value, replacement => value.UpsertEntries[pair_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionMetadataRequest_3.Key] = replacement);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionMetadataResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Metadata != null)
             {
-                await VisitAsync(value.Metadata, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Metadata, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.PollWorkflowExecutionUpdateResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Outcome != null)
             {
-                await VisitAsync(value.Outcome, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Outcome, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Batch.V1.BatchOperationTermination value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Details != null)
             {
-                await VisitAsync(value.Details.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Details.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Batch.V1.BatchOperationSignal value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Batch.V1.BatchOperationReset value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_batch_v1_BatchOperationReset_5 in value.PostResetOperations)
             {
-                await VisitAsync(item_temporal_api_batch_v1_BatchOperationReset_5, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_batch_v1_BatchOperationReset_5, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.StartBatchOperationRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.TerminationOperation != null)
             {
-                await VisitAsync(value.TerminationOperation, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.TerminationOperation, env, state);
             }
             if (value.SignalOperation != null)
             {
-                await VisitAsync(value.SignalOperation, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.SignalOperation, env, state);
             }
             if (value.ResetOperation != null)
             {
-                await VisitAsync(value.ResetOperation, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ResetOperation, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Nexus.V1.StartOperationRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Payload != null)
-            {
-                await VisitAsync(value.Payload, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Payload, replacement => value.Payload = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Nexus.V1.Request value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.StartOperation != null)
             {
-                await VisitAsync(value.StartOperation, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.StartOperation, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.PollNexusTaskQueueResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Request != null)
             {
-                await VisitAsync(value.Request, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Request, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Nexus.V1.StartOperationResponse.Types.Sync value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Payload != null)
-            {
-                await VisitAsync(value.Payload, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Payload, replacement => value.Payload = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Nexus.V1.StartOperationResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.SyncSuccess != null)
             {
-                await VisitAsync(value.SyncSuccess, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.SyncSuccess, env, state);
             }
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Nexus.V1.Response value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.StartOperation != null)
             {
-                await VisitAsync(value.StartOperation, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.StartOperation, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RespondNexusTaskCompletedRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Response != null)
             {
-                await VisitAsync(value.Response, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Response, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.RespondNexusTaskFailedRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.StartActivityExecutionRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             if (value.UserMetadata != null)
             {
-                await VisitAsync(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UserMetadata, env, state);
             }
             foreach (var item_temporal_api_workflowservice_v1_StartActivityExecutionRequest_19 in value.CompletionCallbacks)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_StartActivityExecutionRequest_19, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_StartActivityExecutionRequest_19, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.StartActivityExecutionResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.EagerActivityTask != null)
             {
-                await VisitAsync(value.EagerActivityTask, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.EagerActivityTask, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.StartNexusOperationExecutionRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Input != null)
-            {
-                await VisitAsync(value.Input, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Input, replacement => value.Input = replacement);
             if (value.UserMetadata != null)
             {
-                await VisitAsync(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UserMetadata, env, state);
             }
             foreach (var item_temporal_api_workflowservice_v1_StartNexusOperationExecutionRequest_18 in value.CompletionCallbacks)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_StartNexusOperationExecutionRequest_18, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_StartNexusOperationExecutionRequest_18, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Activity.V1.ActivityExecutionInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.HeartbeatDetails != null)
             {
-                await VisitAsync(value.HeartbeatDetails.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.HeartbeatDetails.Payloads_);
             }
             if (value.LastFailure != null)
             {
-                await VisitAsync(value.LastFailure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.LastFailure, env, state);
             }
             if (value.Header != null)
             {
-                await VisitAsync(value.Header, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Header, env, state);
             }
             if (value.UserMetadata != null)
             {
-                await VisitAsync(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UserMetadata, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Activity.V1.ActivityExecutionOutcome value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Result != null)
             {
-                await VisitAsync(value.Result.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Result.Payloads_);
             }
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Callback.V1.CallbackInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Callback != null)
             {
-                await VisitAsync(value.Callback, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Callback, env, state);
             }
             if (value.LastAttemptFailure != null)
             {
-                await VisitAsync(value.LastAttemptFailure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.LastAttemptFailure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Activity.V1.CallbackInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Info != null)
             {
-                await VisitAsync(value.Info, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Info, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.DescribeActivityExecutionResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Info != null)
             {
-                await VisitAsync(value.Info, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Info, env, state);
             }
             if (value.Input != null)
             {
-                await VisitAsync(value.Input.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Input.Payloads_);
             }
             if (value.Outcome != null)
             {
-                await VisitAsync(value.Outcome, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Outcome, env, state);
             }
             foreach (var item_temporal_api_workflowservice_v1_DescribeActivityExecutionResponse_6 in value.Callbacks)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_DescribeActivityExecutionResponse_6, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_DescribeActivityExecutionResponse_6, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Nexus.V1.NexusOperationExecutionCancellationInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.LastAttemptFailure != null)
             {
-                await VisitAsync(value.LastAttemptFailure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.LastAttemptFailure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.Nexus.V1.NexusOperationExecutionInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.LastAttemptFailure != null)
             {
-                await VisitAsync(value.LastAttemptFailure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.LastAttemptFailure, env, state);
             }
             if (value.CancellationInfo != null)
             {
-                await VisitAsync(value.CancellationInfo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.CancellationInfo, env, state);
             }
             if (value.UserMetadata != null)
             {
-                await VisitAsync(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UserMetadata, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.NexusOperation.V1.CallbackInfo value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Info != null)
             {
-                await VisitAsync(value.Info, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Info, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.DescribeNexusOperationExecutionResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Info != null)
             {
-                await VisitAsync(value.Info, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Info, env, state);
             }
-            if (value.Input != null)
-            {
-                await VisitAsync(value.Input, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
-            if (value.Result != null)
-            {
-                await VisitAsync(value.Result, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Input, replacement => value.Input = replacement);
+            VisitSingle(state, env, value.Result, replacement => value.Result = replacement);
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
             foreach (var item_temporal_api_workflowservice_v1_DescribeNexusOperationExecutionResponse_7 in value.CompletionCallbacks)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_DescribeNexusOperationExecutionResponse_7, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_DescribeNexusOperationExecutionResponse_7, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.PollActivityExecutionResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Outcome != null)
             {
-                await VisitAsync(value.Outcome, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Outcome, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.PollNexusOperationExecutionResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Result != null)
-            {
-                await VisitAsync(value.Result, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Result, replacement => value.Result = replacement);
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.CountActivityExecutionsResponse.Types.AggregationGroup value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var payload_temporal_api_workflowservice_v1_CountActivityExecutionsResponse_AggregationGroup_1 in value.GroupValues)
-            {
-                await VisitAsync(payload_temporal_api_workflowservice_v1_CountActivityExecutionsResponse_AggregationGroup_1, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitEach(state, env, value.GroupValues);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.CountActivityExecutionsResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_CountActivityExecutionsResponse_2 in value.Groups)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_CountActivityExecutionsResponse_2, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_CountActivityExecutionsResponse_2, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsResponse.Types.AggregationGroup value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var payload_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_AggregationGroup_1 in value.GroupValues)
-            {
-                await VisitAsync(payload_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_AggregationGroup_1, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitEach(state, env, value.GroupValues);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_2 in value.Groups)
             {
-                await VisitAsync(item_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_2, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_2, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowActivation.InitializeWorkflow value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            await VisitAsync(value.Arguments, visitPayload, visitPayloads).ConfigureAwait(false);
-            foreach (var item_coresdk_workflow_activation_InitializeWorkflow_5 in value.Headers.Values)
+            VisitBatch(state, env, value.Arguments);
+            foreach (var pair_coresdk_workflow_activation_InitializeWorkflow_5 in value.Headers)
             {
-                if (item_coresdk_workflow_activation_InitializeWorkflow_5 != null)
-                {
-                    await VisitAsync(item_coresdk_workflow_activation_InitializeWorkflow_5, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_coresdk_workflow_activation_InitializeWorkflow_5.Value, replacement => value.Headers[pair_coresdk_workflow_activation_InitializeWorkflow_5.Key] = replacement);
             }
             if (value.ContinuedFailure != null)
             {
-                await VisitAsync(value.ContinuedFailure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ContinuedFailure, env, state);
             }
             if (value.LastCompletionResult != null)
             {
-                await VisitAsync(value.LastCompletionResult.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.LastCompletionResult.Payloads_);
             }
             if (value.Memo != null)
             {
-                await VisitAsync(value.Memo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Memo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowActivation.QueryWorkflow value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            await VisitAsync(value.Arguments, visitPayload, visitPayloads).ConfigureAwait(false);
-            foreach (var item_coresdk_workflow_activation_QueryWorkflow_5 in value.Headers.Values)
+            VisitBatch(state, env, value.Arguments);
+            foreach (var pair_coresdk_workflow_activation_QueryWorkflow_5 in value.Headers)
             {
-                if (item_coresdk_workflow_activation_QueryWorkflow_5 != null)
-                {
-                    await VisitAsync(item_coresdk_workflow_activation_QueryWorkflow_5, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_coresdk_workflow_activation_QueryWorkflow_5.Value, replacement => value.Headers[pair_coresdk_workflow_activation_QueryWorkflow_5.Key] = replacement);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowActivation.SignalWorkflow value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            await VisitAsync(value.Input, visitPayload, visitPayloads).ConfigureAwait(false);
-            foreach (var item_coresdk_workflow_activation_SignalWorkflow_5 in value.Headers.Values)
+            VisitBatch(state, env, value.Input);
+            foreach (var pair_coresdk_workflow_activation_SignalWorkflow_5 in value.Headers)
             {
-                if (item_coresdk_workflow_activation_SignalWorkflow_5 != null)
-                {
-                    await VisitAsync(item_coresdk_workflow_activation_SignalWorkflow_5, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_coresdk_workflow_activation_SignalWorkflow_5.Value, replacement => value.Headers[pair_coresdk_workflow_activation_SignalWorkflow_5.Key] = replacement);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.ActivityResult.Success value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Result != null)
-            {
-                await VisitAsync(value.Result, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Result, replacement => value.Result = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.ActivityResult.Failure value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure_ != null)
             {
-                await VisitAsync(value.Failure_, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure_, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.ActivityResult.Cancellation value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.ActivityResult.ActivityResolution value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Completed != null)
             {
-                await VisitAsync(value.Completed, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Completed, env, state);
             }
             if (value.Failed != null)
             {
-                await VisitAsync(value.Failed, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failed, env, state);
             }
             if (value.Cancelled != null)
             {
-                await VisitAsync(value.Cancelled, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Cancelled, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowActivation.ResolveActivity value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Result != null)
             {
-                await VisitAsync(value.Result, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Result, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowActivation.ResolveChildWorkflowExecutionStartCancelled value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowActivation.ResolveChildWorkflowExecutionStart value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Cancelled != null)
             {
-                await VisitAsync(value.Cancelled, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Cancelled, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.ChildWorkflow.Success value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Result != null)
-            {
-                await VisitAsync(value.Result, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Result, replacement => value.Result = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.ChildWorkflow.Failure value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure_ != null)
             {
-                await VisitAsync(value.Failure_, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure_, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.ChildWorkflow.Cancellation value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.ChildWorkflow.ChildWorkflowResult value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Completed != null)
             {
-                await VisitAsync(value.Completed, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Completed, env, state);
             }
             if (value.Failed != null)
             {
-                await VisitAsync(value.Failed, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failed, env, state);
             }
             if (value.Cancelled != null)
             {
-                await VisitAsync(value.Cancelled, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Cancelled, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowActivation.ResolveChildWorkflowExecution value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Result != null)
             {
-                await VisitAsync(value.Result, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Result, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowActivation.ResolveSignalExternalWorkflow value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowActivation.ResolveRequestCancelExternalWorkflow value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowActivation.DoUpdate value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            await VisitAsync(value.Input, visitPayload, visitPayloads).ConfigureAwait(false);
-            foreach (var item_coresdk_workflow_activation_DoUpdate_5 in value.Headers.Values)
+            VisitBatch(state, env, value.Input);
+            foreach (var pair_coresdk_workflow_activation_DoUpdate_5 in value.Headers)
             {
-                if (item_coresdk_workflow_activation_DoUpdate_5 != null)
-                {
-                    await VisitAsync(item_coresdk_workflow_activation_DoUpdate_5, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_coresdk_workflow_activation_DoUpdate_5.Value, replacement => value.Headers[pair_coresdk_workflow_activation_DoUpdate_5.Key] = replacement);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowActivation.ResolveNexusOperationStart value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failed != null)
             {
-                await VisitAsync(value.Failed, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failed, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.Nexus.NexusOperationResult value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Completed != null)
-            {
-                await VisitAsync(value.Completed, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Completed, replacement => value.Completed = replacement);
             if (value.Failed != null)
             {
-                await VisitAsync(value.Failed, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failed, env, state);
             }
             if (value.Cancelled != null)
             {
-                await VisitAsync(value.Cancelled, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Cancelled, env, state);
             }
             if (value.TimedOut != null)
             {
-                await VisitAsync(value.TimedOut, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.TimedOut, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowActivation.ResolveNexusOperation value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Result != null)
             {
-                await VisitAsync(value.Result, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Result, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowActivation.WorkflowActivationJob value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.InitializeWorkflow != null)
             {
-                await VisitAsync(value.InitializeWorkflow, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.InitializeWorkflow, env, state);
             }
             if (value.QueryWorkflow != null)
             {
-                await VisitAsync(value.QueryWorkflow, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.QueryWorkflow, env, state);
             }
             if (value.SignalWorkflow != null)
             {
-                await VisitAsync(value.SignalWorkflow, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.SignalWorkflow, env, state);
             }
             if (value.ResolveActivity != null)
             {
-                await VisitAsync(value.ResolveActivity, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ResolveActivity, env, state);
             }
             if (value.ResolveChildWorkflowExecutionStart != null)
             {
-                await VisitAsync(value.ResolveChildWorkflowExecutionStart, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ResolveChildWorkflowExecutionStart, env, state);
             }
             if (value.ResolveChildWorkflowExecution != null)
             {
-                await VisitAsync(value.ResolveChildWorkflowExecution, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ResolveChildWorkflowExecution, env, state);
             }
             if (value.ResolveSignalExternalWorkflow != null)
             {
-                await VisitAsync(value.ResolveSignalExternalWorkflow, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ResolveSignalExternalWorkflow, env, state);
             }
             if (value.ResolveRequestCancelExternalWorkflow != null)
             {
-                await VisitAsync(value.ResolveRequestCancelExternalWorkflow, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ResolveRequestCancelExternalWorkflow, env, state);
             }
             if (value.DoUpdate != null)
             {
-                await VisitAsync(value.DoUpdate, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.DoUpdate, env, state);
             }
             if (value.ResolveNexusOperationStart != null)
             {
-                await VisitAsync(value.ResolveNexusOperationStart, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ResolveNexusOperationStart, env, state);
             }
             if (value.ResolveNexusOperation != null)
             {
-                await VisitAsync(value.ResolveNexusOperation, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ResolveNexusOperation, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowActivation.WorkflowActivation value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_coresdk_workflow_activation_WorkflowActivation_5 in value.Jobs)
             {
-                await VisitAsync(item_coresdk_workflow_activation_WorkflowActivation_5, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_coresdk_workflow_activation_WorkflowActivation_5, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCommands.ScheduleActivity value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var item_coresdk_workflow_commands_ScheduleActivity_6 in value.Headers.Values)
+            foreach (var pair_coresdk_workflow_commands_ScheduleActivity_6 in value.Headers)
             {
-                if (item_coresdk_workflow_commands_ScheduleActivity_6 != null)
-                {
-                    await VisitAsync(item_coresdk_workflow_commands_ScheduleActivity_6, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_coresdk_workflow_commands_ScheduleActivity_6.Value, replacement => value.Headers[pair_coresdk_workflow_commands_ScheduleActivity_6.Key] = replacement);
             }
-            await VisitAsync(value.Arguments, visitPayload, visitPayloads).ConfigureAwait(false);
+            VisitBatch(state, env, value.Arguments);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCommands.QuerySuccess value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Response != null)
-            {
-                await VisitAsync(value.Response, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Response, replacement => value.Response = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCommands.QueryResult value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Succeeded != null)
             {
-                await VisitAsync(value.Succeeded, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Succeeded, env, state);
             }
             if (value.Failed != null)
             {
-                await VisitAsync(value.Failed, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failed, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCommands.CompleteWorkflowExecution value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Result != null)
-            {
-                await VisitAsync(value.Result, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Result, replacement => value.Result = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCommands.FailWorkflowExecution value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCommands.ContinueAsNewWorkflowExecution value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            await VisitAsync(value.Arguments, visitPayload, visitPayloads).ConfigureAwait(false);
-            foreach (var item_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_6 in value.Memo.Values)
+            VisitBatch(state, env, value.Arguments);
+            foreach (var pair_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_6 in value.Memo)
             {
-                if (item_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_6 != null)
-                {
-                    await VisitAsync(item_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_6, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_6.Value, replacement => value.Memo[pair_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_6.Key] = replacement);
             }
-            foreach (var item_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_7 in value.Headers.Values)
+            foreach (var pair_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_7 in value.Headers)
             {
-                if (item_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_7 != null)
-                {
-                    await VisitAsync(item_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_7, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_7.Value, replacement => value.Headers[pair_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_7.Key] = replacement);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCommands.CancelWorkflowExecution value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Details != null)
             {
-                await VisitAsync(value.Details.Payloads_, visitPayload, visitPayloads).ConfigureAwait(false);
+                VisitBatch(state, env, value.Details.Payloads_);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCommands.StartChildWorkflowExecution value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            await VisitAsync(value.Input, visitPayload, visitPayloads).ConfigureAwait(false);
-            foreach (var item_coresdk_workflow_commands_StartChildWorkflowExecution_15 in value.Headers.Values)
+            VisitBatch(state, env, value.Input);
+            foreach (var pair_coresdk_workflow_commands_StartChildWorkflowExecution_15 in value.Headers)
             {
-                if (item_coresdk_workflow_commands_StartChildWorkflowExecution_15 != null)
-                {
-                    await VisitAsync(item_coresdk_workflow_commands_StartChildWorkflowExecution_15, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_coresdk_workflow_commands_StartChildWorkflowExecution_15.Value, replacement => value.Headers[pair_coresdk_workflow_commands_StartChildWorkflowExecution_15.Key] = replacement);
             }
-            foreach (var item_coresdk_workflow_commands_StartChildWorkflowExecution_16 in value.Memo.Values)
+            foreach (var pair_coresdk_workflow_commands_StartChildWorkflowExecution_16 in value.Memo)
             {
-                if (item_coresdk_workflow_commands_StartChildWorkflowExecution_16 != null)
-                {
-                    await VisitAsync(item_coresdk_workflow_commands_StartChildWorkflowExecution_16, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_coresdk_workflow_commands_StartChildWorkflowExecution_16.Value, replacement => value.Memo[pair_coresdk_workflow_commands_StartChildWorkflowExecution_16.Key] = replacement);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCommands.SignalExternalWorkflowExecution value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            await VisitAsync(value.Args, visitPayload, visitPayloads).ConfigureAwait(false);
-            foreach (var item_coresdk_workflow_commands_SignalExternalWorkflowExecution_6 in value.Headers.Values)
+            VisitBatch(state, env, value.Args);
+            foreach (var pair_coresdk_workflow_commands_SignalExternalWorkflowExecution_6 in value.Headers)
             {
-                if (item_coresdk_workflow_commands_SignalExternalWorkflowExecution_6 != null)
-                {
-                    await VisitAsync(item_coresdk_workflow_commands_SignalExternalWorkflowExecution_6, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_coresdk_workflow_commands_SignalExternalWorkflowExecution_6.Value, replacement => value.Headers[pair_coresdk_workflow_commands_SignalExternalWorkflowExecution_6.Key] = replacement);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCommands.ScheduleLocalActivity value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var item_coresdk_workflow_commands_ScheduleLocalActivity_6 in value.Headers.Values)
+            foreach (var pair_coresdk_workflow_commands_ScheduleLocalActivity_6 in value.Headers)
             {
-                if (item_coresdk_workflow_commands_ScheduleLocalActivity_6 != null)
-                {
-                    await VisitAsync(item_coresdk_workflow_commands_ScheduleLocalActivity_6, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_coresdk_workflow_commands_ScheduleLocalActivity_6.Value, replacement => value.Headers[pair_coresdk_workflow_commands_ScheduleLocalActivity_6.Key] = replacement);
             }
-            await VisitAsync(value.Arguments, visitPayload, visitPayloads).ConfigureAwait(false);
+            VisitBatch(state, env, value.Arguments);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCommands.ModifyWorkflowProperties value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.UpsertedMemo != null)
             {
-                await VisitAsync(value.UpsertedMemo, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UpsertedMemo, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCommands.UpdateResponse value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Rejected != null)
             {
-                await VisitAsync(value.Rejected, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Rejected, env, state);
             }
-            if (value.Completed != null)
-            {
-                await VisitAsync(value.Completed, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Completed, replacement => value.Completed = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCommands.ScheduleNexusOperation value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Input != null)
-            {
-                await VisitAsync(value.Input, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Input, replacement => value.Input = replacement);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCommands.WorkflowCommand value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.UserMetadata != null)
             {
-                await VisitAsync(value.UserMetadata, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UserMetadata, env, state);
             }
             foreach (var item_coresdk_workflow_commands_WorkflowCommand_101 in value.EventGroupMarkers)
             {
-                await VisitAsync(item_coresdk_workflow_commands_WorkflowCommand_101, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_coresdk_workflow_commands_WorkflowCommand_101, env, state);
             }
             if (value.ScheduleActivity != null)
             {
-                await VisitAsync(value.ScheduleActivity, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ScheduleActivity, env, state);
             }
             if (value.RespondToQuery != null)
             {
-                await VisitAsync(value.RespondToQuery, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.RespondToQuery, env, state);
             }
             if (value.CompleteWorkflowExecution != null)
             {
-                await VisitAsync(value.CompleteWorkflowExecution, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.CompleteWorkflowExecution, env, state);
             }
             if (value.FailWorkflowExecution != null)
             {
-                await VisitAsync(value.FailWorkflowExecution, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.FailWorkflowExecution, env, state);
             }
             if (value.ContinueAsNewWorkflowExecution != null)
             {
-                await VisitAsync(value.ContinueAsNewWorkflowExecution, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ContinueAsNewWorkflowExecution, env, state);
             }
             if (value.CancelWorkflowExecution != null)
             {
-                await VisitAsync(value.CancelWorkflowExecution, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.CancelWorkflowExecution, env, state);
             }
             if (value.StartChildWorkflowExecution != null)
             {
-                await VisitAsync(value.StartChildWorkflowExecution, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.StartChildWorkflowExecution, env, state);
             }
             if (value.SignalExternalWorkflowExecution != null)
             {
-                await VisitAsync(value.SignalExternalWorkflowExecution, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.SignalExternalWorkflowExecution, env, state);
             }
             if (value.ScheduleLocalActivity != null)
             {
-                await VisitAsync(value.ScheduleLocalActivity, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ScheduleLocalActivity, env, state);
             }
             if (value.ModifyWorkflowProperties != null)
             {
-                await VisitAsync(value.ModifyWorkflowProperties, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ModifyWorkflowProperties, env, state);
             }
             if (value.UpdateResponse != null)
             {
-                await VisitAsync(value.UpdateResponse, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.UpdateResponse, env, state);
             }
             if (value.ScheduleNexusOperation != null)
             {
-                await VisitAsync(value.ScheduleNexusOperation, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.ScheduleNexusOperation, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCompletion.Success value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             foreach (var item_coresdk_workflow_completion_Success_1 in value.Commands)
             {
-                await VisitAsync(item_coresdk_workflow_completion_Success_1, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(item_coresdk_workflow_completion_Success_1, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCompletion.Failure value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Failure_ != null)
             {
-                await VisitAsync(value.Failure_, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure_, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.WorkflowCompletion.WorkflowActivationCompletion value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Successful != null)
             {
-                await VisitAsync(value.Successful, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Successful, env, state);
             }
             if (value.Failed != null)
             {
-                await VisitAsync(value.Failed, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failed, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.ActivityTask.Start value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            foreach (var item_coresdk_activity_task_Start_6 in value.HeaderFields.Values)
+            foreach (var pair_coresdk_activity_task_Start_6 in value.HeaderFields)
             {
-                if (item_coresdk_activity_task_Start_6 != null)
-                {
-                    await VisitAsync(item_coresdk_activity_task_Start_6, visitPayload, visitPayloads).ConfigureAwait(false);
-                }
+                VisitSingle(state, env, pair_coresdk_activity_task_Start_6.Value, replacement => value.HeaderFields[pair_coresdk_activity_task_Start_6.Key] = replacement);
             }
-            await VisitAsync(value.Input, visitPayload, visitPayloads).ConfigureAwait(false);
-            await VisitAsync(value.HeartbeatDetails, visitPayload, visitPayloads).ConfigureAwait(false);
+            VisitBatch(state, env, value.Input);
+            VisitBatch(state, env, value.HeartbeatDetails);
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.ActivityTask.ActivityTask value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Start != null)
             {
-                await VisitAsync(value.Start, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Start, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.ActivityResult.ActivityExecutionResult value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Completed != null)
             {
-                await VisitAsync(value.Completed, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Completed, env, state);
             }
             if (value.Failed != null)
             {
-                await VisitAsync(value.Failed, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failed, env, state);
             }
             if (value.Cancelled != null)
             {
-                await VisitAsync(value.Cancelled, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Cancelled, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.Nexus.NexusTask value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Task != null)
             {
-                await VisitAsync(value.Task, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Task, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Bridge.Api.Nexus.NexusTaskCompletion value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
             if (value.Completed != null)
             {
-                await VisitAsync(value.Completed, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Completed, env, state);
             }
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
         }
 
-        internal static async Task VisitAsync(
+        internal static void Walk(
             global::Temporalio.Api.NotificationService.V1.OnCompleteRequest value,
-            PayloadVisitor visitPayload,
-            PayloadsVisitor visitPayloads)
+            WalkEnv env,
+            VisitState state)
         {
-            if (value.Success != null)
-            {
-                await VisitAsync(value.Success, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.Success, replacement => value.Success = replacement);
             if (value.Failure != null)
             {
-                await VisitAsync(value.Failure, visitPayload, visitPayloads).ConfigureAwait(false);
+                Walk(value.Failure, env, state);
             }
-            if (value.SourceContext != null)
-            {
-                await VisitAsync(value.SourceContext, visitPayload, visitPayloads).ConfigureAwait(false);
-            }
+            VisitSingle(state, env, value.SourceContext, replacement => value.SourceContext = replacement);
         }
 
     }

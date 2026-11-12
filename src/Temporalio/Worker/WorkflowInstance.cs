@@ -44,6 +44,8 @@ namespace Temporalio.Worker
         private readonly IPayloadConverter payloadConverterWorkflowContext;
         private readonly IFailureConverter failureConverterNoContext;
         private readonly IFailureConverter failureConverterWorkflowContext;
+        private readonly IPayloadConverter payloadConverterResultContext;
+        private readonly IFailureConverter failureConverterResultContext;
         private readonly Lazy<MetricMeter> metricMeter;
         private readonly Lazy<WorkflowInboundInterceptor> inbound;
         private readonly Lazy<WorkflowOutboundInterceptor> outbound;
@@ -63,6 +65,9 @@ namespace Temporalio.Worker
         private readonly Dictionary<uint, PendingExternalSignal> externalSignalsPending = new();
         private readonly Dictionary<uint, PendingExternalCancel> externalCancelsPending = new();
         private readonly Dictionary<uint, PendingNexusOperationInfo> nexusOperationsPending = new();
+        // Keyed by protocol instance ID because updates have no sequence number
+        private readonly Dictionary<string, ISerializationContext.Nexus> updateNexusContexts = new();
+        private readonly List<string> finishedNexusUpdates = new();
         // Buffered signals have to be a list instead of a dictionary because when a dynamic signal
         // handler is added, we need to traverse in insertion order
         private readonly List<SignalWorkflow> bufferedSignals = new();
@@ -119,6 +124,16 @@ namespace Temporalio.Worker
             payloadConverterWorkflowContext = details.PayloadConverterWorkflowContext;
             failureConverterNoContext = details.FailureConverterNoContext;
             failureConverterWorkflowContext = details.FailureConverterWorkflowContext;
+            NexusSerializationContext = ISerializationContext.Nexus.FromProto(
+                details.Init.PropagatedNexusSerializationContext);
+            // A workflow started by a Nexus operation handler returns its result and closing
+            // failure to the Nexus caller, which decodes them with the handler's Nexus context
+            payloadConverterResultContext = NexusSerializationContext is { } nexusContext &&
+                payloadConverterNoContext is IWithSerializationContext<IPayloadConverter> payloadWithContext ?
+                payloadWithContext.WithSerializationContext(nexusContext) : payloadConverterWorkflowContext;
+            failureConverterResultContext = NexusSerializationContext is { } nexusContext2 &&
+                failureConverterNoContext is IWithSerializationContext<IFailureConverter> failureWithContext ?
+                failureWithContext.WithSerializationContext(nexusContext2) : failureConverterWorkflowContext;
             var rootInbound = new InboundImpl(this);
             // Lazy so it can have the context when instantiating
             inbound = new(
@@ -206,9 +221,11 @@ namespace Temporalio.Worker
                     RunId: start.RootWorkflow.RunId,
                     WorkflowId: start.RootWorkflow.WorkflowId);
             }
+            // A retry run receives the previous run's closing failure, which was encoded with the
+            // same context as this run's
             var lastFailure = start.ContinuedFailure == null ?
-                null : failureConverterWorkflowContext.ToException(
-                    start.ContinuedFailure, payloadConverterWorkflowContext);
+                null : failureConverterResultContext.ToException(
+                    start.ContinuedFailure, payloadConverterResultContext);
             var lastResult = start.LastCompletionResult?.Payloads_.Select(v => new RawValue(v)).ToArray();
             static string? NonEmptyOrNull(string s) => string.IsNullOrEmpty(s) ? null : s;
             Info = new(
@@ -363,6 +380,9 @@ namespace Temporalio.Worker
 
         /// <inheritdoc />
         public WorkflowInfo Info { get; private init; }
+
+        /// <inheritdoc />
+        public ISerializationContext.Nexus? NexusSerializationContext { get; private init; }
 
         /// <inheritdoc />
         ///
@@ -721,6 +741,11 @@ namespace Temporalio.Worker
         {
             using (logger.BeginScope(Info.LoggerScope))
             {
+                foreach (var protocolInstanceId in finishedNexusUpdates)
+                {
+                    updateNexusContexts.Remove(protocolInstanceId);
+                }
+                finishedNexusUpdates.Clear();
                 completion = new() { RunId = act.RunId, Successful = new() };
                 currentActivationException = null;
                 ContinueAsNewSuggested = act.ContinueAsNewSuggested;
@@ -873,6 +898,17 @@ namespace Temporalio.Worker
                     inProgressHandlers.WarnIfAnyLeftOver(Info.WorkflowId, logger);
                 }
 
+                // The codec encodes the response that finishes an update after this activation
+                // returns, so the update's context is only released when the next one begins
+                if (updateNexusContexts.Count > 0 && completion.Successful is { } successful)
+                {
+                    finishedNexusUpdates.AddRange(successful.Commands
+                        .Select(c => c.UpdateResponse)
+                        .Where(r => r != null && r.Accepted == null &&
+                            updateNexusContexts.ContainsKey(r.ProtocolInstanceId))
+                        .Select(r => r.ProtocolInstanceId));
+                }
+
                 // Unset the completion
                 var toReturn = completion;
                 completion = null;
@@ -923,6 +959,14 @@ namespace Temporalio.Worker
         {
             nexusOperationsPending.TryGetValue(seq, out var pending);
             return pending?.SerializationContext;
+        }
+
+        /// <inheritdoc/>
+        public ISerializationContext.Nexus? GetUpdateNexusSerializationContext(
+            string protocolInstanceId)
+        {
+            updateNexusContexts.TryGetValue(protocolInstanceId, out var context);
+            return context;
         }
 
         /// <inheritdoc/>
@@ -1189,8 +1233,8 @@ namespace Temporalio.Worker
                 {
                     // We let this failure conversion throw if it cannot convert the failure
                     logger.LogDebug(e, "Workflow raised failure with run ID {RunId}", Info.RunId);
-                    var failure = failureConverterWorkflowContext.ToFailure(
-                        e, payloadConverterWorkflowContext);
+                    var failure = failureConverterResultContext.ToFailure(
+                        e, payloadConverterResultContext);
                     AddCommand(new() { FailWorkflowExecution = new() { Failure = failure } }, eventGroupMarkers: null);
                 }
             }
@@ -1291,6 +1335,12 @@ namespace Temporalio.Worker
 
         private void ApplyDoUpdate(DoUpdate update)
         {
+            if (ISerializationContext.Nexus.FromProto(
+                update.PropagatedNexusSerializationContext) is { } nexusContext)
+            {
+                updateNexusContexts[update.ProtocolInstanceId] = nexusContext;
+            }
+
             // Queue it up so it can run in workflow environment
             _ = QueueNewTaskAsync(() => RunOrFailActivationAsync(() =>
             {
@@ -1312,6 +1362,18 @@ namespace Temporalio.Worker
 
         private Task ApplyDoUpdateAsync(DoUpdate update)
         {
+            // An update sent by a Nexus operation handler returns its result and failure to the
+            // Nexus caller, which decodes them with the handler's Nexus context. Its arguments
+            // keep the workflow context.
+            var nexusContext = ISerializationContext.Nexus.FromProto(
+                update.PropagatedNexusSerializationContext);
+            var payloadConverterUpdateResult = nexusContext != null &&
+                payloadConverterNoContext is IWithSerializationContext<IPayloadConverter> payloadWithContext ?
+                payloadWithContext.WithSerializationContext(nexusContext) : payloadConverterWorkflowContext;
+            var failureConverterUpdateResult = nexusContext != null &&
+                failureConverterNoContext is IWithSerializationContext<IFailureConverter> failureWithContext ?
+                failureWithContext.WithSerializationContext(nexusContext) : failureConverterWorkflowContext;
+
             // Find update definition or reject
             var updates = mutableUpdates.IsValueCreated ? mutableUpdates.Value : Definition.Updates;
             if (!updates.TryGetValue(update.Name, out var updateDefn))
@@ -1333,8 +1395,8 @@ namespace Temporalio.Worker
                             UpdateResponse = new()
                             {
                                 ProtocolInstanceId = update.ProtocolInstanceId,
-                                Rejected = failureConverterWorkflowContext.ToFailure(
-                                    failure, payloadConverterWorkflowContext),
+                                Rejected = failureConverterUpdateResult.ToFailure(
+                                    failure, payloadConverterUpdateResult),
                             },
                         },
                         eventGroupMarkers: null);
@@ -1418,8 +1480,8 @@ namespace Temporalio.Worker
                         UpdateResponse = new()
                         {
                             ProtocolInstanceId = update.ProtocolInstanceId,
-                            Rejected = failureConverterWorkflowContext.ToFailure(
-                                e, payloadConverterWorkflowContext),
+                            Rejected = failureConverterUpdateResult.ToFailure(
+                                e, payloadConverterUpdateResult),
                         },
                     },
                     eventGroupMarkers: null);
@@ -1476,8 +1538,8 @@ namespace Temporalio.Worker
                                         UpdateResponse = new()
                                         {
                                             ProtocolInstanceId = update.ProtocolInstanceId,
-                                            Rejected = failureConverterWorkflowContext.ToFailure(
-                                                exc, payloadConverterWorkflowContext),
+                                            Rejected = failureConverterUpdateResult.ToFailure(
+                                                exc, payloadConverterUpdateResult),
                                         },
                                     },
                                     eventGroupMarkers: null);
@@ -1502,7 +1564,7 @@ namespace Temporalio.Worker
                                             UpdateResponse = new()
                                             {
                                                 ProtocolInstanceId = update.ProtocolInstanceId,
-                                                Completed = payloadConverterWorkflowContext.ToPayload(result),
+                                                Completed = payloadConverterUpdateResult.ToPayload(result),
                                             },
                                         },
                                         eventGroupMarkers: null);
@@ -1518,8 +1580,8 @@ namespace Temporalio.Worker
                                             UpdateResponse = new()
                                             {
                                                 ProtocolInstanceId = update.ProtocolInstanceId,
-                                                Rejected = failureConverterWorkflowContext.ToFailure(
-                                                    e, payloadConverterWorkflowContext),
+                                                Rejected = failureConverterUpdateResult.ToFailure(
+                                                    e, payloadConverterUpdateResult),
                                             },
                                         },
                                         eventGroupMarkers: null);
@@ -1542,8 +1604,8 @@ namespace Temporalio.Worker
                         UpdateResponse = new()
                         {
                             ProtocolInstanceId = update.ProtocolInstanceId,
-                            Rejected = failureConverterWorkflowContext.ToFailure(
-                                e, payloadConverterWorkflowContext),
+                            Rejected = failureConverterUpdateResult.ToFailure(
+                                e, payloadConverterUpdateResult),
                         },
                     },
                     eventGroupMarkers: null);
@@ -1838,7 +1900,7 @@ namespace Temporalio.Worker
                 // We no longer need start args after this point, so we are unsetting them
                 startArgs = null;
                 var resultObj = await inbound.Value.ExecuteWorkflowAsync(input).ConfigureAwait(true);
-                var result = payloadConverterWorkflowContext.ToPayload(resultObj);
+                var result = payloadConverterResultContext.ToPayload(resultObj);
                 AddCommand(new() { CompleteWorkflowExecution = new() { Result = result } }, eventGroupMarkers: null);
             }));
         }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Temporalio.Api.History.V1;
+using Temporalio.Converters;
 
 namespace Temporalio.Client.Interceptors
 {
@@ -10,5 +11,12 @@ namespace Temporalio.Client.Interceptors
     /// <param name="NextPageToken">Token for getting the next page if any.</param>
     public record WorkflowHistoryEventPage(
         IReadOnlyCollection<HistoryEvent> Events,
-        byte[]? NextPageToken);
+        byte[]? NextPageToken)
+    {
+        /// <summary>
+        /// Gets the serialization context of the Nexus operation handler that started the
+        /// workflow, if the server returned one.
+        /// </summary>
+        internal ISerializationContext.Nexus? NexusSerializationContext { get; init; }
+    }
 }

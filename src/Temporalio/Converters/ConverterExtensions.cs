@@ -291,7 +291,7 @@ namespace Temporalio.Converters
             this DataConverter converter, Failure failure, ExternalStorageContext storage)
         {
             await storage.Runner.RetrieveAsync(
-                PayloadVisitors.VisitAsync, failure, metrics: null, CancellationToken.None)
+                PayloadVisitors.Walk, failure, metrics: null, CancellationToken.None)
                 .ConfigureAwait(false);
 
             // Decode then convert
@@ -322,7 +322,7 @@ namespace Temporalio.Converters
             {
                 await storage.Runner
                     .StoreAsync(
-                        PayloadVisitors.VisitAsync,
+                        PayloadVisitors.Walk,
                         failure,
                         storage.Target,
                         metrics: null,

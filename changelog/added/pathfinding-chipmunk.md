@@ -1,1 +1,0 @@
-External storage now offloads each workflow task completion command's payloads under the execution that reads them back, such as a child workflow's input for the child and its result for the parent, instead of giving the whole completion no target.

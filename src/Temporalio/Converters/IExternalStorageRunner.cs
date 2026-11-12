@@ -16,9 +16,9 @@ namespace Temporalio.Converters
         /// Store the payloads in a message by visiting its payloads.
         /// </summary>
         /// <typeparam name="T">The message type being visited.</typeparam>
-        /// <param name="visit">
-        /// The generated <c>PayloadVisitors.VisitAsync</c> overload for <typeparamref name="T"/>,
-        /// passed as a method group.
+        /// <param name="walk">
+        /// The generated <c>PayloadVisitors.Walk</c> overload for <typeparamref name="T"/>, passed
+        /// as a method group.
         /// </param>
         /// <param name="message">The message to visit.</param>
         /// <param name="target">
@@ -30,7 +30,7 @@ namespace Temporalio.Converters
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>A task that completes when the message has been visited.</returns>
         Task StoreAsync<T>(
-            Func<T, PayloadVisitors.PayloadVisitor, PayloadVisitors.PayloadsVisitor, Task> visit,
+            Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
             T message,
             IStorageDriverTargetInfo? target,
             StorageOperationMetricsBuilder? metrics,
@@ -58,9 +58,9 @@ namespace Temporalio.Converters
         /// Retrieve the references in a message by visiting its payloads.
         /// </summary>
         /// <typeparam name="T">The message type being visited.</typeparam>
-        /// <param name="visit">
-        /// The generated <c>PayloadVisitors.VisitAsync</c> overload for <typeparamref name="T"/>,
-        /// passed as a method group.
+        /// <param name="walk">
+        /// The generated <c>PayloadVisitors.Walk</c> overload for <typeparamref name="T"/>, passed
+        /// as a method group.
         /// </param>
         /// <param name="message">The message to visit.</param>
         /// <param name="metrics">
@@ -69,7 +69,7 @@ namespace Temporalio.Converters
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>A task that completes when the message has been visited.</returns>
         Task RetrieveAsync<T>(
-            Func<T, PayloadVisitors.PayloadVisitor, PayloadVisitors.PayloadsVisitor, Task> visit,
+            Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
             T message,
             StorageOperationMetricsBuilder? metrics,
             CancellationToken cancellationToken);

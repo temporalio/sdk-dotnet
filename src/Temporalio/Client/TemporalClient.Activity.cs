@@ -137,6 +137,8 @@ namespace Temporalio.Client
                             ConfigureAwait(false),
                         Priority = input.Options.Priority?.ToProto(),
                         OnConflictOptions = input.Options.OnConflictOptions,
+                        PropagatedNexusSerializationContext =
+                            NexusOperationExecutionContext.CurrentPropagatedSerializationContext,
                     };
                     if (input.Options.CompletionCallbacks is { } completionCallbacks)
                     {

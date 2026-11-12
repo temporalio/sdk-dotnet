@@ -36,11 +36,12 @@ public class PayloadVisitorsTests : TestBase
         var checkedPaths = 0;
         var searchAttributePaths = 0;
         // One payload is populated at a time and visited immediately: sibling fields of the same
-        // protobuf oneof clear each other, so only the payload just set is reachable.
-        await ForEachPayloadAsync(root, async (path, getPayload, underSearchAttributes, repeated) =>
+        // protobuf oneof clear each other, so only the payload just set is reachable. A visited
+        // payload is detected by the marker the transform writes back onto it.
+        await ForEachPayloadAsync(root, async (path, getPayload, underSearchAttributes, _) =>
         {
-            var (visited, batched) = await VisitAsync(root);
-            var wasVisited = visited.Any(p => ReferenceEquals(p, getPayload()));
+            await VisitAndMarkAsync(root);
+            var wasVisited = WasVisited(getPayload());
             if (underSearchAttributes)
             {
                 searchAttributePaths++;
@@ -51,13 +52,6 @@ public class PayloadVisitorsTests : TestBase
             {
                 checkedPaths++;
                 Assert.True(wasVisited, $"Payload at {path} was not visited");
-                if (repeated)
-                {
-                    // Codecs that pack or split payloads only work when handed the whole field.
-                    Assert.True(
-                        batched.Any(p => ReferenceEquals(p, getPayload())),
-                        $"Repeated payload at {path} was not visited as a batch");
-                }
             }
         });
 
@@ -92,18 +86,26 @@ public class PayloadVisitorsTests : TestBase
         var marker = new RecordMarkerCommandAttributes();
         marker.Details["some-key"] = new Payloads { Payloads_ = { first, second } };
         var batches = new List<IReadOnlyCollection<Payload>>();
+        var singleCount = 0;
 
         await PayloadVisitors.VisitAsync(
             marker,
-            _ => throw new InvalidOperationException("Payload visited outside its batch"),
-            payloads =>
-            {
-                batches.Add(payloads.ToList());
-                return Task.FromResult(payloads);
-            });
+            PayloadVisitors.Walk,
+            new PayloadVisitors.VisitOptions(
+                (payload, _) =>
+                {
+                    singleCount++;
+                    return Task.FromResult(payload);
+                },
+                (payloads, _) =>
+                {
+                    batches.Add(payloads.ToList());
+                    return Task.FromResult(payloads);
+                }));
 
         var batch = Assert.Single(batches);
         Assert.Equal(new[] { first, second }, batch);
+        Assert.Equal(0, singleCount);
     }
 
     [Fact]
@@ -115,46 +117,164 @@ public class PayloadVisitorsTests : TestBase
         {
             GroupValues = { first, second },
         };
-        var visited = new List<Payload>();
+        var singleCount = 0;
+        var batchCount = 0;
 
         await PayloadVisitors.VisitAsync(
             group,
-            payload =>
-            {
-                visited.Add(payload);
-                return Task.CompletedTask;
-            },
-            _ => throw new InvalidOperationException("Independent values visited as a batch"));
+            PayloadVisitors.Walk,
+            new PayloadVisitors.VisitOptions(
+                (payload, _) =>
+                {
+                    singleCount++;
+                    return Task.FromResult(payload);
+                },
+                (payloads, _) =>
+                {
+                    batchCount++;
+                    return Task.FromResult(payloads);
+                }));
 
-        Assert.Equal(new[] { first, second }, visited);
+        // Independent values are visited one at a time, never handed over as a batch.
+        Assert.Equal(2, singleCount);
+        Assert.Equal(0, batchCount);
     }
 
-    private static async Task<(List<Payload> Visited, List<Payload> Batched)> VisitAsync(
-        IMessage root)
+    [Theory]
+    [InlineData(1)]
+    [InlineData(3)]
+    public async Task VisitAsync_MaxConcurrency_CapsInFlightTransforms(int maxConcurrency)
     {
-        var visited = new List<Payload>();
-        var batched = new List<Payload>();
-        PayloadVisitors.PayloadVisitor visitPayload = payload =>
+        // Independent repeated payloads each become their own single-payload transform, so the walk
+        // has several it may overlap. The transforms park on a gate to make the peak observable.
+        var group = new CountWorkflowExecutionsResponse.Types.AggregationGroup();
+        for (var i = 0; i < 10; i++)
         {
-            visited.Add(payload);
-            return Task.CompletedTask;
-        };
-        PayloadVisitors.PayloadsVisitor visitPayloads = payloads =>
+            group.GroupValues.Add(new Payload());
+        }
+
+        var running = 0;
+        var peak = 0;
+        var release = new TaskCompletionSource<bool>();
+
+        var visit = PayloadVisitors.VisitAsync(
+            group,
+            PayloadVisitors.Walk,
+            new PayloadVisitors.VisitOptions(
+                async (payload, _) =>
+                {
+                    InterlockedMax(ref peak, Interlocked.Increment(ref running));
+                    await release.Task;
+                    Interlocked.Decrement(ref running);
+                    return payload;
+                },
+                (payloads, _) => Task.FromResult(payloads))
+            {
+                MaxConcurrency = maxConcurrency,
+            });
+
+        // Let the admitted transforms pile up against the gate, then release them.
+        await Task.Delay(50);
+        Assert.Equal(maxConcurrency, Volatile.Read(ref running));
+        release.SetResult(true);
+        await visit;
+
+        Assert.Equal(maxConcurrency, peak);
+    }
+
+    [Fact]
+    public async Task VisitAsync_SiblingFailure_CancelsInFlightSiblings()
+    {
+        // Two independent payloads visited concurrently: one parks on its cancellation token, the
+        // other throws once the first is in flight. The thrower's failure must cancel the token the
+        // parked sibling is waiting on, rather than leaving it running.
+        var waiter = new Payload { Metadata = { ["role"] = ByteString.CopyFromUtf8("wait") } };
+        var thrower = new Payload { Metadata = { ["role"] = ByteString.CopyFromUtf8("throw") } };
+        var group = new CountWorkflowExecutionsResponse.Types.AggregationGroup
         {
-            visited.AddRange(payloads);
-            batched.AddRange(payloads);
-            return Task.FromResult(payloads);
+            GroupValues = { waiter, thrower },
         };
+        var waiterInFlight = new TaskCompletionSource<bool>();
+        var waiterCancelled = false;
+
+        var visit = PayloadVisitors.VisitAsync(
+            group,
+            PayloadVisitors.Walk,
+            new PayloadVisitors.VisitOptions(
+                async (payload, cancellationToken) =>
+                {
+                    if (payload.Metadata["role"].ToStringUtf8() == "wait")
+                    {
+                        waiterInFlight.SetResult(true);
+                        try
+                        {
+                            await Task.Delay(Timeout.Infinite, cancellationToken);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            waiterCancelled = true;
+                            throw;
+                        }
+                    }
+                    else
+                    {
+                        await waiterInFlight.Task;
+                        throw new InvalidOperationException("boom");
+                    }
+
+                    return payload;
+                },
+                (payloads, _) => Task.FromResult(payloads))
+            {
+                MaxConcurrency = 2,
+            });
+
+        // The real failure surfaces (not the sibling's cancellation), and the sibling was cancelled.
+        var exc = await Assert.ThrowsAsync<InvalidOperationException>(() => visit);
+        Assert.Equal("boom", exc.Message);
+        Assert.True(waiterCancelled);
+    }
+
+    private static void InterlockedMax(ref int target, int value)
+    {
+        var current = Volatile.Read(ref target);
+        while (value > current)
+        {
+            var seen = Interlocked.CompareExchange(ref target, value, current);
+            if (seen == current)
+            {
+                return;
+            }
+
+            current = seen;
+        }
+    }
+
+    private static async Task VisitAndMarkAsync(IMessage root)
+    {
+        var options = new PayloadVisitors.VisitOptions(
+            (payload, _) => Task.FromResult(Mark(payload)),
+            (payloads, _) => Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(Mark).ToList()));
         await (root switch
         {
-            WorkflowActivation value => PayloadVisitors.VisitAsync(value, visitPayload, visitPayloads),
-            WorkflowActivationCompletion value => PayloadVisitors.VisitAsync(value, visitPayload, visitPayloads),
-            ActivityTask value => PayloadVisitors.VisitAsync(value, visitPayload, visitPayloads),
-            ActivityExecutionResult value => PayloadVisitors.VisitAsync(value, visitPayload, visitPayloads),
+            WorkflowActivation value => PayloadVisitors.VisitAsync(value, PayloadVisitors.Walk, options),
+            WorkflowActivationCompletion value => PayloadVisitors.VisitAsync(value, PayloadVisitors.Walk, options),
+            ActivityTask value => PayloadVisitors.VisitAsync(value, PayloadVisitors.Walk, options),
+            ActivityExecutionResult value => PayloadVisitors.VisitAsync(value, PayloadVisitors.Walk, options),
             _ => throw new InvalidOperationException($"No entry point for {root.GetType()}"),
         });
-        return (visited, batched);
     }
+
+    // Returns a marked copy so the walker writes it back: a single payload's field is reassigned and
+    // a batch field is rebuilt with the copies, which lets a test see what was reached.
+    private static Payload Mark(Payload payload)
+    {
+        var marked = payload.Clone();
+        marked.Metadata["__visited"] = ByteString.CopyFromUtf8("1");
+        return marked;
+    }
+
+    private static bool WasVisited(Payload payload) => payload.Metadata.ContainsKey("__visited");
 
     private static Task ForEachPayloadAsync(
         IMessage root, Func<string, Func<Payload>, bool, bool, Task> onPayload) =>

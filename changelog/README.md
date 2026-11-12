@@ -18,6 +18,10 @@ without a leading `-`; every nonempty line becomes a separate bullet when the to
 collects fragments. Blank lines are ignored. A fragment can contain multiple entries.
 Use inline Markdown and links as needed, without headings or nested lists.
 
+Start each entry about an experimental feature with `**Experimental**: `, for example
+`**Experimental**: Added ...`, rather than calling it experimental elsewhere in the
+sentence.
+
 `CHANGELOG.md` contains completed releases only. `mise run changelog:check` validates
 pending fragments. The shared Core tooling imports Core changes during submodule
 updates and collects fragments during release preparation; see

@@ -316,6 +316,58 @@ public class WorkflowCodecHelperTests : TestBase
         Assert.Equal("system", decodedRequest.Input.Payloads_[0].Data.ToStringUtf8());
     }
 
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task DecodeAsync_InitializeWorkflow_DecodesPreviousRunOutcomeWithItsContext(bool hasNexusContext)
+    {
+        var nexusContext = new ISerializationContext.Nexus("my-endpoint", "my-service", "my-operation");
+        Payload NewPayload(string data, bool signed)
+        {
+            var payload = new Payload { Data = ByteString.CopyFromUtf8(data) };
+            if (signed)
+            {
+                payload.Metadata[SigningRecordingCodec.SignatureKey] =
+                    ByteString.CopyFromUtf8(SigningRecordingCodec.Signature(nexusContext));
+            }
+            return payload;
+        }
+        // The previous run encoded its outcome with the Nexus context, while the starter encoded
+        // the arguments and memo with the workflow context
+        var init = new InitializeWorkflow
+        {
+            Arguments = { NewPayload("argument", signed: false) },
+            Memo = new() { Fields = { ["memo"] = NewPayload("memo", signed: false) } },
+            ContinuedFailure = new()
+            {
+                ApplicationFailureInfo = new()
+                {
+                    Details = new() { Payloads_ = { NewPayload("failure-detail", hasNexusContext) } },
+                },
+            },
+            LastCompletionResult = new() { Payloads_ = { NewPayload("last-result", hasNexusContext) } },
+        };
+        if (hasNexusContext)
+        {
+            init.PropagatedNexusSerializationContext = nexusContext.ToProto();
+        }
+        var codec = new SigningRecordingCodec();
+        var act = new WorkflowActivation { Jobs = { new WorkflowActivationJob { InitializeWorkflow = init } } };
+
+        // The codec fails any decode under a context other than the one that encoded the payload
+        await WorkflowCodecHelper.DecodeAsync(
+            CreateSimpleCodecContext(codec) with
+            {
+                CodecWorkflowContext = codec.WithSerializationContext(
+                    new ISerializationContext.Workflow("my-namespace", "my-workflow-id")),
+            },
+            act);
+        Assert.Null(SigningRecordingCodec.SignatureOf(
+            init.ContinuedFailure.ApplicationFailureInfo.Details.Payloads_.Single()));
+        Assert.Null(SigningRecordingCodec.SignatureOf(init.LastCompletionResult.Payloads_.Single()));
+        Assert.Equal(hasNexusContext, codec.NexusContexts.Count > 0);
+    }
+
     private static Payload CreateSystemEnvelope(string value) => CreateSystemEnvelope(
         new SignalWithStartWorkflowExecutionRequest
         {

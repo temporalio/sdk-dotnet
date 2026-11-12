@@ -15,7 +15,7 @@ namespace Temporalio.Extensions.Aws.S3Driver.AwsSdk
     /// <remarks>
     /// WARNING: This API is experimental and may change in the future.
     /// </remarks>
-    internal sealed class AwsSdkS3StorageDriverClient : IS3StorageDriverClient
+    public sealed class AwsSdkS3StorageDriverClient : IS3StorageDriverClient
     {
         private readonly IAmazonS3 client;
 

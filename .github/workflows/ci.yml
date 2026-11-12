@@ -272,6 +272,7 @@ jobs:
     if: ${{ always() && github.event_name == 'pull_request' }}
     needs:
       - build-lint-test
+      - cloud-test
     runs-on: ubuntu-latest
     steps:
       - name: Fail if any check failed or was cancelled

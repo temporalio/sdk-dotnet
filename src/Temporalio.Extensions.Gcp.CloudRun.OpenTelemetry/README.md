@@ -1,5 +1,9 @@
 # Google Cloud Run Worker OpenTelemetry Support
 
+> [!WARNING]
+> Google Cloud Run OpenTelemetry support is experimental. Its API may change
+> before it is declared stable.
+
 This extension adds OpenTelemetry defaults for Temporal workers running on Google Cloud Run,
 primarily in [worker pools](https://cloud.google.com/run/docs/deploying-worker-pools). Temporal
 metrics and traces are exported over OTLP/gRPC to a local
