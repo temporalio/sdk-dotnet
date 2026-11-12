@@ -2161,13 +2161,8 @@ namespace Temporalio.Worker
                     // Unreachable
                     return null;
                 }
-                var resultTaskType = resultTask.GetType();
-                // We have to use reflection to extract value if it's a Task<>
-                if (resultTaskType.IsGenericType)
-                {
-                    return resultTaskType.GetProperty("Result")!.GetValue(resultTask);
-                }
-                return null;
+                return TaskResult.TryGetResult(resultTask, input.RunMethod.ReturnType, out var result) ?
+                    result : null;
             }
 
             /// <inheritdoc />
@@ -2254,13 +2249,14 @@ namespace Temporalio.Worker
                     // Unreachable
                     return null;
                 }
-                var resultTaskType = resultTask.GetType();
-                // We have to use reflection to extract value if it's a Task<>
-                if (resultTaskType.IsGenericType)
-                {
-                    return resultTaskType.GetProperty("Result")!.GetValue(resultTask);
-                }
-                return null;
+                // A method group returning Task<T> can be converted to a delegate returning Task,
+                // and Delegate.Method still reports the method's Task<T>. The delegate type's own
+                // signature is what was declared for the handler. An existing Func<Task<T>> stored
+                // in a Func<Task> variable is still a Func<Task<T>> object, so it keeps its result.
+                var declaredReturnType = input.Definition.Method?.ReturnType ??
+                    input.Definition.Delegate!.GetType().GetMethod("Invoke")!.ReturnType;
+                return TaskResult.TryGetResult(resultTask, declaredReturnType, out var result) ?
+                    result : null;
             }
         }
 

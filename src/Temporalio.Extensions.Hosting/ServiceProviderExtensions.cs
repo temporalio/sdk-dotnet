@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NexusRpc.Handlers;
 using Temporalio.Activities;
+using Temporalio.Common;
 using Temporalio.Nexus;
 
 namespace Temporalio.Extensions.Hosting
@@ -108,13 +109,7 @@ namespace Temporalio.Extensions.Hosting
                     if (result is Task resultTask)
                     {
                         await resultTask.ConfigureAwait(false);
-                        // We have to use reflection to extract value if it's a Task<>
-                        var resultTaskType = resultTask.GetType();
-                        if (resultTaskType.IsGenericType)
-                        {
-                            result = resultTaskType.GetProperty("Result")!.GetValue(resultTask);
-                        }
-                        else
+                        if (!TaskResult.TryGetResult(resultTask, method.ReturnType, out result))
                         {
                             result = ValueTuple.Create();
                         }
