@@ -164,16 +164,11 @@ namespace Temporalio.Workflows
             // waiter's turn.
             var me = waiters.AddLast(SemaphoreUnit);
 
-            // We don't expose an overload for a nullable timeout on wait condition, so we have to
-            // differentiate
-            var task = timeout is { } timeoutNonNull ?
-                Workflow.WaitConditionAsync(
-                    () => CurrentCount > 0 && waiters.Count > 0 && waiters.First == me,
-                    timeoutNonNull,
-                    cancellationToken) :
-                Workflow.WaitConditionAsync(
-                    () => CurrentCount > 0 && waiters.Count > 0 && waiters.First == me,
-                    cancellationToken);
+            var task = Workflow.WaitConditionWithOptionsAsync(new(
+                () => CurrentCount > 0 && waiters.Count > 0 && waiters.First == me,
+                timeout: timeout,
+                timeoutSummary: "WaitConditionAsync",
+                cancellationToken: cancellationToken));
 
             // Have a continue with that only runs on success that decrements current count on
             // success. Then have a continue with that runs always that removes the waiter. Both
@@ -182,7 +177,7 @@ namespace Temporalio.Workflows
                 ContinueWith(
                     task =>
                     {
-                        if (task is not Task<bool> timeoutTask || timeoutTask.Result)
+                        if (task.Result)
                         {
                             CurrentCount--;
                             return true;
@@ -193,7 +188,7 @@ namespace Temporalio.Workflows
                     TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.ExecuteSynchronously,
                     TaskScheduler.Current).
                 ContinueWith(
-                    task =>
+                    _ =>
                     {
                         waiters.Remove(me);
 #pragma warning disable VSTHRD003 // This is safe to reuse tasks for our case
