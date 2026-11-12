@@ -167,6 +167,7 @@ namespace Temporalio.Client.Schedules
                     WorkflowId: Options.Id ?? throw new ArgumentException("ID required on workflow action")));
             var storage = ExternalStorageContext.For(
                 dataConverter,
+                clientNamespace,
                 new IStorageDriverTargetInfo.Workflow(
                     clientNamespace, Options.Id, RunId: null, WorkflowType: Workflow));
 

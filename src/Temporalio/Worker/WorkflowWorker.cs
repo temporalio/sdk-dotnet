@@ -48,7 +48,8 @@ namespace Temporalio.Worker
             this.options = options;
             this.onEviction = onEviction;
             logger = options.LoggerFactory.CreateLogger<WorkflowWorker>();
-            externalStorage = ExternalStorageRunner.Create(options.DataConverter.ExternalStorage);
+            externalStorage = ExternalStorageRunner.Create(
+                options.DataConverter.ExternalStorage, options.Namespace);
             foreach (var defn in options.Workflows)
             {
                 if (!defn.Instantiable)

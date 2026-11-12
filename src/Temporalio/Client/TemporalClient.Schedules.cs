@@ -56,7 +56,7 @@ namespace Temporalio.Client
                     // A schedule's own memo is not stored on behalf of any execution, so it has no
                     // target.
                     var storage = ExternalStorageContext.For(
-                        Client.Options.DataConverter, target: null);
+                        Client.Options.DataConverter, Client.Options.Namespace, target: null);
                     foreach (var field in input.Options.Memo)
                     {
                         if (field.Value == null)

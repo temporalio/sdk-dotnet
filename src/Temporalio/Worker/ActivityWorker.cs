@@ -44,7 +44,7 @@ namespace Temporalio.Worker
             this.worker = worker;
             logger = worker.LoggerFactory.CreateLogger<ActivityWorker>();
             externalStorage = ExternalStorageRunner.Create(
-                worker.Client.Options.DataConverter.ExternalStorage);
+                worker.Client.Options.DataConverter.ExternalStorage, worker.Client.Options.Namespace);
             activities = new(worker.Options.Activities.Count);
             foreach (var defn in worker.Options.Activities)
             {
@@ -392,7 +392,8 @@ namespace Temporalio.Worker
                 TaskToken = tsk.TaskToken,
                 Result = new(),
             };
-            var storage = ExternalStorageContext.For(dataConverter, storageTarget);
+            var storage = ExternalStorageContext.For(
+                dataConverter, worker.Client.Options.Namespace, storageTarget);
             // Set context
             ActivityExecutionContext.AsyncLocalCurrent.Value = act.Context;
             try
@@ -817,7 +818,8 @@ namespace Temporalio.Worker
                         };
                         if (details.Length > 0)
                         {
-                            var storage = ExternalStorageContext.For(dataConverter, storageTarget);
+                            var storage = ExternalStorageContext.For(
+                                dataConverter, worker.Client.Options.Namespace, storageTarget);
                             heartbeat.Details.AddRange(
                                 await dataConverter.ToPayloadsAsync(details, storage).ConfigureAwait(false));
                         }
