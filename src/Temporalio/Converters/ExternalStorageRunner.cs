@@ -23,6 +23,7 @@ namespace Temporalio.Converters
     internal sealed class ExternalStorageRunner : IExternalStorageRunner
     {
         private readonly ExternalStorage storage;
+        private readonly string? @namespace;
         private readonly IStorageDriverLimiter<Payload> storeLimiter;
         private readonly IStorageDriverLimiter<StorageDriverClaim> retrieveLimiter;
 
@@ -30,16 +31,21 @@ namespace Temporalio.Converters
         /// Initializes a new instance of the <see cref="ExternalStorageRunner"/> class.
         /// </summary>
         /// <param name="storage">Configured drivers, selector, and size threshold.</param>
+        /// <param name="namespace">
+        /// Namespace of the client or worker storing through this runner, or null when not known.
+        /// </param>
         /// <param name="storeLimiter">Limiter the store contexts carry for drivers to use.</param>
         /// <param name="retrieveLimiter">
         /// Limiter the retrieve contexts carry for drivers to use.
         /// </param>
         public ExternalStorageRunner(
             ExternalStorage storage,
+            string? @namespace,
             IStorageDriverLimiter<Payload> storeLimiter,
             IStorageDriverLimiter<StorageDriverClaim> retrieveLimiter)
         {
             this.storage = storage;
+            this.@namespace = @namespace;
             this.storeLimiter = storeLimiter;
             this.retrieveLimiter = retrieveLimiter;
         }
@@ -53,12 +59,16 @@ namespace Temporalio.Converters
         /// Configured drivers, selector, and size threshold, or null when external storage is not
         /// configured.
         /// </param>
+        /// <param name="namespace">
+        /// Namespace of the client or worker storing through this runner, or null when not known.
+        /// </param>
         /// <returns>A runner over the given storage, never null.</returns>
-        public static IExternalStorageRunner Create(ExternalStorage? storage) =>
+        public static IExternalStorageRunner Create(ExternalStorage? storage, string? @namespace) =>
             storage is null
                 ? UnconfiguredRunner.Instance
                 : new ExternalStorageRunner(
                     storage,
+                    @namespace,
                     UnboundedStorageDriverLimiter<Payload>.Instance,
                     UnboundedStorageDriverLimiter<StorageDriverClaim>.Instance);
 
@@ -124,7 +134,7 @@ namespace Temporalio.Converters
             }
 
             var result = payloads.ToArray();
-            var selectContext = new StorageDriverSelectContext { Target = target };
+            var selectContext = new StorageDriverSelectContext { Target = target, Namespace = @namespace };
             var groups = new Dictionary<
                 string, (IStorageDriver Driver, List<(int Index, long Size)> Items)>();
             for (var i = 0; i < result.Length; i++)
@@ -160,7 +170,12 @@ namespace Temporalio.Converters
                 return payloads;
             }
 
-            var context = new StorageDriverStoreContext { Target = target, Limiter = storeLimiter };
+            var context = new StorageDriverStoreContext
+            {
+                Target = target,
+                Namespace = @namespace,
+                Limiter = storeLimiter,
+            };
             await WhenAllCancelOnFailureAsync(
                 groups.Values,
                 async (group, token) =>

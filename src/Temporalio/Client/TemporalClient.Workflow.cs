@@ -214,6 +214,7 @@ namespace Temporalio.Client
                         input.Options.StartWorkflowOperation.Headers).ConfigureAwait(false);
                     var updateStorage = ExternalStorageContext.For(
                         dataConverter,
+                        Client.Options.Namespace,
                         new IStorageDriverTargetInfo.Workflow(
                             Client.Options.Namespace,
                             input.Options.StartWorkflowOperation.Options.Id,
@@ -351,6 +352,7 @@ namespace Temporalio.Client
                         WorkflowId: input.Id));
                 var storage = ExternalStorageContext.For(
                     dataConverter,
+                    Client.Options.Namespace,
                     new IStorageDriverTargetInfo.Workflow(
                         Client.Options.Namespace, input.Id, RunId: input.RunId, WorkflowType: null));
                 var req = new SignalWorkflowExecutionRequest()
@@ -401,6 +403,7 @@ namespace Temporalio.Client
                         WorkflowId: input.Id));
                 var storage = ExternalStorageContext.For(
                     dataConverter,
+                    Client.Options.Namespace,
                     new IStorageDriverTargetInfo.Workflow(
                         Client.Options.Namespace, input.Id, RunId: input.RunId, WorkflowType: null));
                 var req = new QueryWorkflowRequest()
@@ -495,6 +498,7 @@ namespace Temporalio.Client
                 // Build request
                 var storage = ExternalStorageContext.For(
                     dataConverter,
+                    Client.Options.Namespace,
                     new IStorageDriverTargetInfo.Workflow(
                         Client.Options.Namespace, input.Id, RunId: input.RunId, WorkflowType: null));
                 var req = await CreateUpdateWorkflowRequestAsync(
@@ -610,6 +614,7 @@ namespace Temporalio.Client
                             WorkflowId: input.Id));
                     var storage = ExternalStorageContext.For(
                         dataConverter,
+                        Client.Options.Namespace,
                         new IStorageDriverTargetInfo.Workflow(
                             Client.Options.Namespace, input.Id, RunId: input.RunId, WorkflowType: null));
                     req.Details = new Payloads();
@@ -865,6 +870,7 @@ namespace Temporalio.Client
                     signalReq.SignalInput = new Payloads();
                     var signalStorage = ExternalStorageContext.For(
                         dataConverter,
+                        Client.Options.Namespace,
                         new IStorageDriverTargetInfo.Workflow(
                             Client.Options.Namespace,
                             req.WorkflowId,
@@ -895,6 +901,7 @@ namespace Temporalio.Client
                     throw new ArgumentException("ID required to start workflow");
                 var storage = ExternalStorageContext.For(
                     dataConverter,
+                    Client.Options.Namespace,
                     new IStorageDriverTargetInfo.Workflow(
                         Client.Options.Namespace, workflowId, RunId: null, WorkflowType: workflow));
                 var req = new StartWorkflowExecutionRequest()

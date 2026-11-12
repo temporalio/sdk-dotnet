@@ -57,7 +57,7 @@ namespace Temporalio.Worker
             this.worker = worker;
             logger = worker.LoggerFactory.CreateLogger<NexusWorker>();
             externalStorage = ExternalStorageRunner.Create(
-                worker.Client.Options.DataConverter.ExternalStorage);
+                worker.Client.Options.DataConverter.ExternalStorage, worker.Client.Options.Namespace);
 
             // Create middleware from interceptors
             var middleware = Array.Empty<IOperationMiddleware>();
@@ -68,7 +68,8 @@ namespace Temporalio.Worker
 
             handler = new Handler(
                 worker.Options.NexusServices,
-                new NexusPayloadSerializer(worker.Client.Options.DataConverter),
+                new NexusPayloadSerializer(
+                    worker.Client.Options.DataConverter, worker.Client.Options.Namespace),
                 middleware);
         }
 
@@ -289,7 +290,9 @@ namespace Temporalio.Worker
                     .WithSerializationContext(executionContext.SerializationContext);
                 var opFailure = await failureConverter.ToFailureAsync(
                     convertedException,
-                    Converters.ExternalStorageContext.For(failureConverter)).ConfigureAwait(false);
+                    Converters.ExternalStorageContext.For(
+                        failureConverter, worker.Client.Options.Namespace, target: null))
+                    .ConfigureAwait(false);
                 return new() { Failure = opFailure };
             }
             catch (Exception e)
@@ -400,7 +403,9 @@ namespace Temporalio.Worker
                 {
                     failure = await dataConverter.ToFailureAsync(
                         handlerException,
-                        Converters.ExternalStorageContext.For(dataConverter)).ConfigureAwait(false);
+                        Converters.ExternalStorageContext.For(
+                            dataConverter, worker.Client.Options.Namespace, target: null))
+                        .ConfigureAwait(false);
                 }
                 catch (ExternalStorageException)
                 {

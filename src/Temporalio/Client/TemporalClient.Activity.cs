@@ -112,6 +112,7 @@ namespace Temporalio.Client
                             IsLocal: false));
                     var storage = ExternalStorageContext.For(
                         dataConverter,
+                        Client.Options.Namespace,
                         new IStorageDriverTargetInfo.Activity(
                             Client.Options.Namespace,
                             input.Options.Id!,
