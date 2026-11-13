@@ -219,6 +219,7 @@ jobs:
           TEMPORAL_TEST_CLIENT_TARGET_HOST: ca-central-1.aws.api.temporal.io:7233
           TEMPORAL_TEST_CLIENT_NAMESPACE: ${{ steps.create-api-key-namespace.outputs.namespace }}
           TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
+          TEMPORAL_TEST_VERBOSE: "true"
         run: |
           dotnet test tests/Temporalio.Tests/Temporalio.Tests.csproj --no-build \
             --filter "FullyQualifiedName=Temporalio.Tests.Worker.WorkflowWorkerTests.ExecuteWorkflowAsync_Simple_Succeeds" \
@@ -233,6 +234,7 @@ jobs:
         env:
           TEMPORAL_CLIENT_CLOUD_NAMESPACE: ${{ steps.create-api-key-namespace.outputs.namespace }}
           TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
+          TEMPORAL_TEST_VERBOSE: "true"
         run: |
           dotnet test tests/Temporalio.Tests/Temporalio.Tests.csproj --no-build \
             --filter "FullyQualifiedName~Temporalio.Tests.Client.TemporalCloudOperationsClientTests." \
