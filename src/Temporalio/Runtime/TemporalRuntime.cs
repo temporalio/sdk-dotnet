@@ -26,6 +26,11 @@ namespace Temporalio.Runtime
         /// <summary>
         /// Allowed despite the reserved prefix for cross-SDK stream interoperability.
         /// </summary>
+        internal const string WorkflowStreamPollQueryName = "__temporal_workflow_stream_poll";
+
+        /// <summary>
+        /// Allowed despite the reserved prefix for cross-SDK stream interoperability.
+        /// </summary>
         internal const string WorkflowStreamPollUpdateName = "__temporal_workflow_stream_poll";
 
         /// <summary>

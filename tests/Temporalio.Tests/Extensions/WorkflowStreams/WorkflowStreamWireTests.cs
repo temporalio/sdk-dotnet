@@ -26,6 +26,27 @@ public class WorkflowStreamWireTests
     }
 
     [Fact]
+    public void PollWireFormat_MatchesSharedClosedStreamVector()
+    {
+        const string Wire = "ChgKCGVuY29kaW5nEgxiaW5hcnkvcGxhaW4SA2FiYw==";
+        var payload = new Payload { Data = ByteString.CopyFromUtf8("abc") };
+        payload.Metadata.Add("encoding", ByteString.CopyFromUtf8("binary/plain"));
+        Assert.Equal(Wire, PayloadWire.Encode(payload));
+        Assert.Equal(payload, PayloadWire.Decode(Wire));
+        AssertMore.JsonEqual(
+            """{"topics":["events"],"from_offset":3}""",
+            JsonSerializer.Serialize(new PollInput { Topics = new[] { "events" }, FromOffset = 3 }));
+        AssertMore.JsonEqual(
+            """{"items":[{"topic":"events","data":"ChgKCGVuY29kaW5nEgxiaW5hcnkvcGxhaW4SA2FiYw==","offset":3}],"next_offset":4,"more_ready":false}""",
+            JsonSerializer.Serialize(new PollResult
+            {
+                Items = new[] { new WorkflowStreamWireItem { Topic = "events", Data = Wire, Offset = 3 } },
+                NextOffset = 4,
+                MoreReady = false,
+            }));
+    }
+
+    [Fact]
     public void WireDtos_UseExactSnakeCaseNames()
     {
         var state = new WorkflowStreamState

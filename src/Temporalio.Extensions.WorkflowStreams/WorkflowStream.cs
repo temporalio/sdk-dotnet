@@ -77,6 +77,10 @@ namespace Temporalio.Extensions.WorkflowStreams
                     (Func<PollInput, Task<PollResult>>)HandlePollAsync,
                     (Action<PollInput>)ValidatePoll,
                     HandlerUnfinishedPolicy.Abandon);
+            Workflow.Queries[WorkflowStreamConstants.PollQueryName] =
+                WorkflowQueryDefinition.CreateWithoutAttribute(
+                    WorkflowStreamConstants.PollQueryName,
+                    (Func<PollInput, PollResult>)CollectBatch);
             Workflow.Queries[WorkflowStreamConstants.OffsetQueryName] =
                 WorkflowQueryDefinition.CreateWithoutAttribute(
                     WorkflowStreamConstants.OffsetQueryName,
@@ -330,6 +334,12 @@ namespace Temporalio.Extensions.WorkflowStreams
                     nonRetryable: true);
             }
 
+            return CollectBatch(input);
+        }
+
+        private PollResult CollectBatch(PollInput input)
+        {
+            input ??= new PollInput();
             var requestedIndex = Math.Max(input.FromOffset - baseOffset, 0);
             var startIndex = requestedIndex > log.Count ? log.Count : (int)requestedIndex;
             HashSet<string>? topicFilter = null;
