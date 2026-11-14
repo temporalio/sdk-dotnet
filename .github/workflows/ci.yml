@@ -89,7 +89,7 @@ jobs:
             --logger "trx;LogFilePrefix=test-results" \
             --results-directory tests/Temporalio.Tests/TestResults \
             --blame-crash --blame-crash-dump-type mini \
-            --blame-hang-timeout 10m --blame-hang-dump-type mini
+            --blame-hang-timeout 10m --blame-hang-dump-type full
 
       - name: Validate package API surface
         # Package API validation runs only during the Pack target and is
@@ -106,16 +106,28 @@ jobs:
           if-no-files-found: warn
           overwrite: true
 
-      # Blame data stays out of the test-results artifact so a crash dump doesn't bloat what the
-      # report workflow downloads.
-      - name: Upload blame data
+      # vstest also copies blame files into the TRX attachments folder under In/; excluding that
+      # copy keeps each file from uploading twice.
+      - name: Upload blame sequence
         if: ${{ failure() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: test-blame-${{ matrix.os }}
           path: |
             tests/Temporalio.Tests/TestResults/**/Sequence_*.xml
+            !tests/Temporalio.Tests/TestResults/**/In/**
+          if-no-files-found: ignore
+          overwrite: true
+          retention-days: 7
+
+      - name: Upload test dumps
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: test-dumps-${{ matrix.os }}
+          path: |
             tests/Temporalio.Tests/TestResults/**/*.dmp
+            !tests/Temporalio.Tests/TestResults/**/In/**
           if-no-files-found: ignore
           overwrite: true
           retention-days: 7
@@ -217,7 +229,7 @@ jobs:
             --logger "trx;LogFilePrefix=cloud-mtls-results" \
             --results-directory tests/Temporalio.Tests/CloudTestResults \
             --blame-crash --blame-crash-dump-type mini \
-            --blame-hang-timeout 10m --blame-hang-dump-type mini
+            --blame-hang-timeout 10m --blame-hang-dump-type full
 
       - name: Create Cloud namespace (API key)
         id: create-api-key-namespace
@@ -243,7 +255,7 @@ jobs:
             --logger "trx;LogFilePrefix=cloud-api-key-results" \
             --results-directory tests/Temporalio.Tests/CloudTestResults \
             --blame-crash --blame-crash-dump-type mini \
-            --blame-hang-timeout 10m --blame-hang-dump-type mini \
+            --blame-hang-timeout 10m --blame-hang-dump-type full \
             -- RunConfiguration.TreatNoTestsAsError=true
 
       - name: Test cloud operations client
@@ -259,7 +271,7 @@ jobs:
             --logger "trx;LogFilePrefix=cloud-operations-results" \
             --results-directory tests/Temporalio.Tests/CloudTestResults \
             --blame-crash --blame-crash-dump-type mini \
-            --blame-hang-timeout 10m --blame-hang-dump-type mini \
+            --blame-hang-timeout 10m --blame-hang-dump-type full \
             -- RunConfiguration.TreatNoTestsAsError=true
 
       - name: Upload Cloud test results
@@ -271,14 +283,26 @@ jobs:
           if-no-files-found: warn
           overwrite: true
 
-      - name: Upload Cloud blame data
+      - name: Upload Cloud blame sequence
         if: ${{ failure() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: cloud-test-blame-ubuntu-latest
           path: |
             tests/Temporalio.Tests/CloudTestResults/**/Sequence_*.xml
+            !tests/Temporalio.Tests/CloudTestResults/**/In/**
+          if-no-files-found: ignore
+          overwrite: true
+          retention-days: 7
+
+      - name: Upload Cloud test dumps
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: cloud-test-dumps-ubuntu-latest
+          path: |
             tests/Temporalio.Tests/CloudTestResults/**/*.dmp
+            !tests/Temporalio.Tests/CloudTestResults/**/In/**
           if-no-files-found: ignore
           overwrite: true
           retention-days: 7
