@@ -20,7 +20,11 @@ public abstract class TestBase : IDisposable
         else
         {
             LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
-                builder.AddXUnit(output));
+                builder.
+                    AddXUnit(output).
+                    SetMinimumLevel(
+                        Environment.GetEnvironmentVariable("TEMPORAL_TEST_VERBOSE") == "true" ?
+                            LogLevel.Trace : LogLevel.Information));
             // Only set this if not in-proc
             consoleWriter = new ConsoleWriter(output);
             Console.SetOut(consoleWriter);
