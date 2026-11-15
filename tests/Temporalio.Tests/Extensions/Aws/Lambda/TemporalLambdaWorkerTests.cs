@@ -6,6 +6,8 @@ using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Common.EnvConfig;
 using Temporalio.Extensions.Aws.Lambda;
+using Temporalio.Extensions.Aws.SecretsManager;
+using Temporalio.Tests.Extensions.OpenTelemetry;
 using Temporalio.Worker;
 using Temporalio.Worker.Tuning;
 using Temporalio.Workflows;
@@ -417,6 +419,44 @@ public class TemporalLambdaWorkerTests
         {
             Directory.Delete(tempDir, recursive: true);
         }
+    }
+
+    [Fact]
+    public void LoadClientConnectOptions_AddsSecretsManagerPluginWhenSecretIdsConfigured()
+    {
+        // Read from the process env by the default AWS Secrets Manager extension
+        using var processEnv = new EnvironmentScope(
+            KeyValuePair.Create<string, string?>("AWS_LAMBDA_FUNCTION_NAME", null),
+            KeyValuePair.Create<string, string?>("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT", null),
+            KeyValuePair.Create<string, string?>("SECRETS_MANAGER_TTL", null));
+        ClientEnvConfig.ProfileLoadOptions LoadOptions(
+            IReadOnlyCollection<IClientConfigExtension>? extensions = null) => new()
+            {
+                ConfigSource = DataSource.FromUTF8String(ConfigToml("address", "namespace")),
+                OverrideEnvVars = new Dictionary<string, string>
+                {
+                    ["TEMPORAL_EXT_AWS_SECRETS_MANAGER_API_KEY_ID"] = "temporal/api-key",
+                },
+                Extensions = extensions,
+            };
+
+        var plugin = Assert.Single(
+            TemporalLambdaWorker.LoadClientConnectOptions(LoadOptions()).Plugins!);
+        Assert.Equal("Temporalio.Extensions.Aws.SecretsManager", plugin.Name);
+
+        // A caller-provided extension is used rather than adding a duplicate
+        var extension = new SecretsManagerExtension(new() { RefreshInterval = TimeSpan.FromMinutes(1) });
+        plugin = Assert.Single(
+            TemporalLambdaWorker.LoadClientConnectOptions(LoadOptions(new[] { extension })).Plugins!);
+        Assert.Equal(
+            TimeSpan.FromMinutes(1),
+            Assert.IsType<SecretsManagerPlugin>(plugin).Cache.RefreshInterval);
+
+        Assert.Null(TemporalLambdaWorker.LoadClientConnectOptions(new()
+        {
+            ConfigSource = DataSource.FromUTF8String(ConfigToml("address", "namespace")),
+            OverrideEnvVars = new Dictionary<string, string>(),
+        }).Plugins);
     }
 
     [Fact]

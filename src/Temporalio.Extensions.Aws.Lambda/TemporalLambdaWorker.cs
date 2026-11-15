@@ -3,12 +3,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Common.EnvConfig;
+using Temporalio.Extensions.Aws.SecretsManager;
 using Temporalio.Worker;
 
 namespace Temporalio.Extensions.Aws.Lambda
@@ -82,6 +84,14 @@ namespace Temporalio.Extensions.Aws.Lambda
                 var root = string.IsNullOrEmpty(lambdaTaskRoot) ? "." : lambdaTaskRoot;
                 loadOptions.ConfigSource = DataSource.FromPath(
                     Path.Combine(root, DefaultConfigFileName));
+            }
+
+            // Credentials can be loaded from AWS Secrets Manager without code changes. The caller
+            // may already pass the extension, e.g. with a custom client, and names must be unique.
+            var extensions = loadOptions.Extensions ?? Array.Empty<IClientConfigExtension>();
+            if (!extensions.Any(e => e.Name == SecretsManagerExtension.ExtensionName))
+            {
+                loadOptions.Extensions = extensions.Append(new SecretsManagerExtension()).ToList();
             }
 
             return ClientEnvConfig.LoadClientConnectOptions(loadOptions);

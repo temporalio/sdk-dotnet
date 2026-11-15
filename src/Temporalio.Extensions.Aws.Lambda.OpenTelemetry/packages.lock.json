@@ -55,6 +55,17 @@
           "StyleCop.Analyzers.Unstable": "1.2.0.435"
         }
       },
+      "AWSSDK.Core": {
+        "type": "Transitive",
+        "resolved": "4.0.3.3",
+        "contentHash": "YQv10JuxnciWh0QwnkarSbge4gXQV1qTURf5jkBjNUH/3jYS9QrbxopA4TK1qdjfOfP37tqiJkLSrRRNqX81aw==",
+        "dependencies": {
+          "Microsoft.Bcl.AsyncInterfaces": "8.0.0",
+          "System.Buffers": "4.5.1",
+          "System.Memory": "4.5.5",
+          "System.Text.Json": "8.0.5"
+        }
+      },
       "Microsoft.Extensions.Configuration": {
         "type": "Transitive",
         "resolved": "10.0.0",
@@ -249,7 +260,15 @@
         "type": "Project",
         "dependencies": {
           "Amazon.Lambda.Core": "[3.1.0, )",
-          "Temporalio": "[1.21.0, )"
+          "Temporalio": "[1.22.0, )",
+          "Temporalio.Extensions.Aws.SecretsManager": "[1.22.0, )"
+        }
+      },
+      "temporalio.extensions.aws.secretsmanager": {
+        "type": "Project",
+        "dependencies": {
+          "AWSSDK.SecretsManager": "[4.0.3.1, )",
+          "Temporalio": "[1.22.0, )"
         }
       },
       "temporalio.extensions.opentelemetry": {
@@ -257,7 +276,7 @@
         "dependencies": {
           "OpenTelemetry.Api": "[1.15.3, )",
           "System.Diagnostics.DiagnosticSource": "[10.0.0, )",
-          "Temporalio": "[1.21.0, )"
+          "Temporalio": "[1.22.0, )"
         }
       },
       "Amazon.Lambda.Core": {
@@ -265,6 +284,15 @@
         "requested": "[3.1.0, )",
         "resolved": "3.1.0",
         "contentHash": "uZZ2k5lMoB9OzPTmKkkEKpyFcnLxcb7FxtxrA3+HBg/sooTzu402iCcSk5r+N62Qokhwr4Q9cbaVJSM6Dln3aA=="
+      },
+      "AWSSDK.SecretsManager": {
+        "type": "CentralTransitive",
+        "requested": "[4.0.3.1, )",
+        "resolved": "4.0.3.1",
+        "contentHash": "Y2Le4tfqHj/xFssW4N87LnnIpeBezsbHou8NxupylzFKOaz3KdLLupj4jcb4WQ+wCD1UHUidf6uTKIQYYfFWyA==",
+        "dependencies": {
+          "AWSSDK.Core": "[4.0.3.3, 5.0.0)"
+        }
       },
       "Google.Protobuf": {
         "type": "CentralTransitive",
