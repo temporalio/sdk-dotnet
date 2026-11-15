@@ -51,6 +51,7 @@ Each package has its own README next to its project, which is also its NuGet pac
 | [Temporalio.Extensions.Aws.Lambda.OpenTelemetry](src/Temporalio.Extensions.Aws.Lambda.OpenTelemetry/README.md) | Experimental OpenTelemetry helpers for workers running in AWS Lambda |
 | [Temporalio.Extensions.Aws.S3Driver](src/Temporalio.Extensions.Aws.S3Driver/README.md) | Experimental Amazon S3 external storage driver |
 | [Temporalio.Extensions.Aws.S3Driver.AwsSdk](src/Temporalio.Extensions.Aws.S3Driver.AwsSdk/README.md) | Experimental AWS SDK client for the Amazon S3 external storage driver |
+| [Temporalio.Extensions.Aws.SecretsManager](src/Temporalio.Extensions.Aws.SecretsManager/README.md) | Experimental client config extension that loads client credentials from AWS Secrets Manager |
 | [Temporalio.Extensions.DiagnosticSource](src/Temporalio.Extensions.DiagnosticSource/README.md) | `System.Diagnostics.Metrics` support for SDK metrics |
 | [Temporalio.Extensions.Gcp.CloudRun.Id](src/Temporalio.Extensions.Gcp.CloudRun.Id/README.md) | Experimental client identity derived from Google Cloud Run instance metadata |
 | [Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry](src/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry/README.md) | Experimental OpenTelemetry defaults for workers running on Google Cloud Run |

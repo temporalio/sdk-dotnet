@@ -17,6 +17,7 @@ Extensions:
 
 * [Temporalio.Extensions.Aws.Lambda](/api/Temporalio.Extensions.Aws.Lambda.html)
 * [Temporalio.Extensions.Aws.Lambda.OpenTelemetry](/api/Temporalio.Extensions.Aws.Lambda.OpenTelemetry.html)
+* [Temporalio.Extensions.Aws.SecretsManager](/api/Temporalio.Extensions.Aws.SecretsManager.html)
 * [Temporalio.Extensions.DiagnosticSource](/api/Temporalio.Extensions.DiagnosticSource.html)
 * [Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry](/api/Temporalio.Extensions.Gcp.CloudRun.OpenTelemetry.html)
 * [Temporalio.Extensions.Gcp.CloudRun.Id](/api/Temporalio.Extensions.Gcp.CloudRun.Id.html)
