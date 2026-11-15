@@ -75,6 +75,31 @@ Client connection settings are pre-populated from a `temporal.toml` file and/or 
 
 The file is optional. If it does not exist, only environment variables are used.
 
+### Credentials from AWS Secrets Manager
+
+To keep credentials out of environment variables and the Lambda package, store them in AWS Secrets Manager and configure
+only the secret IDs (names or ARNs). The
+[`Temporalio.Extensions.Aws.SecretsManager`](../Temporalio.Extensions.Aws.SecretsManager) config extension is always
+enabled, so no code changes are needed:
+
+| Environment variable | TOML (under `profile.<profile>.ext.aws_secrets_manager`) |
+|---|---|
+| `TEMPORAL_EXT_AWS_SECRETS_MANAGER_API_KEY_ID` | `api_key_id` |
+| `TEMPORAL_EXT_AWS_SECRETS_MANAGER_TLS_CLIENT_CERT_ID` | `tls.client_cert_id` |
+| `TEMPORAL_EXT_AWS_SECRETS_MANAGER_TLS_CLIENT_KEY_ID` | `tls.client_key_id` |
+| `TEMPORAL_EXT_AWS_SECRETS_MANAGER_TLS_SERVER_CA_CERT_ID` | `tls.server_ca_cert_id` |
+
+Secrets are fetched through the [AWS Parameters and Secrets Lambda
+Extension](https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieving-secrets_lambda.html) if the function
+has it, and otherwise directly with the AWS SDK. Either way they are cached across warm invocations. The Lambda execution
+role needs `secretsmanager:GetSecretValue` on the configured secrets. See the package README for the full set of
+options, validation rules, caching behavior, and observability metrics.
+
+When secret IDs are configured, the extension adds a client plugin to `ClientOptions.Plugins`. To add your own client
+plugins in `configure`, keep the existing ones rather than replacing them. To customize the extension, for example with
+your own Secrets Manager client, pass a `SecretsManagerExtension` in `ProfileLoadOptions.Extensions`; it's used instead of
+the default one.
+
 To bypass config loading, assign explicit client options in `configure`:
 
 ```csharp
