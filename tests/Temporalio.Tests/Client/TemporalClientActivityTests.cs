@@ -401,6 +401,7 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
         }
     }
 
+#if NETCOREAPP3_0_OR_GREATER
     [Fact]
     [CloudTestExclusion(
         CloudTestExclusionReason.NeedsCloudAdaptation,
@@ -467,6 +468,7 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
             });
         });
     }
+#endif
 
     [Fact]
     public async Task StartActivityAsync_Interceptors_AreCalledProperly()

@@ -32,6 +32,13 @@ public class ActivityScopeTests : WorkflowEnvironmentTestBase
         public ActivityInboundInterceptor InterceptActivity(ActivityInboundInterceptor nextInterceptor) =>
             new ActivityInbound(serviceProvider, nextInterceptor);
 
+        public WorkflowInboundInterceptor InterceptWorkflow(WorkflowInboundInterceptor nextInterceptor) =>
+            nextInterceptor;
+
+        public NexusOperationInboundInterceptor InterceptNexusOperation(
+            NexusOperationInboundInterceptor nextInterceptor) =>
+            nextInterceptor;
+
         private class ActivityInbound : ActivityInboundInterceptor
         {
             private readonly IServiceProvider serviceProvider;

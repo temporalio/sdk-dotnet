@@ -135,7 +135,11 @@ public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
             }
             if (env != null)
             {
+#if NETFRAMEWORK
+                await env.ShutdownAsync();
+#else
                 await env.DisposeAsync();
+#endif
             }
         }
     }

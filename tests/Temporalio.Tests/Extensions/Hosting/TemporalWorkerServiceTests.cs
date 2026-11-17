@@ -292,7 +292,7 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
         // started too. Then we will terminate both. We have to use a ticking workflow with only one
         // poller to force a quick re-poll to recognize our client change quickly (as opposed to
         // just waiting the minute for poll timeout).
-        await using var otherEnv = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync();
+        await using var otherEnv = await AsyncDisposableWorkflowEnvironment.StartLocalAsync();
 
         // Start both workflows on different servers
         var taskQueue = $"tq-{Guid.NewGuid()}";

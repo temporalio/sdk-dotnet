@@ -27,6 +27,10 @@ public class HeaderCallbackInterceptor : IClientInterceptor, IWorkerInterceptor
         ActivityInboundInterceptor nextInterceptor) =>
         new ActivityInbound(this, nextInterceptor);
 
+    public NexusOperationInboundInterceptor InterceptNexusOperation(
+        NexusOperationInboundInterceptor nextInterceptor) =>
+        nextInterceptor;
+
     private sealed class ClientOutbound : ClientOutboundInterceptor
     {
         private readonly HeaderCallbackInterceptor root;

@@ -67,8 +67,8 @@ To run the tests as an in-proc program (helpful for debugging native pieces and 
 stdout/stderr):
 
 ```bash
-dotnet run --project tests/Temporalio.Tests          # all tests
-dotnet run --project tests/Temporalio.Tests -- --help  # see runner options
+dotnet run --project tests/Temporalio.Tests -f net10.0            # all tests
+dotnet run --project tests/Temporalio.Tests -f net10.0 -- --help  # see runner options
 ```
 
 API documentation is generated with [docfx](https://dotnet.github.io/docfx/) via `mise run docs`.

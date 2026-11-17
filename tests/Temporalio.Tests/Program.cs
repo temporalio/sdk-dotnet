@@ -10,9 +10,13 @@ public static class Program
     {
         if (args.Length > 0 && args[0] == "cloud-namespace")
         {
-            return await CloudNamespaceCommand.RunAsync(args[1..]);
+            return await CloudNamespaceCommand.RunAsync(args.Skip(1).ToArray());
         }
 
+#if NETFRAMEWORK
+        await Console.Error.WriteLineAsync("The in-process runner is unavailable on .NET Framework, use dotnet test");
+        return 1;
+#else
         InProc = true;
         Verbose = args.Contains("-verbose");
         // Always put self assembly as first arg if "--help" isn't first arg
@@ -24,5 +28,6 @@ public static class Program
             args = newArgs;
         }
         return Xunit.ConsoleClient.Program.Main(args);
+#endif
     }
 }

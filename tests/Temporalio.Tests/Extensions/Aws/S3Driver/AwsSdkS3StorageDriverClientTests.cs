@@ -1,3 +1,6 @@
+// AWSSDK's .NET Framework build sends requests through HttpWebRequest, so there is no
+// HttpClientFactory hook to stub responses with.
+#if !NETFRAMEWORK
 namespace Temporalio.Tests.Extensions.Aws.S3Driver;
 
 using System.Net;
@@ -109,3 +112,4 @@ public class AwsSdkS3StorageDriverClientTests
         public override HttpClient CreateHttpClient(IClientConfig clientConfig) => new(handler, false);
     }
 }
+#endif

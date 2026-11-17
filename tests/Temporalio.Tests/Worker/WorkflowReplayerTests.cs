@@ -279,6 +279,7 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
         Assert.Contains("Nondeterminism", exc.Message);
     }
 
+#if NETCOREAPP3_0_OR_GREATER
     [Fact]
     public async Task ReplayWorkflowAsync_MultipleHistories_WorksProperly()
     {
@@ -332,4 +333,5 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
             }
         });
     }
+#endif
 }

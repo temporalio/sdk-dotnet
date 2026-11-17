@@ -10,6 +10,13 @@ public class XunitExceptionInterceptor : IWorkerInterceptor
     public WorkflowInboundInterceptor InterceptWorkflow(WorkflowInboundInterceptor nextInterceptor) =>
         new WorkflowInbound(nextInterceptor);
 
+    public ActivityInboundInterceptor InterceptActivity(ActivityInboundInterceptor nextInterceptor) =>
+        nextInterceptor;
+
+    public NexusOperationInboundInterceptor InterceptNexusOperation(
+        NexusOperationInboundInterceptor nextInterceptor) =>
+        nextInterceptor;
+
     public class WorkflowInbound : WorkflowInboundInterceptor
     {
         public WorkflowInbound(WorkflowInboundInterceptor next)

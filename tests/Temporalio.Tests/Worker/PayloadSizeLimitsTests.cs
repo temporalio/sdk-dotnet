@@ -7,7 +7,6 @@ using Temporalio.Activities;
 using Temporalio.Client;
 using Temporalio.Exceptions;
 using Temporalio.Runtime;
-using Temporalio.Testing;
 using Temporalio.Worker;
 using Temporalio.Workflows;
 using Xunit;
@@ -41,7 +40,7 @@ public class PayloadSizeLimitsTests : TestBase
     [Fact]
     public async Task OversizedPayload_FailsTask_WithErrorLog()
     {
-        await using var env = await WorkflowEnvironment.StartLocalAsync(
+        await using var env = await AsyncDisposableWorkflowEnvironment.StartLocalAsync(
             new() { DevServerOptions = new() { ExtraArgs = PayloadLimitsExtraArgs } });
 
         using var loggerFactory = new TestUtils.LogCaptureFactory(LoggerFactory);
@@ -97,7 +96,7 @@ public class PayloadSizeLimitsTests : TestBase
     [Fact]
     public async Task DisablePayloadErrorLimit_SendsToServer()
     {
-        await using var env = await WorkflowEnvironment.StartLocalAsync(
+        await using var env = await AsyncDisposableWorkflowEnvironment.StartLocalAsync(
             new() { DevServerOptions = new() { ExtraArgs = PayloadLimitsExtraArgs } });
 
         var workerOpts = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
@@ -128,7 +127,7 @@ public class PayloadSizeLimitsTests : TestBase
     [Fact]
     public async Task PayloadsWarnSize_ProducesWarningLog()
     {
-        await using var env = await WorkflowEnvironment.StartLocalAsync(
+        await using var env = await AsyncDisposableWorkflowEnvironment.StartLocalAsync(
             new() { DevServerOptions = new() { ExtraArgs = PayloadLimitsExtraArgs } });
 
         using var loggerFactory = new TestUtils.LogCaptureFactory(LoggerFactory);
@@ -175,7 +174,7 @@ public class PayloadSizeLimitsTests : TestBase
     [Fact]
     public async Task MemoWarnSize_ProducesWarningLog()
     {
-        await using var env = await WorkflowEnvironment.StartLocalAsync(
+        await using var env = await AsyncDisposableWorkflowEnvironment.StartLocalAsync(
             new() { DevServerOptions = new() { ExtraArgs = PayloadLimitsExtraArgs } });
 
         using var loggerFactory = new TestUtils.LogCaptureFactory(LoggerFactory);

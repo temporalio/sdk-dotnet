@@ -432,6 +432,13 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
         public WorkflowInboundInterceptor InterceptWorkflow(WorkflowInboundInterceptor nextInterceptor) =>
             new Inbound(this, nextInterceptor);
 
+        public ActivityInboundInterceptor InterceptActivity(ActivityInboundInterceptor nextInterceptor) =>
+            nextInterceptor;
+
+        public NexusOperationInboundInterceptor InterceptNexusOperation(
+            NexusOperationInboundInterceptor nextInterceptor) =>
+            nextInterceptor;
+
         private sealed class Inbound : WorkflowInboundInterceptor
         {
             private readonly NormalNexusOperationInterceptor root;

@@ -343,6 +343,7 @@ public class TemporalClientNexusOperationTests : WorkflowEnvironmentTestBase
         });
     }
 
+#if NETCOREAPP3_0_OR_GREATER
     [Fact]
     public async Task ListNexusOperationsAsync_SimpleList_IsAccurate()
     {
@@ -405,6 +406,7 @@ public class TemporalClientNexusOperationTests : WorkflowEnvironmentTestBase
                 });
             });
     }
+#endif
 
     [Fact]
     public async Task StartNexusOperationAsync_Interceptors_AreCalledProperly()

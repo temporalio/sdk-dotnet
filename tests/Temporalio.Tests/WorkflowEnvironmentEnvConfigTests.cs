@@ -12,10 +12,10 @@ public class WorkflowEnvironmentEnvConfigTests
     public async Task CreateFromEnvConfigAsync_ProfileLoadOptions_UsesConfiguredClientOptions()
     {
         const string Namespace = "envconfig-options-namespace";
-        await using var sourceEnv = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync(
+        await using var sourceEnv = await AsyncDisposableWorkflowEnvironment.StartLocalAsync(
             new() { Namespace = Namespace });
 
-        await using var env = await Temporalio.Testing.WorkflowEnvironment.CreateFromEnvConfigAsync(
+        await using var env = await AsyncDisposableWorkflowEnvironment.CreateFromEnvConfigAsync(
             new()
             {
                 ConfigSource = DataSource.FromUTF8String(

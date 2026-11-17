@@ -70,7 +70,7 @@ public class TemporalClientTests : WorkflowEnvironmentTestBase
         // call got that far into core. This catches cases where we didn't add all string call names
         // in Rust for our C# methods.
         var captureMeter = new CaptureRpcCallsMeter();
-        await using var env = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync(new()
+        await using var env = await AsyncDisposableWorkflowEnvironment.StartLocalAsync(new()
         {
             Runtime = new(new()
             {

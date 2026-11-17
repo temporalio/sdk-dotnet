@@ -234,7 +234,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
         Assert.Contains("Intentional error", entry.Formatted);
         Assert.IsType<ForwardedLog>(entry.State);
         var state = Assert.IsAssignableFrom<IEnumerable<KeyValuePair<string, object?>>>(entry.State);
-        var dict = new Dictionary<string, object?>(state);
+        var dict = state.ToDictionary(kv => kv.Key, kv => kv.Value);
         Assert.Equal(5, dict.Count);
         Assert.Equal(LogLevel.Warning, dict["Level"]);
         Assert.Equal("temporalio_sdk_core::worker::workflow", dict["Target"]);
@@ -248,7 +248,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
         entry = await RunWorkerUntilFailLogAsync(new() { IncludeFields = false });
         Assert.Equal("[sdk_core::temporalio_sdk_core::worker::workflow] Failing workflow task", entry.Formatted);
         state = Assert.IsAssignableFrom<IEnumerable<KeyValuePair<string, object?>>>(entry.State);
-        dict = new Dictionary<string, object?>(state);
+        dict = state.ToDictionary(kv => kv.Key, kv => kv.Value);
         Assert.Null(dict["JsonFields"]);
     }
 

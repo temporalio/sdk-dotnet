@@ -28,7 +28,7 @@ public class GeneralTests : TestBase
         // Include a closed generic options type because the scan above excludes open generic definitions.
         types = types.Append(typeof(Temporalio.Client.NexusOperationOptions<string>));
         // Ensure at least one we know of is there
-        Assert.Contains(typeof(Temporalio.Client.Schedules.ScheduleListOptions), types);
+        Assert.Contains(typeof(Temporalio.Client.Schedules.ScheduleOptions), types);
         foreach (var type in types)
         {
             // Exclude with start workflow operation which, while cloneable, is not considered an

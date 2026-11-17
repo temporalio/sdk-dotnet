@@ -36,8 +36,7 @@ public class CustomMetricMeterTests : WorkflowEnvironmentTestBase
         };
         var metrics = new ConcurrentQueue<KeyValuePair<long, Dictionary<string, object>>>();
         meterListener.SetMeasurementEventCallback<long>((inst, value, tags, state) =>
-            metrics.Enqueue(new(value, new(tags.ToArray().Select(kv =>
-                KeyValuePair.Create(kv.Key, kv.Value!))))));
+            metrics.Enqueue(new(value, tags.ToArray().ToDictionary(kv => kv.Key, kv => kv.Value!))));
         meterListener.Start();
 
         // Create a gauge and prepare some tags
@@ -147,8 +146,7 @@ public class CustomMetricMeterTests : WorkflowEnvironmentTestBase
         };
         var metrics = new ConcurrentQueue<(Instrument Instrument, long Value, Dictionary<string, object> Tags)>();
         meterListener.SetMeasurementEventCallback<long>((inst, value, tags, state) =>
-            metrics.Enqueue((inst, value, new(tags.ToArray().Select(
-                kv => KeyValuePair.Create(kv.Key, kv.Value!))))));
+            metrics.Enqueue((inst, value, tags.ToArray().ToDictionary(kv => kv.Key, kv => kv.Value!))));
         meterListener.Start();
 
         // Create runtime/client with meter
@@ -285,11 +283,9 @@ public class CustomMetricMeterTests : WorkflowEnvironmentTestBase
         };
         var metrics = new ConcurrentQueue<(Instrument Instrument, object Value, Dictionary<string, object> Tags)>();
         meterListener.SetMeasurementEventCallback<long>((inst, value, tags, state) =>
-            metrics.Enqueue((inst, value, new(tags.ToArray().Select(
-                kv => KeyValuePair.Create(kv.Key, kv.Value!))))));
+            metrics.Enqueue((inst, value, tags.ToArray().ToDictionary(kv => kv.Key, kv => kv.Value!))));
         meterListener.SetMeasurementEventCallback<double>((inst, value, tags, state) =>
-            metrics.Enqueue((inst, value, new(tags.ToArray().Select(
-                kv => KeyValuePair.Create(kv.Key, kv.Value!))))));
+            metrics.Enqueue((inst, value, tags.ToArray().ToDictionary(kv => kv.Key, kv => kv.Value!))));
         meterListener.Start();
 
         // Create runtime/client with meter

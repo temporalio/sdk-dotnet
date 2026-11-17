@@ -4,7 +4,9 @@ using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Client.Interceptors;
 using Temporalio.Common;
+#if NETCOREAPP3_0_OR_GREATER
 using Temporalio.Converters;
+#endif
 using Temporalio.Worker;
 using Temporalio.Workflows;
 using Xunit;
@@ -244,6 +246,7 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         Assert.Equal(memoVals, await desc.Memo["MemoKey"].ToValueAsync<List<string>>());
     }
 
+#if NETCOREAPP3_0_OR_GREATER
     [Fact]
     [CloudTestExclusion(
         CloudTestExclusionReason.NeedsCloudAdaptation,
@@ -285,6 +288,7 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         }
         Assert.Equal(3, limitedResults);
     }
+#endif
 
     [Workflow]
     public class CountableWorkflow

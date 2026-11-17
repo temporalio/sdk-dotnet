@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using Google.Protobuf.WellKnownTypes;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client.Schedules;
+#if NETCOREAPP3_0_OR_GREATER
 using Temporalio.Common;
+#endif
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Xunit;
@@ -214,6 +216,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase, IAsyncLi
             "some result",
             await Client.GetWorkflowHandle(exec.WorkflowId, exec.FirstExecutionRunId).GetResultAsync<string>());
 
+#if NETCOREAPP3_0_OR_GREATER
         // Create 4 more schedules of the same type and confirm they are in the list eventually.
         // But create two with different search attributes.
         await EnsureSearchAttributesPresentAsync();
@@ -313,6 +316,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase, IAsyncLi
             }
             return actualIds.Count;
         });
+#endif
     }
 
     [Fact]

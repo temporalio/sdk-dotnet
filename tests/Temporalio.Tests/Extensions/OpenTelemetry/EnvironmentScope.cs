@@ -6,7 +6,7 @@ internal sealed class EnvironmentScope : IDisposable
 
     public EnvironmentScope(params KeyValuePair<string, string?>[] values)
     {
-        previousValues = values.ToDictionary(
+        previousValues = values.ToDictionary<KeyValuePair<string, string?>, string, string?>(
             pair => pair.Key,
             pair => Environment.GetEnvironmentVariable(pair.Key));
         foreach (var pair in values)

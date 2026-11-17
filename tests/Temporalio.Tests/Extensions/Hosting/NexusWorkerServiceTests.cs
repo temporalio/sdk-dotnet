@@ -38,7 +38,14 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
 
         public int Increment()
         {
+#if NETFRAMEWORK
+            if (isDisposed)
+            {
+                throw new ObjectDisposedException(nameof(TestCounterService));
+            }
+#else
             ObjectDisposedException.ThrowIf(isDisposed, nameof(TestCounterService));
+#endif
 
             return ++value;
         }

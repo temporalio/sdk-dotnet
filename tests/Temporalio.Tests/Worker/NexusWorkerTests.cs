@@ -1144,6 +1144,12 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             NexusOperationInboundInterceptor nextInterceptor) =>
             new NexusInbound(Events, nextInterceptor);
 
+        public WorkflowInboundInterceptor InterceptWorkflow(WorkflowInboundInterceptor nextInterceptor) =>
+            nextInterceptor;
+
+        public ActivityInboundInterceptor InterceptActivity(ActivityInboundInterceptor nextInterceptor) =>
+            nextInterceptor;
+
         private class NexusInbound : NexusOperationInboundInterceptor
         {
             private readonly List<string> events;

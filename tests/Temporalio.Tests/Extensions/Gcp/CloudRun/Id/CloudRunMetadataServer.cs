@@ -52,7 +52,11 @@ internal sealed class CloudRunMetadataServer : IDisposable
         }
     }
 
+#if NETFRAMEWORK
+    public void Dispose() => listener.Stop();
+#else
     public void Dispose() => listener.Dispose();
+#endif
 
     private async Task AcceptLoopAsync()
     {

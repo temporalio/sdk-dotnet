@@ -144,7 +144,7 @@ Can add options like:
 
 To help debug native pieces and show full stdout/stderr, this is also available as an in-proc test program. Run:
 
-    dotnet run --project tests/Temporalio.Tests
+    dotnet run --project tests/Temporalio.Tests -f net10.0
 
 Extra args can be added after `--`, e.g. `-- -verbose` would show verbose logs and `-- --help` would show other
 options. If the arguments are anything but `--help`, the current assembly is prepended to the args before sending to the

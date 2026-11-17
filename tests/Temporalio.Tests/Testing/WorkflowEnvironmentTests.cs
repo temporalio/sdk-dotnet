@@ -56,7 +56,7 @@ public class WorkflowEnvironmentTests : TestBase
     [OnlyIntelFact]
     public async Task StartTimeSkippingAsync_SlowWorkflowAutoSkip_ProperlySkips()
     {
-        await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
+        await using var env = await AsyncDisposableWorkflowEnvironment.StartTimeSkippingAsync();
         using var worker = new TemporalWorker(
             env.Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<ReallySlowWorkflow>());
@@ -79,7 +79,7 @@ public class WorkflowEnvironmentTests : TestBase
     [OnlyIntelFact]
     public async Task StartTimeSkippingAsync_SlowWorkflowManualSkip_ProperlySkips()
     {
-        await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
+        await using var env = await AsyncDisposableWorkflowEnvironment.StartTimeSkippingAsync();
         using var worker = new TemporalWorker(
             env.Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<ReallySlowWorkflow>());
@@ -136,7 +136,7 @@ public class WorkflowEnvironmentTests : TestBase
     [OnlyIntelFact]
     public async Task StartTimeSkippingAsync_UpdateDuringWorkflow_DoesNotHang()
     {
-        await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
+        await using var env = await AsyncDisposableWorkflowEnvironment.StartTimeSkippingAsync();
         using var worker = new TemporalWorker(
             env.Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -204,7 +204,7 @@ public class WorkflowEnvironmentTests : TestBase
     [OnlyIntelFact]
     public async Task StartTimeSkippingAsync_MissesHeartbeatTimeout_TimesOut()
     {
-        await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
+        await using var env = await AsyncDisposableWorkflowEnvironment.StartTimeSkippingAsync();
         using var worker = new TemporalWorker(
             env.Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -238,7 +238,7 @@ public class WorkflowEnvironmentTests : TestBase
     [OnlyIntelFact]
     public async Task StartTimeSkippingAsync_AutoTimeSkippingDisabled_SleepsFullTime()
     {
-        await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
+        await using var env = await AsyncDisposableWorkflowEnvironment.StartTimeSkippingAsync();
         using var worker = new TemporalWorker(
             env.Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<ShortSleepWorkflow>());
@@ -282,7 +282,7 @@ public class WorkflowEnvironmentTests : TestBase
     [OnlyIntelFact]
     public async Task StartTimeSkippingAsync_AutoTimeSkippingDisabled_RestoresAfterCall()
     {
-        await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
+        await using var env = await AsyncDisposableWorkflowEnvironment.StartTimeSkippingAsync();
         using var worker = new TemporalWorker(
             env.Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<LongSleepWorkflow>());
@@ -331,7 +331,7 @@ public class WorkflowEnvironmentTests : TestBase
         };
 
         // Confirm that when used in env without SAs it fails
-        await using var env1 = await WorkflowEnvironment.StartLocalAsync();
+        await using var env1 = await AsyncDisposableWorkflowEnvironment.StartLocalAsync();
         var exc = await Assert.ThrowsAsync<RpcException>(
             () => env1.Client.StartWorkflowAsync(
                 "my-workflow",
@@ -343,7 +343,7 @@ public class WorkflowEnvironmentTests : TestBase
         Assert.Contains("no mapping defined", exc.Message);
 
         // Confirm that when used in env with SAs it succeeds
-        await using var env2 = await WorkflowEnvironment.StartLocalAsync(
+        await using var env2 = await AsyncDisposableWorkflowEnvironment.StartLocalAsync(
             new() { SearchAttributes = attrs });
         var handle = await env2.Client.StartWorkflowAsync(
             "my-workflow",

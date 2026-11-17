@@ -83,7 +83,7 @@ public unsafe class TemporalConnectionOptionsTests
         var interopOptions = options.ToInteropOptions(scope);
 
         Assert.True(interopOptions.metadata.data == null);
-        Assert.Equal((nuint)0, interopOptions.metadata.size);
+        Assert.Equal<nuint>(0, interopOptions.metadata.size);
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public unsafe class TemporalConnectionOptionsTests
         var interopOptions = options.ToInteropOptions(scope);
 
         Assert.True(interopOptions.metadata.data == null);
-        Assert.Equal((nuint)0, interopOptions.metadata.size);
+        Assert.Equal<nuint>(0, interopOptions.metadata.size);
     }
 
     [Fact]
@@ -118,7 +118,7 @@ public unsafe class TemporalConnectionOptionsTests
         using var scope = new Scope();
         var interopOptions = options.ToInteropOptions(scope);
 
-        Assert.Equal((nuint)2, interopOptions.metadata.size);
+        Assert.Equal<nuint>(2, interopOptions.metadata.size);
 
         Bridge.Interop.TemporalCoreByteArrayRef* data = interopOptions.metadata.data;
         AssertKeyValue(data[0], "key1", "client-ascii");
@@ -137,7 +137,7 @@ public unsafe class TemporalConnectionOptionsTests
         var interopOptions = options.ToInteropOptions(scope);
 
         Assert.True(interopOptions.binary_metadata.data == null);
-        Assert.Equal((nuint)0, interopOptions.binary_metadata.size);
+        Assert.Equal<nuint>(0, interopOptions.binary_metadata.size);
     }
 
     [Fact]
@@ -153,7 +153,7 @@ public unsafe class TemporalConnectionOptionsTests
         var interopOptions = options.ToInteropOptions(scope);
 
         Assert.True(interopOptions.binary_metadata.data == null);
-        Assert.Equal((nuint)0, interopOptions.binary_metadata.size);
+        Assert.Equal<nuint>(0, interopOptions.binary_metadata.size);
     }
 
     [Fact]
@@ -172,7 +172,7 @@ public unsafe class TemporalConnectionOptionsTests
         using var scope = new Scope();
         var interopOptions = options.ToInteropOptions(scope);
 
-        Assert.Equal((nuint)2, interopOptions.binary_metadata.size);
+        Assert.Equal<nuint>(2, interopOptions.binary_metadata.size);
 
         Bridge.Interop.TemporalCoreByteArrayRef* data = interopOptions.binary_metadata.data;
         AssertKeyValue(data[0], "key1-bin", "client-binary");
