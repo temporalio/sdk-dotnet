@@ -49,6 +49,7 @@ namespace Temporalio.Worker
         private readonly Lazy<MetricMeter> metricMeter;
         private readonly Lazy<WorkflowInboundInterceptor> inbound;
         private readonly Lazy<WorkflowOutboundInterceptor> outbound;
+        private readonly OutboundImpl rootOutbound;
         // Lazily created if asked for by user
         private readonly Lazy<NotifyOnSetDictionary<string, WorkflowQueryDefinition>> mutableQueries;
         // Lazily created if asked for by user
@@ -135,6 +136,7 @@ namespace Temporalio.Worker
                 failureConverterNoContext is IWithSerializationContext<IFailureConverter> failureWithContext ?
                 failureWithContext.WithSerializationContext(nexusContext2) : failureConverterWorkflowContext;
             var rootInbound = new InboundImpl(this);
+            rootOutbound = new(this);
             // Lazy so it can have the context when instantiating
             inbound = new(
                 () =>
@@ -142,7 +144,7 @@ namespace Temporalio.Worker
                     var ret = details.Interceptors.Reverse().Aggregate(
                         (WorkflowInboundInterceptor)rootInbound,
                         (v, impl) => impl.InterceptWorkflow(v));
-                    ret.Init(new OutboundImpl(this));
+                    ret.Init(rootOutbound);
                     return ret;
                 },
                 false);
@@ -2124,6 +2126,16 @@ namespace Temporalio.Worker
             completion.Successful.Commands.Insert(completion.Successful.Commands.Count, compCmd);
         }
 
+        private Task<NexusWorkflowOperationHandle<TResult>> ScheduleSystemNexusOperationAsync<TResult>(
+            ScheduleSystemNexusOperationInput input) =>
+            rootOutbound.ScheduleNexusOperationAsync<TResult>(new(
+                Service: input.Service,
+                ClientOptions: new(SystemNexusPayloads.TemporalSystemEndpoint),
+                OperationName: input.Operation.Name,
+                Arg: input.Arg,
+                Options: new(),
+                Headers: input.Headers));
+
         /// <summary>
         /// Workflow inbound implementation.
         /// </summary>
@@ -3013,17 +3025,6 @@ namespace Temporalio.Worker
                 });
                 return handleSource.Task;
             }
-
-            /// <inheritdoc/>
-            public override Task<NexusWorkflowOperationHandle<TResult>> ScheduleSystemNexusOperationAsync<TResult>(
-                ScheduleSystemNexusOperationInput input) =>
-                ScheduleNexusOperationAsync<TResult>(new(
-                    Service: input.Service,
-                    ClientOptions: new(SystemNexusPayloads.TemporalSystemEndpoint),
-                    OperationName: input.Operation.Name,
-                    Arg: input.Arg,
-                    Options: new(),
-                    Headers: input.Headers));
 
             private Task SignalExternalWorkflowInternalAsync(
                 ISerializationContext.Workflow serializationContext,

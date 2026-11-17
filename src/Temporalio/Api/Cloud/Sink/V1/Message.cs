@@ -29,20 +29,24 @@ namespace Temporalio.Api.Cloud.Sink.V1 {
             "YW1lGAEgASgJEhMKC2J1Y2tldF9uYW1lGAIgASgJEg4KBnJlZ2lvbhgDIAEo",
             "CRIPCgdrbXNfYXJuGAQgASgJEhYKDmF3c19hY2NvdW50X2lkGAUgASgJIlUK",
             "B0dDU1NwZWMSDQoFc2FfaWQYASABKAkSEwoLYnVja2V0X25hbWUYAiABKAkS",
-            "FgoOZ2NwX3Byb2plY3RfaWQYAyABKAkSDgoGcmVnaW9uGAQgASgJIkkKC0tp",
-            "bmVzaXNTcGVjEhEKCXJvbGVfbmFtZRgBIAEoCRIXCg9kZXN0aW5hdGlvbl91",
-            "cmkYAiABKAkSDgoGcmVnaW9uGAMgASgJIlQKClB1YlN1YlNwZWMSGgoSc2Vy",
-            "dmljZV9hY2NvdW50X2lkGAEgASgJEhIKCnRvcGljX25hbWUYAiABKAkSFgoO",
-            "Z2NwX3Byb2plY3RfaWQYAyABKAlCmAEKHWlvLnRlbXBvcmFsLmFwaS5jbG91",
-            "ZC5zaW5rLnYxQgxNZXNzYWdlUHJvdG9QAVolZ28udGVtcG9yYWwuaW8vYXBp",
-            "L2Nsb3VkL3NpbmsvdjE7c2lua6oCHFRlbXBvcmFsaW8uQXBpLkNsb3VkLlNp",
-            "bmsuVjHqAiBUZW1wb3JhbGlvOjpBcGk6OkNsb3VkOjpTaW5rOjpWMWIGcHJv",
-            "dG8z"));
+            "FgoOZ2NwX3Byb2plY3RfaWQYAyABKAkSDgoGcmVnaW9uGAQgASgJIpQBCg1B",
+            "enVyZUJsb2JTcGVjEhEKCXRlbmFudF9pZBgBIAEoCRIXCg9zdG9yYWdlX2Fj",
+            "Y291bnQYAiABKAkSFgoOY29udGFpbmVyX25hbWUYAyABKAkSDgoGcmVnaW9u",
+            "GAQgASgJEhcKD3N1YnNjcmlwdGlvbl9pZBgFIAEoCRIWCg5yZXNvdXJjZV9n",
+            "cm91cBgGIAEoCSJJCgtLaW5lc2lzU3BlYxIRCglyb2xlX25hbWUYASABKAkS",
+            "FwoPZGVzdGluYXRpb25fdXJpGAIgASgJEg4KBnJlZ2lvbhgDIAEoCSJUCgpQ",
+            "dWJTdWJTcGVjEhoKEnNlcnZpY2VfYWNjb3VudF9pZBgBIAEoCRISCgp0b3Bp",
+            "Y19uYW1lGAIgASgJEhYKDmdjcF9wcm9qZWN0X2lkGAMgASgJQpgBCh1pby50",
+            "ZW1wb3JhbC5hcGkuY2xvdWQuc2luay52MUIMTWVzc2FnZVByb3RvUAFaJWdv",
+            "LnRlbXBvcmFsLmlvL2FwaS9jbG91ZC9zaW5rL3YxO3NpbmuqAhxUZW1wb3Jh",
+            "bGlvLkFwaS5DbG91ZC5TaW5rLlYx6gIgVGVtcG9yYWxpbzo6QXBpOjpDbG91",
+            "ZDo6U2luazo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Sink.V1.S3Spec), global::Temporalio.Api.Cloud.Sink.V1.S3Spec.Parser, new[]{ "RoleName", "BucketName", "Region", "KmsArn", "AwsAccountId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Sink.V1.GCSSpec), global::Temporalio.Api.Cloud.Sink.V1.GCSSpec.Parser, new[]{ "SaId", "BucketName", "GcpProjectId", "Region" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Sink.V1.AzureBlobSpec), global::Temporalio.Api.Cloud.Sink.V1.AzureBlobSpec.Parser, new[]{ "TenantId", "StorageAccount", "ContainerName", "Region", "SubscriptionId", "ResourceGroup" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Sink.V1.KinesisSpec), global::Temporalio.Api.Cloud.Sink.V1.KinesisSpec.Parser, new[]{ "RoleName", "DestinationUri", "Region" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Sink.V1.PubSubSpec), global::Temporalio.Api.Cloud.Sink.V1.PubSubSpec.Parser, new[]{ "ServiceAccountId", "TopicName", "GcpProjectId" }, null, null, null, null)
           }));
@@ -715,6 +719,398 @@ namespace Temporalio.Api.Cloud.Sink.V1 {
 
   }
 
+  public sealed partial class AzureBlobSpec : pb::IMessage<AzureBlobSpec>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<AzureBlobSpec> _parser = new pb::MessageParser<AzureBlobSpec>(() => new AzureBlobSpec());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<AzureBlobSpec> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Cloud.Sink.V1.MessageReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public AzureBlobSpec() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public AzureBlobSpec(AzureBlobSpec other) : this() {
+      tenantId_ = other.tenantId_;
+      storageAccount_ = other.storageAccount_;
+      containerName_ = other.containerName_;
+      region_ = other.region_;
+      subscriptionId_ = other.subscriptionId_;
+      resourceGroup_ = other.resourceGroup_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public AzureBlobSpec Clone() {
+      return new AzureBlobSpec(this);
+    }
+
+    /// <summary>Field number for the "tenant_id" field.</summary>
+    public const int TenantIdFieldNumber = 1;
+    private string tenantId_ = "";
+    /// <summary>
+    /// The customer's Azure tenant ID where the storage account exists and where Temporal's app registration is consented/granted access.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string TenantId {
+      get { return tenantId_; }
+      set {
+        tenantId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "storage_account" field.</summary>
+    public const int StorageAccountFieldNumber = 2;
+    private string storageAccount_ = "";
+    /// <summary>
+    /// The name of the destination Azure storage account where Temporal will send data.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string StorageAccount {
+      get { return storageAccount_; }
+      set {
+        storageAccount_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "container_name" field.</summary>
+    public const int ContainerNameFieldNumber = 3;
+    private string containerName_ = "";
+    /// <summary>
+    /// The name of the destination Azure Blob container where Temporal will send data.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ContainerName {
+      get { return containerName_; }
+      set {
+        containerName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "region" field.</summary>
+    public const int RegionFieldNumber = 4;
+    private string region_ = "";
+    /// <summary>
+    /// The region where the Azure storage account is located.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Region {
+      get { return region_; }
+      set {
+        region_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "subscription_id" field.</summary>
+    public const int SubscriptionIdFieldNumber = 5;
+    private string subscriptionId_ = "";
+    /// <summary>
+    /// The Azure subscription ID that contains the storage account.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string SubscriptionId {
+      get { return subscriptionId_; }
+      set {
+        subscriptionId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "resource_group" field.</summary>
+    public const int ResourceGroupFieldNumber = 6;
+    private string resourceGroup_ = "";
+    /// <summary>
+    /// The Azure resource group that contains the storage account.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ResourceGroup {
+      get { return resourceGroup_; }
+      set {
+        resourceGroup_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as AzureBlobSpec);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(AzureBlobSpec other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (TenantId != other.TenantId) return false;
+      if (StorageAccount != other.StorageAccount) return false;
+      if (ContainerName != other.ContainerName) return false;
+      if (Region != other.Region) return false;
+      if (SubscriptionId != other.SubscriptionId) return false;
+      if (ResourceGroup != other.ResourceGroup) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (TenantId.Length != 0) hash ^= TenantId.GetHashCode();
+      if (StorageAccount.Length != 0) hash ^= StorageAccount.GetHashCode();
+      if (ContainerName.Length != 0) hash ^= ContainerName.GetHashCode();
+      if (Region.Length != 0) hash ^= Region.GetHashCode();
+      if (SubscriptionId.Length != 0) hash ^= SubscriptionId.GetHashCode();
+      if (ResourceGroup.Length != 0) hash ^= ResourceGroup.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (TenantId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(TenantId);
+      }
+      if (StorageAccount.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(StorageAccount);
+      }
+      if (ContainerName.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(ContainerName);
+      }
+      if (Region.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Region);
+      }
+      if (SubscriptionId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(SubscriptionId);
+      }
+      if (ResourceGroup.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ResourceGroup);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (TenantId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(TenantId);
+      }
+      if (StorageAccount.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(StorageAccount);
+      }
+      if (ContainerName.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(ContainerName);
+      }
+      if (Region.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Region);
+      }
+      if (SubscriptionId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(SubscriptionId);
+      }
+      if (ResourceGroup.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ResourceGroup);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (TenantId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(TenantId);
+      }
+      if (StorageAccount.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(StorageAccount);
+      }
+      if (ContainerName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ContainerName);
+      }
+      if (Region.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Region);
+      }
+      if (SubscriptionId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SubscriptionId);
+      }
+      if (ResourceGroup.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ResourceGroup);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(AzureBlobSpec other) {
+      if (other == null) {
+        return;
+      }
+      if (other.TenantId.Length != 0) {
+        TenantId = other.TenantId;
+      }
+      if (other.StorageAccount.Length != 0) {
+        StorageAccount = other.StorageAccount;
+      }
+      if (other.ContainerName.Length != 0) {
+        ContainerName = other.ContainerName;
+      }
+      if (other.Region.Length != 0) {
+        Region = other.Region;
+      }
+      if (other.SubscriptionId.Length != 0) {
+        SubscriptionId = other.SubscriptionId;
+      }
+      if (other.ResourceGroup.Length != 0) {
+        ResourceGroup = other.ResourceGroup;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            TenantId = input.ReadString();
+            break;
+          }
+          case 18: {
+            StorageAccount = input.ReadString();
+            break;
+          }
+          case 26: {
+            ContainerName = input.ReadString();
+            break;
+          }
+          case 34: {
+            Region = input.ReadString();
+            break;
+          }
+          case 42: {
+            SubscriptionId = input.ReadString();
+            break;
+          }
+          case 50: {
+            ResourceGroup = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            TenantId = input.ReadString();
+            break;
+          }
+          case 18: {
+            StorageAccount = input.ReadString();
+            break;
+          }
+          case 26: {
+            ContainerName = input.ReadString();
+            break;
+          }
+          case 34: {
+            Region = input.ReadString();
+            break;
+          }
+          case 42: {
+            SubscriptionId = input.ReadString();
+            break;
+          }
+          case 50: {
+            ResourceGroup = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
   public sealed partial class KinesisSpec : pb::IMessage<KinesisSpec>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -729,7 +1125,7 @@ namespace Temporalio.Api.Cloud.Sink.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Cloud.Sink.V1.MessageReflection.Descriptor.MessageTypes[2]; }
+      get { return global::Temporalio.Api.Cloud.Sink.V1.MessageReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1001,7 +1397,7 @@ namespace Temporalio.Api.Cloud.Sink.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Cloud.Sink.V1.MessageReflection.Descriptor.MessageTypes[3]; }
+      get { return global::Temporalio.Api.Cloud.Sink.V1.MessageReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

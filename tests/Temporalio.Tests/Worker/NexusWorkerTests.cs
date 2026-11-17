@@ -1668,6 +1668,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                     id: "target-workflow-id",
                     taskQueue: "target-task-queue",
                     signal: "test-signal",
+                    idReusePolicy: WorkflowIdReusePolicy.AllowDuplicate,
                     @namespace: "target-namespace")
                 {
                     Args = new object?[] { "workflow-input" },

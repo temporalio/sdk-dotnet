@@ -42,17 +42,18 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
             "b2xpY3lfc3BlYxgBIAEoCzI8LnRlbXBvcmFsLmFwaS5jbG91ZC5uZXh1cy52",
             "MS5BbGxvd2VkQ2xvdWROYW1lc3BhY2VQb2xpY3lTcGVjSABCCQoHdmFyaWFu",
             "dCI3Ch9BbGxvd2VkQ2xvdWROYW1lc3BhY2VQb2xpY3lTcGVjEhQKDG5hbWVz",
-            "cGFjZV9pZBgBIAEoCSKtAgoIRW5kcG9pbnQSCgoCaWQYASABKAkSGAoQcmVz",
+            "cGFjZV9pZBgBIAEoCSLBAgoIRW5kcG9pbnQSCgoCaWQYASABKAkSGAoQcmVz",
             "b3VyY2VfdmVyc2lvbhgCIAEoCRI3CgRzcGVjGAMgASgLMikudGVtcG9yYWwu",
             "YXBpLmNsb3VkLm5leHVzLnYxLkVuZHBvaW50U3BlYxI8CgVzdGF0ZRgEIAEo",
             "DjItLnRlbXBvcmFsLmFwaS5jbG91ZC5yZXNvdXJjZS52MS5SZXNvdXJjZVN0",
             "YXRlEhoKEmFzeW5jX29wZXJhdGlvbl9pZBgFIAEoCRIwCgxjcmVhdGVkX3Rp",
             "bWUYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjYKEmxhc3Rf",
             "bW9kaWZpZWRfdGltZRgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3Rh",
-            "bXBCnQEKHmlvLnRlbXBvcmFsLmFwaS5jbG91ZC5uZXh1cy52MUIMTWVzc2Fn",
-            "ZVByb3RvUAFaJ2dvLnRlbXBvcmFsLmlvL2FwaS9jbG91ZC9uZXh1cy92MTtu",
-            "ZXh1c6oCHVRlbXBvcmFsaW8uQXBpLkNsb3VkLk5leHVzLlYx6gIhVGVtcG9y",
-            "YWxpbzo6QXBpOjpDbG91ZDo6TmV4dXM6OlYxYgZwcm90bzM="));
+            "bXASEgoKcHJvamVjdF9pZBgIIAEoCUKdAQoeaW8udGVtcG9yYWwuYXBpLmNs",
+            "b3VkLm5leHVzLnYxQgxNZXNzYWdlUHJvdG9QAVonZ28udGVtcG9yYWwuaW8v",
+            "YXBpL2Nsb3VkL25leHVzL3YxO25leHVzqgIdVGVtcG9yYWxpby5BcGkuQ2xv",
+            "dWQuTmV4dXMuVjHqAiFUZW1wb3JhbGlvOjpBcGk6OkNsb3VkOjpOZXh1czo6",
+            "VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Cloud.Resource.V1.MessageReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -61,7 +62,7 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Nexus.V1.WorkerTargetSpec), global::Temporalio.Api.Cloud.Nexus.V1.WorkerTargetSpec.Parser, new[]{ "NamespaceId", "TaskQueue" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Nexus.V1.EndpointPolicySpec), global::Temporalio.Api.Cloud.Nexus.V1.EndpointPolicySpec.Parser, new[]{ "AllowedCloudNamespacePolicySpec" }, new[]{ "Variant" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Nexus.V1.AllowedCloudNamespacePolicySpec), global::Temporalio.Api.Cloud.Nexus.V1.AllowedCloudNamespacePolicySpec.Parser, new[]{ "NamespaceId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Nexus.V1.Endpoint), global::Temporalio.Api.Cloud.Nexus.V1.Endpoint.Parser, new[]{ "Id", "ResourceVersion", "Spec", "State", "AsyncOperationId", "CreatedTime", "LastModifiedTime" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Nexus.V1.Endpoint), global::Temporalio.Api.Cloud.Nexus.V1.Endpoint.Parser, new[]{ "Id", "ResourceVersion", "Spec", "State", "AsyncOperationId", "CreatedTime", "LastModifiedTime", "ProjectId" }, null, null, null, null)
           }));
     }
     #endregion
@@ -1372,6 +1373,7 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
       asyncOperationId_ = other.asyncOperationId_;
       createdTime_ = other.createdTime_ != null ? other.createdTime_.Clone() : null;
       lastModifiedTime_ = other.lastModifiedTime_ != null ? other.lastModifiedTime_.Clone() : null;
+      projectId_ = other.projectId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1488,6 +1490,21 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
       }
     }
 
+    /// <summary>Field number for the "project_id" field.</summary>
+    public const int ProjectIdFieldNumber = 8;
+    private string projectId_ = "";
+    /// <summary>
+    /// The id of the project this endpoint belongs to.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ProjectId {
+      get { return projectId_; }
+      set {
+        projectId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1510,6 +1527,7 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
       if (AsyncOperationId != other.AsyncOperationId) return false;
       if (!object.Equals(CreatedTime, other.CreatedTime)) return false;
       if (!object.Equals(LastModifiedTime, other.LastModifiedTime)) return false;
+      if (ProjectId != other.ProjectId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1524,6 +1542,7 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
       if (AsyncOperationId.Length != 0) hash ^= AsyncOperationId.GetHashCode();
       if (createdTime_ != null) hash ^= CreatedTime.GetHashCode();
       if (lastModifiedTime_ != null) hash ^= LastModifiedTime.GetHashCode();
+      if (ProjectId.Length != 0) hash ^= ProjectId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1570,6 +1589,10 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
         output.WriteRawTag(58);
         output.WriteMessage(LastModifiedTime);
       }
+      if (ProjectId.Length != 0) {
+        output.WriteRawTag(66);
+        output.WriteString(ProjectId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1608,6 +1631,10 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
         output.WriteRawTag(58);
         output.WriteMessage(LastModifiedTime);
       }
+      if (ProjectId.Length != 0) {
+        output.WriteRawTag(66);
+        output.WriteString(ProjectId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1638,6 +1665,9 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
       }
       if (lastModifiedTime_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(LastModifiedTime);
+      }
+      if (ProjectId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ProjectId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1680,6 +1710,9 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
           LastModifiedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
         }
         LastModifiedTime.MergeFrom(other.LastModifiedTime);
+      }
+      if (other.ProjectId.Length != 0) {
+        ProjectId = other.ProjectId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1733,6 +1766,10 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
             input.ReadMessage(LastModifiedTime);
             break;
           }
+          case 66: {
+            ProjectId = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -1783,6 +1820,10 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
               LastModifiedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
             input.ReadMessage(LastModifiedTime);
+            break;
+          }
+          case 66: {
+            ProjectId = input.ReadString();
             break;
           }
         }

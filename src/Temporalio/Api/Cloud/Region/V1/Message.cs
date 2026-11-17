@@ -25,17 +25,18 @@ namespace Temporalio.Api.Cloud.Region.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cip0ZW1wb3JhbC9hcGkvY2xvdWQvcmVnaW9uL3YxL21lc3NhZ2UucHJvdG8S",
-            "HHRlbXBvcmFsLmFwaS5jbG91ZC5yZWdpb24udjEimQIKBlJlZ2lvbhIKCgJp",
+            "HHRlbXBvcmFsLmFwaS5jbG91ZC5yZWdpb24udjEiswIKBlJlZ2lvbhIKCgJp",
             "ZBgBIAEoCRIlChljbG91ZF9wcm92aWRlcl9kZXByZWNhdGVkGAIgASgJQgIY",
             "ARJKCg5jbG91ZF9wcm92aWRlchgFIAEoDjIyLnRlbXBvcmFsLmFwaS5jbG91",
             "ZC5yZWdpb24udjEuUmVnaW9uLkNsb3VkUHJvdmlkZXISHQoVY2xvdWRfcHJv",
-            "dmlkZXJfcmVnaW9uGAMgASgJEhAKCGxvY2F0aW9uGAQgASgJIl8KDUNsb3Vk",
+            "dmlkZXJfcmVnaW9uGAMgASgJEhAKCGxvY2F0aW9uGAQgASgJInkKDUNsb3Vk",
             "UHJvdmlkZXISHgoaQ0xPVURfUFJPVklERVJfVU5TUEVDSUZJRUQQABIWChJD",
-            "TE9VRF9QUk9WSURFUl9BV1MQARIWChJDTE9VRF9QUk9WSURFUl9HQ1AQAkKi",
-            "AQofaW8udGVtcG9yYWwuYXBpLmNsb3VkLnJlZ2lvbi52MUIMTWVzc2FnZVBy",
-            "b3RvUAFaKWdvLnRlbXBvcmFsLmlvL2FwaS9jbG91ZC9yZWdpb24vdjE7cmVn",
-            "aW9uqgIeVGVtcG9yYWxpby5BcGkuQ2xvdWQuUmVnaW9uLlYx6gIiVGVtcG9y",
-            "YWxpbzo6QXBpOjpDbG91ZDo6UmVnaW9uOjpWMWIGcHJvdG8z"));
+            "TE9VRF9QUk9WSURFUl9BV1MQARIWChJDTE9VRF9QUk9WSURFUl9HQ1AQAhIY",
+            "ChRDTE9VRF9QUk9WSURFUl9BWlVSRRADQqIBCh9pby50ZW1wb3JhbC5hcGku",
+            "Y2xvdWQucmVnaW9uLnYxQgxNZXNzYWdlUHJvdG9QAVopZ28udGVtcG9yYWwu",
+            "aW8vYXBpL2Nsb3VkL3JlZ2lvbi92MTtyZWdpb26qAh5UZW1wb3JhbGlvLkFw",
+            "aS5DbG91ZC5SZWdpb24uVjHqAiJUZW1wb3JhbGlvOjpBcGk6OkNsb3VkOjpS",
+            "ZWdpb246OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -414,6 +415,7 @@ namespace Temporalio.Api.Cloud.Region.V1 {
         [pbr::OriginalName("CLOUD_PROVIDER_UNSPECIFIED")] Unspecified = 0,
         [pbr::OriginalName("CLOUD_PROVIDER_AWS")] Aws = 1,
         [pbr::OriginalName("CLOUD_PROVIDER_GCP")] Gcp = 2,
+        [pbr::OriginalName("CLOUD_PROVIDER_AZURE")] Azure = 3,
       }
 
     }

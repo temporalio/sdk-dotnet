@@ -65,6 +65,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke DescribeNamespaceRestore.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DescribeNamespaceRestoreResponse> DescribeNamespaceRestoreAsync(DescribeNamespaceRestoreRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DescribeNamespaceRestore", req, DescribeNamespaceRestoreResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke GetNexusEndpoint.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -128,6 +139,28 @@ namespace Temporalio.Client
         public Task<RemoveSearchAttributesResponse> RemoveSearchAttributesAsync(RemoveSearchAttributesRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("RemoveSearchAttributes", req, RemoveSearchAttributesResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke RestoreNamespace.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<RestoreNamespaceResponse> RestoreNamespaceAsync(RestoreNamespaceRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("RestoreNamespace", req, RestoreNamespaceResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke SoftDeleteNamespace.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<SoftDeleteNamespaceResponse> SoftDeleteNamespaceAsync(SoftDeleteNamespaceRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("SoftDeleteNamespace", req, SoftDeleteNamespaceResponse.Parser, options);
         }
 
         /// <summary>

@@ -65,6 +65,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke CreateCallerRateLimit.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<CreateCallerRateLimitResponse> CreateCallerRateLimitAsync(CreateCallerRateLimitRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("CreateCallerRateLimit", req, CreateCallerRateLimitResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke CreateConnectivityRule.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -120,6 +131,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke CreateProject.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<CreateProjectResponse> CreateProjectAsync(CreateProjectRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("CreateProject", req, CreateProjectResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke CreateServiceAccount.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -172,6 +194,17 @@ namespace Temporalio.Client
         public Task<DeleteApiKeyResponse> DeleteApiKeyAsync(DeleteApiKeyRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("DeleteApiKey", req, DeleteApiKeyResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke DeleteCallerRateLimit.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DeleteCallerRateLimitResponse> DeleteCallerRateLimitAsync(DeleteCallerRateLimitRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DeleteCallerRateLimit", req, DeleteCallerRateLimitResponse.Parser, options);
         }
 
         /// <summary>
@@ -238,6 +271,17 @@ namespace Temporalio.Client
         public Task<DeleteNexusEndpointResponse> DeleteNexusEndpointAsync(DeleteNexusEndpointRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("DeleteNexusEndpoint", req, DeleteNexusEndpointResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke DeleteProject.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DeleteProjectResponse> DeleteProjectAsync(DeleteProjectRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DeleteProject", req, DeleteProjectResponse.Parser, options);
         }
 
         /// <summary>
@@ -373,6 +417,28 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke GetCallerRateLimit.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetCallerRateLimitResponse> GetCallerRateLimitAsync(GetCallerRateLimitRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetCallerRateLimit", req, GetCallerRateLimitResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetCallerRateLimits.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetCallerRateLimitsResponse> GetCallerRateLimitsAsync(GetCallerRateLimitsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetCallerRateLimits", req, GetCallerRateLimitsResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke GetConnectivityRule.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -505,6 +571,39 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke GetProject.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetProjectResponse> GetProjectAsync(GetProjectRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetProject", req, GetProjectResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetProjects.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetProjectsResponse> GetProjectsAsync(GetProjectsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetProjects", req, GetProjectsResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetProjectScopedServiceAccounts.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetProjectScopedServiceAccountsResponse> GetProjectScopedServiceAccountsAsync(GetProjectScopedServiceAccountsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetProjectScopedServiceAccounts", req, GetProjectScopedServiceAccountsResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke GetRegion.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -546,6 +645,17 @@ namespace Temporalio.Client
         public Task<GetServiceAccountNamespaceAssignmentsResponse> GetServiceAccountNamespaceAssignmentsAsync(GetServiceAccountNamespaceAssignmentsRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("GetServiceAccountNamespaceAssignments", req, GetServiceAccountNamespaceAssignmentsResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetServiceAccountProjectAssignments.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetServiceAccountProjectAssignmentsResponse> GetServiceAccountProjectAssignmentsAsync(GetServiceAccountProjectAssignmentsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetServiceAccountProjectAssignments", req, GetServiceAccountProjectAssignmentsResponse.Parser, options);
         }
 
         /// <summary>
@@ -615,6 +725,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke GetUserGroupProjectAssignments.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetUserGroupProjectAssignmentsResponse> GetUserGroupProjectAssignmentsAsync(GetUserGroupProjectAssignmentsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetUserGroupProjectAssignments", req, GetUserGroupProjectAssignmentsResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke GetUserGroups.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -637,6 +758,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke GetUserProjectAssignments.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetUserProjectAssignmentsResponse> GetUserProjectAssignmentsAsync(GetUserProjectAssignmentsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetUserProjectAssignments", req, GetUserProjectAssignmentsResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke GetUsers.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -645,6 +777,28 @@ namespace Temporalio.Client
         public Task<GetUsersResponse> GetUsersAsync(GetUsersRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("GetUsers", req, GetUsersResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke MoveNamespaceToProject.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<MoveNamespaceToProjectResponse> MoveNamespaceToProjectAsync(MoveNamespaceToProjectRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("MoveNamespaceToProject", req, MoveNamespaceToProjectResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke MoveNexusEndpointToProject.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<MoveNexusEndpointToProjectResponse> MoveNexusEndpointToProjectAsync(MoveNexusEndpointToProjectRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("MoveNexusEndpointToProject", req, MoveNexusEndpointToProjectResponse.Parser, options);
         }
 
         /// <summary>
@@ -681,6 +835,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke SetServiceAccountProjectAccess.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<SetServiceAccountProjectAccessResponse> SetServiceAccountProjectAccessAsync(SetServiceAccountProjectAccessRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("SetServiceAccountProjectAccess", req, SetServiceAccountProjectAccessResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke SetUserGroupNamespaceAccess.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -692,6 +857,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke SetUserGroupProjectAccess.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<SetUserGroupProjectAccessResponse> SetUserGroupProjectAccessAsync(SetUserGroupProjectAccessRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("SetUserGroupProjectAccess", req, SetUserGroupProjectAccessResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke SetUserNamespaceAccess.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -700,6 +876,17 @@ namespace Temporalio.Client
         public Task<SetUserNamespaceAccessResponse> SetUserNamespaceAccessAsync(SetUserNamespaceAccessRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("SetUserNamespaceAccess", req, SetUserNamespaceAccessResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke SetUserProjectAccess.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<SetUserProjectAccessResponse> SetUserProjectAccessAsync(SetUserProjectAccessRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("SetUserProjectAccess", req, SetUserProjectAccessResponse.Parser, options);
         }
 
         /// <summary>
@@ -733,6 +920,17 @@ namespace Temporalio.Client
         public Task<UpdateApiKeyResponse> UpdateApiKeyAsync(UpdateApiKeyRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("UpdateApiKey", req, UpdateApiKeyResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke UpdateCallerRateLimit.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UpdateCallerRateLimitResponse> UpdateCallerRateLimitAsync(UpdateCallerRateLimitRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UpdateCallerRateLimit", req, UpdateCallerRateLimitResponse.Parser, options);
         }
 
         /// <summary>
@@ -788,6 +986,17 @@ namespace Temporalio.Client
         public Task<UpdateNexusEndpointResponse> UpdateNexusEndpointAsync(UpdateNexusEndpointRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("UpdateNexusEndpoint", req, UpdateNexusEndpointResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke UpdateProject.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UpdateProjectResponse> UpdateProjectAsync(UpdateProjectRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UpdateProject", req, UpdateProjectResponse.Parser, options);
         }
 
         /// <summary>
