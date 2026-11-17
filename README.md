@@ -26,6 +26,7 @@ Also see:
 
 - [Packages](#packages)
   - [SDK packages](#sdk-packages)
+  - [Other Temporal packages](#other-temporal-packages)
   - [Community packages](#community-packages)
 - [Contributing](#contributing)
 - [Development](#development)
@@ -57,6 +58,15 @@ Each package has its own README next to its project, which is also its NuGet pac
 | [Temporalio.Extensions.Hosting](src/Temporalio.Extensions.Hosting/README.md) | Client dependency injection, activity dependency injection, and worker generic host support |
 | [Temporalio.Extensions.OpenTelemetry](src/Temporalio.Extensions.OpenTelemetry/README.md) | OpenTelemetry tracing support |
 | [Temporalio.Extensions.WorkflowStreams](src/Temporalio.Extensions.WorkflowStreams/README.md) | Experimental durable, offset-based workflow publish/subscribe streams |
+
+### Other Temporal packages
+
+The following packages are maintained and released independently in other Temporal repositories. Install them
+separately and follow the setup instructions in their respective repositories.
+
+| Package | Description | Repository |
+| ------- | ----------- | ---------- |
+| [Temporalio.Extensions.MicrosoftAgentFramework](https://www.nuget.org/packages/Temporalio.Extensions.MicrosoftAgentFramework) | Experimental support for running Microsoft Agent Framework agents inside workflows | [ai-integrations](https://github.com/temporalio/ai-integrations/tree/main/dotnet) |
 
 ### Community packages
 

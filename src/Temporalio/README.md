@@ -37,6 +37,9 @@ Extensions:
 * [Temporalio.Extensions.WorkflowStreams](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.WorkflowStreams) -
   Experimental durable, offset-based workflow publish/subscribe streams
 
+For packages maintained in other Temporal repositories and by the community, see the
+[Packages](https://github.com/temporalio/sdk-dotnet#packages) section of the repository README.
+
 ---
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
