@@ -16,6 +16,11 @@ namespace Temporalio.Common
     public class SimplePluginOptions : ICloneable
     {
         /// <summary>
+        /// Gets or sets the plugin version.
+        /// </summary>
+        public string? Version { get; set; }
+
+        /// <summary>
         /// Gets or sets the data converter for the plugin.
         /// </summary>
         public Converters.DataConverter? DataConverter
