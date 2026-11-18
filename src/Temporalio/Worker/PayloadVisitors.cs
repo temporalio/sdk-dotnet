@@ -15,18 +15,18 @@ namespace Temporalio.Worker
 {
     internal static partial class PayloadVisitors
     {
-        // Transforms one payload into its replacement. A single (non-null) field needs exactly one
-        // payload back, so it stays separate from the batch transform below. The token is cancelled
-        // when the caller cancels or a concurrent sibling transform fails, so a transform doing I/O
-        // forwards it and stops once a sibling has failed the walk.
-        internal delegate Task<Payload> PayloadVisitor(
-            Payload payload, CancellationToken cancellationToken);
+        // Transforms one payload into its replacement, given the visit's context. A single (non-null)
+        // field needs exactly one payload back, so it stays separate from the batch transform below.
+        // The token is cancelled when the caller cancels or a concurrent sibling transform fails, so a
+        // transform doing I/O forwards it and stops once a sibling has failed the walk.
+        internal delegate Task<Payload> PayloadVisitor<in TContext>(
+            Payload payload, TContext context, CancellationToken cancellationToken);
 
         // Transforms a batch of payloads into their replacements, in any number. Fields that may hold
         // several payloads use this so a codec that packs or splits sees the whole field at once. The
         // token is cancelled on caller cancellation or a sibling transform's failure.
-        internal delegate Task<IReadOnlyCollection<Payload>> PayloadsVisitor(
-            IReadOnlyCollection<Payload> payloads, CancellationToken cancellationToken);
+        internal delegate Task<IReadOnlyCollection<Payload>> PayloadsVisitor<in TContext>(
+            IReadOnlyCollection<Payload> payloads, TContext context, CancellationToken cancellationToken);
 
         /// <summary>
         /// Applies the transforms in <paramref name="options"/> to every payload reachable from the
@@ -34,19 +34,21 @@ namespace Temporalio.Worker
         /// generated <c>Walk</c> overload for the root's message type.
         /// </summary>
         /// <typeparam name="T">The root message type.</typeparam>
+        /// <typeparam name="TContext">The type of context the transforms are given.</typeparam>
         /// <param name="root">The message to walk.</param>
         /// <param name="walk">The generated walker for <typeparamref name="T"/>.</param>
-        /// <param name="options">The transforms, concurrency limit, and cancellation.</param>
+        /// <param name="options">The transforms, context, concurrency limit, and cancellation.</param>
         /// <returns>A task that completes when every payload has been transformed.</returns>
-        internal static Task VisitAsync<T>(
-            T root, Action<T, WalkEnv, VisitState> walk, VisitOptions options) =>
+        internal static Task VisitAsync<T, TContext>(
+            T root, Action<T, WalkEnv, VisitState> walk, VisitOptions<TContext> options) =>
             RunVisitAsync(options, (env, state) => walk(root, env, state));
 
         /// <summary>Visit a lone payload, transforming it in place.</summary>
+        /// <typeparam name="TContext">The type of context the transforms are given.</typeparam>
         /// <param name="root">The payload to transform.</param>
-        /// <param name="options">The transforms, concurrency limit, and cancellation.</param>
+        /// <param name="options">The transforms, context, concurrency limit, and cancellation.</param>
         /// <returns>A task that completes when the payload has been transformed.</returns>
-        internal static Task VisitAsync(Payload root, VisitOptions options) =>
+        internal static Task VisitAsync<TContext>(Payload root, VisitOptions<TContext> options) =>
             RunVisitAsync(options, (env, state) => VisitSingle(
                 state,
                 env,
@@ -60,10 +62,12 @@ namespace Temporalio.Worker
                 }));
 
         /// <summary>Visit a lone batch of payloads, transforming them in place.</summary>
+        /// <typeparam name="TContext">The type of context the transforms are given.</typeparam>
         /// <param name="root">The payloads to transform.</param>
-        /// <param name="options">The transforms, concurrency limit, and cancellation.</param>
+        /// <param name="options">The transforms, context, concurrency limit, and cancellation.</param>
         /// <returns>A task that completes when the payloads have been transformed.</returns>
-        internal static Task VisitAsync(RepeatedField<Payload> root, VisitOptions options) =>
+        internal static Task VisitAsync<TContext>(
+            RepeatedField<Payload> root, VisitOptions<TContext> options) =>
             RunVisitAsync(options, (env, state) => VisitBatch(state, env, root));
 
         // Visits a single payload field, deferring the write-back of its replacement through the
@@ -141,8 +145,8 @@ namespace Temporalio.Worker
             Func<Task<TValue>> start, Action<TValue> capture) =>
             capture(await start().ConfigureAwait(false));
 
-        private static async Task RunVisitAsync(
-            VisitOptions options, Action<WalkEnv, VisitState> walk)
+        private static async Task RunVisitAsync<TContext>(
+            VisitOptions<TContext> options, Action<WalkEnv, VisitState> walk)
         {
             using var cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(
                 options.CancellationToken);
@@ -152,8 +156,16 @@ namespace Temporalio.Worker
             // the drain, by when every task has settled.
             var permits = Math.Max(1, options.MaxConcurrency);
             using var gate = permits > 1 ? new SemaphoreSlim(permits, permits) : null;
+            // The generated walkers are not generic, so the env holds the context untyped and these
+            // wrappers restore its type for the caller's transforms.
+            var transformPayload = options.TransformPayload;
+            var transformPayloads = options.TransformPayloads;
             var env = new WalkEnv(
-                options.TransformPayload, options.TransformPayloads, gate, cancellationSource);
+                (payload, context, ct) => transformPayload(payload, (TContext)context!, ct),
+                (payloads, context, ct) => transformPayloads(payloads, (TContext)context!, ct),
+                options.InitialContext,
+                gate,
+                cancellationSource);
             var state = new VisitState();
             walk(env, state);
             await ApplyAsync(env, state).ConfigureAwait(false);
@@ -237,22 +249,26 @@ namespace Temporalio.Worker
             internal List<Action> Writes { get; } = new();
         }
 
-        // Options for a visit. The transforms are required; the limit defaults to one at a time.
-        internal sealed class VisitOptions
+        // Options for a visit. The transforms are required; the limit defaults to one at a time. The
+        // transforms are given InitialContext, such as the codec or store target to apply, so they
+        // need not capture it.
+        internal sealed class VisitOptions<TContext>
         {
-            internal VisitOptions(PayloadVisitor transformPayload, PayloadsVisitor transformPayloads)
+            internal VisitOptions(
+                PayloadVisitor<TContext> transformPayload, PayloadsVisitor<TContext> transformPayloads)
             {
                 TransformPayload = transformPayload;
                 TransformPayloads = transformPayloads;
             }
 
-            internal PayloadVisitor TransformPayload { get; }
+            internal PayloadVisitor<TContext> TransformPayload { get; }
 
-            internal PayloadsVisitor TransformPayloads { get; }
+            internal PayloadsVisitor<TContext> TransformPayloads { get; }
 
-            // How many payloads the walk transforms at once. One (the default) runs them serially,
-            // which is what codecs need: a codec may be stateful and, in a workflow, runs in the
-            // single-threaded workflow context. External storage raises this to overlap its I/O.
+            internal TContext InitialContext { get; init; } = default!;
+
+            // How many payload-bearing fields the walk transforms at once. One, the default,
+            // transforms them one after another.
             internal int MaxConcurrency { get; init; } = 1;
 
             internal CancellationToken CancellationToken { get; init; }
@@ -262,19 +278,22 @@ namespace Temporalio.Worker
         // shared cancel-on-error signal, and descends into System Nexus envelopes transparently.
         internal sealed class WalkEnv
         {
-            private readonly PayloadVisitor transformPayload;
-            private readonly PayloadsVisitor transformPayloads;
+            private readonly PayloadVisitor<object?> transformPayload;
+            private readonly PayloadsVisitor<object?> transformPayloads;
+            private readonly object? context;
             private readonly SemaphoreSlim? gate;
             private readonly CancellationTokenSource cancellationSource;
 
             internal WalkEnv(
-                PayloadVisitor transformPayload,
-                PayloadsVisitor transformPayloads,
+                PayloadVisitor<object?> transformPayload,
+                PayloadsVisitor<object?> transformPayloads,
+                object? context,
                 SemaphoreSlim? gate,
                 CancellationTokenSource cancellationSource)
             {
                 this.transformPayload = transformPayload;
                 this.transformPayloads = transformPayloads;
+                this.context = context;
                 this.gate = gate;
                 this.cancellationSource = cancellationSource;
             }
@@ -296,7 +315,7 @@ namespace Temporalio.Worker
                     return walk!(payload, this);
                 }
 
-                return RunLimitedAsync(() => transformPayload(payload, cancellationSource.Token));
+                return RunLimitedAsync(() => transformPayload(payload, context, cancellationSource.Token));
             }
 
             internal async Task<IReadOnlyCollection<Payload>> VisitPayloadsAsync(
@@ -305,7 +324,7 @@ namespace Temporalio.Worker
                 if (!payloads.Any(SystemNexusPayloads.IsSystemPayload))
                 {
                     return await RunLimitedAsync(
-                        () => transformPayloads(payloads, cancellationSource.Token)).ConfigureAwait(false);
+                        () => transformPayloads(payloads, context, cancellationSource.Token)).ConfigureAwait(false);
                 }
 
                 // Envelopes are descended individually and split the batch around them, keeping the
@@ -319,7 +338,7 @@ namespace Temporalio.Worker
                         if (run.Count > 0)
                         {
                             visited.AddRange(await RunLimitedAsync(
-                                () => transformPayloads(run, cancellationSource.Token))
+                                () => transformPayloads(run, context, cancellationSource.Token))
                                 .ConfigureAwait(false));
                             run = new List<Payload>();
                         }
@@ -335,7 +354,7 @@ namespace Temporalio.Worker
                 if (run.Count > 0)
                 {
                     visited.AddRange(await RunLimitedAsync(
-                        () => transformPayloads(run, cancellationSource.Token))
+                        () => transformPayloads(run, context, cancellationSource.Token))
                         .ConfigureAwait(false));
                 }
 

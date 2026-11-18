@@ -91,13 +91,13 @@ public class PayloadVisitorsTests : TestBase
         await PayloadVisitors.VisitAsync(
             marker,
             PayloadVisitors.Walk,
-            new PayloadVisitors.VisitOptions(
-                (payload, _) =>
+            new PayloadVisitors.VisitOptions<object?>(
+                (payload, _, _) =>
                 {
                     singleCount++;
                     return Task.FromResult(payload);
                 },
-                (payloads, _) =>
+                (payloads, _, _) =>
                 {
                     batches.Add(payloads.ToList());
                     return Task.FromResult(payloads);
@@ -123,13 +123,13 @@ public class PayloadVisitorsTests : TestBase
         await PayloadVisitors.VisitAsync(
             group,
             PayloadVisitors.Walk,
-            new PayloadVisitors.VisitOptions(
-                (payload, _) =>
+            new PayloadVisitors.VisitOptions<object?>(
+                (payload, _, _) =>
                 {
                     singleCount++;
                     return Task.FromResult(payload);
                 },
-                (payloads, _) =>
+                (payloads, _, _) =>
                 {
                     batchCount++;
                     return Task.FromResult(payloads);
@@ -160,15 +160,15 @@ public class PayloadVisitorsTests : TestBase
         var visit = PayloadVisitors.VisitAsync(
             group,
             PayloadVisitors.Walk,
-            new PayloadVisitors.VisitOptions(
-                async (payload, _) =>
+            new PayloadVisitors.VisitOptions<object?>(
+                async (payload, _, _) =>
                 {
                     InterlockedMax(ref peak, Interlocked.Increment(ref running));
                     await release.Task;
                     Interlocked.Decrement(ref running);
                     return payload;
                 },
-                (payloads, _) => Task.FromResult(payloads))
+                (payloads, _, _) => Task.FromResult(payloads))
             {
                 MaxConcurrency = maxConcurrency,
             });
@@ -200,8 +200,8 @@ public class PayloadVisitorsTests : TestBase
         var visit = PayloadVisitors.VisitAsync(
             group,
             PayloadVisitors.Walk,
-            new PayloadVisitors.VisitOptions(
-                async (payload, cancellationToken) =>
+            new PayloadVisitors.VisitOptions<object?>(
+                async (payload, _, cancellationToken) =>
                 {
                     if (payload.Metadata["role"].ToStringUtf8() == "wait")
                     {
@@ -224,7 +224,7 @@ public class PayloadVisitorsTests : TestBase
 
                     return payload;
                 },
-                (payloads, _) => Task.FromResult(payloads))
+                (payloads, _, _) => Task.FromResult(payloads))
             {
                 MaxConcurrency = 2,
             });
@@ -252,9 +252,9 @@ public class PayloadVisitorsTests : TestBase
 
     private static async Task VisitAndMarkAsync(IMessage root)
     {
-        var options = new PayloadVisitors.VisitOptions(
-            (payload, _) => Task.FromResult(Mark(payload)),
-            (payloads, _) => Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(Mark).ToList()));
+        var options = new PayloadVisitors.VisitOptions<object?>(
+            (payload, _, _) => Task.FromResult(Mark(payload)),
+            (payloads, _, _) => Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(Mark).ToList()));
         await (root switch
         {
             WorkflowActivation value => PayloadVisitors.VisitAsync(value, PayloadVisitors.Walk, options),

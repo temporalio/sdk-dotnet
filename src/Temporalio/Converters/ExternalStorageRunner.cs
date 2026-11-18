@@ -81,10 +81,10 @@ namespace Temporalio.Converters
             PayloadVisitors.VisitAsync(
                 message,
                 walk,
-                new PayloadVisitors.VisitOptions(
-                    async (payload, ct) => (await RetrieveAsync(new[] { payload }, metrics, ct)
+                new PayloadVisitors.VisitOptions<object?>(
+                    async (payload, _, ct) => (await RetrieveAsync(new[] { payload }, metrics, ct)
                         .ConfigureAwait(false)).Single(),
-                    (payloads, ct) => RetrieveAsync(payloads, metrics, ct))
+                    (payloads, _, ct) => RetrieveAsync(payloads, metrics, ct))
                 {
                     MaxConcurrency = storage.Concurrency.MaxOperationsPerMessage,
                     CancellationToken = cancellationToken,
@@ -100,11 +100,12 @@ namespace Temporalio.Converters
             PayloadVisitors.VisitAsync(
                 message,
                 walk,
-                new PayloadVisitors.VisitOptions(
-                    async (payload, ct) => (await StoreAsync(new[] { payload }, target, metrics, ct)
+                new PayloadVisitors.VisitOptions<IStorageDriverTargetInfo?>(
+                    async (payload, target, ct) => (await StoreAsync(new[] { payload }, target, metrics, ct)
                         .ConfigureAwait(false)).Single(),
-                    (payloads, ct) => StoreAsync(payloads, target, metrics, ct))
+                    (payloads, target, ct) => StoreAsync(payloads, target, metrics, ct))
                 {
+                    InitialContext = target,
                     MaxConcurrency = storage.Concurrency.MaxOperationsPerMessage,
                     CancellationToken = cancellationToken,
                 });
@@ -373,13 +374,13 @@ namespace Temporalio.Converters
                 PayloadVisitors.VisitAsync(
                     message,
                     walk,
-                    new PayloadVisitors.VisitOptions(
-                        (payload, _) =>
+                    new PayloadVisitors.VisitOptions<object?>(
+                        (payload, _, _) =>
                         {
                             RejectIfReference(payload);
                             return Task.FromResult(payload);
                         },
-                        (payloads, _) =>
+                        (payloads, _, _) =>
                         {
                             foreach (var payload in payloads)
                             {
