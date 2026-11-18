@@ -15,10 +15,11 @@ namespace Temporalio.Worker
 {
     internal static partial class PayloadVisitors
     {
-        // Transforms one payload into its replacement, given the visit's context. A single (non-null)
-        // field needs exactly one payload back, so it stays separate from the batch transform below.
-        // The token is cancelled when the caller cancels or a concurrent sibling transform fails, so a
-        // transform doing I/O forwards it and stops once a sibling has failed the walk.
+        // Transforms one payload into its replacement, given the context of the subtree the payload
+        // sits in. A single (non-null) field needs exactly one payload back, so it stays separate from
+        // the batch transform below. The token is cancelled when the caller cancels or a concurrent
+        // sibling transform fails, so a transform doing I/O forwards it and stops once a sibling has
+        // failed the walk.
         internal delegate Task<Payload> PayloadVisitor<in TContext>(
             Payload payload, TContext context, CancellationToken cancellationToken);
 
@@ -157,12 +158,16 @@ namespace Temporalio.Worker
             var permits = Math.Max(1, options.MaxConcurrency);
             using var gate = permits > 1 ? new SemaphoreSlim(permits, permits) : null;
             // The generated walkers are not generic, so the env holds the context untyped and these
-            // wrappers restore its type for the caller's transforms.
+            // wrappers restore its type for the caller's transforms and deriver.
             var transformPayload = options.TransformPayload;
             var transformPayloads = options.TransformPayloads;
+            var deriveContext = options.DeriveContext;
+            Func<IMessage, object?, object?>? untypedDeriveContext = deriveContext is null ? null :
+                (message, context) => deriveContext(message, (TContext)context!);
             var env = new WalkEnv(
                 (payload, context, ct) => transformPayload(payload, (TContext)context!, ct),
                 (payloads, context, ct) => transformPayloads(payloads, (TContext)context!, ct),
+                untypedDeriveContext,
                 options.InitialContext,
                 gate,
                 cancellationSource);
@@ -250,8 +255,9 @@ namespace Temporalio.Worker
         }
 
         // Options for a visit. The transforms are required; the limit defaults to one at a time. The
-        // transforms are given InitialContext, such as the codec or store target to apply, so they
-        // need not capture it.
+        // transforms are given a context, which starts as InitialContext and which DeriveContext
+        // rebinds at each message walked, for that message's subtree, so one walk can apply a
+        // different codec or store target per job or command.
         internal sealed class VisitOptions<TContext>
         {
             internal VisitOptions(
@@ -264,6 +270,10 @@ namespace Temporalio.Worker
             internal PayloadVisitor<TContext> TransformPayload { get; }
 
             internal PayloadsVisitor<TContext> TransformPayloads { get; }
+
+            // Given the message being walked and the context of the subtree it sits in, returns the
+            // context for its own subtree. Null leaves the initial context in force everywhere.
+            internal Func<IMessage, TContext, TContext>? DeriveContext { get; init; }
 
             internal TContext InitialContext { get; init; } = default!;
 
@@ -280,6 +290,7 @@ namespace Temporalio.Worker
         {
             private readonly PayloadVisitor<object?> transformPayload;
             private readonly PayloadsVisitor<object?> transformPayloads;
+            private readonly Func<IMessage, object?, object?>? deriveContext;
             private readonly object? context;
             private readonly SemaphoreSlim? gate;
             private readonly CancellationTokenSource cancellationSource;
@@ -287,12 +298,14 @@ namespace Temporalio.Worker
             internal WalkEnv(
                 PayloadVisitor<object?> transformPayload,
                 PayloadsVisitor<object?> transformPayloads,
+                Func<IMessage, object?, object?>? deriveContext,
                 object? context,
                 SemaphoreSlim? gate,
                 CancellationTokenSource cancellationSource)
             {
                 this.transformPayload = transformPayload;
                 this.transformPayloads = transformPayloads;
+                this.deriveContext = deriveContext;
                 this.context = context;
                 this.gate = gate;
                 this.cancellationSource = cancellationSource;
@@ -300,6 +313,28 @@ namespace Temporalio.Worker
 
             // No gate means a serial walk, which the drain runs one transform at a time.
             internal bool Sequential => gate is null;
+
+            // The generated walkers call this for each message they walk and hand the result to that
+            // message's fields. The deferred transforms capture the env they were queued with, so each
+            // payload is transformed under its own subtree's context even though they run later. A
+            // derived env shares the gate and cancellation source, keeping the limit and fail-fast
+            // global to the walk.
+            internal WalkEnv ForMessage(IMessage message)
+            {
+                if (deriveContext is null)
+                {
+                    return this;
+                }
+
+                var derived = deriveContext(message, context);
+                return Equals(derived, context) ? this : new WalkEnv(
+                    transformPayload,
+                    transformPayloads,
+                    deriveContext,
+                    derived,
+                    gate,
+                    cancellationSource);
+            }
 
             internal Task<Payload> VisitPayloadAsync(Payload payload)
             {

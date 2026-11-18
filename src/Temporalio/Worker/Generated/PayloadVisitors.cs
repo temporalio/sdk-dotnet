@@ -382,6 +382,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var pair_temporal_api_common_v1_Memo_1 in value.Fields)
             {
                 VisitSingle(state, env, pair_temporal_api_common_v1_Memo_1.Value, replacement => value.Fields[pair_temporal_api_common_v1_Memo_1.Key] = replacement);
@@ -393,6 +394,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var pair_temporal_api_common_v1_Header_1 in value.Fields)
             {
                 VisitSingle(state, env, pair_temporal_api_common_v1_Header_1.Value, replacement => value.Fields[pair_temporal_api_common_v1_Header_1.Key] = replacement);
@@ -404,9 +406,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Details != null)
             {
-                VisitBatch(state, env, value.Details.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Details), value.Details.Payloads_);
             }
         }
 
@@ -415,9 +418,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.LastHeartbeatDetails != null)
             {
-                VisitBatch(state, env, value.LastHeartbeatDetails.Payloads_);
+                VisitBatch(state, env.ForMessage(value.LastHeartbeatDetails), value.LastHeartbeatDetails.Payloads_);
             }
         }
 
@@ -426,9 +430,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Details != null)
             {
-                VisitBatch(state, env, value.Details.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Details), value.Details.Payloads_);
             }
         }
 
@@ -437,9 +442,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.LastHeartbeatDetails != null)
             {
-                VisitBatch(state, env, value.LastHeartbeatDetails.Payloads_);
+                VisitBatch(state, env.ForMessage(value.LastHeartbeatDetails), value.LastHeartbeatDetails.Payloads_);
             }
         }
 
@@ -448,6 +454,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.EncodedAttributes, replacement => value.EncodedAttributes = replacement);
             if (value.Cause != null)
             {
@@ -476,6 +483,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.SourceContext, replacement => value.SourceContext = replacement);
         }
 
@@ -484,6 +492,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.NexusHandler != null)
             {
                 Walk(value.NexusHandler, env, state);
@@ -495,6 +504,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Summary, replacement => value.Summary = replacement);
             VisitSingle(state, env, value.Details, replacement => value.Details = replacement);
         }
@@ -504,9 +514,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.Memo != null)
             {
@@ -522,7 +533,7 @@ namespace Temporalio.Worker
             }
             if (value.LastCompletionResult != null)
             {
-                VisitBatch(state, env, value.LastCompletionResult.Payloads_);
+                VisitBatch(state, env.ForMessage(value.LastCompletionResult), value.LastCompletionResult.Payloads_);
             }
             foreach (var item_temporal_api_workflowservice_v1_StartWorkflowExecutionRequest_21 in value.CompletionCallbacks)
             {
@@ -539,6 +550,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Label_, replacement => value.Label_ = replacement);
         }
 
@@ -547,6 +559,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Label != null)
             {
                 Walk(value.Label, env, state);
@@ -558,9 +571,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.ContinuedFailure != null)
             {
@@ -568,7 +582,7 @@ namespace Temporalio.Worker
             }
             if (value.LastCompletionResult != null)
             {
-                VisitBatch(state, env, value.LastCompletionResult.Payloads_);
+                VisitBatch(state, env.ForMessage(value.LastCompletionResult), value.LastCompletionResult.Payloads_);
             }
             if (value.Memo != null)
             {
@@ -589,9 +603,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Result != null)
             {
-                VisitBatch(state, env, value.Result.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Result), value.Result.Payloads_);
             }
         }
 
@@ -600,6 +615,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -611,6 +627,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -622,13 +639,14 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Header != null)
             {
                 Walk(value.Header, env, state);
             }
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
         }
 
@@ -637,6 +655,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.LastFailure != null)
             {
                 Walk(value.LastFailure, env, state);
@@ -648,9 +667,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Result != null)
             {
-                VisitBatch(state, env, value.Result.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Result), value.Result.Payloads_);
             }
         }
 
@@ -659,6 +679,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -670,6 +691,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -681,9 +703,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Details != null)
             {
-                VisitBatch(state, env, value.Details.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Details), value.Details.Payloads_);
             }
         }
 
@@ -692,6 +715,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitBatch(state, env, value.Payloads_);
         }
 
@@ -700,6 +724,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var pair_temporal_api_history_v1_MarkerRecordedEventAttributes_2 in value.Details)
             {
                 if (pair_temporal_api_history_v1_MarkerRecordedEventAttributes_2.Value != null)
@@ -722,9 +747,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.Header != null)
             {
@@ -737,9 +763,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Details != null)
             {
-                VisitBatch(state, env, value.Details.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Details), value.Details.Payloads_);
             }
         }
 
@@ -748,9 +775,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Details != null)
             {
-                VisitBatch(state, env, value.Details.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Details), value.Details.Payloads_);
             }
         }
 
@@ -759,9 +787,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.Failure != null)
             {
@@ -769,7 +798,7 @@ namespace Temporalio.Worker
             }
             if (value.LastCompletionResult != null)
             {
-                VisitBatch(state, env, value.LastCompletionResult.Payloads_);
+                VisitBatch(state, env.ForMessage(value.LastCompletionResult), value.LastCompletionResult.Payloads_);
             }
             if (value.Header != null)
             {
@@ -786,9 +815,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.Header != null)
             {
@@ -805,6 +835,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Header != null)
             {
                 Walk(value.Header, env, state);
@@ -816,9 +847,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Result != null)
             {
-                VisitBatch(state, env, value.Result.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Result), value.Result.Payloads_);
             }
         }
 
@@ -827,6 +859,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -838,9 +871,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Details != null)
             {
-                VisitBatch(state, env, value.Details.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Details), value.Details.Payloads_);
             }
         }
 
@@ -849,9 +883,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.Header != null)
             {
@@ -864,13 +899,14 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Header != null)
             {
                 Walk(value.Header, env, state);
             }
             if (value.Args != null)
             {
-                VisitBatch(state, env, value.Args.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Args), value.Args.Payloads_);
             }
         }
 
@@ -879,6 +915,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
                 Walk(value.Input, env, state);
@@ -894,6 +931,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.AcceptedRequest != null)
             {
                 Walk(value.AcceptedRequest, env, state);
@@ -905,6 +943,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.RejectedRequest != null)
             {
                 Walk(value.RejectedRequest, env, state);
@@ -920,9 +959,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Success != null)
             {
-                VisitBatch(state, env, value.Success.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Success), value.Success.Payloads_);
             }
             if (value.Failure != null)
             {
@@ -935,6 +975,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Outcome != null)
             {
                 Walk(value.Outcome, env, state);
@@ -946,6 +987,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.UpsertedMemo != null)
             {
                 Walk(value.UpsertedMemo, env, state);
@@ -957,6 +999,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.UpsertedMemo != null)
             {
                 Walk(value.UpsertedMemo, env, state);
@@ -968,6 +1011,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Request != null)
             {
                 Walk(value.Request, env, state);
@@ -979,6 +1023,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Input, replacement => value.Input = replacement);
         }
 
@@ -987,6 +1032,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Result, replacement => value.Result = replacement);
         }
 
@@ -995,6 +1041,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -1006,6 +1053,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -1017,6 +1065,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -1028,6 +1077,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_WorkflowUpdateOptionsUpdate_3 in value.AttachedCompletionCallbacks)
             {
                 Walk(item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_WorkflowUpdateOptionsUpdate_3, env, state);
@@ -1039,6 +1089,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_4 in value.AttachedCompletionCallbacks)
             {
                 Walk(item_temporal_api_history_v1_WorkflowExecutionOptionsUpdatedEventAttributes_4, env, state);
@@ -1054,6 +1105,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -1065,6 +1117,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.UserMetadata != null)
             {
                 Walk(value.UserMetadata, env, state);
@@ -1216,6 +1269,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_history_v1_History_1 in value.Events)
             {
                 Walk(item_temporal_api_history_v1_History_1, env, state);
@@ -1227,9 +1281,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.QueryArgs != null)
             {
-                VisitBatch(state, env, value.QueryArgs.Payloads_);
+                VisitBatch(state, env.ForMessage(value.QueryArgs), value.QueryArgs.Payloads_);
             }
             if (value.Header != null)
             {
@@ -1242,6 +1297,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.History != null)
             {
                 Walk(value.History, env, state);
@@ -1264,6 +1320,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.EagerWorkflowTask != null)
             {
                 Walk(value.EagerWorkflowTask, env, state);
@@ -1275,6 +1332,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Request != null)
             {
                 Walk(value.Request, env, state);
@@ -1286,6 +1344,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.StartWorkflow != null)
             {
                 Walk(value.StartWorkflow, env, state);
@@ -1301,6 +1360,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_ExecuteMultiOperationRequest_2 in value.Operations)
             {
                 Walk(item_temporal_api_workflowservice_v1_ExecuteMultiOperationRequest_2, env, state);
@@ -1312,6 +1372,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Outcome != null)
             {
                 Walk(value.Outcome, env, state);
@@ -1323,6 +1384,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.StartWorkflow != null)
             {
                 Walk(value.StartWorkflow, env, state);
@@ -1338,6 +1400,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_ExecuteMultiOperationResponse_1 in value.Responses)
             {
                 Walk(item_temporal_api_workflowservice_v1_ExecuteMultiOperationResponse_1, env, state);
@@ -1349,6 +1412,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.History != null)
             {
                 Walk(value.History, env, state);
@@ -1360,6 +1424,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.History != null)
             {
                 Walk(value.History, env, state);
@@ -1371,13 +1436,14 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Header != null)
             {
                 Walk(value.Header, env, state);
             }
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
         }
 
@@ -1386,9 +1452,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Result != null)
             {
-                VisitBatch(state, env, value.Result.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Result), value.Result.Payloads_);
             }
         }
 
@@ -1397,6 +1464,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -1408,9 +1476,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Details != null)
             {
-                VisitBatch(state, env, value.Details.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Details), value.Details.Payloads_);
             }
         }
 
@@ -1419,6 +1488,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var pair_temporal_api_command_v1_RecordMarkerCommandAttributes_2 in value.Details)
             {
                 if (pair_temporal_api_command_v1_RecordMarkerCommandAttributes_2.Value != null)
@@ -1441,9 +1511,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.Failure != null)
             {
@@ -1451,7 +1522,7 @@ namespace Temporalio.Worker
             }
             if (value.LastCompletionResult != null)
             {
-                VisitBatch(state, env, value.LastCompletionResult.Payloads_);
+                VisitBatch(state, env.ForMessage(value.LastCompletionResult), value.LastCompletionResult.Payloads_);
             }
             if (value.Header != null)
             {
@@ -1468,9 +1539,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.Header != null)
             {
@@ -1487,9 +1559,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.Header != null)
             {
@@ -1502,6 +1575,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.UpsertedMemo != null)
             {
                 Walk(value.UpsertedMemo, env, state);
@@ -1513,6 +1587,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Input, replacement => value.Input = replacement);
         }
 
@@ -1521,6 +1596,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.UserMetadata != null)
             {
                 Walk(value.UserMetadata, env, state);
@@ -1576,9 +1652,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Answer != null)
             {
-                VisitBatch(state, env, value.Answer.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Answer), value.Answer.Payloads_);
             }
             if (value.Failure != null)
             {
@@ -1591,6 +1668,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_RespondWorkflowTaskCompletedRequest_2 in value.Commands)
             {
                 Walk(item_temporal_api_workflowservice_v1_RespondWorkflowTaskCompletedRequest_2, env, state);
@@ -1609,17 +1687,18 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Header != null)
             {
                 Walk(value.Header, env, state);
             }
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.HeartbeatDetails != null)
             {
-                VisitBatch(state, env, value.HeartbeatDetails.Payloads_);
+                VisitBatch(state, env.ForMessage(value.HeartbeatDetails), value.HeartbeatDetails.Payloads_);
             }
         }
 
@@ -1628,6 +1707,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.WorkflowTask != null)
             {
                 Walk(value.WorkflowTask, env, state);
@@ -1643,6 +1723,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -1654,9 +1735,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Details != null)
             {
-                VisitBatch(state, env, value.Details.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Details), value.Details.Payloads_);
             }
         }
 
@@ -1665,9 +1747,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Details != null)
             {
-                VisitBatch(state, env, value.Details.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Details), value.Details.Payloads_);
             }
         }
 
@@ -1676,9 +1759,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Result != null)
             {
-                VisitBatch(state, env, value.Result.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Result), value.Result.Payloads_);
             }
         }
 
@@ -1687,9 +1771,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Result != null)
             {
-                VisitBatch(state, env, value.Result.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Result), value.Result.Payloads_);
             }
         }
 
@@ -1698,13 +1783,14 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
             }
             if (value.LastHeartbeatDetails != null)
             {
-                VisitBatch(state, env, value.LastHeartbeatDetails.Payloads_);
+                VisitBatch(state, env.ForMessage(value.LastHeartbeatDetails), value.LastHeartbeatDetails.Payloads_);
             }
         }
 
@@ -1713,6 +1799,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_RespondActivityTaskFailedResponse_1 in value.Failures)
             {
                 Walk(item_temporal_api_workflowservice_v1_RespondActivityTaskFailedResponse_1, env, state);
@@ -1724,13 +1811,14 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
             }
             if (value.LastHeartbeatDetails != null)
             {
-                VisitBatch(state, env, value.LastHeartbeatDetails.Payloads_);
+                VisitBatch(state, env.ForMessage(value.LastHeartbeatDetails), value.LastHeartbeatDetails.Payloads_);
             }
         }
 
@@ -1739,6 +1827,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_RespondActivityTaskFailedByIdResponse_1 in value.Failures)
             {
                 Walk(item_temporal_api_workflowservice_v1_RespondActivityTaskFailedByIdResponse_1, env, state);
@@ -1750,9 +1839,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Details != null)
             {
-                VisitBatch(state, env, value.Details.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Details), value.Details.Payloads_);
             }
         }
 
@@ -1761,9 +1851,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Details != null)
             {
-                VisitBatch(state, env, value.Details.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Details), value.Details.Payloads_);
             }
         }
 
@@ -1772,9 +1863,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.Header != null)
             {
@@ -1787,13 +1879,14 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.SignalInput != null)
             {
-                VisitBatch(state, env, value.SignalInput.Payloads_);
+                VisitBatch(state, env.ForMessage(value.SignalInput), value.SignalInput.Payloads_);
             }
             if (value.Memo != null)
             {
@@ -1814,9 +1907,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.Header != null)
             {
@@ -1829,6 +1923,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.SignalWorkflow != null)
             {
                 Walk(value.SignalWorkflow, env, state);
@@ -1840,6 +1935,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_ResetWorkflowExecutionRequest_8 in value.PostResetOperations)
             {
                 Walk(item_temporal_api_workflowservice_v1_ResetWorkflowExecutionRequest_8, env, state);
@@ -1851,9 +1947,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Details != null)
             {
-                VisitBatch(state, env, value.Details.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Details), value.Details.Payloads_);
             }
         }
 
@@ -1862,6 +1959,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Memo != null)
             {
                 Walk(value.Memo, env, state);
@@ -1873,6 +1971,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_ListOpenWorkflowExecutionsResponse_1 in value.Executions)
             {
                 Walk(item_temporal_api_workflowservice_v1_ListOpenWorkflowExecutionsResponse_1, env, state);
@@ -1884,6 +1983,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_ListClosedWorkflowExecutionsResponse_1 in value.Executions)
             {
                 Walk(item_temporal_api_workflowservice_v1_ListClosedWorkflowExecutionsResponse_1, env, state);
@@ -1895,6 +1995,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_ListWorkflowExecutionsResponse_1 in value.Executions)
             {
                 Walk(item_temporal_api_workflowservice_v1_ListWorkflowExecutionsResponse_1, env, state);
@@ -1906,6 +2007,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_ListArchivedWorkflowExecutionsResponse_1 in value.Executions)
             {
                 Walk(item_temporal_api_workflowservice_v1_ListArchivedWorkflowExecutionsResponse_1, env, state);
@@ -1917,6 +2019,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_ScanWorkflowExecutionsResponse_1 in value.Executions)
             {
                 Walk(item_temporal_api_workflowservice_v1_ScanWorkflowExecutionsResponse_1, env, state);
@@ -1928,6 +2031,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitEach(state, env, value.GroupValues);
         }
 
@@ -1936,6 +2040,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_CountWorkflowExecutionsResponse_2 in value.Groups)
             {
                 Walk(item_temporal_api_workflowservice_v1_CountWorkflowExecutionsResponse_2, env, state);
@@ -1947,9 +2052,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.QueryResult != null)
             {
-                VisitBatch(state, env, value.QueryResult.Payloads_);
+                VisitBatch(state, env.ForMessage(value.QueryResult), value.QueryResult.Payloads_);
             }
             if (value.Failure != null)
             {
@@ -1962,6 +2068,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Query != null)
             {
                 Walk(value.Query, env, state);
@@ -1973,9 +2080,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.QueryResult != null)
             {
-                VisitBatch(state, env, value.QueryResult.Payloads_);
+                VisitBatch(state, env.ForMessage(value.QueryResult), value.QueryResult.Payloads_);
             }
         }
 
@@ -1984,6 +2092,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.UserMetadata != null)
             {
                 Walk(value.UserMetadata, env, state);
@@ -1995,9 +2104,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.HeartbeatDetails != null)
             {
-                VisitBatch(state, env, value.HeartbeatDetails.Payloads_);
+                VisitBatch(state, env.ForMessage(value.HeartbeatDetails), value.HeartbeatDetails.Payloads_);
             }
             if (value.LastFailure != null)
             {
@@ -2010,6 +2120,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Callback != null)
             {
                 Walk(value.Callback, env, state);
@@ -2025,6 +2136,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.LastAttemptFailure != null)
             {
                 Walk(value.LastAttemptFailure, env, state);
@@ -2036,6 +2148,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.LastAttemptFailure != null)
             {
                 Walk(value.LastAttemptFailure, env, state);
@@ -2051,6 +2164,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.ExecutionConfig != null)
             {
                 Walk(value.ExecutionConfig, env, state);
@@ -2078,9 +2192,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.Memo != null)
             {
@@ -2101,6 +2216,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.StartWorkflow != null)
             {
                 Walk(value.StartWorkflow, env, state);
@@ -2112,6 +2228,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Action != null)
             {
                 Walk(value.Action, env, state);
@@ -2123,6 +2240,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Schedule != null)
             {
                 Walk(value.Schedule, env, state);
@@ -2138,6 +2256,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Schedule != null)
             {
                 Walk(value.Schedule, env, state);
@@ -2153,6 +2272,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Schedule != null)
             {
                 Walk(value.Schedule, env, state);
@@ -2168,6 +2288,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Memo != null)
             {
                 Walk(value.Memo, env, state);
@@ -2179,6 +2300,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_ListSchedulesResponse_1 in value.Schedules)
             {
                 Walk(item_temporal_api_workflowservice_v1_ListSchedulesResponse_1, env, state);
@@ -2190,6 +2312,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitEach(state, env, value.GroupValues);
         }
 
@@ -2198,6 +2321,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_CountSchedulesResponse_2 in value.Groups)
             {
                 Walk(item_temporal_api_workflowservice_v1_CountSchedulesResponse_2, env, state);
@@ -2209,6 +2333,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var pair_temporal_api_deployment_v1_DeploymentInfo_4 in value.Metadata)
             {
                 VisitSingle(state, env, pair_temporal_api_deployment_v1_DeploymentInfo_4.Value, replacement => value.Metadata[pair_temporal_api_deployment_v1_DeploymentInfo_4.Key] = replacement);
@@ -2220,6 +2345,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.DeploymentInfo != null)
             {
                 Walk(value.DeploymentInfo, env, state);
@@ -2231,6 +2357,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var pair_temporal_api_deployment_v1_VersionMetadata_1 in value.Entries)
             {
                 VisitSingle(state, env, pair_temporal_api_deployment_v1_VersionMetadata_1.Value, replacement => value.Entries[pair_temporal_api_deployment_v1_VersionMetadata_1.Key] = replacement);
@@ -2242,6 +2369,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Details, replacement => value.Details = replacement);
         }
 
@@ -2250,6 +2378,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Details, replacement => value.Details = replacement);
         }
 
@@ -2258,6 +2387,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Provider != null)
             {
                 Walk(value.Provider, env, state);
@@ -2273,6 +2403,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var pair_temporal_api_compute_v1_ComputeConfig_1 in value.ScalingGroups)
             {
                 if (pair_temporal_api_compute_v1_ComputeConfig_1.Value != null)
@@ -2287,6 +2418,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Metadata != null)
             {
                 Walk(value.Metadata, env, state);
@@ -2302,6 +2434,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.WorkerDeploymentVersionInfo != null)
             {
                 Walk(value.WorkerDeploymentVersionInfo, env, state);
@@ -2313,6 +2446,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.DeploymentInfo != null)
             {
                 Walk(value.DeploymentInfo, env, state);
@@ -2324,6 +2458,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.CurrentDeploymentInfo != null)
             {
                 Walk(value.CurrentDeploymentInfo, env, state);
@@ -2335,6 +2470,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var pair_temporal_api_deployment_v1_UpdateDeploymentMetadata_1 in value.UpsertEntries)
             {
                 VisitSingle(state, env, pair_temporal_api_deployment_v1_UpdateDeploymentMetadata_1.Value, replacement => value.UpsertEntries[pair_temporal_api_deployment_v1_UpdateDeploymentMetadata_1.Key] = replacement);
@@ -2346,6 +2482,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.UpdateMetadata != null)
             {
                 Walk(value.UpdateMetadata, env, state);
@@ -2357,6 +2494,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.CurrentDeploymentInfo != null)
             {
                 Walk(value.CurrentDeploymentInfo, env, state);
@@ -2372,6 +2510,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.ComputeConfig != null)
             {
                 Walk(value.ComputeConfig, env, state);
@@ -2383,6 +2522,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.ScalingGroup != null)
             {
                 Walk(value.ScalingGroup, env, state);
@@ -2394,6 +2534,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var pair_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionComputeConfigRequest_6 in value.ComputeConfigScalingGroups)
             {
                 if (pair_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionComputeConfigRequest_6.Value != null)
@@ -2408,6 +2549,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var pair_temporal_api_workflowservice_v1_ValidateWorkerDeploymentVersionComputeConfigRequest_6 in value.ComputeConfigScalingGroups)
             {
                 if (pair_temporal_api_workflowservice_v1_ValidateWorkerDeploymentVersionComputeConfigRequest_6.Value != null)
@@ -2422,6 +2564,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var pair_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionMetadataRequest_3 in value.UpsertEntries)
             {
                 VisitSingle(state, env, pair_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionMetadataRequest_3.Value, replacement => value.UpsertEntries[pair_temporal_api_workflowservice_v1_UpdateWorkerDeploymentVersionMetadataRequest_3.Key] = replacement);
@@ -2433,6 +2576,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Metadata != null)
             {
                 Walk(value.Metadata, env, state);
@@ -2444,6 +2588,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Outcome != null)
             {
                 Walk(value.Outcome, env, state);
@@ -2455,9 +2600,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Details != null)
             {
-                VisitBatch(state, env, value.Details.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Details), value.Details.Payloads_);
             }
         }
 
@@ -2466,9 +2612,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.Header != null)
             {
@@ -2481,6 +2628,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_batch_v1_BatchOperationReset_5 in value.PostResetOperations)
             {
                 Walk(item_temporal_api_batch_v1_BatchOperationReset_5, env, state);
@@ -2492,6 +2640,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.TerminationOperation != null)
             {
                 Walk(value.TerminationOperation, env, state);
@@ -2511,6 +2660,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Payload, replacement => value.Payload = replacement);
         }
 
@@ -2519,6 +2669,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.StartOperation != null)
             {
                 Walk(value.StartOperation, env, state);
@@ -2530,6 +2681,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Request != null)
             {
                 Walk(value.Request, env, state);
@@ -2541,6 +2693,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Payload, replacement => value.Payload = replacement);
         }
 
@@ -2549,6 +2702,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.SyncSuccess != null)
             {
                 Walk(value.SyncSuccess, env, state);
@@ -2564,6 +2718,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.StartOperation != null)
             {
                 Walk(value.StartOperation, env, state);
@@ -2575,6 +2730,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Response != null)
             {
                 Walk(value.Response, env, state);
@@ -2586,6 +2742,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -2597,9 +2754,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.Header != null)
             {
@@ -2620,6 +2778,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.EagerActivityTask != null)
             {
                 Walk(value.EagerActivityTask, env, state);
@@ -2631,6 +2790,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Input, replacement => value.Input = replacement);
             if (value.UserMetadata != null)
             {
@@ -2647,9 +2807,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.HeartbeatDetails != null)
             {
-                VisitBatch(state, env, value.HeartbeatDetails.Payloads_);
+                VisitBatch(state, env.ForMessage(value.HeartbeatDetails), value.HeartbeatDetails.Payloads_);
             }
             if (value.LastFailure != null)
             {
@@ -2670,9 +2831,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Result != null)
             {
-                VisitBatch(state, env, value.Result.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Result), value.Result.Payloads_);
             }
             if (value.Failure != null)
             {
@@ -2685,6 +2847,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Callback != null)
             {
                 Walk(value.Callback, env, state);
@@ -2700,6 +2863,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Info != null)
             {
                 Walk(value.Info, env, state);
@@ -2711,13 +2875,14 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Info != null)
             {
                 Walk(value.Info, env, state);
             }
             if (value.Input != null)
             {
-                VisitBatch(state, env, value.Input.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Input), value.Input.Payloads_);
             }
             if (value.Outcome != null)
             {
@@ -2734,6 +2899,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.LastAttemptFailure != null)
             {
                 Walk(value.LastAttemptFailure, env, state);
@@ -2745,6 +2911,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.LastAttemptFailure != null)
             {
                 Walk(value.LastAttemptFailure, env, state);
@@ -2764,6 +2931,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Info != null)
             {
                 Walk(value.Info, env, state);
@@ -2775,6 +2943,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Info != null)
             {
                 Walk(value.Info, env, state);
@@ -2796,6 +2965,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Outcome != null)
             {
                 Walk(value.Outcome, env, state);
@@ -2807,6 +2977,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Result, replacement => value.Result = replacement);
             if (value.Failure != null)
             {
@@ -2819,6 +2990,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitEach(state, env, value.GroupValues);
         }
 
@@ -2827,6 +2999,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_CountActivityExecutionsResponse_2 in value.Groups)
             {
                 Walk(item_temporal_api_workflowservice_v1_CountActivityExecutionsResponse_2, env, state);
@@ -2838,6 +3011,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitEach(state, env, value.GroupValues);
         }
 
@@ -2846,6 +3020,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_2 in value.Groups)
             {
                 Walk(item_temporal_api_workflowservice_v1_CountNexusOperationExecutionsResponse_2, env, state);
@@ -2857,6 +3032,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitBatch(state, env, value.Arguments);
             foreach (var pair_coresdk_workflow_activation_InitializeWorkflow_5 in value.Headers)
             {
@@ -2868,7 +3044,7 @@ namespace Temporalio.Worker
             }
             if (value.LastCompletionResult != null)
             {
-                VisitBatch(state, env, value.LastCompletionResult.Payloads_);
+                VisitBatch(state, env.ForMessage(value.LastCompletionResult), value.LastCompletionResult.Payloads_);
             }
             if (value.Memo != null)
             {
@@ -2881,6 +3057,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitBatch(state, env, value.Arguments);
             foreach (var pair_coresdk_workflow_activation_QueryWorkflow_5 in value.Headers)
             {
@@ -2893,6 +3070,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitBatch(state, env, value.Input);
             foreach (var pair_coresdk_workflow_activation_SignalWorkflow_5 in value.Headers)
             {
@@ -2905,6 +3083,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Result, replacement => value.Result = replacement);
         }
 
@@ -2913,6 +3092,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure_ != null)
             {
                 Walk(value.Failure_, env, state);
@@ -2924,6 +3104,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -2935,6 +3116,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Completed != null)
             {
                 Walk(value.Completed, env, state);
@@ -2954,6 +3136,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Result != null)
             {
                 Walk(value.Result, env, state);
@@ -2965,6 +3148,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -2976,6 +3160,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Cancelled != null)
             {
                 Walk(value.Cancelled, env, state);
@@ -2987,6 +3172,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Result, replacement => value.Result = replacement);
         }
 
@@ -2995,6 +3181,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure_ != null)
             {
                 Walk(value.Failure_, env, state);
@@ -3006,6 +3193,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -3017,6 +3205,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Completed != null)
             {
                 Walk(value.Completed, env, state);
@@ -3036,6 +3225,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Result != null)
             {
                 Walk(value.Result, env, state);
@@ -3047,6 +3237,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -3058,6 +3249,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -3069,6 +3261,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitBatch(state, env, value.Input);
             foreach (var pair_coresdk_workflow_activation_DoUpdate_5 in value.Headers)
             {
@@ -3081,6 +3274,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failed != null)
             {
                 Walk(value.Failed, env, state);
@@ -3092,6 +3286,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Completed, replacement => value.Completed = replacement);
             if (value.Failed != null)
             {
@@ -3112,6 +3307,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Result != null)
             {
                 Walk(value.Result, env, state);
@@ -3123,6 +3319,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.InitializeWorkflow != null)
             {
                 Walk(value.InitializeWorkflow, env, state);
@@ -3174,6 +3371,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_coresdk_workflow_activation_WorkflowActivation_5 in value.Jobs)
             {
                 Walk(item_coresdk_workflow_activation_WorkflowActivation_5, env, state);
@@ -3185,6 +3383,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var pair_coresdk_workflow_commands_ScheduleActivity_6 in value.Headers)
             {
                 VisitSingle(state, env, pair_coresdk_workflow_commands_ScheduleActivity_6.Value, replacement => value.Headers[pair_coresdk_workflow_commands_ScheduleActivity_6.Key] = replacement);
@@ -3197,6 +3396,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Response, replacement => value.Response = replacement);
         }
 
@@ -3205,6 +3405,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Succeeded != null)
             {
                 Walk(value.Succeeded, env, state);
@@ -3220,6 +3421,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Result, replacement => value.Result = replacement);
         }
 
@@ -3228,6 +3430,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure != null)
             {
                 Walk(value.Failure, env, state);
@@ -3239,6 +3442,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitBatch(state, env, value.Arguments);
             foreach (var pair_coresdk_workflow_commands_ContinueAsNewWorkflowExecution_6 in value.Memo)
             {
@@ -3255,9 +3459,10 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Details != null)
             {
-                VisitBatch(state, env, value.Details.Payloads_);
+                VisitBatch(state, env.ForMessage(value.Details), value.Details.Payloads_);
             }
         }
 
@@ -3266,6 +3471,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitBatch(state, env, value.Input);
             foreach (var pair_coresdk_workflow_commands_StartChildWorkflowExecution_15 in value.Headers)
             {
@@ -3282,6 +3488,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitBatch(state, env, value.Args);
             foreach (var pair_coresdk_workflow_commands_SignalExternalWorkflowExecution_6 in value.Headers)
             {
@@ -3294,6 +3501,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var pair_coresdk_workflow_commands_ScheduleLocalActivity_6 in value.Headers)
             {
                 VisitSingle(state, env, pair_coresdk_workflow_commands_ScheduleLocalActivity_6.Value, replacement => value.Headers[pair_coresdk_workflow_commands_ScheduleLocalActivity_6.Key] = replacement);
@@ -3306,6 +3514,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.UpsertedMemo != null)
             {
                 Walk(value.UpsertedMemo, env, state);
@@ -3317,6 +3526,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Rejected != null)
             {
                 Walk(value.Rejected, env, state);
@@ -3329,6 +3539,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Input, replacement => value.Input = replacement);
         }
 
@@ -3337,6 +3548,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.UserMetadata != null)
             {
                 Walk(value.UserMetadata, env, state);
@@ -3400,6 +3612,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var item_coresdk_workflow_completion_Success_1 in value.Commands)
             {
                 Walk(item_coresdk_workflow_completion_Success_1, env, state);
@@ -3411,6 +3624,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Failure_ != null)
             {
                 Walk(value.Failure_, env, state);
@@ -3422,6 +3636,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Successful != null)
             {
                 Walk(value.Successful, env, state);
@@ -3437,6 +3652,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             foreach (var pair_coresdk_activity_task_Start_6 in value.HeaderFields)
             {
                 VisitSingle(state, env, pair_coresdk_activity_task_Start_6.Value, replacement => value.HeaderFields[pair_coresdk_activity_task_Start_6.Key] = replacement);
@@ -3450,6 +3666,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Start != null)
             {
                 Walk(value.Start, env, state);
@@ -3461,6 +3678,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Completed != null)
             {
                 Walk(value.Completed, env, state);
@@ -3480,6 +3698,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Task != null)
             {
                 Walk(value.Task, env, state);
@@ -3491,6 +3710,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             if (value.Completed != null)
             {
                 Walk(value.Completed, env, state);
@@ -3506,6 +3726,7 @@ namespace Temporalio.Worker
             WalkEnv env,
             VisitState state)
         {
+            env = env.ForMessage(value);
             VisitSingle(state, env, value.Success, replacement => value.Success = replacement);
             if (value.Failure != null)
             {
