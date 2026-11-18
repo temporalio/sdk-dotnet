@@ -236,6 +236,32 @@ namespace Temporalio.Worker
                     $"Signal to external workflow has an unhandled target {signal.TargetCase}"),
             };
 
+        /// <summary>
+        /// Offloads a completion's payloads in one pass, so they all share one concurrency limit.
+        /// Each command's payloads go under the target naming the execution that reads them; a
+        /// whole-completion failure takes the current workflow.
+        /// </summary>
+        /// <param name="externalStorage">Runner to store with.</param>
+        /// <param name="comp">Completion whose payloads are offloaded in place.</param>
+        /// <param name="currentWorkflow">Target for the workflow producing this completion.</param>
+        /// <param name="parent">Parent of the current workflow, if its result goes to one.</param>
+        /// <param name="metrics">Accumulates what was stored.</param>
+        /// <returns>A task that completes when the completion has been offloaded.</returns>
+        internal static Task StoreCompletionPayloadsAsync(
+            IExternalStorageRunner externalStorage,
+            WorkflowActivationCompletion comp,
+            IStorageDriverTargetInfo.Workflow? currentWorkflow,
+            WorkflowInfo.ParentInfo? parent,
+            StorageOperationMetricsBuilder metrics) =>
+            externalStorage.StoreAsync(
+                PayloadVisitors.Walk,
+                comp,
+                currentWorkflow,
+                (message, target) => message is WorkflowCommand command ?
+                    StorageTargetForCommand(command, currentWorkflow, parent) : target,
+                metrics,
+                CancellationToken.None);
+
         // A proto string field is the empty string when unset; a target field is null when unknown.
         private static string? NullIfEmpty(string value) =>
             string.IsNullOrEmpty(value) ? null : value;
@@ -417,7 +443,8 @@ namespace Temporalio.Worker
                 var parent = runningWorkflows.TryGetValue(act.RunId, out var instForTarget) &&
                     instForTarget.Info.ContinuedRunId == null
                     ? instForTarget.Info.Parent : null;
-                await StoreCompletionPayloadsAsync(comp, completionTarget, parent, uploadMetrics)
+                await StoreCompletionPayloadsAsync(
+                    externalStorage, comp, completionTarget, parent, uploadMetrics)
                     .ConfigureAwait(false);
             }
             catch (Exception e)
@@ -455,37 +482,6 @@ namespace Temporalio.Worker
             catch (Exception e)
             {
                 logger.LogError(e, "Failed completing activation on {RunId}", act.RunId);
-            }
-        }
-
-        // Offloads a completion one command at a time, each under the target naming the execution
-        // that reads its payloads. The whole-completion failure takes the current workflow.
-        private async Task StoreCompletionPayloadsAsync(
-            WorkflowActivationCompletion comp,
-            IStorageDriverTargetInfo.Workflow? currentWorkflow,
-            WorkflowInfo.ParentInfo? parent,
-            StorageOperationMetricsBuilder metrics)
-        {
-            if (comp.Successful != null)
-            {
-                foreach (var command in comp.Successful.Commands)
-                {
-                    var target = StorageTargetForCommand(command, currentWorkflow, parent);
-                    await externalStorage.StoreAsync(
-                        PayloadVisitors.Walk, command, target, metrics, CancellationToken.None)
-                        .ConfigureAwait(false);
-                }
-            }
-
-            if (comp.Failed != null)
-            {
-                await externalStorage.StoreAsync(
-                    PayloadVisitors.Walk,
-                    comp.Failed,
-                    currentWorkflow,
-                    metrics,
-                    CancellationToken.None)
-                    .ConfigureAwait(false);
             }
         }
 

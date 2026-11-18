@@ -325,6 +325,7 @@ namespace Temporalio.Converters
                         PayloadVisitors.Walk,
                         failure,
                         storage.Target,
+                        deriveTarget: null,
                         metrics: null,
                         CancellationToken.None)
                     .ConfigureAwait(false);

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Protobuf;
 using Temporalio.Api.Common.V1;
 using Temporalio.Exceptions;
 using Temporalio.Worker;
@@ -94,7 +95,8 @@ namespace Temporalio.Converters
         public Task StoreAsync<T>(
             Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
             T message,
-            IStorageDriverTargetInfo? target,
+            IStorageDriverTargetInfo? initialTarget,
+            Func<IMessage, IStorageDriverTargetInfo?, IStorageDriverTargetInfo?>? deriveTarget,
             StorageOperationMetricsBuilder? metrics,
             CancellationToken cancellationToken) =>
             PayloadVisitors.VisitAsync(
@@ -105,7 +107,8 @@ namespace Temporalio.Converters
                         .ConfigureAwait(false)).Single(),
                     (payloads, target, ct) => StoreAsync(payloads, target, metrics, ct))
                 {
-                    InitialContext = target,
+                    InitialContext = initialTarget,
+                    DeriveContext = deriveTarget,
                     MaxConcurrency = storage.Concurrency.MaxOperationsPerMessage,
                     CancellationToken = cancellationToken,
                 });
@@ -409,7 +412,8 @@ namespace Temporalio.Converters
             public Task StoreAsync<T>(
                 Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
                 T message,
-                IStorageDriverTargetInfo? target,
+                IStorageDriverTargetInfo? initialTarget,
+                Func<IMessage, IStorageDriverTargetInfo?, IStorageDriverTargetInfo?>? deriveTarget,
                 StorageOperationMetricsBuilder? metrics,
                 CancellationToken cancellationToken) =>
                 Task.CompletedTask;
