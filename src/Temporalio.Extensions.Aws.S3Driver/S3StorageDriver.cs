@@ -115,7 +115,7 @@ namespace Temporalio.Extensions.Aws.S3Driver
             IReadOnlyCollection<Payload> payloads,
             CancellationToken cancellationToken)
         {
-            var contextSegments = ContextKeySegments(context.Target);
+            var contextSegments = ContextKeySegments(context.Target, context.Namespace);
             var objects = payloads
                 .Select(payload => NewStoredObject(context, payload, contextSegments))
                 .ToList();
@@ -235,7 +235,8 @@ namespace Temporalio.Extensions.Aws.S3Driver
             return hex.ToString();
         }
 
-        private static string ContextKeySegments(IStorageDriverTargetInfo? target) =>
+        private static string ContextKeySegments(
+            IStorageDriverTargetInfo? target, string? @namespace) =>
             target switch
             {
                 IStorageDriverTargetInfo.Workflow workflow =>
@@ -248,7 +249,7 @@ namespace Temporalio.Extensions.Aws.S3Driver
                     $"/at/{EncodeKeySegment(activity.ActivityType)}" +
                     $"/ai/{EncodeKeySegment(activity.ActivityId)}" +
                     $"/ri/{EncodeKeySegment(activity.RunId)}",
-                _ => string.Empty,
+                _ => $"/ns/{EncodeKeySegment(@namespace)}",
             };
 
         /// <summary>

@@ -16,13 +16,18 @@ namespace Temporalio.Worker
     internal class NexusPayloadSerializer : ISerializer
     {
         private readonly DataConverter dataConverter;
+        private readonly string @namespace;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NexusPayloadSerializer"/> class.
         /// </summary>
         /// <param name="dataConverter">Temporal data converter.</param>
-        public NexusPayloadSerializer(DataConverter dataConverter) =>
+        /// <param name="namespace">Namespace of the worker storing serialized results.</param>
+        public NexusPayloadSerializer(DataConverter dataConverter, string @namespace)
+        {
             this.dataConverter = dataConverter;
+            this.@namespace = @namespace;
+        }
 
         /// <inheritdoc/>
         public async Task<ISerializer.Content> SerializeAsync(object? value)
@@ -32,7 +37,9 @@ namespace Temporalio.Worker
             {
                 value = null;
             }
-            var payload = await CreateContextualDataConverter().ToPayloadAsync(value)
+            var converter = CreateContextualDataConverter();
+            var payload = await converter.ToPayloadAsync(
+                value, ExternalStorageContext.For(converter, @namespace, target: null))
                 .ConfigureAwait(false);
             return new(payload.ToByteArray());
         }

@@ -1,0 +1,1 @@
+**Experimental**: The S3 storage driver now writes payloads stored without a workflow or activity target under `v0/ns/{namespace}/d/sha256/{hash}`, using the namespace of the storing client or worker (`null` when it is unknown), instead of `v0/d/sha256/{hash}`. Existing objects remain retrievable.

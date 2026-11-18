@@ -13,5 +13,11 @@ namespace Temporalio.Converters
         /// associated execution.
         /// </summary>
         public IStorageDriverTargetInfo? Target { get; init; }
+
+        /// <summary>
+        /// Gets the namespace of the client or worker performing the store, or null when it is not
+        /// known.
+        /// </summary>
+        public string? Namespace { get; init; }
     }
 }

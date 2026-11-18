@@ -27,7 +27,7 @@ namespace Temporalio.Client
             {
                 var converter = DataConverterForAsyncActivity(input.DataConverterOverride);
                 var storage = ExternalStorageContext.For(
-                    converter, StorageTargetForAsyncActivity(input.Activity));
+                    converter, Client.Options.Namespace, StorageTargetForAsyncActivity(input.Activity));
                 Payloads? details = null;
                 if (input.Options?.Details != null && input.Options.Details.Count > 0)
                 {
@@ -84,7 +84,7 @@ namespace Temporalio.Client
             {
                 var converter = DataConverterForAsyncActivity(input.DataConverterOverride);
                 var storage = ExternalStorageContext.For(
-                    converter, StorageTargetForAsyncActivity(input.Activity));
+                    converter, Client.Options.Namespace, StorageTargetForAsyncActivity(input.Activity));
                 var result = await converter.ToPayloadAsync(input.Result, storage).ConfigureAwait(false);
                 if (input.Activity is AsyncActivityHandle.IdReference idRef)
                 {
@@ -123,7 +123,7 @@ namespace Temporalio.Client
             {
                 var converter = DataConverterForAsyncActivity(input.DataConverterOverride);
                 var storage = ExternalStorageContext.For(
-                    converter, StorageTargetForAsyncActivity(input.Activity));
+                    converter, Client.Options.Namespace, StorageTargetForAsyncActivity(input.Activity));
                 var failure = await converter.ToFailureAsync(input.Exception, storage).ConfigureAwait(false);
                 Payloads? lastHeartbeatDetails = null;
                 if (input.Options?.LastHeartbeatDetails != null &&
@@ -178,7 +178,7 @@ namespace Temporalio.Client
             {
                 var converter = DataConverterForAsyncActivity(input.DataConverterOverride);
                 var storage = ExternalStorageContext.For(
-                    converter, StorageTargetForAsyncActivity(input.Activity));
+                    converter, Client.Options.Namespace, StorageTargetForAsyncActivity(input.Activity));
                 Payloads? details = null;
                 if (input.Options?.Details != null && input.Options.Details.Count > 0)
                 {

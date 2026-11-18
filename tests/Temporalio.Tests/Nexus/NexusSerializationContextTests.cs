@@ -42,10 +42,12 @@ public class NexusSerializationContextTests
         Assert.Equal(expected, NewExecutionContext(string.Empty).SerializationContext);
 
         var codec = new RecordingPayloadCodec();
-        var serializer = new NexusPayloadSerializer(DataConverter.Default with
-        {
-            PayloadCodec = codec,
-        });
+        var serializer = new NexusPayloadSerializer(
+            DataConverter.Default with
+            {
+                PayloadCodec = codec,
+            },
+            "default");
 
         await WithOperationInScopeAsync(
             () => serializer.SerializeAsync("value"), endpoint: string.Empty);
@@ -57,10 +59,12 @@ public class NexusSerializationContextTests
     public async Task SerializeAsync_WithOperationInScope_UsesOperationContext()
     {
         var codec = new RecordingPayloadCodec();
-        var serializer = new NexusPayloadSerializer(DataConverter.Default with
-        {
-            PayloadCodec = codec,
-        });
+        var serializer = new NexusPayloadSerializer(
+            DataConverter.Default with
+            {
+                PayloadCodec = codec,
+            },
+            "default");
 
         await WithOperationInScopeAsync(() => serializer.SerializeAsync("value"));
 
@@ -86,10 +90,12 @@ public class NexusSerializationContextTests
         // The serializer is shared by the whole worker and is reachable outside a Nexus task, where
         // there is no endpoint, service or operation to scope it by.
         var codec = new RecordingPayloadCodec();
-        var serializer = new NexusPayloadSerializer(DataConverter.Default with
-        {
-            PayloadCodec = codec,
-        });
+        var serializer = new NexusPayloadSerializer(
+            DataConverter.Default with
+            {
+                PayloadCodec = codec,
+            },
+            "default");
 
         await serializer.SerializeAsync("value");
 
@@ -101,7 +107,7 @@ public class NexusSerializationContextTests
     {
         var codec = new RecordingPayloadCodec();
         var converter = DataConverter.Default with { PayloadCodec = codec };
-        var serializer = new NexusPayloadSerializer(converter);
+        var serializer = new NexusPayloadSerializer(converter, "default");
 
         // The caller encodes under the operation's context, so the handler must decode under the
         // same context to read it back.

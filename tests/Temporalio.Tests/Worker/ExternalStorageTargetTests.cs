@@ -380,6 +380,40 @@ public class ExternalStorageTargetTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task ClientAndWorkerStores_CarryTheirNamespace()
+    {
+        var (client, driver) = ClientWithCapture();
+        await ExecuteWorkerAsync<TargetActivityWorkflow>(
+            client,
+            async worker =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (TargetActivityWorkflow wf) => wf.RunAsync("hi"), NewOptions(worker));
+                Assert.Equal("activity: hi", await handle.GetResultAsync());
+
+                Assert.NotEmpty(driver.RecordedNamespaces);
+                Assert.All(
+                    driver.RecordedNamespaces, ns => Assert.Equal(client.Options.Namespace, ns));
+            },
+            new TemporalWorkerOptions().AddActivity(TargetActivityWorkflow.Echo));
+    }
+
+    [Fact]
+    public async Task AsyncActivityCompleteByTaskToken_CarriesClientNamespace()
+    {
+        var (client, driver) = ClientWithCapture();
+        await RunParkedActivityAsync(client, async (reference, completeWith) =>
+        {
+            var before = driver.RecordedNamespaces.Length;
+            await client.GetAsyncActivityHandle(reference.TaskToken).CompleteAsync(completeWith);
+
+            Assert.Equal(
+                client.Options.Namespace,
+                Assert.Single(driver.RecordedNamespaces.Skip(before)));
+        });
+    }
+
+    [Fact]
     public async Task AsyncActivityCompleteByTaskToken_HasNoTarget()
     {
         var (client, driver) = ClientWithCapture();
@@ -613,12 +647,15 @@ public class ExternalStorageTargetTests : WorkflowEnvironmentTestBase
         private readonly ConcurrentDictionary<string, Payload> stored = new();
         private readonly ConcurrentDictionary<string, IStorageDriverTargetInfo?> targets = new();
         private readonly ConcurrentQueue<IStorageDriverTargetInfo?> recorded = new();
+        private readonly ConcurrentQueue<string?> recordedNamespaces = new();
 
         public string Name => "mem";
 
         public string Type => "test.inmemory";
 
         public IStorageDriverTargetInfo?[] RecordedTargets => recorded.ToArray();
+
+        public string?[] RecordedNamespaces => recordedNamespaces.ToArray();
 
         public Task<IReadOnlyCollection<StorageDriverClaim>> StoreAsync(
             StorageDriverStoreContext context,
@@ -632,6 +669,7 @@ public class ExternalStorageTargetTests : WorkflowEnvironmentTestBase
                 stored[key] = payload;
                 targets[key] = context.Target;
                 recorded.Enqueue(context.Target);
+                recordedNamespaces.Enqueue(context.Namespace);
                 claims.Add(new StorageDriverClaim(new Dictionary<string, string> { ["key"] = key }));
             }
 
