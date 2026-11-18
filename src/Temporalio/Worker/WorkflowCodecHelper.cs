@@ -104,7 +104,7 @@ namespace Temporalio.Worker
                             // Apply child workflow context
                             var childCodec2 = context.CodecNoContext;
                             if (childCodec2 is IWithSerializationContext<IPayloadCodec> withChild2 &&
-                                context.Instance?.GetPendingChildSerializationContext(job.ResolveChildWorkflowExecution.Seq) is { } childContext2)
+                                context.Instance?.GetPendingChildSerializationContext(job.ResolveChildWorkflowExecutionStart.Seq) is { } childContext2)
                             {
                                 childCodec2 = withChild2.WithSerializationContext(childContext2);
                             }

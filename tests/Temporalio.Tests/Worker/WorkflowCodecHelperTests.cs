@@ -9,6 +9,7 @@ using Temporalio.Bridge.Api.WorkflowCommands;
 using Temporalio.Bridge.Api.WorkflowCompletion;
 using Temporalio.Converters;
 using Temporalio.Worker;
+using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -368,6 +369,42 @@ public class WorkflowCodecHelperTests : TestBase
         Assert.Equal(hasNexusContext, codec.NexusContexts.Count > 0);
     }
 
+    [Fact]
+    public async Task DecodeAsync_ResolveChildWorkflowExecutionStartCancelled_DecodesWithChildContext()
+    {
+        var childContext = new ISerializationContext.Workflow("my-namespace", "child-workflow-id");
+        var codec = new RecordingPayloadCodec();
+        var act = new WorkflowActivation
+        {
+            Jobs =
+            {
+                new WorkflowActivationJob
+                {
+                    ResolveChildWorkflowExecutionStart = new()
+                    {
+                        Seq = 7,
+                        Cancelled = new()
+                        {
+                            Failure = new()
+                            {
+                                ApplicationFailureInfo = new()
+                                {
+                                    Details = new() { Payloads_ = { new Payload() } },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        };
+
+        await WorkflowCodecHelper.DecodeAsync(
+            CreateSimpleCodecContext(codec) with { Instance = new PendingChildInstance(7, childContext) },
+            act);
+
+        Assert.Equal(new ISerializationContext?[] { childContext }, codec.Contexts);
+    }
+
     private static Payload CreateSystemEnvelope(string value) => CreateSystemEnvelope(
         new SignalWithStartWorkflowExecutionRequest
         {
@@ -461,6 +498,35 @@ public class WorkflowCodecHelperTests : TestBase
         // Returns null if already seen
         public PayloadVisitContext WithProperty(IMessage current, string property) =>
             this with { PropertyPath = PropertyPath.Append(Tuple.Create(current, property)) };
+    }
+
+    private sealed class PendingChildInstance : IWorkflowCodecHelperInstance
+    {
+        private readonly uint seq;
+        private readonly ISerializationContext.Workflow context;
+
+        public PendingChildInstance(uint seq, ISerializationContext.Workflow context)
+        {
+            this.seq = seq;
+            this.context = context;
+        }
+
+        public WorkflowInfo Info => throw new NotImplementedException();
+
+        public ISerializationContext.Nexus? NexusSerializationContext => null;
+
+        public ISerializationContext.Activity? GetPendingActivitySerializationContext(uint seq) => null;
+
+        public ISerializationContext.Workflow? GetPendingChildSerializationContext(uint seq) =>
+            seq == this.seq ? context : null;
+
+        public ISerializationContext.Workflow? GetPendingExternalCancelSerializationContext(uint seq) => null;
+
+        public ISerializationContext.Workflow? GetPendingExternalSignalSerializationContext(uint seq) => null;
+
+        public ISerializationContext? GetPendingNexusOperationSerializationContext(uint seq) => null;
+
+        public ISerializationContext.Nexus? GetUpdateNexusSerializationContext(string protocolInstanceId) => null;
     }
 
     private class MarkerPayloadCodec : IPayloadCodec
