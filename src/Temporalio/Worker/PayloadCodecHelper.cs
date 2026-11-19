@@ -13,23 +13,29 @@ namespace Temporalio.Worker
     internal static class PayloadCodecHelper
     {
         internal static Task EncodeAsync(IPayloadCodec codec, RepeatedField<Payload> payloads) =>
-            PayloadVisitors.VisitAsync(payloads, Options(codec.EncodeAsync));
+            PayloadVisitors.VisitAsync(payloads, Options(codec, (c, p) => c.EncodeAsync(p)));
 
         internal static Task EncodeAsync(IPayloadCodec codec, Payload payload) =>
-            PayloadVisitors.VisitAsync(payload, Options(codec.EncodeAsync));
+            PayloadVisitors.VisitAsync(payload, Options(codec, (c, p) => c.EncodeAsync(p)));
 
         internal static Task DecodeAsync(IPayloadCodec codec, RepeatedField<Payload> payloads) =>
-            PayloadVisitors.VisitAsync(payloads, Options(codec.DecodeAsync));
+            PayloadVisitors.VisitAsync(payloads, Options(codec, (c, p) => c.DecodeAsync(p)));
 
         internal static Task DecodeAsync(IPayloadCodec codec, Payload payload) =>
-            PayloadVisitors.VisitAsync(payload, Options(codec.DecodeAsync));
+            PayloadVisitors.VisitAsync(payload, Options(codec, (c, p) => c.DecodeAsync(p)));
 
-        // A codec runs one payload at a time (the default limit): it may be stateful and, in a
+        // The codec is the walk's context, so a deriver can switch codecs for part of a message. A
+        // codec runs one payload at a time (the default limit): it may be stateful and, in a
         // workflow, runs in the single-threaded workflow context.
-        private static PayloadVisitors.VisitOptions Options(
-            Func<IReadOnlyCollection<Payload>, Task<IReadOnlyCollection<Payload>>> codecCall) =>
+        private static PayloadVisitors.VisitOptions<IPayloadCodec> Options(
+            IPayloadCodec codec,
+            Func<IPayloadCodec, IReadOnlyCollection<Payload>, Task<IReadOnlyCollection<Payload>>> apply) =>
             new(
-                async (payload, _) => (await codecCall(new[] { payload }).ConfigureAwait(false)).Single(),
-                (payloads, _) => codecCall(payloads));
+                async (payload, codec, _) =>
+                    (await apply(codec, new[] { payload }).ConfigureAwait(false)).Single(),
+                (payloads, codec, _) => apply(codec, payloads))
+            {
+                InitialContext = codec,
+            };
     }
 }

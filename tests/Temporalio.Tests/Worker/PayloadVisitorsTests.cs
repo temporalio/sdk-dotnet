@@ -1,5 +1,6 @@
 namespace Temporalio.Tests.Worker;
 
+using System.Collections.Concurrent;
 using Google.Protobuf;
 using Google.Protobuf.Collections;
 using Temporalio.Api.Command.V1;
@@ -91,13 +92,13 @@ public class PayloadVisitorsTests : TestBase
         await PayloadVisitors.VisitAsync(
             marker,
             PayloadVisitors.Walk,
-            new PayloadVisitors.VisitOptions(
-                (payload, _) =>
+            new PayloadVisitors.VisitOptions<object?>(
+                (payload, _, _) =>
                 {
                     singleCount++;
                     return Task.FromResult(payload);
                 },
-                (payloads, _) =>
+                (payloads, _, _) =>
                 {
                     batches.Add(payloads.ToList());
                     return Task.FromResult(payloads);
@@ -123,13 +124,13 @@ public class PayloadVisitorsTests : TestBase
         await PayloadVisitors.VisitAsync(
             group,
             PayloadVisitors.Walk,
-            new PayloadVisitors.VisitOptions(
-                (payload, _) =>
+            new PayloadVisitors.VisitOptions<object?>(
+                (payload, _, _) =>
                 {
                     singleCount++;
                     return Task.FromResult(payload);
                 },
-                (payloads, _) =>
+                (payloads, _, _) =>
                 {
                     batchCount++;
                     return Task.FromResult(payloads);
@@ -160,15 +161,15 @@ public class PayloadVisitorsTests : TestBase
         var visit = PayloadVisitors.VisitAsync(
             group,
             PayloadVisitors.Walk,
-            new PayloadVisitors.VisitOptions(
-                async (payload, _) =>
+            new PayloadVisitors.VisitOptions<object?>(
+                async (payload, _, _) =>
                 {
                     InterlockedMax(ref peak, Interlocked.Increment(ref running));
                     await release.Task;
                     Interlocked.Decrement(ref running);
                     return payload;
                 },
-                (payloads, _) => Task.FromResult(payloads))
+                (payloads, _, _) => Task.FromResult(payloads))
             {
                 MaxConcurrency = maxConcurrency,
             });
@@ -180,6 +181,144 @@ public class PayloadVisitorsTests : TestBase
         await visit;
 
         Assert.Equal(maxConcurrency, peak);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(3)]
+    public async Task VisitAsync_DeriveContext_AppliesToTheEnteredSubtreeOnly(int maxConcurrency)
+    {
+        // The activity job comes first, so a context leaking from one job into the next would show
+        // on the signal. Under initialize, only the Payloads-typed field is rebound, which a deriver
+        // can only do if it is also given the Payloads message itself.
+        var activation = new WorkflowActivation
+        {
+            Jobs =
+            {
+                new WorkflowActivationJob
+                {
+                    ResolveActivity = new()
+                    {
+                        Result = new() { Completed = new() { Result = Named("activity-result") } },
+                    },
+                },
+                new WorkflowActivationJob
+                {
+                    SignalWorkflow = new() { Input = { Named("signal-input") } },
+                },
+                new WorkflowActivationJob
+                {
+                    InitializeWorkflow = new()
+                    {
+                        Arguments = { Named("init-argument") },
+                        LastCompletionResult = new() { Payloads_ = { Named("last-result") } },
+                    },
+                },
+            },
+        };
+        var seen = new ConcurrentDictionary<string, string>();
+        Task<Payload> Record(Payload payload, string context)
+        {
+            seen[payload.Data.ToStringUtf8()] = context;
+            return Task.FromResult(payload);
+        }
+
+        await PayloadVisitors.VisitAsync(
+            activation,
+            PayloadVisitors.Walk,
+            new PayloadVisitors.VisitOptions<string>(
+                (payload, context, _) => Record(payload, context),
+                async (payloads, context, _) =>
+                {
+                    foreach (var payload in payloads)
+                    {
+                        await Record(payload, context);
+                    }
+                    return payloads;
+                })
+            {
+                InitialContext = "workflow",
+                DeriveContext = (message, context) => message switch
+                {
+                    ResolveActivity => "activity",
+                    InitializeWorkflow => "initialize",
+                    Payloads when context == "initialize" => "last-result",
+                    _ => context,
+                },
+                MaxConcurrency = maxConcurrency,
+            });
+
+        Assert.Equal(
+            new Dictionary<string, string>
+            {
+                ["activity-result"] = "activity",
+                ["signal-input"] = "workflow",
+                ["init-argument"] = "initialize",
+                ["last-result"] = "last-result",
+            },
+            seen);
+    }
+
+    [Fact]
+    public async Task VisitAsync_DeriveContext_ReachesIntoSystemNexusEnvelopes()
+    {
+        // The envelope's payloads inherit the context of the field the envelope sits in, and the
+        // envelope's own messages can rebind it further, as any other message can.
+        var request = new StartWorkflowExecutionRequest
+        {
+            Input = new() { Payloads_ = { Named("envelope-input") } },
+            Memo = new() { Fields = { ["key"] = Named("envelope-memo") } },
+        };
+        var envelope = new Payload
+        {
+            Metadata =
+            {
+                ["encoding"] = ByteString.CopyFromUtf8("binary/protobuf"),
+                ["messageType"] = ByteString.CopyFromUtf8(StartWorkflowExecutionRequest.Descriptor.FullName),
+            },
+            Data = request.ToByteString(),
+        };
+        SystemNexusPayloads.MarkSystemPayload(envelope);
+        var activation = new WorkflowActivation
+        {
+            Jobs = { new WorkflowActivationJob { SignalWorkflow = new() { Input = { envelope } } } },
+        };
+        var seen = new ConcurrentDictionary<string, string>();
+
+        await PayloadVisitors.VisitAsync(
+            activation,
+            PayloadVisitors.Walk,
+            new PayloadVisitors.VisitOptions<string>(
+                (payload, context, _) =>
+                {
+                    seen[payload.Data.ToStringUtf8()] = context;
+                    return Task.FromResult(payload);
+                },
+                (payloads, context, _) =>
+                {
+                    foreach (var payload in payloads)
+                    {
+                        seen[payload.Data.ToStringUtf8()] = context;
+                    }
+                    return Task.FromResult(payloads);
+                })
+            {
+                InitialContext = "workflow",
+                DeriveContext = (message, context) => message switch
+                {
+                    SignalWorkflow => "signal",
+                    Memo => "memo",
+                    _ => context,
+                },
+            });
+
+        Assert.Equal(
+            new Dictionary<string, string>
+            {
+                ["envelope-input"] = "signal",
+                ["envelope-memo"] = "memo",
+            },
+            seen);
     }
 
     [Fact]
@@ -200,8 +339,8 @@ public class PayloadVisitorsTests : TestBase
         var visit = PayloadVisitors.VisitAsync(
             group,
             PayloadVisitors.Walk,
-            new PayloadVisitors.VisitOptions(
-                async (payload, cancellationToken) =>
+            new PayloadVisitors.VisitOptions<object?>(
+                async (payload, _, cancellationToken) =>
                 {
                     if (payload.Metadata["role"].ToStringUtf8() == "wait")
                     {
@@ -224,7 +363,7 @@ public class PayloadVisitorsTests : TestBase
 
                     return payload;
                 },
-                (payloads, _) => Task.FromResult(payloads))
+                (payloads, _, _) => Task.FromResult(payloads))
             {
                 MaxConcurrency = 2,
             });
@@ -252,9 +391,9 @@ public class PayloadVisitorsTests : TestBase
 
     private static async Task VisitAndMarkAsync(IMessage root)
     {
-        var options = new PayloadVisitors.VisitOptions(
-            (payload, _) => Task.FromResult(Mark(payload)),
-            (payloads, _) => Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(Mark).ToList()));
+        var options = new PayloadVisitors.VisitOptions<object?>(
+            (payload, _, _) => Task.FromResult(Mark(payload)),
+            (payloads, _, _) => Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(Mark).ToList()));
         await (root switch
         {
             WorkflowActivation value => PayloadVisitors.VisitAsync(value, PayloadVisitors.Walk, options),
@@ -275,6 +414,8 @@ public class PayloadVisitorsTests : TestBase
     }
 
     private static bool WasVisited(Payload payload) => payload.Metadata.ContainsKey("__visited");
+
+    private static Payload Named(string name) => new() { Data = ByteString.CopyFromUtf8(name) };
 
     private static Task ForEachPayloadAsync(
         IMessage root, Func<string, Func<Payload>, bool, bool, Task> onPayload) =>

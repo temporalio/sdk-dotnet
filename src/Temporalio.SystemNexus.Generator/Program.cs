@@ -409,6 +409,7 @@ static void EmitVisitMethod(
     builder.AppendLine("            WalkEnv env,");
     builder.AppendLine("            VisitState state)");
     builder.AppendLine("        {");
+    builder.AppendLine("            env = env.ForMessage(value);");
     foreach (var line in fieldLines)
     {
         builder.AppendLine($"            {line}");
@@ -543,14 +544,14 @@ static IEnumerable<string> VisitFieldLines(
                 var valueName = UniqueLocalName(message, field, "payloads");
                 yield return $"foreach (var {valueName} in value.{propertyName})";
                 yield return "{";
-                yield return $"    VisitBatch(state, env, {valueName}.Payloads_);";
+                yield return $"    VisitBatch(state, env.ForMessage({valueName}), {valueName}.Payloads_);";
                 yield return "}";
             }
             else
             {
                 yield return $"if (value.{propertyName} != null)";
                 yield return "{";
-                yield return $"    VisitBatch(state, env, value.{propertyName}.Payloads_);";
+                yield return $"    VisitBatch(state, env.ForMessage(value.{propertyName}), value.{propertyName}.Payloads_);";
                 yield return "}";
             }
         }
