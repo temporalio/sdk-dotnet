@@ -172,7 +172,8 @@ namespace Temporalio.Worker
                     new IStorageDriverTargetInfo.Workflow(
                         parent.Namespace, parent.WorkflowId, parent.RunId, WorkflowType: null),
 
-                // No Nexus target kind exists yet, so a Nexus operation offloads without one.
+                // System Nexus targets come from pending operation metadata in the store pass.
+                // Ordinary Nexus operations have no workflow or activity destination.
                 WorkflowCommand.VariantOneofCase.ScheduleNexusOperation => null,
 
                 // The remaining commands read their payloads back as the current workflow, or
@@ -417,7 +418,7 @@ namespace Temporalio.Worker
                 var parent = runningWorkflows.TryGetValue(act.RunId, out var instForTarget) &&
                     instForTarget.Info.ContinuedRunId == null
                     ? instForTarget.Info.Parent : null;
-                await StoreCompletionPayloadsAsync(comp, completionTarget, parent, uploadMetrics)
+                await StoreCompletionPayloadsAsync(comp, completionTarget, parent, instForTarget, uploadMetrics)
                     .ConfigureAwait(false);
             }
             catch (Exception e)
@@ -464,13 +465,16 @@ namespace Temporalio.Worker
             WorkflowActivationCompletion comp,
             IStorageDriverTargetInfo.Workflow? currentWorkflow,
             WorkflowInfo.ParentInfo? parent,
+            IWorkflowInstance? instance,
             StorageOperationMetricsBuilder metrics)
         {
             if (comp.Successful != null)
             {
                 foreach (var command in comp.Successful.Commands)
                 {
-                    var target = StorageTargetForCommand(command, currentWorkflow, parent);
+                    IStorageDriverTargetInfo? target = command.ScheduleNexusOperation is { } nexus ?
+                        instance?.GetPendingNexusOperationStorageTarget(nexus.Seq) :
+                        StorageTargetForCommand(command, currentWorkflow, parent);
                     await externalStorage.StoreAsync(
                         PayloadVisitors.Walk, command, target, metrics, CancellationToken.None)
                         .ConfigureAwait(false);
