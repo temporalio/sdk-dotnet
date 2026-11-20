@@ -200,6 +200,79 @@ public class TemporalLambdaWorkerTests
     }
 
     [Fact]
+    public async Task CreateHandler_LoadsClientOptionsOnceAcrossInvocations()
+    {
+        var loadCalls = 0;
+        var plugins = new List<ITemporalClientPlugin>();
+        var capturedClientOptions = new List<TemporalClientConnectOptions>();
+        var handler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            options =>
+            {
+                options.WorkerOptions.TaskQueue = "task-queue";
+            },
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                LoadClientConnectOptions = _ =>
+                {
+                    loadCalls++;
+                    return new TemporalClientConnectOptions
+                    {
+                        TargetHost = "loaded-address",
+                        Plugins = plugins,
+                    };
+                },
+                ConnectClientAsync = options =>
+                {
+                    capturedClientOptions.Add(options);
+                    return Task.FromResult<object>(new object());
+                },
+                CreateWorker = (_, _) => new FakeLambdaWorker(_ => Task.CompletedTask),
+            });
+
+        await handler(null, new FakeLambdaContext());
+        await handler(null, new FakeLambdaContext());
+
+        // Each invocation gets its own copy, sharing the loaded plugins
+        Assert.Equal(1, loadCalls);
+        Assert.Equal(2, capturedClientOptions.Count);
+        Assert.NotSame(capturedClientOptions[0], capturedClientOptions[1]);
+        Assert.Same(plugins, capturedClientOptions[0].Plugins);
+        Assert.Same(plugins, capturedClientOptions[1].Plugins);
+    }
+
+    [Fact]
+    public async Task CreateHandler_ClientOptionChangesDoNotLeakAcrossInvocations()
+    {
+        var seen = new List<(string? ApiKey, string? Domain)>();
+        var handler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            options =>
+            {
+                options.WorkerOptions.TaskQueue = "task-queue";
+                seen.Add((options.ClientOptions.ApiKey, options.ClientOptions.Tls?.Domain));
+                options.ClientOptions.ApiKey = "invocation-key";
+                options.ClientOptions.Tls!.Domain = "invocation-domain";
+            },
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                LoadClientConnectOptions = _ => new TemporalClientConnectOptions
+                {
+                    TargetHost = "loaded-address",
+                    Tls = new TlsOptions { Domain = "loaded-domain" },
+                },
+                ConnectClientAsync = _ => Task.FromResult<object>(new object()),
+                CreateWorker = (_, _) => new FakeLambdaWorker(_ => Task.CompletedTask),
+            });
+
+        await handler(null, new FakeLambdaContext());
+        await handler(null, new FakeLambdaContext());
+
+        // Each invocation sees the loaded options, not the previous invocation's changes
+        Assert.Equal(new (string?, string?)[] { (null, "loaded-domain"), (null, "loaded-domain") }, seen);
+    }
+
+    [Fact]
     public async Task CreateHandler_ExplicitClientOptionsBypassDefaultConfigLoad()
     {
         TemporalClientConnectOptions? capturedClientOptions = null;
