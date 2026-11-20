@@ -962,6 +962,13 @@ namespace Temporalio.Worker
         }
 
         /// <inheritdoc/>
+        public IStorageDriverTargetInfo? GetPendingNexusOperationStorageTarget(uint seq)
+        {
+            nexusOperationsPending.TryGetValue(seq, out var pending);
+            return pending?.StorageTarget;
+        }
+
+        /// <inheritdoc/>
         public ISerializationContext.Nexus? GetUpdateNexusSerializationContext(
             string protocolInstanceId)
         {
@@ -2872,6 +2879,7 @@ namespace Temporalio.Worker
                 var isSystemEndpoint = SystemNexusPayloads.IsSystemEndpoint(
                     input.ClientOptions.Endpoint);
                 ISerializationContext? serializationContext = null;
+                IStorageDriverTargetInfo? storageTarget = null;
                 if (!isSystemEndpoint)
                 {
                     serializationContext = new ISerializationContext.Nexus(
@@ -2884,6 +2892,7 @@ namespace Temporalio.Worker
                         (input.Service, input.OperationName), out var operationInfo))
                 {
                     serializationContext = operationInfo.SerializationContext?.Invoke(arg);
+                    storageTarget = operationInfo.StorageTarget?.Invoke(arg);
                 }
 
                 var payloadConverter = instance.payloadConverterNoContext;
@@ -2948,6 +2957,7 @@ namespace Temporalio.Worker
                 var handleSource = new TaskCompletionSource<NexusWorkflowOperationHandle<TResult>>();
                 var pending = new PendingNexusOperationInfo(
                     SerializationContext: serializationContext,
+                    StorageTarget: storageTarget,
                     StartCompletionSource: new(),
                     ResultCompletionSource: new());
                 instance.nexusOperationsPending[seq] = pending;
@@ -3453,6 +3463,7 @@ namespace Temporalio.Worker
 
         private record PendingNexusOperationInfo(
             ISerializationContext? SerializationContext,
+            IStorageDriverTargetInfo? StorageTarget,
             TaskCompletionSource<ResolveNexusOperationStart> StartCompletionSource,
             TaskCompletionSource<NexusOperationResult> ResultCompletionSource);
 
