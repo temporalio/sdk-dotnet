@@ -319,7 +319,6 @@ namespace Temporalio.Extensions.Aws.SecretsManager
                 // exception, and callers with a stale value wouldn't fall back to it
                 failure = new(e.Message, "other", e);
             }
-            var latency = Now() - start;
 
             IReadOnlyList<string>? prevVersionIds;
             TimeSpan prevFetchedAt;
@@ -346,6 +345,7 @@ namespace Temporalio.Extensions.Aws.SecretsManager
             // Telemetry failures shouldn't affect the fetch's result
             tel.Record(() =>
             {
+                var latency = Now() - start;
                 if (failure != null)
                 {
                     RecordFailure(entry, failure, latency, start - prevFetchedAt, canUseStale, tel);

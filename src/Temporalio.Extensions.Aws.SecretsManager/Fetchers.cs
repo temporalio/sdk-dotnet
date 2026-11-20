@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Net.Sockets;
 
 namespace Temporalio.Extensions.Aws.SecretsManager
@@ -44,7 +45,7 @@ namespace Temporalio.Extensions.Aws.SecretsManager
             {
                 // Only try to auto-detect the Lambda extension if we're in a Lambda function
                 if (string.IsNullOrEmpty(getEnv(LambdaFunctionNameEnvVar)) ||
-                    !Probe(LambdaExtensionHost, DefaultLambdaExtensionPort))
+                    !Probe(DefaultLambdaExtensionPort))
                 {
                     return new SdkFetcher(null);
                 }
@@ -58,32 +59,47 @@ namespace Temporalio.Extensions.Aws.SecretsManager
         }
 
         /// <summary>
-        /// Whether something accepts connections on the given port.
+        /// Whether something accepts connections on the given local port.
         /// </summary>
-        /// <param name="host">Host.</param>
         /// <param name="port">Port.</param>
         /// <returns>Whether something is listening.</returns>
-        public static bool Probe(string host, int port)
+        public static bool Probe(int port)
         {
-            // Probing a local port is either accepted or refused almost immediately, so the
-            // timeout only bounds pathological cases. It's generous since the connect completes on
-            // the thread pool, which may be slow to run it when busy, e.g. at startup.
-            try
+            // Connects synchronously on this thread, since an async connect completes on the
+            // thread pool, which may be too busy to run it in time, e.g. at startup. A local
+            // connect is either accepted or refused almost immediately, so the timeout only bounds
+            // pathological cases. The loopback addresses are used directly to skip resolving
+            // localhost.
+            foreach (var address in new[] { IPAddress.Loopback, IPAddress.IPv6Loopback })
             {
-                using var client = new TcpClient();
-                var connect = client.ConnectAsync(host, port);
-#pragma warning disable VSTHRD002 // Waiting for a local connect with a timeout
-                return connect.Wait(TimeSpan.FromSeconds(1)) && client.Connected;
-#pragma warning restore VSTHRD002
+                try
+                {
+                    using var socket = new Socket(
+                        address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                    socket.Blocking = false;
+                    try
+                    {
+                        socket.Connect(address, port);
+                        return true;
+                    }
+                    catch (SocketException e) when (
+                        e.SocketErrorCode is SocketError.WouldBlock or SocketError.InProgress)
+                    {
+                    }
+                    // Writable once the connect completes, including when it fails on some
+                    // platforms, so check its error too
+                    if (socket.Poll(1_000_000, SelectMode.SelectWrite) &&
+                        (int)socket.GetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Error)! == 0)
+                    {
+                        return true;
+                    }
+                }
+                catch (SocketException)
+                {
+                    // Refused, or the address family isn't supported
+                }
             }
-            catch (AggregateException)
-            {
-                return false;
-            }
-            catch (SocketException)
-            {
-                return false;
-            }
+            return false;
         }
     }
 }
