@@ -122,7 +122,7 @@ namespace Temporalio.Extensions.Aws.SecretsManager
         private async Task RefreshApiKeyAsync(
             WeakReference<TemporalConnection> connectionRef,
             CacheEntry<string> entry,
-            string apiKey,
+            string? apiKey,
             Telemetry tel)
         {
             var interval = Cache.RefreshInterval > MinRefreshInterval ?
@@ -134,24 +134,34 @@ namespace Temporalio.Extensions.Aws.SecretsManager
                 {
                     failing = entry.FailedAt != null;
                 }
-                // Retry sooner if the last refresh failed
-                var delay = failing ? MinRefreshInterval : interval;
+                // Retry sooner if the last refresh failed or the key was removed
+                var delay = failing || apiKey == null ? MinRefreshInterval : interval;
                 await Task.Delay(delay < MaxDelay ? delay : MaxDelay).ConfigureAwait(false);
                 // Stop before fetching for a connection that was collected while waiting
                 if (!connectionRef.TryGetTarget(out _))
                 {
                     return;
                 }
-                string newKey;
+                string? newKey;
                 try
                 {
                     newKey = await Cache.GetAsync(entry, tel).ConfigureAwait(false);
                 }
-#pragma warning disable CA1031 // Already logged and counted, and the current key keeps being used
-                catch (Exception)
+#pragma warning disable CA1031 // Any failure means there's no usable key, see below
+                catch (Exception e)
 #pragma warning restore CA1031
                 {
-                    continue;
+                    // Expected failures are already logged and counted by the cache, and are only
+                    // thrown when there's no value within the max staleness, so stop using the
+                    // current key instead of using it indefinitely. Calls fail until a refresh
+                    // succeeds. Anything else is a bug, but is still treated as having no usable
+                    // key, rather than letting this loop die and keep the current key forever.
+                    if (e is not (SecretFetchException or TimeoutException))
+                    {
+                        tel.Record(() => tel.Logger.LogError(
+                            e, "Unexpected error refreshing client API key from AWS Secrets Manager"));
+                    }
+                    newKey = null;
                 }
                 if (newKey == apiKey)
                 {
@@ -165,15 +175,28 @@ namespace Temporalio.Extensions.Aws.SecretsManager
                 {
                     connection.ApiKey = newKey;
                 }
-#pragma warning disable CA1031 // The connection can no longer be used, so stop refreshing
-                catch (Exception e)
-#pragma warning restore CA1031
+                catch (InvalidOperationException e)
                 {
-                    tel.Logger.LogDebug(e, "Stopped refreshing client API key from AWS Secrets Manager");
+                    // Only thrown if the connection never connected, e.g. a lazy connection
+                    // returned by a plugin after this one instead of connecting, so there's no key
+                    // to keep up to date
+                    tel.Record(() => tel.Logger.LogDebug(
+                        e, "Stopped refreshing client API key from AWS Secrets Manager"));
                     return;
                 }
                 apiKey = newKey;
-                tel.Logger.LogDebug("Updated client API key from AWS Secrets Manager");
+                if (newKey == null)
+                {
+                    tel.Record(() => tel.Logger.LogWarning(
+                        "Removed client API key, no AWS Secrets Manager value within max staleness " +
+                        "(max_staleness={MaxStaleness})",
+                        Cache.MaxStaleness));
+                }
+                else
+                {
+                    tel.Record(() => tel.Logger.LogDebug(
+                        "Updated client API key from AWS Secrets Manager"));
+                }
             }
         }
     }

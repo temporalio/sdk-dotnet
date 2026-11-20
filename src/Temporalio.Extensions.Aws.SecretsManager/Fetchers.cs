@@ -66,13 +66,14 @@ namespace Temporalio.Extensions.Aws.SecretsManager
         public static bool Probe(string host, int port)
         {
             // Probing a local port is either accepted or refused almost immediately, so the
-            // timeout only bounds pathological cases
+            // timeout only bounds pathological cases. It's generous since the connect completes on
+            // the thread pool, which may be slow to run it when busy, e.g. at startup.
             try
             {
                 using var client = new TcpClient();
                 var connect = client.ConnectAsync(host, port);
-#pragma warning disable VSTHRD002 // Waiting for a local connect with a short timeout
-                return connect.Wait(TimeSpan.FromMilliseconds(100)) && client.Connected;
+#pragma warning disable VSTHRD002 // Waiting for a local connect with a timeout
+                return connect.Wait(TimeSpan.FromSeconds(1)) && client.Connected;
 #pragma warning restore VSTHRD002
             }
             catch (AggregateException)
