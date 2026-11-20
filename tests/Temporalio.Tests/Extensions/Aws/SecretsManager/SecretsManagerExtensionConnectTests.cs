@@ -10,6 +10,9 @@ using static Temporalio.Tests.Extensions.Aws.SecretsManager.TestHelpers;
 /// <summary>
 /// Tests that connect to the local test server.
 /// </summary>
+[CloudTestExclusion(
+    CloudTestExclusionReason.RequiresLocalServer,
+    "Connects without TLS using a fake API key from fake Secrets Manager secrets.")]
 public class SecretsManagerExtensionConnectTests : WorkflowEnvironmentTestBase
 {
     public SecretsManagerExtensionConnectTests(ITestOutputHelper output, WorkflowEnvironment env)
@@ -34,6 +37,50 @@ public class SecretsManagerExtensionConnectTests : WorkflowEnvironmentTestBase
         var calls = secrets.CallCount("id");
         await WaitUntilAsync(() => secrets.CallCount("id") > calls);
         Assert.Equal("key2", client.Connection.ApiKey);
+        GC.KeepAlive(client);
+    }
+
+    [Fact]
+    public async Task ConnectAsync_ApiKeyIsRemovedPastMaxStaleness()
+    {
+        var secrets = new FakeSecrets().Put("id", "key1");
+        var options = LocalOptions(secrets, refreshInterval: TimeSpan.Zero);
+        var plugin = Plugin(options);
+        plugin.MinRefreshInterval = TimeSpan.FromMilliseconds(20);
+        var now = TimeSpan.Zero;
+        plugin.Cache.Now = () => now;
+        var client = await TemporalClient.ConnectAsync(options);
+        Assert.Equal("key1", client.Connection.ApiKey);
+
+        secrets.Put("id", new InvalidOperationException("down"));
+        now += plugin.Cache.MaxStaleness + TimeSpan.FromTicks(1);
+        await WaitUntilAsync(() => client.Connection.ApiKey == null);
+
+        // A successful refresh sets the key again
+        secrets.Put("id", "key2");
+        await WaitUntilAsync(() => client.Connection.ApiKey == "key2");
+        GC.KeepAlive(client);
+    }
+
+    [Fact]
+    public async Task ConnectAsync_ApiKeyIsRemovedOnUnexpectedRefreshError()
+    {
+        var secrets = new FakeSecrets().Put("id", "key1");
+        var options = LocalOptions(secrets, refreshInterval: TimeSpan.Zero);
+        var plugin = Plugin(options);
+        plugin.MinRefreshInterval = TimeSpan.FromMilliseconds(20);
+        var now = plugin.Cache.Now;
+        var client = await TemporalClient.ConnectAsync(options);
+        Assert.Equal("key1", client.Connection.ApiKey);
+
+        // Not a fetch failure, so a bug in the cache
+        plugin.Cache.Now = () => throw new InvalidOperationException("bug");
+        await WaitUntilAsync(() => client.Connection.ApiKey == null);
+
+        // The refresh loop is still running
+        plugin.Cache.Now = now;
+        secrets.Put("id", "key2");
+        await WaitUntilAsync(() => client.Connection.ApiKey == "key2");
         GC.KeepAlive(client);
     }
 

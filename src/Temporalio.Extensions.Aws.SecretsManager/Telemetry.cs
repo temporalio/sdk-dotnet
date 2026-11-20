@@ -156,9 +156,13 @@ namespace Temporalio.Extensions.Aws.SecretsManager
             TimeSpan latency, IEnumerable<KeyValuePair<string, object>> tags) =>
             Record(() => fetchLatency?.Record(latency, tags));
 
-        // Recording failures shouldn't affect fetching secrets
-#pragma warning disable CA1031 // Any recording failure is only logged
-        private void Record(Action fn)
+        /// <summary>
+        /// Record a metric or log, so that a failing metric meter or logger doesn't affect
+        /// fetching or refreshing secrets.
+        /// </summary>
+        /// <param name="fn">Recording function.</param>
+#pragma warning disable CA1031 // Any recording failure is only logged, if the logger works
+        public void Record(Action fn)
         {
             try
             {
@@ -166,7 +170,14 @@ namespace Temporalio.Extensions.Aws.SecretsManager
             }
             catch (Exception e)
             {
-                Logger.LogWarning(e, "Failed recording AWS Secrets Manager metric");
+                try
+                {
+                    Logger.LogWarning(e, "Failed recording AWS Secrets Manager telemetry");
+                }
+                catch (Exception)
+                {
+                    // The logger itself is failing, so there's nowhere to report this
+                }
             }
         }
 #pragma warning restore CA1031

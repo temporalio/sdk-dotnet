@@ -311,10 +311,12 @@ namespace Temporalio.Extensions.Aws.SecretsManager
             {
                 failure = e;
             }
-#pragma warning disable CA1031 // Shouldn't happen, but don't leave callers without a result
+#pragma warning disable CA1031 // Shouldn't happen, but must still be recorded as a failed fetch
             catch (Exception e)
 #pragma warning restore CA1031
             {
+                // Otherwise InFlight wouldn't be cleared, so every later lookup would get this
+                // exception, and callers with a stale value wouldn't fall back to it
                 failure = new(e.Message, "other", e);
             }
             var latency = Now() - start;
@@ -341,7 +343,8 @@ namespace Temporalio.Extensions.Aws.SecretsManager
                 entry.InFlight = null;
             }
 
-            try
+            // Telemetry failures shouldn't affect the fetch's result
+            tel.Record(() =>
             {
                 if (failure != null)
                 {
@@ -351,13 +354,7 @@ namespace Temporalio.Extensions.Aws.SecretsManager
                 {
                     RecordSuccess(entry, versionIds!, prevVersionIds, prevFailed, latency, tel);
                 }
-            }
-#pragma warning disable CA1031 // Telemetry failures shouldn't affect the fetch's result
-            catch (Exception e)
-#pragma warning restore CA1031
-            {
-                tel.Logger.LogWarning(e, "Failed recording AWS Secrets Manager telemetry");
-            }
+            });
             if (failure != null)
             {
                 throw failure;

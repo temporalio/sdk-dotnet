@@ -102,7 +102,8 @@ Secrets are first fetched when a client connects, and connecting fails if a fetc
   reconnecting. TLS material is fetched only when a client connects.
 - The refresh interval defaults to the `SECRETS_MANAGER_TTL` environment variable used by the Lambda extension (whole
   seconds, where 0 disables caching), or 5 minutes if that's unset. Set `RefreshInterval` to override it.
-- If a refresh fails, the last fetched value keeps being used for up to `MaxStaleness` (default 24 hours).
+- If a refresh fails, the last fetched value keeps being used for up to `MaxStaleness` (default 24 hours) after it was
+  fetched. After a failed refresh, the next fetch attempt waits 30 seconds.
 
 ## Observability
 
