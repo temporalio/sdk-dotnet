@@ -96,9 +96,7 @@ role needs `secretsmanager:GetSecretValue` on the configured secrets. See the pa
 options, validation rules, caching behavior, and observability metrics.
 
 When secret IDs are configured, the extension adds a client plugin to `ClientOptions.Plugins`. To add your own client
-plugins in `configure`, keep the existing ones rather than replacing them. To customize the extension, for example with
-your own Secrets Manager client, pass a `SecretsManagerExtension` in `ProfileLoadOptions.Extensions`; it's used instead of
-the default one.
+plugins in `configure`, keep the existing ones rather than replacing them.
 
 To bypass config loading, assign explicit client options in `configure`:
 
