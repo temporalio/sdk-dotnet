@@ -98,11 +98,16 @@ public class SecretsManagerExtensionTests
         cache = Plugin(Load(
             ApiKeyProfile,
             new FakeSecrets(),
-            options: new() { RefreshInterval = TimeSpan.FromMinutes(1), MaxStaleness = TimeSpan.Zero })).Cache;
+            options: new() { RefreshInterval = TimeSpan.FromMinutes(1), MaxStaleness = TimeSpan.FromHours(1) })).Cache;
         Assert.Equal(TimeSpan.FromMinutes(1), cache.RefreshInterval);
-        Assert.Equal(TimeSpan.FromHours(24), cache.MaxStaleness);
+        Assert.Equal(TimeSpan.FromHours(1), cache.MaxStaleness);
 
-        // Max staleness is at least the refresh interval
+        // Max staleness is at least the refresh interval, including when it's 0
+        cache = Plugin(Load(
+            ApiKeyProfile,
+            new FakeSecrets(),
+            options: new() { RefreshInterval = TimeSpan.FromMinutes(1), MaxStaleness = TimeSpan.Zero })).Cache;
+        Assert.Equal(TimeSpan.FromMinutes(1), cache.MaxStaleness);
         cache = Plugin(Load(
             ApiKeyProfile,
             new FakeSecrets(),
@@ -112,6 +117,9 @@ public class SecretsManagerExtensionTests
         var e = Assert.ThrowsAny<Exception>(() => Load(
             ApiKeyProfile, new FakeSecrets(), options: new() { RefreshInterval = TimeSpan.FromSeconds(-1) }));
         Assert.EndsWith("RefreshInterval must not be negative", e.Message);
+        e = Assert.ThrowsAny<Exception>(() => Load(
+            ApiKeyProfile, new FakeSecrets(), options: new() { MaxStaleness = TimeSpan.FromSeconds(-1) }));
+        Assert.EndsWith("MaxStaleness must not be negative", e.Message);
 
         // From SECRETS_MANAGER_TTL in the process env
         Assert.Equal(TimeSpan.Zero, TtlCache("0").RefreshInterval);
