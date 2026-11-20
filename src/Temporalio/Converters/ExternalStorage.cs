@@ -162,5 +162,12 @@ namespace Temporalio.Converters
             init => concurrency = value ??
                 throw new ArgumentNullException(nameof(value));
         }
+
+        /// <summary>
+        /// Gets a value indicating whether the references that replace stored payloads are encoded
+        /// with the payload codec and marked. Off by default, and for testing only: an SDK that
+        /// cannot read encoded references fails on them.
+        /// </summary>
+        internal bool EncodeReferences { get; init; }
     }
 }

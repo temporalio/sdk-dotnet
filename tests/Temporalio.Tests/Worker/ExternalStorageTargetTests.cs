@@ -578,6 +578,7 @@ public class ExternalStorageTargetTests : WorkflowEnvironmentTestBase
             comp,
             currentWorkflow,
             parent: null,
+            codecContext: null,
             new StorageOperationMetricsBuilder()).WaitAsync(TimeSpan.FromSeconds(10));
 
         Assert.Equal(

@@ -144,6 +144,21 @@ namespace Temporalio.Worker
             headers.Remove("Request-Timeout");
         }
 
+        private static Converters.ISerializationContext.Nexus? SerializationContextFor(
+            Request request, string endpoint) =>
+            request.VariantCase switch
+            {
+                Request.VariantOneofCase.StartOperation => new(
+                    Endpoint: endpoint,
+                    Service: request.StartOperation.Service,
+                    Operation: request.StartOperation.Operation),
+                Request.VariantOneofCase.CancelOperation => new(
+                    Endpoint: endpoint,
+                    Service: request.CancelOperation.Service,
+                    Operation: request.CancelOperation.Operation),
+                _ => null,
+            };
+
         private async Task HandlePollTaskAsync(RunningTask running, PollNexusTaskQueueResponse task, DateTime? requestDeadline, string endpoint)
         {
             try
@@ -348,9 +363,16 @@ namespace Temporalio.Worker
             Converters.ISerializationContext.Nexus? serializationContext = null;
             try
             {
-                await externalStorage.RetrieveAsync(
+                var requestContext = SerializationContextFor(task.Request, endpoint);
+                var requestCodec = requestContext is { } context
+                    ? worker.Client.Options.DataConverter.WithSerializationContext(context).PayloadCodec
+                    : worker.Client.Options.DataConverter.PayloadCodec;
+                await ExternalStorageOperations.RetrieveAsync(
+                    externalStorage,
                     PayloadVisitors.Walk,
                     task,
+                    requestCodec,
+                    deriveCodec: null,
                     metrics: null,
                     running.CancellationTokenSource.Token).ConfigureAwait(false);
 
@@ -358,10 +380,7 @@ namespace Temporalio.Worker
                 switch (task.Request.VariantCase)
                 {
                     case Request.VariantOneofCase.StartOperation:
-                        serializationContext = new(
-                            Endpoint: endpoint,
-                            Service: task.Request.StartOperation.Service,
-                            Operation: task.Request.StartOperation.Operation);
+                        serializationContext = requestContext;
                         var startResp = await HandleStartOperationAsync(
                             running, task, requestDeadline, endpoint).ConfigureAwait(false);
                         return new()
@@ -370,10 +389,7 @@ namespace Temporalio.Worker
                             Completed = new() { StartOperation = startResp },
                         };
                     case Request.VariantOneofCase.CancelOperation:
-                        serializationContext = new(
-                            Endpoint: endpoint,
-                            Service: task.Request.CancelOperation.Service,
-                            Operation: task.Request.CancelOperation.Operation);
+                        serializationContext = requestContext;
                         var cancelResp = await HandleCancelOperationAsync(
                             running, task, requestDeadline, endpoint).ConfigureAwait(false);
                         return new()
