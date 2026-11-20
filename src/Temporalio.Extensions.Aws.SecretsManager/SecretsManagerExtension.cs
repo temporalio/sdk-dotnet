@@ -77,8 +77,11 @@ namespace Temporalio.Extensions.Aws.SecretsManager
             }
 
             var refreshInterval = GetRefreshInterval();
-            var maxStaleness = options.MaxStaleness is { } staleness && staleness > TimeSpan.Zero ?
-                staleness : DefaultMaxStaleness;
+            var maxStaleness = options.MaxStaleness ?? DefaultMaxStaleness;
+            if (maxStaleness < TimeSpan.Zero)
+            {
+                throw new ArgumentException("MaxStaleness must not be negative");
+            }
             if (maxStaleness < refreshInterval)
             {
                 maxStaleness = refreshInterval;
