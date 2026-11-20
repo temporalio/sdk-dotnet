@@ -1,6 +1,7 @@
 namespace Temporalio.Tests.Worker;
 
 using System.Collections.Concurrent;
+using Google.Protobuf;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.History.V1;
@@ -531,6 +532,60 @@ public class ExternalStorageTargetTests : WorkflowEnvironmentTestBase
         }
     }
 
+    // Each command stores under its own target, and all of a completion's commands share one
+    // concurrency limit. The driver holds every store until two are in flight at once, which only
+    // happens if both commands are stored in the same pass.
+    [Fact]
+    public async Task StoreCompletionPayloads_StoresAllCommandsInOnePassUnderEachTarget()
+    {
+        var driver = new HoldUntilConcurrentDriver(2);
+        var storage = new ExternalStorage(driver)
+        {
+            PayloadSizeThreshold = 1,
+            Concurrency = ExternalStorageConcurrency.Default with { MaxOperationsPerMessage = 2 },
+        };
+        var currentWorkflow = new IStorageDriverTargetInfo.Workflow("ns", "wf", "run", "WorkflowType");
+        var comp = new Bridge.Api.WorkflowCompletion.WorkflowActivationCompletion
+        {
+            RunId = "run",
+            Successful = new()
+            {
+                Commands =
+                {
+                    new WorkflowCommand
+                    {
+                        StartChildWorkflowExecution = new()
+                        {
+                            Namespace = "child-ns",
+                            WorkflowId = "child",
+                            WorkflowType = "ChildType",
+                            Input = { new Payload { Data = ByteString.CopyFromUtf8("child") } },
+                        },
+                    },
+                    new WorkflowCommand
+                    {
+                        ScheduleActivity = new()
+                        {
+                            Arguments = { new Payload { Data = ByteString.CopyFromUtf8("activity") } },
+                        },
+                    },
+                },
+            },
+        };
+
+        await WorkflowWorker.StoreCompletionPayloadsAsync(
+            ExternalStorageRunner.Create(storage, "ns"),
+            comp,
+            currentWorkflow,
+            parent: null,
+            new StorageOperationMetricsBuilder()).WaitAsync(TimeSpan.FromSeconds(10));
+
+        Assert.Equal(
+            new IStorageDriverTargetInfo.Workflow("child-ns", "child", RunId: null, "ChildType"),
+            driver.Targets["child"]);
+        Assert.Equal(currentWorkflow, driver.Targets["activity"]);
+    }
+
     // Builds a command with the given variant selected. The oneof property shares the variant's
     // name, and setting it selects the variant.
     private static WorkflowCommand CommandWithVariant(WorkflowCommand.VariantOneofCase variant)
@@ -693,5 +748,50 @@ public class ExternalStorageTargetTests : WorkflowEnvironmentTestBase
 
         private IStorageDriverTargetInfo? TargetFor(Api.Sdk.V1.ExternalStorageReference reference) =>
             targets[reference.ClaimData["key"]];
+    }
+
+    // Records each stored payload's target by its data, and holds every store until the given
+    // number of stores are in flight together.
+    private sealed class HoldUntilConcurrentDriver : IStorageDriver
+    {
+        private readonly TaskCompletionSource released =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        private int remaining;
+
+        public HoldUntilConcurrentDriver(int concurrent) => remaining = concurrent;
+
+        public string Name => "mem";
+
+        public string Type => "test.holduntilconcurrent";
+
+        public ConcurrentDictionary<string, IStorageDriverTargetInfo?> Targets { get; } = new();
+
+        public async Task<IReadOnlyCollection<StorageDriverClaim>> StoreAsync(
+            StorageDriverStoreContext context,
+            IReadOnlyCollection<Payload> payloads,
+            CancellationToken cancellationToken)
+        {
+            foreach (var payload in payloads)
+            {
+                Targets[payload.Data.ToStringUtf8()] = context.Target;
+            }
+
+            if (Interlocked.Decrement(ref remaining) == 0)
+            {
+                released.TrySetResult();
+            }
+
+            await released.Task.ConfigureAwait(false);
+            return payloads
+                .Select(_ => new StorageDriverClaim(new Dictionary<string, string>()))
+                .ToList();
+        }
+
+        public Task<IReadOnlyCollection<Payload>> RetrieveAsync(
+            StorageDriverRetrieveContext context,
+            IReadOnlyCollection<StorageDriverClaim> claims,
+            CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
     }
 }

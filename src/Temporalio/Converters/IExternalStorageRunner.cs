@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Protobuf;
 using Temporalio.Api.Common.V1;
 using Temporalio.Worker;
 
@@ -21,8 +22,14 @@ namespace Temporalio.Converters
         /// as a method group.
         /// </param>
         /// <param name="message">The message to visit.</param>
-        /// <param name="target">
-        /// Execution the stored payloads are offloaded on behalf of, or null when none is known.
+        /// <param name="initialTarget">
+        /// Execution the stored payloads are offloaded on behalf of, or null when none is known,
+        /// until <paramref name="deriveTarget"/> replaces it.
+        /// </param>
+        /// <param name="deriveTarget">
+        /// Given each message walked and its enclosing target, returns the target for that
+        /// message's payloads, where null means no target. Passing no callback keeps
+        /// <paramref name="initialTarget"/> throughout.
         /// </param>
         /// <param name="metrics">
         /// Accumulates what this pass stored, or null to not measure it.
@@ -32,7 +39,8 @@ namespace Temporalio.Converters
         Task StoreAsync<T>(
             Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,
             T message,
-            IStorageDriverTargetInfo? target,
+            IStorageDriverTargetInfo? initialTarget,
+            Func<IMessage, IStorageDriverTargetInfo?, IStorageDriverTargetInfo?>? deriveTarget,
             StorageOperationMetricsBuilder? metrics,
             CancellationToken cancellationToken);
 

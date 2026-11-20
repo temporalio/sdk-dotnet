@@ -436,7 +436,7 @@ public class ExternalStorageRunnerTests : TestBase
         var message = new Payloads { Payloads_ = { Sized(100), Sized(100) } };
         var metrics = new StorageOperationMetricsBuilder();
 
-        await runner.StoreAsync(PayloadVisitors.Walk, message, null, metrics, default);
+        await runner.StoreAsync(PayloadVisitors.Walk, message, null, null, metrics, default);
 
         var proto = metrics.ToProto();
         Assert.NotNull(proto);
@@ -449,7 +449,7 @@ public class ExternalStorageRunnerTests : TestBase
     {
         var runner = Runner(Storage(new MapDriver("mem"), threshold: 1));
         var message = new Payloads { Payloads_ = { Sized(100) } };
-        await runner.StoreAsync(PayloadVisitors.Walk, message, null, metrics: null, default);
+        await runner.StoreAsync(PayloadVisitors.Walk, message, null, null, metrics: null, default);
         var metrics = new StorageOperationMetricsBuilder();
 
         await runner.RetrieveAsync(PayloadVisitors.Walk, message, metrics, default);
