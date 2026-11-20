@@ -1805,6 +1805,7 @@ namespace Temporalio.Api.Workflow.V1 {
     public const int TimeSkippingInfoFieldNumber = 9;
     private global::Temporalio.Api.Common.V1.TimeSkippingInfo timeSkippingInfo_;
     /// <summary>
+    /// Experimental.
     /// Information about time skipping of the workflow execution.
     /// If the execution has never enabled time skipping, it will be nil.
     /// </summary>
@@ -10873,6 +10874,7 @@ namespace Temporalio.Api.Workflow.V1 {
     public const int TimeSkippingConfigFieldNumber = 3;
     private global::Temporalio.Api.Common.V1.TimeSkippingConfig timeSkippingConfig_;
     /// <summary>
+    /// Experimental.
     /// The time-skipping configuration for this workflow execution.
     /// When `fast_forward` is set, time will be fast-forwarded to a future point relative
     /// to the current workflow timestamp. Each call takes effect, even if

@@ -266,8 +266,8 @@ namespace Temporalio.Api.Worker.V1 {
     public const int TargetPollersFieldNumber = 4;
     private int targetPollers_;
     /// <summary>
-    /// Number of concurrent poll requests this poller pool is currently targeting, which may
-    /// differ from current_pollers. 0 if unknown, such as a poller pool of fixed size.
+    /// Number of pollers this poller pool is currently targeting, which may differ from current_pollers.
+    /// 0 if unknown, such as a poller pool of fixed size.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

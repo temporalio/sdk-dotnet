@@ -109,7 +109,7 @@ namespace Temporalio.Api.Enums.V1 {
             "EAESRwpDU0lHTkFMX0VYVEVSTkFMX1dPUktGTE9XX0VYRUNVVElPTl9GQUlM",
             "RURfQ0FVU0VfTkFNRVNQQUNFX05PVF9GT1VORBACEk8KS1NJR05BTF9FWFRF",
             "Uk5BTF9XT1JLRkxPV19FWEVDVVRJT05fRkFJTEVEX0NBVVNFX1NJR05BTF9D",
-            "T1VOVF9MSU1JVF9FWENFRURFRBADKsUEChZSZXNvdXJjZUV4aGF1c3RlZENh",
+            "T1VOVF9MSU1JVF9FWENFRURFRBADKqoFChZSZXNvdXJjZUV4aGF1c3RlZENh",
             "dXNlEigKJFJFU09VUkNFX0VYSEFVU1RFRF9DQVVTRV9VTlNQRUNJRklFRBAA",
             "EiYKIlJFU09VUkNFX0VYSEFVU1RFRF9DQVVTRV9SUFNfTElNSVQQARItCilS",
             "RVNPVVJDRV9FWEhBVVNURURfQ0FVU0VfQ09OQ1VSUkVOVF9MSU1JVBACEi4K",
@@ -122,13 +122,16 @@ namespace Temporalio.Api.Enums.V1 {
             "QlJFQUtFUl9PUEVOEAgSJgoiUkVTT1VSQ0VfRVhIQVVTVEVEX0NBVVNFX09Q",
             "U19MSU1JVBAJEjUKMVJFU09VUkNFX0VYSEFVU1RFRF9DQVVTRV9XT1JLRVJf",
             "REVQTE9ZTUVOVF9MSU1JVFMQChIsCihSRVNPVVJDRV9FWEhBVVNURURfQ0FV",
-            "U0VfQkFORFdJRFRIX0xJTUlUEAsqjwEKFlJlc291cmNlRXhoYXVzdGVkU2Nv",
-            "cGUSKAokUkVTT1VSQ0VfRVhIQVVTVEVEX1NDT1BFX1VOU1BFQ0lGSUVEEAAS",
-            "JgoiUkVTT1VSQ0VfRVhIQVVTVEVEX1NDT1BFX05BTUVTUEFDRRABEiMKH1JF",
-            "U09VUkNFX0VYSEFVU1RFRF9TQ09QRV9TWVNURU0QAkKIAQoYaW8udGVtcG9y",
-            "YWwuYXBpLmVudW1zLnYxQhBGYWlsZWRDYXVzZVByb3RvUAFaIWdvLnRlbXBv",
-            "cmFsLmlvL2FwaS9lbnVtcy92MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVu",
-            "dW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
+            "U0VfQkFORFdJRFRIX0xJTUlUEAsSLQopUkVTT1VSQ0VfRVhIQVVTVEVEX0NB",
+            "VVNFX0NBTExFUl9SUFNfTElNSVQQDBI0CjBSRVNPVVJDRV9FWEhBVVNURURf",
+            "Q0FVU0VfU0hBUkRfUEVSU0lTVEVOQ0VfTElNSVQQDSqPAQoWUmVzb3VyY2VF",
+            "eGhhdXN0ZWRTY29wZRIoCiRSRVNPVVJDRV9FWEhBVVNURURfU0NPUEVfVU5T",
+            "UEVDSUZJRUQQABImCiJSRVNPVVJDRV9FWEhBVVNURURfU0NPUEVfTkFNRVNQ",
+            "QUNFEAESIwofUkVTT1VSQ0VfRVhIQVVTVEVEX1NDT1BFX1NZU1RFTRACQogB",
+            "Chhpby50ZW1wb3JhbC5hcGkuZW51bXMudjFCEEZhaWxlZENhdXNlUHJvdG9Q",
+            "AVohZ28udGVtcG9yYWwuaW8vYXBpL2VudW1zL3YxO2VudW1zqgIXVGVtcG9y",
+            "YWxpby5BcGkuRW51bXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6OkVudW1zOjpW",
+            "MWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowTaskFailedCause), typeof(global::Temporalio.Api.Enums.V1.ActivityTaskFailedCause), typeof(global::Temporalio.Api.Enums.V1.StartChildWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.CancelExternalWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.SignalExternalWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.ResourceExhaustedCause), typeof(global::Temporalio.Api.Enums.V1.ResourceExhaustedScope), }, null, null));
@@ -351,6 +354,14 @@ namespace Temporalio.Api.Enums.V1 {
     /// Namespace exceeds bandwidth limit.
     /// </summary>
     [pbr::OriginalName("RESOURCE_EXHAUSTED_CAUSE_BANDWIDTH_LIMIT")] BandwidthLimit = 11,
+    /// <summary>
+    /// Caller exceeds Nexus requests per second limit.
+    /// </summary>
+    [pbr::OriginalName("RESOURCE_EXHAUSTED_CAUSE_CALLER_RPS_LIMIT")] CallerRpsLimit = 12,
+    /// <summary>
+    /// Persistence rate limit exceeded on a single shard.
+    /// </summary>
+    [pbr::OriginalName("RESOURCE_EXHAUSTED_CAUSE_SHARD_PERSISTENCE_LIMIT")] ShardPersistenceLimit = 13,
   }
 
   public enum ResourceExhaustedScope {

@@ -196,7 +196,6 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                 await handle.GetResultAsync();
                 Assert.Equal(0, interceptor.ScheduleNexusOperationCount);
-                Assert.Equal(2, interceptor.ScheduleSystemNexusOperationCount);
                 Assert.Equal(2, interceptor.SignalWithStartWorkflowCount);
             },
             workerOptions,
@@ -234,8 +233,9 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
                     (SystemNexusSignalWithStartTargetWorkflow workflow) =>
                         workflow.RunAsync("start-value"),
                     workflow => workflow.SignalAsync("signal-one"),
-                    new(workflowId, taskQueue)
+                    new(workflowId)
                     {
+                        TaskQueue = taskQueue,
                         IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
                     });
 
@@ -243,8 +243,9 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
                 (SystemNexusSignalWithStartTargetWorkflow workflow) =>
                     workflow.RunAsync("unused-start-value"),
                 workflow => workflow.SignalAsync("signal-two"),
-                new(workflowId, taskQueue)
+                new(workflowId)
                 {
+                    TaskQueue = taskQueue,
                     IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
                 });
 
@@ -272,8 +273,9 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
             await Workflow.SignalWithStartWorkflowAsync(
                 (SystemNexusContextTargetWorkflow workflow) => workflow.RunAsync(value),
                 workflow => workflow.SignalAsync(value),
-                new(targetId, taskQueue)
+                new(targetId)
                 {
+                    TaskQueue = taskQueue,
                     Memo = new Dictionary<string, object?> { ["context"] = value },
                     StaticSummary = "context-summary",
                     StaticDetails = "context-details",
@@ -295,6 +297,7 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
             "target-workflow-id",
             "task-queue",
             "signal",
+            WorkflowIdReusePolicy.AllowDuplicate,
             "target-namespace")
         {
             Args = new[] { new WorkflowWorkerTests.ContextValue("context-workflow-arg", new()) },
@@ -425,8 +428,6 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
     {
         internal int ScheduleNexusOperationCount { get; private set; }
 
-        internal int ScheduleSystemNexusOperationCount { get; private set; }
-
         internal int SignalWithStartWorkflowCount { get; private set; }
 
         public WorkflowInboundInterceptor InterceptWorkflow(WorkflowInboundInterceptor nextInterceptor) =>
@@ -455,13 +456,6 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
             {
                 root.ScheduleNexusOperationCount++;
                 return base.ScheduleNexusOperationAsync<TResult>(input);
-            }
-
-            public override Task<NexusWorkflowOperationHandle<TResult>> ScheduleSystemNexusOperationAsync<TResult>(
-                ScheduleSystemNexusOperationInput input)
-            {
-                root.ScheduleSystemNexusOperationCount++;
-                return base.ScheduleSystemNexusOperationAsync<TResult>(input);
             }
 
             public override Task<NexusWorkflowOperationHandle<SignalWithStartWorkflowResponse>> SignalWithStartWorkflowAsync(

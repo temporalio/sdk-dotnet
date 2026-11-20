@@ -27,34 +27,35 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
             "CjR0ZW1wb3JhbC9hcGkvY2xvdWQvY29ubmVjdGl2aXR5cnVsZS92MS9tZXNz",
             "YWdlLnByb3RvEiZ0ZW1wb3JhbC5hcGkuY2xvdWQuY29ubmVjdGl2aXR5cnVs",
             "ZS52MRosdGVtcG9yYWwvYXBpL2Nsb3VkL3Jlc291cmNlL3YxL21lc3NhZ2Uu",
-            "cHJvdG8aH2dvb2dsZS9wcm90b2J1Zi90aW1lc3RhbXAucHJvdG8ilgIKEENv",
+            "cHJvdG8aH2dvb2dsZS9wcm90b2J1Zi90aW1lc3RhbXAucHJvdG8iqgIKEENv",
             "bm5lY3Rpdml0eVJ1bGUSCgoCaWQYASABKAkSSgoEc3BlYxgCIAEoCzI8LnRl",
             "bXBvcmFsLmFwaS5jbG91ZC5jb25uZWN0aXZpdHlydWxlLnYxLkNvbm5lY3Rp",
             "dml0eVJ1bGVTcGVjEhgKEHJlc291cmNlX3ZlcnNpb24YBCABKAkSPAoFc3Rh",
             "dGUYBSABKA4yLS50ZW1wb3JhbC5hcGkuY2xvdWQucmVzb3VyY2UudjEuUmVz",
             "b3VyY2VTdGF0ZRIaChJhc3luY19vcGVyYXRpb25faWQYBiABKAkSMAoMY3Jl",
-            "YXRlZF90aW1lGAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEoE",
-            "CAMQBCLZAQoUQ29ubmVjdGl2aXR5UnVsZVNwZWMSVQoLcHVibGljX3J1bGUY",
-            "ASABKAsyPi50ZW1wb3JhbC5hcGkuY2xvdWQuY29ubmVjdGl2aXR5cnVsZS52",
-            "MS5QdWJsaWNDb25uZWN0aXZpdHlSdWxlSAASVwoMcHJpdmF0ZV9ydWxlGAIg",
-            "ASgLMj8udGVtcG9yYWwuYXBpLmNsb3VkLmNvbm5lY3Rpdml0eXJ1bGUudjEu",
-            "UHJpdmF0ZUNvbm5lY3Rpdml0eVJ1bGVIAEIRCg9jb25uZWN0aW9uX3R5cGUi",
-            "MwoWUHVibGljQ29ubmVjdGl2aXR5UnVsZRIZChFlbmFibGVfc3RhYmxlX2lw",
-            "cxgBIAEoCCJeChdQcml2YXRlQ29ubmVjdGl2aXR5UnVsZRIVCg1jb25uZWN0",
-            "aW9uX2lkGAEgASgJEhYKDmdjcF9wcm9qZWN0X2lkGAIgASgJEg4KBnJlZ2lv",
-            "bhgDIAEoCUoECAQQBULUAQopaW8udGVtcG9yYWwuYXBpLmNsb3VkLmNvbm5l",
-            "Y3Rpdml0eXJ1bGUudjFCDE1lc3NhZ2VQcm90b1ABWj1nby50ZW1wb3JhbC5p",
-            "by9hcGkvY2xvdWQvY29ubmVjdGl2aXR5cnVsZS92MTtjb25uZWN0aXZpdHly",
-            "dWxlqgIoVGVtcG9yYWxpby5BcGkuQ2xvdWQuQ29ubmVjdGl2aXR5UnVsZS5W",
-            "MeoCLFRlbXBvcmFsaW86OkFwaTo6Q2xvdWQ6OkNvbm5lY3Rpdml0eVJ1bGU6",
-            "OlYxYgZwcm90bzM="));
+            "YXRlZF90aW1lGAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIS",
+            "Cgpwcm9qZWN0X2lkGAggASgJSgQIAxAEItkBChRDb25uZWN0aXZpdHlSdWxl",
+            "U3BlYxJVCgtwdWJsaWNfcnVsZRgBIAEoCzI+LnRlbXBvcmFsLmFwaS5jbG91",
+            "ZC5jb25uZWN0aXZpdHlydWxlLnYxLlB1YmxpY0Nvbm5lY3Rpdml0eVJ1bGVI",
+            "ABJXCgxwcml2YXRlX3J1bGUYAiABKAsyPy50ZW1wb3JhbC5hcGkuY2xvdWQu",
+            "Y29ubmVjdGl2aXR5cnVsZS52MS5Qcml2YXRlQ29ubmVjdGl2aXR5UnVsZUgA",
+            "QhEKD2Nvbm5lY3Rpb25fdHlwZSIzChZQdWJsaWNDb25uZWN0aXZpdHlSdWxl",
+            "EhkKEWVuYWJsZV9zdGFibGVfaXBzGAEgASgIInwKF1ByaXZhdGVDb25uZWN0",
+            "aXZpdHlSdWxlEhUKDWNvbm5lY3Rpb25faWQYASABKAkSFgoOZ2NwX3Byb2pl",
+            "Y3RfaWQYAiABKAkSDgoGcmVnaW9uGAMgASgJEhwKFGF6dXJlX3BlX3Jlc291",
+            "cmNlX2lkGAUgASgJSgQIBBAFQtQBCilpby50ZW1wb3JhbC5hcGkuY2xvdWQu",
+            "Y29ubmVjdGl2aXR5cnVsZS52MUIMTWVzc2FnZVByb3RvUAFaPWdvLnRlbXBv",
+            "cmFsLmlvL2FwaS9jbG91ZC9jb25uZWN0aXZpdHlydWxlL3YxO2Nvbm5lY3Rp",
+            "dml0eXJ1bGWqAihUZW1wb3JhbGlvLkFwaS5DbG91ZC5Db25uZWN0aXZpdHlS",
+            "dWxlLlYx6gIsVGVtcG9yYWxpbzo6QXBpOjpDbG91ZDo6Q29ubmVjdGl2aXR5",
+            "UnVsZTo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Cloud.Resource.V1.MessageReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.ConnectivityRule.V1.ConnectivityRule), global::Temporalio.Api.Cloud.ConnectivityRule.V1.ConnectivityRule.Parser, new[]{ "Id", "Spec", "ResourceVersion", "State", "AsyncOperationId", "CreatedTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.ConnectivityRule.V1.ConnectivityRule), global::Temporalio.Api.Cloud.ConnectivityRule.V1.ConnectivityRule.Parser, new[]{ "Id", "Spec", "ResourceVersion", "State", "AsyncOperationId", "CreatedTime", "ProjectId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.ConnectivityRule.V1.ConnectivityRuleSpec), global::Temporalio.Api.Cloud.ConnectivityRule.V1.ConnectivityRuleSpec.Parser, new[]{ "PublicRule", "PrivateRule" }, new[]{ "ConnectionType" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.ConnectivityRule.V1.PublicConnectivityRule), global::Temporalio.Api.Cloud.ConnectivityRule.V1.PublicConnectivityRule.Parser, new[]{ "EnableStableIps" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.ConnectivityRule.V1.PrivateConnectivityRule), global::Temporalio.Api.Cloud.ConnectivityRule.V1.PrivateConnectivityRule.Parser, new[]{ "ConnectionId", "GcpProjectId", "Region" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.ConnectivityRule.V1.PrivateConnectivityRule), global::Temporalio.Api.Cloud.ConnectivityRule.V1.PrivateConnectivityRule.Parser, new[]{ "ConnectionId", "GcpProjectId", "Region", "AzurePeResourceId" }, null, null, null, null)
           }));
     }
     #endregion
@@ -101,6 +102,7 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
       state_ = other.state_;
       asyncOperationId_ = other.asyncOperationId_;
       createdTime_ = other.createdTime_ != null ? other.createdTime_.Clone() : null;
+      projectId_ = other.projectId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -198,6 +200,21 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
       }
     }
 
+    /// <summary>Field number for the "project_id" field.</summary>
+    public const int ProjectIdFieldNumber = 8;
+    private string projectId_ = "";
+    /// <summary>
+    /// The ID of the project this connectivity rule belongs to.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ProjectId {
+      get { return projectId_; }
+      set {
+        projectId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -219,6 +236,7 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
       if (State != other.State) return false;
       if (AsyncOperationId != other.AsyncOperationId) return false;
       if (!object.Equals(CreatedTime, other.CreatedTime)) return false;
+      if (ProjectId != other.ProjectId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -232,6 +250,7 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
       if (State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) hash ^= State.GetHashCode();
       if (AsyncOperationId.Length != 0) hash ^= AsyncOperationId.GetHashCode();
       if (createdTime_ != null) hash ^= CreatedTime.GetHashCode();
+      if (ProjectId.Length != 0) hash ^= ProjectId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -274,6 +293,10 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
         output.WriteRawTag(58);
         output.WriteMessage(CreatedTime);
       }
+      if (ProjectId.Length != 0) {
+        output.WriteRawTag(66);
+        output.WriteString(ProjectId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -308,6 +331,10 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
         output.WriteRawTag(58);
         output.WriteMessage(CreatedTime);
       }
+      if (ProjectId.Length != 0) {
+        output.WriteRawTag(66);
+        output.WriteString(ProjectId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -335,6 +362,9 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
       }
       if (createdTime_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(CreatedTime);
+      }
+      if (ProjectId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ProjectId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -371,6 +401,9 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
           CreatedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
         }
         CreatedTime.MergeFrom(other.CreatedTime);
+      }
+      if (other.ProjectId.Length != 0) {
+        ProjectId = other.ProjectId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -417,6 +450,10 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
             input.ReadMessage(CreatedTime);
             break;
           }
+          case 66: {
+            ProjectId = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -460,6 +497,10 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
               CreatedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
             input.ReadMessage(CreatedTime);
+            break;
+          }
+          case 66: {
+            ProjectId = input.ReadString();
             break;
           }
         }
@@ -999,6 +1040,7 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
       connectionId_ = other.connectionId_;
       gcpProjectId_ = other.gcpProjectId_;
       region_ = other.region_;
+      azurePeResourceId_ = other.azurePeResourceId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1012,7 +1054,11 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
     public const int ConnectionIdFieldNumber = 1;
     private string connectionId_ = "";
     /// <summary>
-    /// Connection id provided to enforce the private connectivity. This is required both by AWS and GCP.
+    /// Connection id provided by user to enforce the private connectivity.
+    /// For AWS: VPC endpoint ID (e.g. "vpce-0123456789abcdef0").
+    /// For GCP: PSC connection ID (numeric string).
+    /// For Azure: not set by the customer; populated internally with the PPv2 LinkID
+    /// returned by the infra plane during Private Endpoint connection approval.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1027,8 +1073,8 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
     public const int GcpProjectIdFieldNumber = 2;
     private string gcpProjectId_ = "";
     /// <summary>
-    /// For GCP private connectivity service, GCP needs both GCP project id and the Private Service Connect Connection IDs
-    /// AWS only needs the connection_id
+    /// For GCP private connectivity service, GCP needs both GCP project id and the Private Service Connect Connection IDs.
+    /// AWS only needs the connection_id.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1044,7 +1090,7 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
     private string region_ = "";
     /// <summary>
     /// The region of the connectivity rule. This should align with the namespace.
-    /// Example: "aws-us-west-2"
+    /// Example: "aws-us-west-2", "gcp-us-central1", "azure-eastus"
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1052,6 +1098,24 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
       get { return region_; }
       set {
         region_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "azure_pe_resource_id" field.</summary>
+    public const int AzurePeResourceIdFieldNumber = 5;
+    private string azurePeResourceId_ = "";
+    /// <summary>
+    /// azure_pe_resource_id is the ARM resource ID of the customer's Azure Private Endpoint.
+    /// Required for Azure private connectivity rules.
+    /// Example: "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/privateEndpoints/{name}"
+    /// temporal:versioning:min_version=v0.18.0
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string AzurePeResourceId {
+      get { return azurePeResourceId_; }
+      set {
+        azurePeResourceId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -1073,6 +1137,7 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
       if (ConnectionId != other.ConnectionId) return false;
       if (GcpProjectId != other.GcpProjectId) return false;
       if (Region != other.Region) return false;
+      if (AzurePeResourceId != other.AzurePeResourceId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1083,6 +1148,7 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
       if (ConnectionId.Length != 0) hash ^= ConnectionId.GetHashCode();
       if (GcpProjectId.Length != 0) hash ^= GcpProjectId.GetHashCode();
       if (Region.Length != 0) hash ^= Region.GetHashCode();
+      if (AzurePeResourceId.Length != 0) hash ^= AzurePeResourceId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1113,6 +1179,10 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
         output.WriteRawTag(26);
         output.WriteString(Region);
       }
+      if (AzurePeResourceId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(AzurePeResourceId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1135,6 +1205,10 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
         output.WriteRawTag(26);
         output.WriteString(Region);
       }
+      if (AzurePeResourceId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(AzurePeResourceId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1153,6 +1227,9 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
       }
       if (Region.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Region);
+      }
+      if (AzurePeResourceId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AzurePeResourceId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1174,6 +1251,9 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
       }
       if (other.Region.Length != 0) {
         Region = other.Region;
+      }
+      if (other.AzurePeResourceId.Length != 0) {
+        AzurePeResourceId = other.AzurePeResourceId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1202,6 +1282,10 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
             Region = input.ReadString();
             break;
           }
+          case 42: {
+            AzurePeResourceId = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -1227,6 +1311,10 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
           }
           case 26: {
             Region = input.ReadString();
+            break;
+          }
+          case 42: {
+            AzurePeResourceId = input.ReadString();
             break;
           }
         }

@@ -4066,6 +4066,7 @@ namespace Temporalio.Api.Schedule.V1 {
     public const int TimeSkippingConfigFieldNumber = 5;
     private global::Temporalio.Api.Common.V1.TimeSkippingConfig timeSkippingConfig_;
     /// <summary>
+    /// Experimental.
     /// If set, applies the specified time-skipping configuration to this schedule,
     /// replacing any existing time-skipping configuration.
     /// </summary>
@@ -4556,6 +4557,7 @@ namespace Temporalio.Api.Schedule.V1 {
     public const int TimeSkippingInfoFieldNumber = 13;
     private global::Temporalio.Api.Common.V1.TimeSkippingInfo timeSkippingInfo_;
     /// <summary>
+    /// Experimental.
     /// Information about time skipping for this schedule.
     /// If the schedule has never enabled time skipping, this will be unset.
     /// </summary>

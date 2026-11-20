@@ -4,7 +4,7 @@ using NexusRpc;
 namespace Temporalio.Worker.Interceptors
 {
     /// <summary>
-    /// Input for <see cref="WorkflowOutboundInterceptor.ScheduleSystemNexusOperationAsync{TResult}"/>.
+    /// Input for directly scheduling a Temporal System Nexus operation.
     /// </summary>
     /// <param name="Service">System Nexus service name.</param>
     /// <param name="Operation">System Nexus operation definition.</param>
@@ -14,7 +14,7 @@ namespace Temporalio.Worker.Interceptors
     /// System Nexus operations do not expose normal Nexus endpoint, scheduling, cancellation, or
     /// transport-header options. Interceptors may modify the generated request argument.
     /// </remarks>
-    public record ScheduleSystemNexusOperationInput(
+    internal record ScheduleSystemNexusOperationInput(
         string Service,
         OperationDefinition Operation,
         object? Arg,

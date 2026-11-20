@@ -7,6 +7,7 @@ using Google.Protobuf;
 using NexusRpc;
 using NexusRpc.Handlers;
 using Temporalio.Api.Common.V1;
+using Temporalio.Api.Enums.V1;
 using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
@@ -29,6 +30,7 @@ public class NexusPayloadSerializerTests
             id: "target-workflow-id",
             taskQueue: "target-task-queue",
             signal: "test-signal",
+            idReusePolicy: WorkflowIdReusePolicy.AllowDuplicate,
             @namespace: "target-namespace")
         {
             Args = new object?[] { "workflow-input" },
@@ -109,6 +111,7 @@ public class NexusPayloadSerializerTests
             id: "target-workflow-id",
             taskQueue: "target-task-queue",
             signal: "test-signal",
+            idReusePolicy: WorkflowIdReusePolicy.AllowDuplicate,
             @namespace: "target-namespace")
         {
             Args = new object?[] { "workflow-input" },
@@ -133,6 +136,7 @@ public class NexusPayloadSerializerTests
             id: "target-workflow-id",
             taskQueue: "target-task-queue",
             signal: "test-signal",
+            idReusePolicy: WorkflowIdReusePolicy.AllowDuplicate,
             @namespace: "target-namespace")
         {
             Args = new object?[] { "workflow-input" },

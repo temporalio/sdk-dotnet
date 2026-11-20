@@ -2063,6 +2063,29 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1d87ecb2933e8aeadb3e3a02b828fed80a7528047e68b4f424523a0981a3a084"
 
 [[package]]
+name = "nexus-rpc"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c6bd72bb0b8a558f1ad4e6502a47d6db0c07b93902a11d7f806f8791b6b14f7b"
+dependencies = [
+ "nexus-rpc-macros",
+ "serde",
+ "thiserror 2.0.20",
+]
+
+[[package]]
+name = "nexus-rpc-macros"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "be6dc5d7783ce0428a2baf74d82bd816f8e9fb30543ff07a9e0e0556e6839dd9"
+dependencies = [
+ "proc-macro-crate",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.119",
+]
+
+[[package]]
 name = "nix"
 version = "0.31.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3583,7 +3606,6 @@ dependencies = [
  "tracing-core",
  "tracing-subscriber",
  "url",
- "uuid",
 ]
 
 [[package]]
@@ -3611,8 +3633,6 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-core",
- "tracing-subscriber",
- "url",
 ]
 
 [[package]]
@@ -3711,6 +3731,7 @@ dependencies = [
  "itertools 0.14.0",
  "lru",
  "mockall",
+ "nexus-rpc",
  "opentelemetry",
  "opentelemetry-otlp",
  "opentelemetry_sdk",
@@ -3786,6 +3807,7 @@ dependencies = [
  "derive_more",
  "futures-channel",
  "futures-util",
+ "nexus-rpc",
  "prost",
  "prost-wkt-types",
  "rand 0.10.2",

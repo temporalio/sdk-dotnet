@@ -48,6 +48,7 @@ namespace Temporalio.Api.Enums.V1 {
   /// FAST_FORWARD_POLLING_RESULT_POLL_TIMEOUT and FAST_FORWARD_POLLING_RESULT_FAST_FORWARD_COMPLETED
   /// are the normal poll outcomes; FAST_FORWARD_POLLING_RESULT_FAST_FORWARD_FAILED means the
   /// fast-forward can no longer complete.
+  /// Experimental. Might change in the future.
   /// </summary>
   public enum FastForwardPollingResult {
     /// <summary>
