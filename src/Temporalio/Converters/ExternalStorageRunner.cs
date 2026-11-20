@@ -51,6 +51,9 @@ namespace Temporalio.Converters
             this.retrieveLimiter = retrieveLimiter;
         }
 
+        /// <inheritdoc />
+        public ExternalStorage? Storage => storage;
+
         /// <summary>
         /// Create a runner for the given configuration, or one that rejects references when it is
         /// null. The concurrency limits are not yet enforced, so a configured runner hands drivers
@@ -368,6 +371,8 @@ namespace Temporalio.Converters
         private sealed class UnconfiguredRunner : IExternalStorageRunner
         {
             public static readonly UnconfiguredRunner Instance = new();
+
+            public ExternalStorage? Storage => null;
 
             public Task RetrieveAsync<T>(
                 Action<T, PayloadVisitors.WalkEnv, PayloadVisitors.VisitState> walk,

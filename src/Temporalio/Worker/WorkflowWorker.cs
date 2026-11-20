@@ -245,6 +245,9 @@ namespace Temporalio.Worker
         /// <param name="comp">Completion whose payloads are offloaded in place.</param>
         /// <param name="currentWorkflow">Target for the workflow producing this completion.</param>
         /// <param name="parent">Parent of the current workflow, if its result goes to one.</param>
+        /// <param name="codecContext">
+        /// Codec context the completion was encoded with, or null when there is no codec.
+        /// </param>
         /// <param name="metrics">Accumulates what was stored.</param>
         /// <returns>A task that completes when the completion has been offloaded.</returns>
         internal static Task StoreCompletionPayloadsAsync(
@@ -252,13 +255,17 @@ namespace Temporalio.Worker
             WorkflowActivationCompletion comp,
             IStorageDriverTargetInfo.Workflow? currentWorkflow,
             WorkflowInfo.ParentInfo? parent,
+            WorkflowCodecHelper.WorkflowCodecContext? codecContext,
             StorageOperationMetricsBuilder metrics) =>
-            externalStorage.StoreAsync(
+            ExternalStorageOperations.StoreAsync(
+                externalStorage,
                 PayloadVisitors.Walk,
                 comp,
                 currentWorkflow,
                 (message, target) => message is WorkflowCommand command ?
                     StorageTargetForCommand(command, currentWorkflow, parent) : target,
+                codecContext?.CodecWorkflowContext,
+                codecContext == null ? null : WorkflowCodecHelper.CompletionCodecs(codecContext),
                 metrics,
                 CancellationToken.None);
 
@@ -339,9 +346,14 @@ namespace Temporalio.Worker
                         Instance: instanceForCodec);
                 }
                 // External storage is independent of the codec, so this runs even when there is none.
-                await externalStorage.RetrieveAsync(
-                    PayloadVisitors.Walk, act, downloadMetrics, CancellationToken.None)
-                    .ConfigureAwait(false);
+                await ExternalStorageOperations.RetrieveAsync(
+                    externalStorage,
+                    PayloadVisitors.Walk,
+                    act,
+                    codecContext?.CodecWorkflowContext,
+                    codecContext == null ? null : WorkflowCodecHelper.ActivationCodecs(codecContext, act),
+                    downloadMetrics,
+                    CancellationToken.None).ConfigureAwait(false);
                 if (codecContext != null)
                 {
                     await WorkflowCodecHelper.DecodeAsync(codecContext, act).ConfigureAwait(false);
@@ -444,7 +456,7 @@ namespace Temporalio.Worker
                     instForTarget.Info.ContinuedRunId == null
                     ? instForTarget.Info.Parent : null;
                 await StoreCompletionPayloadsAsync(
-                    externalStorage, comp, completionTarget, parent, uploadMetrics)
+                    externalStorage, comp, completionTarget, parent, codecContext, uploadMetrics)
                     .ConfigureAwait(false);
             }
             catch (Exception e)

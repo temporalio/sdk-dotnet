@@ -14,6 +14,12 @@ namespace Temporalio.Converters
     internal interface IExternalStorageRunner
     {
         /// <summary>
+        /// Gets the configuration this runner stores and retrieves through, or null when external
+        /// storage is not configured and references are rejected.
+        /// </summary>
+        ExternalStorage? Storage { get; }
+
+        /// <summary>
         /// Store the payloads in a message by visiting its payloads.
         /// </summary>
         /// <typeparam name="T">The message type being visited.</typeparam>

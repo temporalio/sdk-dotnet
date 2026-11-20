@@ -175,9 +175,13 @@ namespace Temporalio.Converters
             var toStore = payloads.ToList();
             return storage.SkipStore
                 ? toStore
-                : await storage.Runner
-                    .StoreAsync(toStore, storage.Target, metrics: null, CancellationToken.None)
-                    .ConfigureAwait(false);
+                : await ExternalStorageOperations.StoreAsync(
+                    storage.Runner,
+                    toStore,
+                    storage.Target,
+                    converter.PayloadCodec,
+                    metrics: null,
+                    CancellationToken.None).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -199,9 +203,13 @@ namespace Temporalio.Converters
             }
             return storage.SkipStore
                 ? payload
-                : (await storage.Runner
-                    .StoreAsync(new[] { payload }, storage.Target, metrics: null, CancellationToken.None)
-                    .ConfigureAwait(false)).First();
+                : (await ExternalStorageOperations.StoreAsync(
+                    storage.Runner,
+                    new[] { payload },
+                    storage.Target,
+                    converter.PayloadCodec,
+                    metrics: null,
+                    CancellationToken.None).ConfigureAwait(false)).First();
         }
 
         /// <summary>
@@ -262,8 +270,12 @@ namespace Temporalio.Converters
             Type type,
             ExternalStorageContext storage)
         {
-            payloads = await storage.Runner
-                .RetrieveAsync(payloads, metrics: null, CancellationToken.None).ConfigureAwait(false);
+            payloads = await ExternalStorageOperations.RetrieveAsync(
+                storage.Runner,
+                payloads,
+                converter.PayloadCodec,
+                metrics: null,
+                CancellationToken.None).ConfigureAwait(false);
 
             // Decode, then expect single payload
             if (converter.PayloadCodec != null)
@@ -290,8 +302,14 @@ namespace Temporalio.Converters
         internal static async Task<Exception> ToExceptionAsync(
             this DataConverter converter, Failure failure, ExternalStorageContext storage)
         {
-            await storage.Runner.RetrieveAsync(
-                PayloadVisitors.Walk, failure, metrics: null, CancellationToken.None)
+            await ExternalStorageOperations.RetrieveAsync(
+                storage.Runner,
+                PayloadVisitors.Walk,
+                failure,
+                converter.PayloadCodec,
+                deriveCodec: null,
+                metrics: null,
+                CancellationToken.None)
                 .ConfigureAwait(false);
 
             // Decode then convert
@@ -320,15 +338,16 @@ namespace Temporalio.Converters
             }
             if (!storage.SkipStore)
             {
-                await storage.Runner
-                    .StoreAsync(
-                        PayloadVisitors.Walk,
-                        failure,
-                        storage.Target,
-                        deriveTarget: null,
-                        metrics: null,
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
+                await ExternalStorageOperations.StoreAsync(
+                    storage.Runner,
+                    PayloadVisitors.Walk,
+                    failure,
+                    storage.Target,
+                    deriveTarget: null,
+                    converter.PayloadCodec,
+                    deriveCodec: null,
+                    metrics: null,
+                    CancellationToken.None).ConfigureAwait(false);
             }
             return failure;
         }

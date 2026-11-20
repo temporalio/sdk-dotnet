@@ -405,6 +405,153 @@ public class WorkflowCodecHelperTests : TestBase
         Assert.Equal(new ISerializationContext?[] { childContext }, codec.Contexts);
     }
 
+    [Fact]
+    public async Task ActivationCodecs_DecodesEachReferenceWithItsJobsCodec()
+    {
+        var workflowContext = new ISerializationContext.Workflow("my-namespace", "my-workflow-id");
+        var childContext = new ISerializationContext.Workflow("my-namespace", "child-workflow-id");
+        var nexusContext = new ISerializationContext.Nexus("my-endpoint", "my-service", "my-operation");
+        var act = new WorkflowActivation
+        {
+            Jobs =
+            {
+                new WorkflowActivationJob
+                {
+                    InitializeWorkflow = new()
+                    {
+                        Arguments = { MarkedReference() },
+                        LastCompletionResult = new() { Payloads_ = { MarkedReference() } },
+                        PropagatedNexusSerializationContext = nexusContext.ToProto(),
+                    },
+                },
+                new WorkflowActivationJob
+                {
+                    SignalWorkflow = new() { Input = { MarkedReference() } },
+                },
+                new WorkflowActivationJob
+                {
+                    ResolveChildWorkflowExecutionStart = new()
+                    {
+                        Seq = 7,
+                        Cancelled = new()
+                        {
+                            Failure = new()
+                            {
+                                ApplicationFailureInfo = new()
+                                {
+                                    Details = new() { Payloads_ = { MarkedReference() } },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        };
+        var codec = new RecordingPayloadCodec();
+        var context = CreateSimpleCodecContext(codec) with
+        {
+            CodecWorkflowContext = codec.WithSerializationContext(workflowContext),
+            Instance = new PendingChildInstance(7, childContext),
+        };
+
+        Assert.True(await ExternalStorageReferenceCodec.DecodeAsync(
+            PayloadVisitors.Walk,
+            act,
+            context.CodecWorkflowContext,
+            WorkflowCodecHelper.ActivationCodecs(context, act),
+            default));
+
+        AssertSameContexts(
+            new ISerializationContext?[] { workflowContext, nexusContext, workflowContext, childContext },
+            codec.Contexts);
+    }
+
+    [Fact]
+    public async Task CompletionCodecs_EncodesEachReferenceWithItsCommandsCodec()
+    {
+        var workflowContext = new ISerializationContext.Workflow("my-namespace", "my-workflow-id");
+        var comp = new WorkflowActivationCompletion
+        {
+            Successful = new()
+            {
+                Commands =
+                {
+                    new WorkflowCommand
+                    {
+                        ScheduleActivity = new()
+                        {
+                            ActivityId = "activity-id",
+                            ActivityType = "ActivityType",
+                            TaskQueue = "activity-task-queue",
+                            Arguments = { Reference() },
+                        },
+                    },
+                    new WorkflowCommand
+                    {
+                        StartChildWorkflowExecution = new()
+                        {
+                            WorkflowId = "child-workflow-id",
+                            Input = { Reference() },
+                        },
+                    },
+                    new WorkflowCommand
+                    {
+                        CompleteWorkflowExecution = new() { Result = Reference() },
+                    },
+                },
+            },
+        };
+        var codec = new RecordingPayloadCodec();
+        var context = CreateSimpleCodecContext(codec) with
+        {
+            CodecWorkflowContext = codec.WithSerializationContext(workflowContext),
+        };
+
+        await ExternalStorageReferenceCodec.EncodeAsync(
+            PayloadVisitors.Walk,
+            comp,
+            context.CodecWorkflowContext,
+            WorkflowCodecHelper.CompletionCodecs(context),
+            default);
+
+        AssertSameContexts(
+            new ISerializationContext?[]
+            {
+                new ISerializationContext.Activity(
+                    Namespace: "my-namespace",
+                    ActivityId: "activity-id",
+                    WorkflowId: "my-workflow-id",
+                    WorkflowType: "my-workflow-type",
+                    ActivityType: "ActivityType",
+                    ActivityTaskQueue: "activity-task-queue",
+                    IsLocal: false),
+                new ISerializationContext.Workflow("my-namespace", "child-workflow-id"),
+                workflowContext,
+            },
+            codec.Contexts);
+        Assert.True(ExternalStorageReferences.IsMarked(
+            comp.Successful.Commands[2].CompleteWorkflowExecution.Result));
+    }
+
+    private static Payload Reference() =>
+        ExternalStorageReferences.CreateReferencePayload(
+            "mem", new Dictionary<string, string> { ["key"] = "k" }, originalSizeBytes: 1);
+
+    // With no real encoding, a marked reference is still plain once decoded.
+    private static Payload MarkedReference()
+    {
+        var reference = Reference();
+        ExternalStorageReferences.Mark(reference);
+        return reference;
+    }
+
+    // The walk order between fields is the visitor's, not what a test should pin down.
+    private static void AssertSameContexts(
+        IEnumerable<ISerializationContext?> expected, IEnumerable<ISerializationContext?> actual) =>
+        Assert.Equal(
+            expected.Select(c => c?.ToString()).OrderBy(c => c),
+            actual.Select(c => c?.ToString()).OrderBy(c => c));
+
     private static Payload CreateSystemEnvelope(string value) => CreateSystemEnvelope(
         new SignalWithStartWorkflowExecutionRequest
         {

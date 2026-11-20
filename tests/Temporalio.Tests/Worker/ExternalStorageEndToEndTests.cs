@@ -10,6 +10,7 @@ using Temporalio.Client;
 using Temporalio.Client.Schedules;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
+using Temporalio.Tests.Converters;
 using Temporalio.Worker;
 using Temporalio.Workflows;
 using Xunit;
@@ -59,6 +60,27 @@ public class ExternalStorageEndToEndTests : WorkflowEnvironmentTestBase
 
         [WorkflowQuery]
         public string Echo(string input) => $"query: {input}";
+    }
+
+    [Workflow]
+    public class EncodedReferencesWorkflow
+    {
+        private string? signaled;
+
+        [WorkflowRun]
+        public async Task<string> RunAsync(string input)
+        {
+            await Workflow.WaitConditionAsync(() => signaled != null);
+            var activity = await Workflow.ExecuteActivityAsync(
+                () => ActivityWorkflow.Echo(input),
+                new() { StartToCloseTimeout = TimeSpan.FromSeconds(10) });
+            var child = await Workflow.ExecuteChildWorkflowAsync(
+                (ChildWorkflow wf) => wf.RunAsync(signaled!));
+            return $"{activity}, {child}";
+        }
+
+        [WorkflowSignal]
+        public async Task SubmitAsync(string value) => signaled = value;
     }
 
     [Workflow]
@@ -274,6 +296,85 @@ public class ExternalStorageEndToEndTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Activity]
+    public static Task<string> StandaloneEcho(string input) => Task.FromResult($"standalone: {input}");
+
+    // The client writes the arg as an encoded reference and the worker writes the result as one,
+    // and each side reads the other's.
+    [Fact]
+    public async Task StandaloneActivity_EncodedReferences_RoundTrip()
+    {
+        var driver = new InMemoryStorageDriver("mem");
+        var client = ClientWith(EncodingConverter(driver, encodeReferences: true));
+        await ExecuteWorkerAsync<ResultWorkflow>(
+            client,
+            async worker =>
+            {
+                var result = await client.ExecuteActivityAsync(
+                    () => StandaloneEcho("hi"),
+                    new($"act-{Guid.NewGuid()}", worker.Options.TaskQueue!)
+                    {
+                        ScheduleToCloseTimeout = TimeSpan.FromMinutes(1),
+                    });
+                Assert.Equal("standalone: hi", result);
+            },
+            new TemporalWorkerOptions().AddActivity(StandaloneEcho));
+        Assert.Equal(2, driver.StoreCount);
+    }
+
+    [Fact]
+    public async Task Workflow_EncodedReferences_RoundTripAndReplayWithEncodingOff()
+    {
+        var driver = new InMemoryStorageDriver("mem");
+        var client = ClientWith(EncodingConverter(driver, encodeReferences: true));
+        await ExecuteWorkerAsync<EncodedReferencesWorkflow>(
+            client,
+            async worker =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (EncodedReferencesWorkflow wf) => wf.RunAsync("hi"), NewOptions(worker));
+                await handle.SignalAsync(wf => wf.SubmitAsync("signaled"));
+                // A worker that can't read an encoded reference fails the task and retries it
+                // rather than failing the workflow, so this would otherwise wait forever.
+                Assert.Equal(
+                    "activity: hi, child: signaled",
+                    await handle.GetResultAsync().WaitAsync(TimeSpan.FromSeconds(30)));
+
+                // Written by the client, the workflow worker and the activity worker in turn.
+                AssertEncodedReference((await FirstEventAsync(
+                    handle, e => e.WorkflowExecutionStartedEventAttributes != null))
+                    .WorkflowExecutionStartedEventAttributes.Input);
+                AssertEncodedReference((await FirstEventAsync(
+                    handle, e => e.WorkflowExecutionSignaledEventAttributes != null))
+                    .WorkflowExecutionSignaledEventAttributes.Input);
+                AssertEncodedReference((await FirstEventAsync(
+                    handle, e => e.ActivityTaskScheduledEventAttributes != null))
+                    .ActivityTaskScheduledEventAttributes.Input);
+                AssertEncodedReference((await FirstEventAsync(
+                    handle, e => e.ActivityTaskCompletedEventAttributes != null))
+                    .ActivityTaskCompletedEventAttributes.Result);
+                AssertEncodedReference((await FirstEventAsync(
+                    handle, e => e.StartChildWorkflowExecutionInitiatedEventAttributes != null))
+                    .StartChildWorkflowExecutionInitiatedEventAttributes.Input);
+                AssertEncodedReference((await FirstEventAsync(
+                    handle, e => e.WorkflowExecutionCompletedEventAttributes != null))
+                    .WorkflowExecutionCompletedEventAttributes.Result);
+
+                // A worker that reads encoded references but does not write them, as during a
+                // rollout, replays the history.
+                var replay = await new WorkflowReplayer(
+                    new WorkflowReplayerOptions
+                    {
+                        DataConverter = EncodingConverter(driver, encodeReferences: false),
+                    }.AddWorkflow<EncodedReferencesWorkflow>())
+                    .ReplayWorkflowAsync(await handle.FetchHistoryAsync());
+                Assert.Null(replay.ReplayFailure);
+            },
+            new TemporalWorkerOptions()
+                .AddActivity(ActivityWorkflow.Echo)
+                .AddWorkflow<ChildWorkflow>());
+    }
+
     [Fact]
     public async Task ClientStartInput_IsOffloadedByClient()
     {
@@ -424,6 +525,33 @@ public class ExternalStorageEndToEndTests : WorkflowEnvironmentTestBase
 
     private static void AssertReference(Payload payload) =>
         Assert.True(ExternalStorageReferences.IsPlainReference(payload));
+
+    private static void AssertEncodedReference(Payloads payloads)
+    {
+        var payload = Assert.Single(payloads.Payloads_);
+        Assert.True(ExternalStorageReferences.IsMarked(payload));
+        Assert.False(ExternalStorageReferences.IsPlainReference(payload));
+    }
+
+    // Every payload is offloaded, so every one becomes a reference.
+    private static DataConverter EncodingConverter(
+        InMemoryStorageDriver driver, bool encodeReferences) =>
+        DataConverter.Default with
+        {
+            PayloadCodec = new Base64PayloadCodec(),
+            ExternalStorage = new ExternalStorage(driver)
+            {
+                PayloadSizeThreshold = 1,
+                EncodeReferences = encodeReferences,
+            },
+        };
+
+    private TemporalClient ClientWith(DataConverter dataConverter)
+    {
+        var options = (TemporalClientOptions)Client.Options.Clone();
+        options.DataConverter = dataConverter;
+        return new TemporalClient(Client.Connection, options);
+    }
 
     private TemporalClient ClientWithExternalStorage(InMemoryStorageDriver? driver = null)
     {
