@@ -143,6 +143,7 @@ namespace Temporalio.Extensions.Aws.SecretsManager
                     return;
                 }
                 string? newKey;
+                Exception? error = null;
                 try
                 {
                     newKey = await Cache.GetAsync(entry, tel).ConfigureAwait(false);
@@ -151,8 +152,8 @@ namespace Temporalio.Extensions.Aws.SecretsManager
                 catch (Exception e)
 #pragma warning restore CA1031
                 {
-                    // Expected failures are already logged and counted by the cache, and are only
-                    // thrown when there's no value within the max staleness, so stop using the
+                    // Expected failures are already counted by the cache, and are only thrown when
+                    // there's no value within the max staleness, so stop using the
                     // current key instead of using it indefinitely. Calls fail until a refresh
                     // succeeds. Anything else is a bug, but is still treated as having no usable
                     // key, rather than letting this loop die and keep the current key forever.
@@ -162,6 +163,7 @@ namespace Temporalio.Extensions.Aws.SecretsManager
                             e, "Unexpected error refreshing client API key from AWS Secrets Manager"));
                     }
                     newKey = null;
+                    error = e;
                 }
                 if (newKey == apiKey)
                 {
@@ -175,12 +177,13 @@ namespace Temporalio.Extensions.Aws.SecretsManager
                 {
                     connection.ApiKey = newKey;
                 }
-                catch (InvalidOperationException e)
+#pragma warning disable CA1031 // Retrying is unlikely to help, see below
+                catch (Exception e)
+#pragma warning restore CA1031
                 {
-                    // Only thrown if the connection never connected, e.g. a lazy connection
-                    // returned by a plugin after this one instead of connecting, so there's no key
-                    // to keep up to date
-                    tel.Record(() => tel.Logger.LogDebug(
+                    // E.g. the connection never connected, like a lazy connection returned by a
+                    // plugin after this one instead of connecting, so there's no key to update
+                    tel.Record(() => tel.Logger.LogWarning(
                         e, "Stopped refreshing client API key from AWS Secrets Manager"));
                     return;
                 }
@@ -189,8 +192,9 @@ namespace Temporalio.Extensions.Aws.SecretsManager
                 {
                     tel.Record(() => tel.Logger.LogWarning(
                         "Removed client API key, no AWS Secrets Manager value within max staleness " +
-                        "(max_staleness={MaxStaleness})",
-                        Cache.MaxStaleness));
+                        "(max_staleness={MaxStaleness}, error={Error})",
+                        Cache.MaxStaleness,
+                        error?.Message));
                 }
                 else
                 {

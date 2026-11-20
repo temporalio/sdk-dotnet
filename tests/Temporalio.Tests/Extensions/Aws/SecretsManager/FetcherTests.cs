@@ -133,8 +133,8 @@ public class FetcherTests
     public void Probe_DetectsListener()
     {
         using var server = new FakeLambdaExtension(_ => (200, string.Empty));
-        Assert.True(Fetchers.Probe(Fetchers.LambdaExtensionHost, server.Port));
-        Assert.False(Fetchers.Probe(Fetchers.LambdaExtensionHost, ClosedPort()));
+        Assert.True(Fetchers.Probe(server.Port));
+        Assert.False(Fetchers.Probe(ClosedPort()));
     }
 
     private static int ClosedPort()
