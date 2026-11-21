@@ -21,7 +21,9 @@ namespace Temporalio.Extensions.Aws.SecretsManager
         public SdkFetcher(IAmazonSecretsManager? client) =>
             this.client = client != null ?
                 new(() => client) :
-                new(() => new AmazonSecretsManagerClient(), LazyThreadSafetyMode.ExecutionAndPublication);
+                // Not ExecutionAndPublication, which would rethrow a failure creating the client
+                // forever, e.g. if resolving the region from instance metadata fails once
+                new(() => new AmazonSecretsManagerClient(), LazyThreadSafetyMode.PublicationOnly);
 
         /// <inheritdoc />
         public string Path => Telemetry.FetchPathSdk;
