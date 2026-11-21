@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Temporalio.Extensions.Aws.SecretsManager\Temporalio.Extensions.Aws.SecretsManager.csproj" />
     <ProjectReference Include="..\Temporalio\Temporalio.csproj" />
   </ItemGroup>
 
