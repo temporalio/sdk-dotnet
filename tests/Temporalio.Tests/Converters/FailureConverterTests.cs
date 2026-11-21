@@ -66,6 +66,29 @@ public class FailureConverterTests : TestBase
     }
 
     [Fact]
+    public void ToFailure_EncodedAttributes_RethrownFailureKeepsCauseEncoded()
+    {
+        var throws = () =>
+        {
+            throw new ArgumentException("exc1", new InvalidOperationException("exc2"));
+        };
+        var converter = new DefaultFailureConverter.WithEncodedCommonAttributes();
+        var received = converter.ToException(
+            converter.ToFailure(
+                Assert.Throws<ArgumentException>(throws),
+                DataConverter.Default.PayloadConverter),
+            DataConverter.Default.PayloadConverter);
+        Assert.Equal("exc2", received.InnerException!.Message);
+
+        // Sending the received exception back out must not expose the decoded messages
+        var failure = converter.ToFailure(received, DataConverter.Default.PayloadConverter);
+        Assert.Equal("Encoded failure", failure.Message);
+        Assert.Empty(failure.StackTrace);
+        Assert.Equal("Encoded failure", failure.Cause.Message);
+        Assert.Empty(failure.Cause.StackTrace);
+    }
+
+    [Fact]
     public void ToFailure_HandlerException_FreshError_ProducesNexusHandlerFailureInfo()
     {
         // A fresh HandlerException (no OriginalFailure) should produce a Failure with
