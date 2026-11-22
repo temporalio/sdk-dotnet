@@ -41,7 +41,7 @@ Since we gave client parameters to the worker, the client connection is made as 
 `ITemporalClient` can be created via the `AddTemporalClient` extension and it will be available as a singleton that can
 be used by other dependencies including the hosted worker service.
 
-On the worker for every activity invocation, a new scope is created and the the activity is obtained via the service
+On the worker for every activity invocation, a new scope is created and the activity is obtained via the service
 provider. So if it is registered as scoped the activity is created each time but if it registered as singleton it is
 created only once and reused. The activity's constructor can be used to accept injected dependencies.
 
