@@ -43,7 +43,7 @@ namespace Temporalio.Common
 
 #if NETSTANDARD2_1_OR_GREATER
         /// <summary>
-        /// Intentionally not implemented. Currently filling byte spans spans is unsupported.
+        /// Intentionally not implemented. Currently filling byte spans is unsupported.
         /// </summary>
         /// <param name="buffer">Buffer.</param>
         public override void NextBytes(Span<byte> buffer) =>
