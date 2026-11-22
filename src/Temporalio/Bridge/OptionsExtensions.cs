@@ -476,7 +476,7 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
-        /// Convert start local options options.
+        /// Convert start local options.
         /// </summary>
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
