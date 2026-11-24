@@ -631,15 +631,17 @@ public class ExternalStorageTargetTests : WorkflowEnvironmentTestBase
                     Workflow.SignalWithStartWorkflowAsync(
                         (SystemStorageTargetA wf) => wf.RunAsync("start-a"),
                         wf => wf.SignalAsync($"signal-a-{round}"),
-                        new(ids[0], Workflow.Info.TaskQueue)
+                        new(ids[0])
                         {
+                            TaskQueue = Workflow.Info.TaskQueue,
                             IdConflictPolicy = Api.Enums.V1.WorkflowIdConflictPolicy.UseExisting,
                         }),
                     Workflow.SignalWithStartWorkflowAsync(
                         (SystemStorageTargetB wf) => wf.RunAsync("start-b"),
                         wf => wf.SignalAsync($"signal-b-{round}"),
-                        new(ids[1], Workflow.Info.TaskQueue)
+                        new(ids[1])
                         {
+                            TaskQueue = Workflow.Info.TaskQueue,
                             IdConflictPolicy = Api.Enums.V1.WorkflowIdConflictPolicy.UseExisting,
                         }),
                 });
