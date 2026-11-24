@@ -1,6 +1,7 @@
 namespace Temporalio.Tests.Worker;
 
 using System.Collections.Concurrent;
+using System.Threading;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.History.V1;
@@ -380,6 +381,40 @@ public class ExternalStorageTargetTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task ClientAndWorkerStores_CarryTheirNamespace()
+    {
+        var (client, driver) = ClientWithCapture();
+        await ExecuteWorkerAsync<TargetActivityWorkflow>(
+            client,
+            async worker =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (TargetActivityWorkflow wf) => wf.RunAsync("hi"), NewOptions(worker));
+                Assert.Equal("activity: hi", await handle.GetResultAsync());
+
+                Assert.NotEmpty(driver.RecordedNamespaces);
+                Assert.All(
+                    driver.RecordedNamespaces, ns => Assert.Equal(client.Options.Namespace, ns));
+            },
+            new TemporalWorkerOptions().AddActivity(TargetActivityWorkflow.Echo));
+    }
+
+    [Fact]
+    public async Task AsyncActivityCompleteByTaskToken_CarriesClientNamespace()
+    {
+        var (client, driver) = ClientWithCapture();
+        await RunParkedActivityAsync(client, async (reference, completeWith) =>
+        {
+            var before = driver.RecordedNamespaces.Length;
+            await client.GetAsyncActivityHandle(reference.TaskToken).CompleteAsync(completeWith);
+
+            Assert.Equal(
+                client.Options.Namespace,
+                Assert.Single(driver.RecordedNamespaces.Skip(before)));
+        });
+    }
+
+    [Fact]
     public async Task AsyncActivityCompleteByTaskToken_HasNoTarget()
     {
         var (client, driver) = ClientWithCapture();
@@ -543,6 +578,150 @@ public class ExternalStorageTargetTests : WorkflowEnvironmentTestBase
         throw new InvalidOperationException("No matching history event found.");
     }
 
+    [Workflow]
+    public class SystemStorageTargetA
+    {
+        private readonly List<string> signals = new();
+
+        [WorkflowRun]
+        public async Task<IReadOnlyCollection<string>> RunAsync(string input)
+        {
+            await Workflow.WaitConditionAsync(() => signals.Count == 2);
+            return new[] { input }.Concat(signals).ToArray();
+        }
+
+        [WorkflowSignal]
+        public Task SignalAsync(string value)
+        {
+            signals.Add(value);
+            return Task.CompletedTask;
+        }
+    }
+
+    [Workflow]
+    public class SystemStorageTargetB
+    {
+        private readonly List<string> signals = new();
+
+        [WorkflowRun]
+        public async Task<IReadOnlyCollection<string>> RunAsync(string input)
+        {
+            await Workflow.WaitConditionAsync(() => signals.Count == 2);
+            return new[] { input }.Concat(signals).ToArray();
+        }
+
+        [WorkflowSignal]
+        public Task SignalAsync(string value)
+        {
+            signals.Add(value);
+            return Task.CompletedTask;
+        }
+    }
+
+    [Workflow]
+    public class SystemStorageCaller
+    {
+        [WorkflowRun]
+        public async Task RunAsync(string[] ids)
+        {
+            for (var round = 0; round < 2; round++)
+            {
+                await Workflow.WhenAllAsync(new Task[]
+                {
+                    Workflow.SignalWithStartWorkflowAsync(
+                        (SystemStorageTargetA wf) => wf.RunAsync("start-a"),
+                        wf => wf.SignalAsync($"signal-a-{round}"),
+                        new(ids[0], Workflow.Info.TaskQueue)
+                        {
+                            IdConflictPolicy = Api.Enums.V1.WorkflowIdConflictPolicy.UseExisting,
+                        }),
+                    Workflow.SignalWithStartWorkflowAsync(
+                        (SystemStorageTargetB wf) => wf.RunAsync("start-b"),
+                        wf => wf.SignalAsync($"signal-b-{round}"),
+                        new(ids[1], Workflow.Info.TaskQueue)
+                        {
+                            IdConflictPolicy = Api.Enums.V1.WorkflowIdConflictPolicy.UseExisting,
+                        }),
+                });
+            }
+        }
+    }
+
+    [Fact]
+    [CloudTestExclusion(
+        CloudTestExclusionReason.RequiresLocalServer,
+        "Requires System Nexus signal-with-start dynamic configuration.")]
+    public async Task SystemNexus_ConcurrentDestinations_SelectTheirOwnStorageDriversAndReplay()
+    {
+        var ids = new[] { $"workflow-{Guid.NewGuid()}", $"workflow-{Guid.NewGuid()}" };
+        var drivers = new[] { new TargetCapturingDriver("a"), new TargetCapturingDriver("b") };
+        var selections = new ConcurrentQueue<StorageDriverSelectContext>();
+        var options = (TemporalClientOptions)Client.Options.Clone();
+        options.DataConverter = DataConverter.Default with
+        {
+            ExternalStorage = new ExternalStorage(
+                drivers,
+                (context, payload) =>
+                {
+                    selections.Enqueue(context);
+                    return context.Target is IStorageDriverTargetInfo.Workflow target ?
+                        target.WorkflowId == ids[0] ? drivers[0] :
+                        target.WorkflowId == ids[1] ? drivers[1] : null : null;
+                })
+            {
+                PayloadSizeThreshold = 1,
+            },
+        };
+        var client = new TemporalClient(Client.Connection, options);
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
+            .AddWorkflow<SystemStorageTargetA>()
+            .AddWorkflow<SystemStorageTargetB>();
+        await ExecuteWorkerAsync<SystemStorageCaller>(
+            client,
+            async worker =>
+            {
+                var caller = await client.StartWorkflowAsync(
+                    (SystemStorageCaller wf) => wf.RunAsync(ids),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await caller.GetResultAsync();
+                var a = client.GetWorkflowHandle<SystemStorageTargetA, IReadOnlyCollection<string>>(ids[0]);
+                var b = client.GetWorkflowHandle<SystemStorageTargetB, IReadOnlyCollection<string>>(ids[1]);
+                Assert.Equal(new[] { "start-a", "signal-a-0", "signal-a-1" }, await a.GetResultAsync());
+                Assert.Equal(new[] { "start-b", "signal-b-0", "signal-b-1" }, await b.GetResultAsync());
+                for (var index = 0; index < drivers.Length; index++)
+                {
+                    var targets = drivers[index].RecordedTargets;
+                    Assert.NotEmpty(targets);
+                    Assert.All(targets, target =>
+                    {
+                        var workflow = Assert.IsType<IStorageDriverTargetInfo.Workflow>(target);
+                        Assert.Equal(client.Options.Namespace, workflow.Namespace);
+                        Assert.Equal(ids[index], workflow.WorkflowId);
+                        Assert.Equal(index == 0 ? "SystemStorageTargetA" : "SystemStorageTargetB", workflow.WorkflowType);
+                    });
+                    Assert.Contains(targets, target => target is IStorageDriverTargetInfo.Workflow { RunId: null });
+                    Assert.All(drivers[index].RecordedNamespaces, ns => Assert.Equal(client.Options.Namespace, ns));
+                    Assert.True(drivers[index].RetrieveCount > 0);
+                }
+                Assert.All(selections, context => Assert.Equal(client.Options.Namespace, context.Namespace));
+                var replayer = new WorkflowReplayer(
+                    new WorkflowReplayerOptions
+                    {
+                        DataConverter = client.Options.DataConverter,
+                        Namespace = client.Options.Namespace,
+                    }.AddWorkflow<SystemStorageCaller>()
+                        .AddWorkflow<SystemStorageTargetA>()
+                        .AddWorkflow<SystemStorageTargetB>());
+                foreach (var id in new[] { caller.Id }.Concat(ids))
+                {
+                    var replay = await replayer.ReplayWorkflowAsync(
+                        await client.GetWorkflowHandle(id).FetchHistoryAsync());
+                    Assert.Null(replay.ReplayFailure);
+                }
+            },
+            workerOptions);
+    }
+
     private (TemporalClient Client, TargetCapturingDriver Driver) ClientWithCapture()
     {
         var driver = new TargetCapturingDriver();
@@ -613,12 +792,20 @@ public class ExternalStorageTargetTests : WorkflowEnvironmentTestBase
         private readonly ConcurrentDictionary<string, Payload> stored = new();
         private readonly ConcurrentDictionary<string, IStorageDriverTargetInfo?> targets = new();
         private readonly ConcurrentQueue<IStorageDriverTargetInfo?> recorded = new();
+        private readonly ConcurrentQueue<string?> recordedNamespaces = new();
+        private int retrieveCount;
 
-        public string Name => "mem";
+        public TargetCapturingDriver(string name = "mem") => Name = name;
+
+        public string Name { get; }
 
         public string Type => "test.inmemory";
 
         public IStorageDriverTargetInfo?[] RecordedTargets => recorded.ToArray();
+
+        public string?[] RecordedNamespaces => recordedNamespaces.ToArray();
+
+        public int RetrieveCount => Volatile.Read(ref retrieveCount);
 
         public Task<IReadOnlyCollection<StorageDriverClaim>> StoreAsync(
             StorageDriverStoreContext context,
@@ -632,6 +819,7 @@ public class ExternalStorageTargetTests : WorkflowEnvironmentTestBase
                 stored[key] = payload;
                 targets[key] = context.Target;
                 recorded.Enqueue(context.Target);
+                recordedNamespaces.Enqueue(context.Namespace);
                 claims.Add(new StorageDriverClaim(new Dictionary<string, string> { ["key"] = key }));
             }
 
@@ -641,9 +829,12 @@ public class ExternalStorageTargetTests : WorkflowEnvironmentTestBase
         public Task<IReadOnlyCollection<Payload>> RetrieveAsync(
             StorageDriverRetrieveContext context,
             IReadOnlyCollection<StorageDriverClaim> claims,
-            CancellationToken cancellationToken) =>
-            Task.FromResult<IReadOnlyCollection<Payload>>(
+            CancellationToken cancellationToken)
+        {
+            Interlocked.Increment(ref retrieveCount);
+            return Task.FromResult<IReadOnlyCollection<Payload>>(
                 claims.Select(c => stored[c.ClaimData["key"]]).ToList());
+        }
 
         // The target recorded when the given reference payload was offloaded.
         public IStorageDriverTargetInfo? TargetFor(Payload reference) =>

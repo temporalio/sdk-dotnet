@@ -88,7 +88,7 @@ namespace Temporalio.Client
                         serializationContext);
                     // Nexus has no storage target type yet, so the offload below is untargeted; the
                     // endpoint, service, and operation would form the target once that lands.
-                    var storage = ExternalStorageContext.For(dataConverter, target: null);
+                    var storage = ExternalStorageContext.For(dataConverter, Client.Options.Namespace, target: null);
 
                     var req = new StartNexusOperationExecutionRequest()
                     {

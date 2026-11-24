@@ -52,6 +52,32 @@ public class ExternalStorageRunnerTests : TestBase
     }
 
     [Fact]
+    public async Task StoreAsync_NoTarget_ContextsCarryTheNamespace()
+    {
+        var driver = new MapDriver("mem");
+        StorageDriverSelectContext? selectContext = null;
+        var storage = new ExternalStorage(
+            new IStorageDriver[] { driver },
+            (context, payload) =>
+            {
+                selectContext = context;
+                return driver;
+            })
+        {
+            PayloadSizeThreshold = 1,
+        };
+        var runner = Runner(storage, "my-namespace");
+
+        await runner.StoreAsync(new[] { Sized(10) }, null, metrics: null, default);
+
+        Assert.Null(selectContext!.Target);
+        Assert.Equal("my-namespace", selectContext.Namespace);
+        var storeContext = Assert.Single(driver.StoreContexts);
+        Assert.Null(storeContext.Target);
+        Assert.Equal("my-namespace", storeContext.Namespace);
+    }
+
+    [Fact]
     public async Task StoreAsync_SelectorDeclines_LeavesPayloadInline()
     {
         var routed = Filled((byte)'a', 50);
@@ -272,7 +298,7 @@ public class ExternalStorageRunnerTests : TestBase
     [Fact]
     public async Task Create_NoStorage_RejectsReferenceWithTmprl1105()
     {
-        var runner = ExternalStorageRunner.Create(null);
+        var runner = ExternalStorageRunner.Create(null, @namespace: null);
         var reference = ExternalStorageReferences.CreateReferencePayload(
             "my-driver",
             new Dictionary<string, string> { ["key"] = "k" },
@@ -287,7 +313,7 @@ public class ExternalStorageRunnerTests : TestBase
     [Fact]
     public async Task Create_NoStorage_LeavesNonReferenceAlone()
     {
-        var runner = ExternalStorageRunner.Create(null);
+        var runner = ExternalStorageRunner.Create(null, @namespace: null);
         var plain = new Payload { Data = ByteString.CopyFromUtf8("not a reference") };
         var payloads = new Payloads { Payloads_ = { plain } };
 
@@ -298,7 +324,7 @@ public class ExternalStorageRunnerTests : TestBase
     [Fact]
     public async Task Create_NoStorage_PreservesNormalPayloadCollection()
     {
-        var runner = ExternalStorageRunner.Create(null);
+        var runner = ExternalStorageRunner.Create(null, @namespace: null);
         var payloads = new Payloads
         {
             Payloads_ =
@@ -321,7 +347,7 @@ public class ExternalStorageRunnerTests : TestBase
         var driver = new RetrieveFuncDriver("my-driver", _ =>
             Task.FromResult<IReadOnlyCollection<Payload>>(
                 new[] { new Payload { Data = ByteString.CopyFromUtf8("retrieved") } }));
-        var runner = ExternalStorageRunner.Create(new ExternalStorage(driver));
+        var runner = ExternalStorageRunner.Create(new ExternalStorage(driver), @namespace: null);
         var reference = ExternalStorageReferences.CreateReferencePayload(
             "my-driver",
             new Dictionary<string, string> { ["key"] = "k" },
@@ -460,9 +486,10 @@ public class ExternalStorageRunnerTests : TestBase
         Assert.Equal(2.0, proto.TotalDuration.ToTimeSpan().TotalSeconds, 6);
     }
 
-    private static ExternalStorageRunner Runner(ExternalStorage storage) =>
+    private static ExternalStorageRunner Runner(ExternalStorage storage, string? ns = null) =>
         new ExternalStorageRunner(
             storage,
+            ns,
             UnboundedStorageDriverLimiter<Payload>.Instance,
             UnboundedStorageDriverLimiter<StorageDriverClaim>.Instance);
 
@@ -488,12 +515,15 @@ public class ExternalStorageRunnerTests : TestBase
 
         public List<int> Batches { get; } = new();
 
+        public List<StorageDriverStoreContext> StoreContexts { get; } = new();
+
         public Task<IReadOnlyCollection<StorageDriverClaim>> StoreAsync(
             StorageDriverStoreContext context,
             IReadOnlyCollection<Payload> payloads,
             CancellationToken cancellationToken)
         {
             Batches.Add(payloads.Count);
+            StoreContexts.Add(context);
             var claims = new List<StorageDriverClaim>();
             foreach (var payload in payloads)
             {
