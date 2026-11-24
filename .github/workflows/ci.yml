@@ -262,6 +262,8 @@ jobs:
       dotnet-repo-path: ${{github.event.pull_request.head.repo.full_name}}
       version: ${{github.event.pull_request.head.ref}}
       version-is-repo-ref: true
+      # Remove after temporalio/features#958 merges; its constructor calls require this SDK change.
+      features-repo-ref: 141148fa6364f87a78311063e3c2f39e30ddb76e
 
   # The single required status check for merging: a PR can merge only if every job in
   # `needs` passed.
