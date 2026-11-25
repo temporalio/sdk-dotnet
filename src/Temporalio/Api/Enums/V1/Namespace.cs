@@ -25,21 +25,26 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiV0ZW1wb3JhbC9hcGkvZW51bXMvdjEvbmFtZXNwYWNlLnByb3RvEhV0ZW1w",
-            "b3JhbC5hcGkuZW51bXMudjEqjgEKDk5hbWVzcGFjZVN0YXRlEh8KG05BTUVT",
+            "b3JhbC5hcGkuZW51bXMudjEqsAEKDk5hbWVzcGFjZVN0YXRlEh8KG05BTUVT",
             "UEFDRV9TVEFURV9VTlNQRUNJRklFRBAAEh4KGk5BTUVTUEFDRV9TVEFURV9S",
             "RUdJU1RFUkVEEAESHgoaTkFNRVNQQUNFX1NUQVRFX0RFUFJFQ0FURUQQAhIb",
-            "ChdOQU1FU1BBQ0VfU1RBVEVfREVMRVRFRBADKmgKDUFyY2hpdmFsU3RhdGUS",
-            "HgoaQVJDSElWQUxfU1RBVEVfVU5TUEVDSUZJRUQQABIbChdBUkNISVZBTF9T",
-            "VEFURV9ESVNBQkxFRBABEhoKFkFSQ0hJVkFMX1NUQVRFX0VOQUJMRUQQAipz",
-            "ChBSZXBsaWNhdGlvblN0YXRlEiEKHVJFUExJQ0FUSU9OX1NUQVRFX1VOU1BF",
-            "Q0lGSUVEEAASHAoYUkVQTElDQVRJT05fU1RBVEVfTk9STUFMEAESHgoaUkVQ",
-            "TElDQVRJT05fU1RBVEVfSEFORE9WRVIQAkKGAQoYaW8udGVtcG9yYWwuYXBp",
-            "LmVudW1zLnYxQg5OYW1lc3BhY2VQcm90b1ABWiFnby50ZW1wb3JhbC5pby9h",
-            "cGkvZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoC",
-            "GlRlbXBvcmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
+            "ChdOQU1FU1BBQ0VfU1RBVEVfREVMRVRFRBADEiAKHE5BTUVTUEFDRV9TVEFU",
+            "RV9TT0ZUX0RFTEVURUQQBCqwAQoVTmFtZXNwYWNlUmVzdG9yZVN0YXRlEicK",
+            "I05BTUVTUEFDRV9SRVNUT1JFX1NUQVRFX1VOU1BFQ0lGSUVEEAASIwofTkFN",
+            "RVNQQUNFX1JFU1RPUkVfU1RBVEVfUlVOTklORxABEiUKIU5BTUVTUEFDRV9S",
+            "RVNUT1JFX1NUQVRFX0NPTVBMRVRFRBACEiIKHk5BTUVTUEFDRV9SRVNUT1JF",
+            "X1NUQVRFX0ZBSUxFRBADKmgKDUFyY2hpdmFsU3RhdGUSHgoaQVJDSElWQUxf",
+            "U1RBVEVfVU5TUEVDSUZJRUQQABIbChdBUkNISVZBTF9TVEFURV9ESVNBQkxF",
+            "RBABEhoKFkFSQ0hJVkFMX1NUQVRFX0VOQUJMRUQQAipzChBSZXBsaWNhdGlv",
+            "blN0YXRlEiEKHVJFUExJQ0FUSU9OX1NUQVRFX1VOU1BFQ0lGSUVEEAASHAoY",
+            "UkVQTElDQVRJT05fU1RBVEVfTk9STUFMEAESHgoaUkVQTElDQVRJT05fU1RB",
+            "VEVfSEFORE9WRVIQAkKGAQoYaW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQg5O",
+            "YW1lc3BhY2VQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvZW51bXMvdjE7",
+            "ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGlRlbXBvcmFsaW86",
+            "OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.NamespaceState), typeof(global::Temporalio.Api.Enums.V1.ArchivalState), typeof(global::Temporalio.Api.Enums.V1.ReplicationState), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.NamespaceState), typeof(global::Temporalio.Api.Enums.V1.NamespaceRestoreState), typeof(global::Temporalio.Api.Enums.V1.ArchivalState), typeof(global::Temporalio.Api.Enums.V1.ReplicationState), }, null, null));
     }
     #endregion
 
@@ -50,6 +55,21 @@ namespace Temporalio.Api.Enums.V1 {
     [pbr::OriginalName("NAMESPACE_STATE_REGISTERED")] Registered = 1,
     [pbr::OriginalName("NAMESPACE_STATE_DEPRECATED")] Deprecated = 2,
     [pbr::OriginalName("NAMESPACE_STATE_DELETED")] Deleted = 3,
+    /// <summary>
+    /// Set by OperatorService.SoftDeleteNamespace. Executions make no progress, but no data is
+    /// removed until the namespace is restored or deleted.
+    /// </summary>
+    [pbr::OriginalName("NAMESPACE_STATE_SOFT_DELETED")] SoftDeleted = 4,
+  }
+
+  /// <summary>
+  /// State of a restore started by OperatorService.RestoreNamespace.
+  /// </summary>
+  public enum NamespaceRestoreState {
+    [pbr::OriginalName("NAMESPACE_RESTORE_STATE_UNSPECIFIED")] Unspecified = 0,
+    [pbr::OriginalName("NAMESPACE_RESTORE_STATE_RUNNING")] Running = 1,
+    [pbr::OriginalName("NAMESPACE_RESTORE_STATE_COMPLETED")] Completed = 2,
+    [pbr::OriginalName("NAMESPACE_RESTORE_STATE_FAILED")] Failed = 3,
   }
 
   public enum ArchivalState {

@@ -9301,6 +9301,7 @@ namespace Temporalio.Api.Common.V1 {
   /// but a parent's fast_forward won't affect its child's execution. A flag is provided to disable propagation of the
   /// "enabled" flag to child workflows; regardless of that flag, a child workflow inherits the virtual time from the
   /// parent execution as its start time.
+  /// Experimental. Might change in the future.
   /// </summary>
   public sealed partial class TimeSkippingConfig : pb::IMessage<TimeSkippingConfig>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -9635,6 +9636,10 @@ namespace Temporalio.Api.Common.V1 {
 
   }
 
+  /// <summary>
+  /// Controls a time-skipping fast-forward for an execution.
+  /// Experimental. Might change in the future.
+  /// </summary>
   public sealed partial class FastForwardConfig : pb::IMessage<FastForwardConfig>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -9889,6 +9894,7 @@ namespace Temporalio.Api.Common.V1 {
   /// <summary>
   /// The time-skipping state that needs to be propagated from one execution to another, or through a chain of runs
   /// within the same execution.
+  /// Experimental. Might change in the future.
   /// </summary>
   public sealed partial class TimeSkippingStatePropagation : pb::IMessage<TimeSkippingStatePropagation>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -10183,6 +10189,7 @@ namespace Temporalio.Api.Common.V1 {
 
   /// <summary>
   /// Describes the current time-skipping state of a workflow execution.
+  /// Experimental. Might change in the future.
   /// </summary>
   public sealed partial class TimeSkippingInfo : pb::IMessage<TimeSkippingInfo>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -10530,6 +10537,7 @@ namespace Temporalio.Api.Common.V1 {
 
   /// <summary>
   /// TimeSkippingFastForwardInfo describes the current time-skipping fast-forward on an execution.
+  /// Experimental. Might change in the future.
   /// </summary>
   public sealed partial class TimeSkippingFastForwardInfo : pb::IMessage<TimeSkippingFastForwardInfo>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE

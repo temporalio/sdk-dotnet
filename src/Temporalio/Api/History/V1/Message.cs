@@ -1466,6 +1466,7 @@ namespace Temporalio.Api.History.V1 {
     public const int TimeSkippingConfigFieldNumber = 41;
     private global::Temporalio.Api.Common.V1.TimeSkippingConfig timeSkippingConfig_;
     /// <summary>
+    /// Experimental.
     /// Initial time-skipping configuration for this workflow execution, recorded at start time.
     /// This may have been set explicitly via the start workflow request, or propagated from a
     /// parent/previous execution.
@@ -1486,6 +1487,7 @@ namespace Temporalio.Api.History.V1 {
     public const int TimeSkippingStatePropagationFieldNumber = 43;
     private global::Temporalio.Api.Common.V1.TimeSkippingStatePropagation timeSkippingStatePropagation_;
     /// <summary>
+    /// Experimental.
     /// The time-skipping state propagated from a previous run of this workflow. This can be nil
     /// if no time skipping has occurred or there is no previous run.
     /// </summary>
@@ -16005,6 +16007,7 @@ namespace Temporalio.Api.History.V1 {
     public const int TimeSkippingConfigFieldNumber = 21;
     private global::Temporalio.Api.Common.V1.TimeSkippingConfig timeSkippingConfig_;
     /// <summary>
+    /// Experimental.
     /// The propagated time-skipping configuration for the child workflow.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -16020,6 +16023,7 @@ namespace Temporalio.Api.History.V1 {
     public const int TimeSkippingStatePropagationFieldNumber = 23;
     private global::Temporalio.Api.Common.V1.TimeSkippingStatePropagation timeSkippingStatePropagation_;
     /// <summary>
+    /// Experimental.
     /// The time-skipping state propagated from the parent workflow. This can be nil if no time skipping
     /// has occurred or there is no previous run.
     /// </summary>
@@ -20084,6 +20088,7 @@ namespace Temporalio.Api.History.V1 {
     public const int TimeSkippingConfigFieldNumber = 7;
     private global::Temporalio.Api.Common.V1.TimeSkippingConfig timeSkippingConfig_;
     /// <summary>
+    /// Experimental.
     /// TimeSkippingConfig override upserted in this event. Represents the full config.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -20099,6 +20104,7 @@ namespace Temporalio.Api.History.V1 {
     public const int TimeSkippingConfigUpdatedFieldNumber = 9;
     private bool timeSkippingConfigUpdated_;
     /// <summary>
+    /// Experimental.
     /// Indicates the time skipping config was updated by the recent call to update
     /// workflow execution options.
     /// </summary>
@@ -23142,6 +23148,7 @@ namespace Temporalio.Api.History.V1 {
   /// Attributes for an event indicating that time skipping state changed for a workflow execution:
   /// either time was advanced, or time skipping was stopped automatically due to the fast_forward completing.
   /// The worker_may_ignore field in HistoryEvent should always be set true for this event.
+  /// Experimental. Might change in the future.
   /// </summary>
   public sealed partial class WorkflowExecutionTimeSkippingTransitionedEventAttributes : pb::IMessage<WorkflowExecutionTimeSkippingTransitionedEventAttributes>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -27466,6 +27473,9 @@ namespace Temporalio.Api.History.V1 {
 
     /// <summary>Field number for the "workflow_execution_time_skipping_transitioned_event_attributes" field.</summary>
     public const int WorkflowExecutionTimeSkippingTransitionedEventAttributesFieldNumber = 65;
+    /// <summary>
+    /// Experimental.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Temporalio.Api.History.V1.WorkflowExecutionTimeSkippingTransitionedEventAttributes WorkflowExecutionTimeSkippingTransitionedEventAttributes {

@@ -63,7 +63,8 @@ void GenerateNexusApi(string witPath, string outputDir, bool nativeApi)
     var arguments = new List<string> { "dotnet" };
     if (nativeApi)
     {
-        arguments.Add("--native-api");
+        arguments.Add("--targets");
+        arguments.Add("workflow");
     }
 
     arguments.AddRange(
