@@ -6,6 +6,8 @@ using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Common.EnvConfig;
 using Temporalio.Extensions.Aws.Lambda;
+using Temporalio.Extensions.Aws.SecretsManager;
+using Temporalio.Tests.Extensions.OpenTelemetry;
 using Temporalio.Worker;
 using Temporalio.Worker.Tuning;
 using Temporalio.Workflows;
@@ -195,6 +197,79 @@ public class TemporalLambdaWorkerTests
         Assert.NotNull(capturedClientOptions);
         Assert.Equal("loaded-address", capturedClientOptions.TargetHost);
         Assert.Equal("loaded-namespace", capturedClientOptions.Namespace);
+    }
+
+    [Fact]
+    public async Task CreateHandler_LoadsClientOptionsOnceAcrossInvocations()
+    {
+        var loadCalls = 0;
+        var plugins = new List<ITemporalClientPlugin>();
+        var capturedClientOptions = new List<TemporalClientConnectOptions>();
+        var handler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            options =>
+            {
+                options.WorkerOptions.TaskQueue = "task-queue";
+            },
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                LoadClientConnectOptions = _ =>
+                {
+                    loadCalls++;
+                    return new TemporalClientConnectOptions
+                    {
+                        TargetHost = "loaded-address",
+                        Plugins = plugins,
+                    };
+                },
+                ConnectClientAsync = options =>
+                {
+                    capturedClientOptions.Add(options);
+                    return Task.FromResult<object>(new object());
+                },
+                CreateWorker = (_, _) => new FakeLambdaWorker(_ => Task.CompletedTask),
+            });
+
+        await handler(null, new FakeLambdaContext());
+        await handler(null, new FakeLambdaContext());
+
+        // Each invocation gets its own copy, sharing the loaded plugins
+        Assert.Equal(1, loadCalls);
+        Assert.Equal(2, capturedClientOptions.Count);
+        Assert.NotSame(capturedClientOptions[0], capturedClientOptions[1]);
+        Assert.Same(plugins, capturedClientOptions[0].Plugins);
+        Assert.Same(plugins, capturedClientOptions[1].Plugins);
+    }
+
+    [Fact]
+    public async Task CreateHandler_ClientOptionChangesDoNotLeakAcrossInvocations()
+    {
+        var seen = new List<(string? ApiKey, string? Domain)>();
+        var handler = TemporalLambdaWorker.CreateHandler(
+            Version,
+            options =>
+            {
+                options.WorkerOptions.TaskQueue = "task-queue";
+                seen.Add((options.ClientOptions.ApiKey, options.ClientOptions.Tls?.Domain));
+                options.ClientOptions.ApiKey = "invocation-key";
+                options.ClientOptions.Tls!.Domain = "invocation-domain";
+            },
+            new TemporalLambdaWorkerHandlerOptions
+            {
+                LoadClientConnectOptions = _ => new TemporalClientConnectOptions
+                {
+                    TargetHost = "loaded-address",
+                    Tls = new TlsOptions { Domain = "loaded-domain" },
+                },
+                ConnectClientAsync = _ => Task.FromResult<object>(new object()),
+                CreateWorker = (_, _) => new FakeLambdaWorker(_ => Task.CompletedTask),
+            });
+
+        await handler(null, new FakeLambdaContext());
+        await handler(null, new FakeLambdaContext());
+
+        // Each invocation sees the loaded options, not the previous invocation's changes
+        Assert.Equal(new (string?, string?)[] { (null, "loaded-domain"), (null, "loaded-domain") }, seen);
     }
 
     [Fact]
@@ -417,6 +492,44 @@ public class TemporalLambdaWorkerTests
         {
             Directory.Delete(tempDir, recursive: true);
         }
+    }
+
+    [Fact]
+    public void LoadClientConnectOptions_AddsSecretsManagerPluginWhenSecretIdsConfigured()
+    {
+        // Read from the process env by the default AWS Secrets Manager extension
+        using var processEnv = new EnvironmentScope(
+            KeyValuePair.Create<string, string?>("AWS_LAMBDA_FUNCTION_NAME", null),
+            KeyValuePair.Create<string, string?>("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT", null),
+            KeyValuePair.Create<string, string?>("SECRETS_MANAGER_TTL", null));
+        ClientEnvConfig.ProfileLoadOptions LoadOptions(
+            IReadOnlyCollection<IClientConfigExtension>? extensions = null) => new()
+            {
+                ConfigSource = DataSource.FromUTF8String(ConfigToml("address", "namespace")),
+                OverrideEnvVars = new Dictionary<string, string>
+                {
+                    ["TEMPORAL_EXT_AWS_SECRETS_MANAGER_API_KEY_ID"] = "temporal/api-key",
+                },
+                Extensions = extensions,
+            };
+
+        var plugin = Assert.Single(
+            TemporalLambdaWorker.LoadClientConnectOptions(LoadOptions()).Plugins!);
+        Assert.Equal("Temporalio.Extensions.Aws.SecretsManager", plugin.Name);
+
+        // A caller-provided extension is used rather than adding a duplicate
+        var extension = new SecretsManagerExtension(new() { RefreshInterval = TimeSpan.FromMinutes(1) });
+        plugin = Assert.Single(
+            TemporalLambdaWorker.LoadClientConnectOptions(LoadOptions(new[] { extension })).Plugins!);
+        Assert.Equal(
+            TimeSpan.FromMinutes(1),
+            Assert.IsType<SecretsManagerPlugin>(plugin).Cache.RefreshInterval);
+
+        Assert.Null(TemporalLambdaWorker.LoadClientConnectOptions(new()
+        {
+            ConfigSource = DataSource.FromUTF8String(ConfigToml("address", "namespace")),
+            OverrideEnvVars = new Dictionary<string, string>(),
+        }).Plugins);
     }
 
     [Fact]

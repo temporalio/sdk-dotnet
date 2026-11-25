@@ -3,12 +3,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Common.EnvConfig;
+using Temporalio.Extensions.Aws.SecretsManager;
 using Temporalio.Worker;
 
 namespace Temporalio.Extensions.Aws.Lambda
@@ -82,6 +84,14 @@ namespace Temporalio.Extensions.Aws.Lambda
                 var root = string.IsNullOrEmpty(lambdaTaskRoot) ? "." : lambdaTaskRoot;
                 loadOptions.ConfigSource = DataSource.FromPath(
                     Path.Combine(root, DefaultConfigFileName));
+            }
+
+            // Credentials can be loaded from AWS Secrets Manager without code changes. The caller
+            // may already pass the extension, e.g. with a custom client, and names must be unique.
+            var extensions = loadOptions.Extensions ?? Array.Empty<IClientConfigExtension>();
+            if (!extensions.Any(e => e.Name == SecretsManagerExtension.ExtensionName))
+            {
+                loadOptions.Extensions = extensions.Append(new SecretsManagerExtension()).ToList();
             }
 
             return ClientEnvConfig.LoadClientConnectOptions(loadOptions);
@@ -159,13 +169,13 @@ namespace Temporalio.Extensions.Aws.Lambda
 
         private static TemporalLambdaWorkerOptions CreateOptions(
             WorkerDeploymentVersion version,
+            Lazy<TemporalClientConnectOptions>? clientOptions,
             TemporalLambdaWorkerHandlerOptions handlerOptions)
         {
-            var loadClientConnectOptions = handlerOptions.LoadClientConnectOptions;
             var options = new TemporalLambdaWorkerOptions(
-                loadClientConnectOptions == null ?
+                clientOptions == null ?
                     null :
-                    () => loadClientConnectOptions(null));
+                    () => (TemporalClientConnectOptions)clientOptions.Value.Clone());
             var environmentTaskQueue = handlerOptions.GetEnvironmentVariable(TaskQueueEnvironmentVariable);
             if (environmentTaskQueue != null)
             {
@@ -410,6 +420,7 @@ namespace Temporalio.Extensions.Aws.Lambda
             private readonly WorkerDeploymentVersion version;
             private readonly Func<TemporalLambdaWorkerOptions, Task> configureAsync;
             private readonly TemporalLambdaWorkerHandlerOptions handlerOptions;
+            private readonly Lazy<TemporalClientConnectOptions>? clientOptions;
 
             public ConfiguringLambdaWorkerHandlerState(
                 WorkerDeploymentVersion version,
@@ -419,6 +430,13 @@ namespace Temporalio.Extensions.Aws.Lambda
                 this.version = version;
                 this.configureAsync = configureAsync;
                 this.handlerOptions = handlerOptions;
+                // Loaded once and cloned for each invocation, so that invocations share the
+                // loaded plugins, e.g. the AWS Secrets Manager extension's cache of secrets
+                var load = handlerOptions.LoadClientConnectOptions;
+                if (load != null)
+                {
+                    clientOptions = new(() => load(null));
+                }
             }
 
             public async Task HandleAsync(object? input, ILambdaContext context)
@@ -428,7 +446,7 @@ namespace Temporalio.Extensions.Aws.Lambda
                     throw new ArgumentNullException(nameof(context));
                 }
 
-                var options = CreateOptions(version, handlerOptions);
+                var options = CreateOptions(version, clientOptions, handlerOptions);
                 await configureAsync(options).ConfigureAwait(false);
                 var state = PrepareHandlerState(version, options, handlerOptions);
                 await state.HandleAsync(input, context).ConfigureAwait(false);
