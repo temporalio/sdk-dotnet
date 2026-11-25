@@ -1218,7 +1218,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
             var handle = await Workflow.SignalWithStartWorkflowAsync(
                 (SignalWithStartHeaderTargetWorkflow workflow) => workflow.RunAsync(),
                 workflow => workflow.NotifyAsync(),
-                new(targetId, taskQueue));
+                new(targetId) { TaskQueue = taskQueue });
             return handle.Id;
         }
     }

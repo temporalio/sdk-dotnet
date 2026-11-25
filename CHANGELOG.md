@@ -9,6 +9,9 @@ Pending changes belong in changelog/; see changelog/README.md.
 
 ### Added
 
+- Core: Low-level Operator Service calls support namespace soft deletion, restoration, and restore progress queries.
+- Core: Cloud API bindings support v0.27.0, including user group memberships, projects, project-scoped custom roles, and caller rate limit operations.
+
 - **Experimental**: Added `Namespace` to `StorageDriverStoreContext` and `StorageDriverSelectContext`, holding the namespace of the client or worker performing the store.
 
 - **Experimental**: Added the `Temporalio.Extensions.Aws.SecretsManager` package, a client config extension that loads the client API key and mTLS material from AWS Secrets Manager secret IDs.
@@ -16,13 +19,29 @@ Pending changes belong in changelog/; see changelog/README.md.
 
 ### Changed
 
+- Core: Workflow task completions and failures set `resource_id` to `workflow:<workflow_id>`, on every page of a paginated completion. Activity task completions, failures, cancellations, and heartbeats set it to `workflow:<workflow_id>`, or `activity:<activity_id>` for a standalone activity. Worker heartbeats set it to `worker:<worker_grouping_key>`, the grouping key each heartbeat already reports in its host info. Proxies can identify the workflow, activity, or worker without decoding task tokens or heartbeat contents.
+
 - **Experimental**: The S3 storage driver now writes payloads stored without a workflow or activity target under `v0/ns/{namespace}/d/sha256/{hash}`, using the namespace of the storing client or worker (`null` when it is unknown), instead of `v0/d/sha256/{hash}`. Existing objects remain retrievable.
 
 ### :boom: Breaking Changes
 
+- **Experimental**: Updated generated System Nexus bindings. `SignalWithStartWorkflowOptions` now takes only the workflow ID in its constructor; set `TaskQueue` as a property or omit it to use the calling workflow's task queue. `SignalWithStartWorkflowRequest` now requires an explicit ID reuse policy, and `SignalWithStartWorkflowResponse` requires its run ID and started flag.
+
 - Activities, workflows, and update handlers declared to return non-generic `Task` now always complete with a `binary/null` result. Previously the runtime task type was inspected, so returning a `Task<T>` recorded its value, and plain `async Task` methods recorded an empty JSON object (`{}`). To keep recording a result, declare the method as `Task<T>`.
 
 ### Fixed
+
+- Core: Nexus operations cancelled or timed out before starting retain their cancellation or timeout failure type even when the corresponding history event omits its failure.
+- Core: A Nexus operation cancelled with the `ABANDON` cancellation type that later completes, fails, or times out no longer fails workflow tasks with a nondeterminism error.
+- Core: Cancelling a Nexus operation with `ABANDON` or `TRY_CANCEL` before it starts now resolves it with a failed `ResolveNexusOperationStart` carrying a cancelled failure, instead of a `ResolveNexusOperation`. Core no longer sends a second resolution when the server later records the operation's start or outcome, which lang SDKs rejected as an unknown sequence number.
+- Core: With `WAIT_CANCELLATION_REQUESTED`, an operation whose cancel request fails is no longer resolved a second time when it later finishes.
+- Core: Workflows no longer get stuck failing workflow tasks when an activity cancelled with the `ABANDON` cancellation type later fails or times out. Those late outcomes are now ignored, as late completions of abandoned activities already were.
+- Core: Core and lang SDK flags sent with a workflow task completion that the server discards, such as an update rejected on the first task of a workflow started with a start delay, are no longer treated as recorded. Core keeps sending them with later completions until history records them. On a cached run, live and query activations still list lang flags that lang already reported in `available_internal_flags`, even before history records them, while activations that replay history list only the lang flags history has recorded, as a fresh replay would. Previously, a later `patched` call could fail replay with a nondeterminism error, and lang flags used afterward could be missing from history so that replay selected different flag-dependent behavior.
+- Core: Draining a metrics buffer after it has overflowed no longer panics with "You must initialize the reference before using it" (Python: `MetricBuffer.retrieve_updates`). Core already drops an instrument or attribute set when the buffer cannot accept its creation, and now also drops later recordings that depend on that dropped creation, so the next drain keeps working.
+- Core: Downloading an ephemeral dev or test server binary retries a transfer that breaks while the archive streams in, such as a reset connection, instead of failing the server start.
+- Core: A workflow whose first workflow task completion only rejects updates, such as an update rejected during a start delay, is now evicted from the cache afterward (reason `UNSPECIFIED`), because the server may discard that completion without recording it. Previously the cached workflow kept state from initialization that history never recorded, so it could fail a later task with a nondeterminism error when another worker had handled the first recorded task.
+- Core: A local activity that finishes while the SDK answers a query attached to a workflow task now records its result on the task that delivers it. This prevents replay nondeterminism when a signal or other event arrives before that task. Command-free task coalescing remains subject to [#1737](https://github.com/temporalio/sdk-rust/issues/1737).
+- Core: Slot gauges now reflect the current number of used and available slots after concurrent worker updates.
 
 - Fixed a `NullReferenceException` when a workflow decoded a cancelled child workflow start carrying a failure, with a payload codec that implements `IWithSerializationContext<IPayloadCodec>`.
 

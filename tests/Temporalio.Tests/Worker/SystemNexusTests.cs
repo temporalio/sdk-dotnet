@@ -234,8 +234,9 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
                     (SystemNexusSignalWithStartTargetWorkflow workflow) =>
                         workflow.RunAsync("start-value"),
                     workflow => workflow.SignalAsync("signal-one"),
-                    new(workflowId, taskQueue)
+                    new(workflowId)
                     {
+                        TaskQueue = taskQueue,
                         IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
                     });
 
@@ -243,7 +244,7 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
                 (SystemNexusSignalWithStartTargetWorkflow workflow) =>
                     workflow.RunAsync("unused-start-value"),
                 workflow => workflow.SignalAsync("signal-two"),
-                new(workflowId, taskQueue)
+                new(workflowId)
                 {
                     IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
                 });
@@ -272,8 +273,9 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
             await Workflow.SignalWithStartWorkflowAsync(
                 (SystemNexusContextTargetWorkflow workflow) => workflow.RunAsync(value),
                 workflow => workflow.SignalAsync(value),
-                new(targetId, taskQueue)
+                new(targetId)
                 {
+                    TaskQueue = taskQueue,
                     Memo = new Dictionary<string, object?> { ["context"] = value },
                     StaticSummary = "context-summary",
                     StaticDetails = "context-details",
@@ -295,6 +297,7 @@ public class SystemNexusTests : WorkflowEnvironmentTestBase
             "target-workflow-id",
             "task-queue",
             "signal",
+            WorkflowIdReusePolicy.AllowDuplicate,
             "target-namespace")
         {
             Args = new[] { new WorkflowWorkerTests.ContextValue("context-workflow-arg", new()) },

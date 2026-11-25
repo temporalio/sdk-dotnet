@@ -63,7 +63,8 @@ void GenerateNexusApi(string witPath, string outputDir, bool nativeApi)
     var arguments = new List<string> { "dotnet" };
     if (nativeApi)
     {
-        arguments.Add("--native-api");
+        arguments.Add("--targets");
+        arguments.Add("workflow");
     }
 
     arguments.AddRange(
@@ -127,10 +128,14 @@ void WriteWorkflowGeneratedFile(string stagingRelativePath)
 
 void WriteWorkerGeneratedFile(string stagingRelativePath)
 {
-    File.Copy(
-        Path.Join(stagingOutputDir, stagingRelativePath),
+    var contents = File.ReadAllText(Path.Join(stagingOutputDir, stagingRelativePath));
+    // Keep generated calls on the interceptor chain rather than bypassing outbound interceptors.
+    contents = contents.Replace(
+        "instance.ScheduleSystemNexusOperationAsync",
+        "instance.outbound.Value.ScheduleSystemNexusOperationAsync");
+    File.WriteAllText(
         Path.Join(workerGeneratedDir, Path.GetFileName(stagingRelativePath)),
-        overwrite: true);
+        contents);
 }
 
 static void RecreateDirectory(string path)

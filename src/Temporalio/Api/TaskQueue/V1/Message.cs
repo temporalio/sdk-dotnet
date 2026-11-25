@@ -99,24 +99,30 @@ namespace Temporalio.Api.TaskQueue.V1 {
             "b3VwcxgCIAMoCzIqLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuUG9sbGVy",
             "R3JvdXBJbmZvIj4KFVBvbGxlclNjYWxpbmdEZWNpc2lvbhIlCh1wb2xsX3Jl",
             "cXVlc3RfZGVsdGFfc3VnZ2VzdGlvbhgBIAEoBSIoCglSYXRlTGltaXQSGwoT",
-            "cmVxdWVzdHNfcGVyX3NlY29uZBgBIAEoAiJqCg5Db25maWdNZXRhZGF0YRIO",
-            "CgZyZWFzb24YASABKAkSFwoPdXBkYXRlX2lkZW50aXR5GAIgASgJEi8KC3Vw",
-            "ZGF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKI",
-            "AQoPUmF0ZUxpbWl0Q29uZmlnEjgKCnJhdGVfbGltaXQYASABKAsyJC50ZW1w",
-            "b3JhbC5hcGkudGFza3F1ZXVlLnYxLlJhdGVMaW1pdBI7CghtZXRhZGF0YRgC",
-            "IAEoCzIpLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuQ29uZmlnTWV0YWRh",
-            "dGEi2QIKD1Rhc2tRdWV1ZUNvbmZpZxJEChBxdWV1ZV9yYXRlX2xpbWl0GAEg",
-            "ASgLMioudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5SYXRlTGltaXRDb25m",
-            "aWcSVAogZmFpcm5lc3Nfa2V5c19yYXRlX2xpbWl0X2RlZmF1bHQYAiABKAsy",
-            "Ki50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlJhdGVMaW1pdENvbmZpZxJq",
-            "ChlmYWlybmVzc193ZWlnaHRfb3ZlcnJpZGVzGAMgAygLMkcudGVtcG9yYWwu",
-            "YXBpLnRhc2txdWV1ZS52MS5UYXNrUXVldWVDb25maWcuRmFpcm5lc3NXZWln",
-            "aHRPdmVycmlkZXNFbnRyeRo+ChxGYWlybmVzc1dlaWdodE92ZXJyaWRlc0Vu",
-            "dHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoAjoCOAFCmAEKHGlvLnRl",
-            "bXBvcmFsLmFwaS50YXNrcXVldWUudjFCDE1lc3NhZ2VQcm90b1ABWilnby50",
-            "ZW1wb3JhbC5pby9hcGkvdGFza3F1ZXVlL3YxO3Rhc2txdWV1ZaoCG1RlbXBv",
-            "cmFsaW8uQXBpLlRhc2tRdWV1ZS5WMeoCHlRlbXBvcmFsaW86OkFwaTo6VGFz",
-            "a1F1ZXVlOjpWMWIGcHJvdG8z"));
+            "cmVxdWVzdHNfcGVyX3NlY29uZBgBIAEoAiIsChBDb25jdXJyZW5jeUxpbWl0",
+            "EhgKEGNvbmN1cnJlbnRfdGFza3MYASABKAUiagoOQ29uZmlnTWV0YWRhdGES",
+            "DgoGcmVhc29uGAEgASgJEhcKD3VwZGF0ZV9pZGVudGl0eRgCIAEoCRIvCgt1",
+            "cGRhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAi",
+            "iAEKD1JhdGVMaW1pdENvbmZpZxI4CgpyYXRlX2xpbWl0GAEgASgLMiQudGVt",
+            "cG9yYWwuYXBpLnRhc2txdWV1ZS52MS5SYXRlTGltaXQSOwoIbWV0YWRhdGEY",
+            "AiABKAsyKS50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLkNvbmZpZ01ldGFk",
+            "YXRhIp0BChZDb25jdXJyZW5jeUxpbWl0Q29uZmlnEkYKEWNvbmN1cnJlbmN5",
+            "X2xpbWl0GAEgASgLMisudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5Db25j",
+            "dXJyZW5jeUxpbWl0EjsKCG1ldGFkYXRhGAIgASgLMikudGVtcG9yYWwuYXBp",
+            "LnRhc2txdWV1ZS52MS5Db25maWdNZXRhZGF0YSKtAwoPVGFza1F1ZXVlQ29u",
+            "ZmlnEkQKEHF1ZXVlX3JhdGVfbGltaXQYASABKAsyKi50ZW1wb3JhbC5hcGku",
+            "dGFza3F1ZXVlLnYxLlJhdGVMaW1pdENvbmZpZxJUCiBmYWlybmVzc19rZXlz",
+            "X3JhdGVfbGltaXRfZGVmYXVsdBgCIAEoCzIqLnRlbXBvcmFsLmFwaS50YXNr",
+            "cXVldWUudjEuUmF0ZUxpbWl0Q29uZmlnEmoKGWZhaXJuZXNzX3dlaWdodF9v",
+            "dmVycmlkZXMYAyADKAsyRy50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlRh",
+            "c2tRdWV1ZUNvbmZpZy5GYWlybmVzc1dlaWdodE92ZXJyaWRlc0VudHJ5ElIK",
+            "F3F1ZXVlX2NvbmN1cnJlbmN5X2xpbWl0GAQgASgLMjEudGVtcG9yYWwuYXBp",
+            "LnRhc2txdWV1ZS52MS5Db25jdXJyZW5jeUxpbWl0Q29uZmlnGj4KHEZhaXJu",
+            "ZXNzV2VpZ2h0T3ZlcnJpZGVzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVl",
+            "GAIgASgCOgI4AUKYAQocaW8udGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MUIM",
+            "TWVzc2FnZVByb3RvUAFaKWdvLnRlbXBvcmFsLmlvL2FwaS90YXNrcXVldWUv",
+            "djE7dGFza3F1ZXVlqgIbVGVtcG9yYWxpby5BcGkuVGFza1F1ZXVlLlYx6gIe",
+            "VGVtcG9yYWxpbzo6QXBpOjpUYXNrUXVldWU6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, global::Temporalio.Api.Enums.V1.TaskQueueReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -145,9 +151,11 @@ namespace Temporalio.Api.TaskQueue.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.PollerGroupsInfo), global::Temporalio.Api.TaskQueue.V1.PollerGroupsInfo.Parser, new[]{ "Version", "PollerGroups" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.PollerScalingDecision), global::Temporalio.Api.TaskQueue.V1.PollerScalingDecision.Parser, new[]{ "PollRequestDeltaSuggestion" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.RateLimit), global::Temporalio.Api.TaskQueue.V1.RateLimit.Parser, new[]{ "RequestsPerSecond" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.ConcurrencyLimit), global::Temporalio.Api.TaskQueue.V1.ConcurrencyLimit.Parser, new[]{ "ConcurrentTasks" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.ConfigMetadata), global::Temporalio.Api.TaskQueue.V1.ConfigMetadata.Parser, new[]{ "Reason", "UpdateIdentity", "UpdateTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.RateLimitConfig), global::Temporalio.Api.TaskQueue.V1.RateLimitConfig.Parser, new[]{ "RateLimit", "Metadata" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueConfig), global::Temporalio.Api.TaskQueue.V1.TaskQueueConfig.Parser, new[]{ "QueueRateLimit", "FairnessKeysRateLimitDefault", "FairnessWeightOverrides" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, })
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.ConcurrencyLimitConfig), global::Temporalio.Api.TaskQueue.V1.ConcurrencyLimitConfig.Parser, new[]{ "ConcurrencyLimit", "Metadata" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueConfig), global::Temporalio.Api.TaskQueue.V1.TaskQueueConfig.Parser, new[]{ "QueueRateLimit", "FairnessKeysRateLimitDefault", "FairnessWeightOverrides", "QueueConcurrencyLimit" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, })
           }));
     }
     #endregion
@@ -631,8 +639,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
   }
 
   /// <summary>
-  /// Worker-reported state about the poller pool issuing a poll, used by the server to spread
-  /// poller scaling suggestions across a fleet.
+  /// Worker-reported state about the poller pool issuing a poll.
   /// </summary>
   public sealed partial class PollerPoolInfo : pb::IMessage<PollerPoolInfo>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -682,8 +689,8 @@ namespace Temporalio.Api.TaskQueue.V1 {
     public const int TargetPollersFieldNumber = 1;
     private int targetPollers_;
     /// <summary>
-    /// Number of concurrent poll requests this worker is currently targeting for this task
-    /// queue and task type. 0 if unknown, such as a poller pool of fixed size.
+    /// Number of pollers this worker is targeting for this task queue and task type.
+    /// 0 if unknown, such as a poller pool of fixed size.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -6535,6 +6542,203 @@ namespace Temporalio.Api.TaskQueue.V1 {
 
   }
 
+  public sealed partial class ConcurrencyLimit : pb::IMessage<ConcurrencyLimit>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ConcurrencyLimit> _parser = new pb::MessageParser<ConcurrencyLimit>(() => new ConcurrencyLimit());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ConcurrencyLimit> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[25]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ConcurrencyLimit() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ConcurrencyLimit(ConcurrencyLimit other) : this() {
+      concurrentTasks_ = other.concurrentTasks_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ConcurrencyLimit Clone() {
+      return new ConcurrencyLimit(this);
+    }
+
+    /// <summary>Field number for the "concurrent_tasks" field.</summary>
+    public const int ConcurrentTasksFieldNumber = 1;
+    private int concurrentTasks_;
+    /// <summary>
+    /// Maximum number of concurrent tasks that may be running at a time across the scope of the
+    /// limit. e.g. in TaskQueueConfig, the scope is the whole task queue.
+    ///
+    /// Note that in situations like network partitions, the server's idea of what is running on
+    /// workers may be out of date, and this limit could be exceeded from the point of view of
+    /// workers.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int ConcurrentTasks {
+      get { return concurrentTasks_; }
+      set {
+        concurrentTasks_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ConcurrencyLimit);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ConcurrencyLimit other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ConcurrentTasks != other.ConcurrentTasks) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ConcurrentTasks != 0) hash ^= ConcurrentTasks.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (ConcurrentTasks != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(ConcurrentTasks);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (ConcurrentTasks != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(ConcurrentTasks);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (ConcurrentTasks != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ConcurrentTasks);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ConcurrencyLimit other) {
+      if (other == null) {
+        return;
+      }
+      if (other.ConcurrentTasks != 0) {
+        ConcurrentTasks = other.ConcurrentTasks;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            ConcurrentTasks = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            ConcurrentTasks = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
   public sealed partial class ConfigMetadata : pb::IMessage<ConfigMetadata>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -6549,7 +6753,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[25]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[26]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6831,7 +7035,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[26]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[27]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7061,6 +7265,250 @@ namespace Temporalio.Api.TaskQueue.V1 {
 
   }
 
+  public sealed partial class ConcurrencyLimitConfig : pb::IMessage<ConcurrencyLimitConfig>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ConcurrencyLimitConfig> _parser = new pb::MessageParser<ConcurrencyLimitConfig>(() => new ConcurrencyLimitConfig());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ConcurrencyLimitConfig> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[28]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ConcurrencyLimitConfig() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ConcurrencyLimitConfig(ConcurrencyLimitConfig other) : this() {
+      concurrencyLimit_ = other.concurrencyLimit_ != null ? other.concurrencyLimit_.Clone() : null;
+      metadata_ = other.metadata_ != null ? other.metadata_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ConcurrencyLimitConfig Clone() {
+      return new ConcurrencyLimitConfig(this);
+    }
+
+    /// <summary>Field number for the "concurrency_limit" field.</summary>
+    public const int ConcurrencyLimitFieldNumber = 1;
+    private global::Temporalio.Api.TaskQueue.V1.ConcurrencyLimit concurrencyLimit_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.TaskQueue.V1.ConcurrencyLimit ConcurrencyLimit {
+      get { return concurrencyLimit_; }
+      set {
+        concurrencyLimit_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "metadata" field.</summary>
+    public const int MetadataFieldNumber = 2;
+    private global::Temporalio.Api.TaskQueue.V1.ConfigMetadata metadata_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.TaskQueue.V1.ConfigMetadata Metadata {
+      get { return metadata_; }
+      set {
+        metadata_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ConcurrencyLimitConfig);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ConcurrencyLimitConfig other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(ConcurrencyLimit, other.ConcurrencyLimit)) return false;
+      if (!object.Equals(Metadata, other.Metadata)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (concurrencyLimit_ != null) hash ^= ConcurrencyLimit.GetHashCode();
+      if (metadata_ != null) hash ^= Metadata.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (concurrencyLimit_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(ConcurrencyLimit);
+      }
+      if (metadata_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Metadata);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (concurrencyLimit_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(ConcurrencyLimit);
+      }
+      if (metadata_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Metadata);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (concurrencyLimit_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ConcurrencyLimit);
+      }
+      if (metadata_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Metadata);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ConcurrencyLimitConfig other) {
+      if (other == null) {
+        return;
+      }
+      if (other.concurrencyLimit_ != null) {
+        if (concurrencyLimit_ == null) {
+          ConcurrencyLimit = new global::Temporalio.Api.TaskQueue.V1.ConcurrencyLimit();
+        }
+        ConcurrencyLimit.MergeFrom(other.ConcurrencyLimit);
+      }
+      if (other.metadata_ != null) {
+        if (metadata_ == null) {
+          Metadata = new global::Temporalio.Api.TaskQueue.V1.ConfigMetadata();
+        }
+        Metadata.MergeFrom(other.Metadata);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (concurrencyLimit_ == null) {
+              ConcurrencyLimit = new global::Temporalio.Api.TaskQueue.V1.ConcurrencyLimit();
+            }
+            input.ReadMessage(ConcurrencyLimit);
+            break;
+          }
+          case 18: {
+            if (metadata_ == null) {
+              Metadata = new global::Temporalio.Api.TaskQueue.V1.ConfigMetadata();
+            }
+            input.ReadMessage(Metadata);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (concurrencyLimit_ == null) {
+              ConcurrencyLimit = new global::Temporalio.Api.TaskQueue.V1.ConcurrencyLimit();
+            }
+            input.ReadMessage(ConcurrencyLimit);
+            break;
+          }
+          case 18: {
+            if (metadata_ == null) {
+              Metadata = new global::Temporalio.Api.TaskQueue.V1.ConfigMetadata();
+            }
+            input.ReadMessage(Metadata);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
   public sealed partial class TaskQueueConfig : pb::IMessage<TaskQueueConfig>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -7075,7 +7523,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[27]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[29]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7098,6 +7546,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
       queueRateLimit_ = other.queueRateLimit_ != null ? other.queueRateLimit_.Clone() : null;
       fairnessKeysRateLimitDefault_ = other.fairnessKeysRateLimitDefault_ != null ? other.fairnessKeysRateLimitDefault_.Clone() : null;
       fairnessWeightOverrides_ = other.fairnessWeightOverrides_.Clone();
+      queueConcurrencyLimit_ = other.queueConcurrencyLimit_ != null ? other.queueConcurrencyLimit_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -7111,7 +7560,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     public const int QueueRateLimitFieldNumber = 1;
     private global::Temporalio.Api.TaskQueue.V1.RateLimitConfig queueRateLimit_;
     /// <summary>
-    /// Unless modified, this is the system-defined rate limit.
+    /// Rate limit for the whole queue.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -7151,6 +7600,21 @@ namespace Temporalio.Api.TaskQueue.V1 {
       get { return fairnessWeightOverrides_; }
     }
 
+    /// <summary>Field number for the "queue_concurrency_limit" field.</summary>
+    public const int QueueConcurrencyLimitFieldNumber = 4;
+    private global::Temporalio.Api.TaskQueue.V1.ConcurrencyLimitConfig queueConcurrencyLimit_;
+    /// <summary>
+    /// Concurrency limit for the whole queue.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.TaskQueue.V1.ConcurrencyLimitConfig QueueConcurrencyLimit {
+      get { return queueConcurrencyLimit_; }
+      set {
+        queueConcurrencyLimit_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -7169,6 +7633,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
       if (!object.Equals(QueueRateLimit, other.QueueRateLimit)) return false;
       if (!object.Equals(FairnessKeysRateLimitDefault, other.FairnessKeysRateLimitDefault)) return false;
       if (!FairnessWeightOverrides.Equals(other.FairnessWeightOverrides)) return false;
+      if (!object.Equals(QueueConcurrencyLimit, other.QueueConcurrencyLimit)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -7179,6 +7644,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
       if (queueRateLimit_ != null) hash ^= QueueRateLimit.GetHashCode();
       if (fairnessKeysRateLimitDefault_ != null) hash ^= FairnessKeysRateLimitDefault.GetHashCode();
       hash ^= FairnessWeightOverrides.GetHashCode();
+      if (queueConcurrencyLimit_ != null) hash ^= QueueConcurrencyLimit.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -7206,6 +7672,10 @@ namespace Temporalio.Api.TaskQueue.V1 {
         output.WriteMessage(FairnessKeysRateLimitDefault);
       }
       fairnessWeightOverrides_.WriteTo(output, _map_fairnessWeightOverrides_codec);
+      if (queueConcurrencyLimit_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(QueueConcurrencyLimit);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -7225,6 +7695,10 @@ namespace Temporalio.Api.TaskQueue.V1 {
         output.WriteMessage(FairnessKeysRateLimitDefault);
       }
       fairnessWeightOverrides_.WriteTo(ref output, _map_fairnessWeightOverrides_codec);
+      if (queueConcurrencyLimit_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(QueueConcurrencyLimit);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -7242,6 +7716,9 @@ namespace Temporalio.Api.TaskQueue.V1 {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(FairnessKeysRateLimitDefault);
       }
       size += fairnessWeightOverrides_.CalculateSize(_map_fairnessWeightOverrides_codec);
+      if (queueConcurrencyLimit_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(QueueConcurrencyLimit);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -7267,6 +7744,12 @@ namespace Temporalio.Api.TaskQueue.V1 {
         FairnessKeysRateLimitDefault.MergeFrom(other.FairnessKeysRateLimitDefault);
       }
       fairnessWeightOverrides_.MergeFrom(other.fairnessWeightOverrides_);
+      if (other.queueConcurrencyLimit_ != null) {
+        if (queueConcurrencyLimit_ == null) {
+          QueueConcurrencyLimit = new global::Temporalio.Api.TaskQueue.V1.ConcurrencyLimitConfig();
+        }
+        QueueConcurrencyLimit.MergeFrom(other.QueueConcurrencyLimit);
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -7300,6 +7783,13 @@ namespace Temporalio.Api.TaskQueue.V1 {
             fairnessWeightOverrides_.AddEntriesFrom(input, _map_fairnessWeightOverrides_codec);
             break;
           }
+          case 34: {
+            if (queueConcurrencyLimit_ == null) {
+              QueueConcurrencyLimit = new global::Temporalio.Api.TaskQueue.V1.ConcurrencyLimitConfig();
+            }
+            input.ReadMessage(QueueConcurrencyLimit);
+            break;
+          }
         }
       }
     #endif
@@ -7331,6 +7821,13 @@ namespace Temporalio.Api.TaskQueue.V1 {
           }
           case 26: {
             fairnessWeightOverrides_.AddEntriesFrom(ref input, _map_fairnessWeightOverrides_codec);
+            break;
+          }
+          case 34: {
+            if (queueConcurrencyLimit_ == null) {
+              QueueConcurrencyLimit = new global::Temporalio.Api.TaskQueue.V1.ConcurrencyLimitConfig();
+            }
+            input.ReadMessage(QueueConcurrencyLimit);
             break;
           }
         }
