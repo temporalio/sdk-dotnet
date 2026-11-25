@@ -40,7 +40,7 @@ public class NexusPayloadSerializerTests
         Assert.True(SystemNexusPayloads.IsSystemPayload(payload));
 
         var result = Assert.IsType<SignalWithStartWorkflowRequest>(
-            await new NexusPayloadSerializer(dataConverter).DeserializeAsync(
+            await new NexusPayloadSerializer(dataConverter, "default").DeserializeAsync(
                 new(payload.ToByteArray()), typeof(SignalWithStartWorkflowRequest)));
 
         Assert.Equal("workflow-input", Assert.Single(result.Args!)?.ToString());
@@ -54,7 +54,7 @@ public class NexusPayloadSerializerTests
         SystemNexusPayloads.MarkSystemPayload(payload!);
 
         var result = Assert.IsType<TestSystemRequest>(
-            await new NexusPayloadSerializer(DataConverter.Default).DeserializeAsync(
+            await new NexusPayloadSerializer(DataConverter.Default, "default").DeserializeAsync(
                 new(payload!.ToByteArray()), typeof(TestSystemRequest)));
 
         Assert.Equal(new TestSystemRequest("test-value"), result);
@@ -89,7 +89,7 @@ public class NexusPayloadSerializerTests
         SystemNexusPayloads.MarkSystemPayload(payload);
 
         var exc = await Assert.ThrowsAsync<HandlerException>(() =>
-            new NexusPayloadSerializer(dataConverter).DeserializeAsync(
+            new NexusPayloadSerializer(dataConverter, "default").DeserializeAsync(
                 new(payload.ToByteArray()), typeof(string)));
 
         Assert.Equal(HandlerErrorType.Internal, exc.ErrorType);
@@ -120,7 +120,7 @@ public class NexusPayloadSerializerTests
             dataConverter.PayloadConverter, dataConverter.FailureConverter).ToPayload(request);
 
         var result = Assert.IsType<SignalWithStartWorkflowRequest>(
-            await new NexusPayloadSerializer(dataConverter).DeserializeAsync(
+            await new NexusPayloadSerializer(dataConverter, "default").DeserializeAsync(
                 new(payload.ToByteArray()), typeof(SignalWithStartWorkflowRequest)));
 
         Assert.Equal(1, codec.DecodeCount);
@@ -145,10 +145,12 @@ public class NexusPayloadSerializerTests
             DataConverter.Default.PayloadConverter,
             DataConverter.Default.FailureConverter).ToPayload(request);
         var converter = new ReplacingPayloadConverter();
-        var serializer = new NexusPayloadSerializer(DataConverter.Default with
-        {
-            PayloadConverter = converter,
-        });
+        var serializer = new NexusPayloadSerializer(
+            DataConverter.Default with
+            {
+                PayloadConverter = converter,
+            },
+            "default");
 
         var result = Assert.IsType<SignalWithStartWorkflowRequest>(
             await serializer.DeserializeAsync(
@@ -222,7 +224,7 @@ public class NexusPayloadSerializerTests
         var payload = DataConverter.Default.PayloadConverter.ToPayload("ordinary-input");
         Assert.False(SystemNexusPayloads.IsSystemPayload(payload));
 
-        var result = await new NexusPayloadSerializer(DataConverter.Default).DeserializeAsync(
+        var result = await new NexusPayloadSerializer(DataConverter.Default, "default").DeserializeAsync(
             new(payload.ToByteArray()), typeof(string));
 
         Assert.Equal("ordinary-input", result);
@@ -232,10 +234,12 @@ public class NexusPayloadSerializerTests
     public async Task DeserializeAsync_ConverterPayloadValidationFailure_BecomesBadRequest()
     {
         var cause = PayloadValidationError.CreateException(new { Reason = "invalid input" });
-        var serializer = new NexusPayloadSerializer(DataConverter.Default with
-        {
-            PayloadConverter = new ThrowingPayloadConverter(cause),
-        });
+        var serializer = new NexusPayloadSerializer(
+            DataConverter.Default with
+            {
+                PayloadConverter = new ThrowingPayloadConverter(cause),
+            },
+            "default");
         var content = await CreateContentAsync("some-input");
 
         var exc = await Assert.ThrowsAsync<HandlerException>(
@@ -255,10 +259,12 @@ public class NexusPayloadSerializerTests
     public async Task DeserializeAsync_CodecPayloadValidationFailure_BecomesBadRequest()
     {
         var cause = PayloadValidationError.CreateException(new { Reason = "invalid input" });
-        var serializer = new NexusPayloadSerializer(DataConverter.Default with
-        {
-            PayloadCodec = new ThrowingPayloadCodec(cause),
-        });
+        var serializer = new NexusPayloadSerializer(
+            DataConverter.Default with
+            {
+                PayloadCodec = new ThrowingPayloadCodec(cause),
+            },
+            "default");
         var content = await CreateContentAsync("some-input");
 
         var exc = await Assert.ThrowsAsync<HandlerException>(
@@ -278,10 +284,12 @@ public class NexusPayloadSerializerTests
     public async Task DeserializeAsync_ConverterOtherFailure_KeepsGenericDecodeMessage()
     {
         var cause = new InvalidOperationException("Simulated converter failure");
-        var serializer = new NexusPayloadSerializer(DataConverter.Default with
-        {
-            PayloadConverter = new ThrowingPayloadConverter(cause),
-        });
+        var serializer = new NexusPayloadSerializer(
+            DataConverter.Default with
+            {
+                PayloadConverter = new ThrowingPayloadConverter(cause),
+            },
+            "default");
         var content = await CreateContentAsync("some-input");
 
         var exc = await Assert.ThrowsAsync<HandlerException>(
@@ -296,10 +304,12 @@ public class NexusPayloadSerializerTests
     public async Task DeserializeAsync_CodecOtherFailure_KeepsGenericDecodeMessage()
     {
         var cause = new InvalidOperationException("Simulated codec failure");
-        var serializer = new NexusPayloadSerializer(DataConverter.Default with
-        {
-            PayloadCodec = new ThrowingPayloadCodec(cause),
-        });
+        var serializer = new NexusPayloadSerializer(
+            DataConverter.Default with
+            {
+                PayloadCodec = new ThrowingPayloadCodec(cause),
+            },
+            "default");
         var content = await CreateContentAsync("some-input");
 
         var exc = await Assert.ThrowsAsync<HandlerException>(
@@ -321,10 +331,12 @@ public class NexusPayloadSerializerTests
     {
         var cause = new ApplicationFailureException(
             "Intentional failure", errorType: errorType, nonRetryable: nonRetryable);
-        var serializer = new NexusPayloadSerializer(DataConverter.Default with
-        {
-            PayloadConverter = new ThrowingPayloadConverter(cause),
-        });
+        var serializer = new NexusPayloadSerializer(
+            DataConverter.Default with
+            {
+                PayloadConverter = new ThrowingPayloadConverter(cause),
+            },
+            "default");
         var content = await CreateContentAsync("some-input");
 
         var exc = await Assert.ThrowsAsync<ApplicationFailureException>(
@@ -342,10 +354,12 @@ public class NexusPayloadSerializerTests
     {
         var cause = new ApplicationFailureException(
             "Intentional failure", errorType: errorType, nonRetryable: nonRetryable);
-        var serializer = new NexusPayloadSerializer(DataConverter.Default with
-        {
-            PayloadCodec = new ThrowingPayloadCodec(cause),
-        });
+        var serializer = new NexusPayloadSerializer(
+            DataConverter.Default with
+            {
+                PayloadCodec = new ThrowingPayloadCodec(cause),
+            },
+            "default");
         var content = await CreateContentAsync("some-input");
 
         var exc = await Assert.ThrowsAsync<ApplicationFailureException>(

@@ -119,9 +119,25 @@ public class S3StorageDriverTests
     }
 
     [Fact]
-    public async Task StoreAsync_NoTarget_KeyHasOnlyTheDigest()
+    public async Task StoreAsync_NoTargetOrNamespace_WritesNullNamespace()
     {
-        Assert.Equal($"v0/d/sha256/{HashOf("one")}", await StoreKeyAsync(null, "one"));
+        Assert.Equal($"v0/ns/null/d/sha256/{HashOf("one")}", await StoreKeyAsync(null, "one"));
+    }
+
+    [Fact]
+    public async Task StoreAsync_NoTarget_UsesContextNamespace()
+    {
+        Assert.Equal(
+            $"v0/ns/my%20ns/d/sha256/{HashOf("one")}",
+            await StoreKeyAsync(null, "one", "my ns"));
+    }
+
+    [Fact]
+    public async Task StoreAsync_TargetNamespace_OverridesContextNamespace()
+    {
+        var target = new IStorageDriverTargetInfo.Workflow("target-ns", "wf", "run", "WF");
+
+        Assert.StartsWith("v0/ns/target-ns/wt/", await StoreKeyAsync(target, "one", "other"));
     }
 
     [Fact]
@@ -237,7 +253,7 @@ public class S3StorageDriverTests
             () => driver.StoreAsync(StoreContext(), new[] { NewPayload("one") }, default));
 
         Assert.Equal(
-            $"S3StorageDriver store failed [bucket=my-bucket, key=v0/d/sha256/{HashOf("one")}, " +
+            $"S3StorageDriver store failed [bucket=my-bucket, key=v0/ns/null/d/sha256/{HashOf("one")}, " +
             "client_region=us-west-2]",
             err.Message);
         Assert.Equal("access denied", err.InnerException?.Message);
@@ -325,16 +341,19 @@ public class S3StorageDriverTests
     private static string HashOf(string data) =>
         Convert.ToHexStringLower(SHA256.HashData(NewPayload(data).ToByteArray()));
 
-    private static StorageDriverStoreContext StoreContext(IStorageDriverTargetInfo? target = null) =>
-        new() { Target = target, Limiter = new RecordingLimiter<Payload>() };
+    private static StorageDriverStoreContext StoreContext(
+        IStorageDriverTargetInfo? target = null, string? ns = null) =>
+        new() { Target = target, Namespace = ns, Limiter = new RecordingLimiter<Payload>() };
 
     private static StorageDriverRetrieveContext RetrieveContext() =>
         new() { Limiter = new RecordingLimiter<StorageDriverClaim>() };
 
-    private static async Task<string> StoreKeyAsync(IStorageDriverTargetInfo? target, string data)
+    private static async Task<string> StoreKeyAsync(
+        IStorageDriverTargetInfo? target, string data, string? ns = null)
     {
         var driver = new S3StorageDriver(new FakeS3Client(), "my-bucket");
-        var claims = await driver.StoreAsync(StoreContext(target), new[] { NewPayload(data) }, default);
+        var claims = await driver.StoreAsync(
+            StoreContext(target, ns), new[] { NewPayload(data) }, default);
         return Assert.Single(claims).ClaimData["key"];
     }
 
