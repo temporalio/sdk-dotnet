@@ -5,6 +5,27 @@ Pending changes belong in changelog/; see changelog/README.md.
 
 # Changelog
 
+## [1.23.0] - 2026-11-25
+
+### Added
+
+- **Experimental**: Added `Namespace` to `StorageDriverStoreContext` and `StorageDriverSelectContext`, holding the namespace of the client or worker performing the store.
+
+- **Experimental**: Added the `Temporalio.Extensions.Aws.SecretsManager` package, a client config extension that loads the client API key and mTLS material from AWS Secrets Manager secret IDs.
+- **Experimental**: `Temporalio.Extensions.Aws.Lambda` now loads Temporal client credentials from AWS Secrets Manager when secret IDs are configured with `TEMPORAL_EXT_AWS_SECRETS_MANAGER_*` environment variables or in the TOML config.
+
+### Changed
+
+- **Experimental**: The S3 storage driver now writes payloads stored without a workflow or activity target under `v0/ns/{namespace}/d/sha256/{hash}`, using the namespace of the storing client or worker (`null` when it is unknown), instead of `v0/d/sha256/{hash}`. Existing objects remain retrievable.
+
+### :boom: Breaking Changes
+
+- Activities, workflows, and update handlers declared to return non-generic `Task` now always complete with a `binary/null` result. Previously the runtime task type was inspected, so returning a `Task<T>` recorded its value, and plain `async Task` methods recorded an empty JSON object (`{}`). To keep recording a result, declare the method as `Task<T>`.
+
+### Fixed
+
+- Fixed a `NullReferenceException` when a workflow decoded a cancelled child workflow start carrying a failure, with a payload codec that implements `IWithSerializationContext<IPayloadCodec>`.
+
 ## [1.22.0] - 2026-11-10
 
 ### Added
