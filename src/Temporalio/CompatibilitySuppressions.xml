@@ -24,6 +24,13 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Nexus.Notifications.OnCompleteRequest`2.#ctor(Temporalio.Nexus.Notifications.OnCompleteRequestResult{`0},`1)</Target>
+    <Left>lib/net462/Temporalio.dll</Left>
+    <Right>lib/net462/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Temporalio.Worker.Interceptors.WorkflowOutboundInterceptor.ScheduleSystemNexusOperationAsync``1(Temporalio.Worker.Interceptors.ScheduleSystemNexusOperationInput)</Target>
     <Left>lib/net462/Temporalio.dll</Left>
     <Right>lib/net462/Temporalio.dll</Right>
@@ -66,6 +73,13 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Nexus.Notifications.OnCompleteRequest`2.#ctor(Temporalio.Nexus.Notifications.OnCompleteRequestResult{`0},`1)</Target>
+    <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
+    <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Temporalio.Worker.Interceptors.WorkflowOutboundInterceptor.ScheduleSystemNexusOperationAsync``1(Temporalio.Worker.Interceptors.ScheduleSystemNexusOperationInput)</Target>
     <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
     <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
@@ -104,6 +118,13 @@
     <Target>M:Temporalio.Workflows.SignalWithStartWorkflowResponse.get_Started</Target>
     <Left>lib/netcoreapp3.1/Temporalio.dll</Left>
     <Right>lib/netcoreapp3.1/Temporalio.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Temporalio.Nexus.Notifications.OnCompleteRequest`2.#ctor(Temporalio.Nexus.Notifications.OnCompleteRequestResult{`0},`1)</Target>
+    <Left>lib/netstandard2.0/Temporalio.dll</Left>
+    <Right>lib/netstandard2.0/Temporalio.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
   <Suppression>

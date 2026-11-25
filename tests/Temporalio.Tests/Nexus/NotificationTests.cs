@@ -22,8 +22,10 @@ public class NotificationTests
     public void OnCompleteRequest_Success_RoundTripsTypedResultAndContext()
     {
         var request = new OnCompleteRequest<OperationOutput, NotificationContext>(
-            new OnCompleteRequestResult<OperationOutput>.Success(new OperationOutput("finished")),
-            new NotificationContext("source"));
+            new OnCompleteRequestResult<OperationOutput>.Success(new OperationOutput("finished")))
+        {
+            SourceContext = new NotificationContext("source"),
+        };
 
         var payload = Converter.ToPayload(request);
         var proto = ProtoOnCompleteRequest.Parser.ParseFrom(payload.Data);
@@ -53,8 +55,10 @@ public class NotificationTests
                     "failed",
                     errorType: "OperationError",
                     nonRetryable: true,
-                    details: new object?[] { "diagnostic" })),
-            new NotificationContext("source"));
+                    details: new object?[] { "diagnostic" })))
+        {
+            SourceContext = new NotificationContext("source"),
+        };
 
         var payload = Converter.ToPayload(request);
         var proto = ProtoOnCompleteRequest.Parser.ParseFrom(payload.Data);
@@ -98,28 +102,51 @@ public class NotificationTests
         Assert.Equal("missing required field OnCompleteRequest.Result", exception.Message);
     }
 
-    [Fact]
-    public void OnCompleteRequest_MissingSourceContext_IsRejected()
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public async Task OnCompleteRequest_WithoutSourceContext_RoundTrips(bool failure, bool useCodec)
     {
-        var proto = new ProtoOnCompleteRequest
-        {
-            Success = DataConverter.Default.PayloadConverter.ToPayload(new OperationOutput("finished")),
-        };
+        OnCompleteRequestResult<OperationOutput> result = failure ?
+            new OnCompleteRequestResult<OperationOutput>.Failure(new ApplicationFailureException("failed")) :
+            new OnCompleteRequestResult<OperationOutput>.Success(new OperationOutput("finished"));
+        var request = new OnCompleteRequest<OperationOutput, NotificationContext>(result);
+        var payload = Converter.ToPayload(request);
+        Assert.Null(ProtoOnCompleteRequest.Parser.ParseFrom(payload.Data).SourceContext);
 
-        var exception = Assert.Throws<InvalidOperationException>(() =>
+        if (useCodec)
         {
-            var payload = Converter.ToPayload(proto);
-            Converter.ToValue(payload, typeof(OnCompleteRequest<OperationOutput, NotificationContext>));
-        });
-        Assert.Equal("missing required field OnCompleteRequest.SourceContext", exception.Message);
+            var codec = new Base64PayloadCodec();
+            await PayloadCodecHelper.EncodeAsync(codec, payload);
+            Assert.Null(ProtoOnCompleteRequest.Parser.ParseFrom(payload.Data).SourceContext);
+            await PayloadCodecHelper.DecodeAsync(codec, payload);
+        }
+
+        var restored = Assert.IsType<OnCompleteRequest<OperationOutput, NotificationContext>>(
+            Converter.ToValue(payload, typeof(OnCompleteRequest<OperationOutput, NotificationContext>)));
+        Assert.Null(restored.SourceContext);
+        if (failure)
+        {
+            var restoredFailure = Assert.IsType<OnCompleteRequestResult<OperationOutput>.Failure>(restored.Result);
+            Assert.Equal("failed", restoredFailure.Value.Message);
+        }
+        else
+        {
+            var success = Assert.IsType<OnCompleteRequestResult<OperationOutput>.Success>(restored.Result);
+            Assert.Equal(new OperationOutput("finished"), success.Value);
+        }
     }
 
     [Fact]
     public async Task OnCompleteRequest_Success_EmbeddedPayloadsAreCodecVisited()
     {
         var request = new OnCompleteRequest<OperationOutput, NotificationContext>(
-            new OnCompleteRequestResult<OperationOutput>.Success(new OperationOutput("finished")),
-            new NotificationContext("source"));
+            new OnCompleteRequestResult<OperationOutput>.Success(new OperationOutput("finished")))
+        {
+            SourceContext = new NotificationContext("source"),
+        };
         var payload = Converter.ToPayload(request);
         var codec = new Base64PayloadCodec();
 
@@ -144,8 +171,10 @@ public class NotificationTests
         var request = new OnCompleteRequest<OperationOutput, NotificationContext>(
             new OnCompleteRequestResult<OperationOutput>.Failure(
                 new ApplicationFailureException(
-                    "failed", errorType: "OperationError", details: new object?[] { "diagnostic" })),
-            new NotificationContext("source"));
+                    "failed", errorType: "OperationError", details: new object?[] { "diagnostic" })))
+        {
+            SourceContext = new NotificationContext("source"),
+        };
         var payload = Converter.ToPayload(request);
         var codec = new Base64PayloadCodec();
 

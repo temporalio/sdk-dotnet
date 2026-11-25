@@ -75,7 +75,10 @@ public class CompletionCallbackTests
         Expression<Func<IChildService, OnCompleteRequest<string, CallbackContext>, OnCompleteResponse>>
             expression = (service, request) => service.Completed(
                 new OnCompleteRequest<string, CallbackContext>(
-                    new OnCompleteRequestResult<string>.Success("result"), new CallbackContext("other")));
+                    new OnCompleteRequestResult<string>.Success("result"))
+                {
+                    SourceContext = new CallbackContext("other"),
+                });
 
         Assert.Equal(
             "operationCall",
@@ -498,8 +501,10 @@ public class CompletionCallbackTests
             DataConverter.Default.PayloadConverter,
             DataConverter.Default.FailureConverter);
         var request = new OnCompleteRequest<int, CallbackContext>(
-            new OnCompleteRequestResult<int>.Success(42),
-            new CallbackContext("source"));
+            new OnCompleteRequestResult<int>.Success(42))
+        {
+            SourceContext = new CallbackContext("source"),
+        };
 
         var payload = converter.ToPayload(request);
 

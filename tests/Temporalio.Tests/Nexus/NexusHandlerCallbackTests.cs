@@ -134,12 +134,14 @@ public class NexusHandlerCallbackTests : WorkflowEnvironmentTestBase
                     TemporalOperationResult<OnCompleteResponse>.SyncResult(new OnCompleteResponse()));
             }
 
+            var sourceContext = input.SourceContext ??
+                throw new InvalidOperationException("This callback requires a source context");
             return client.StartActivityAsync<OnCompleteResponse>(
                 "Complete",
-                new object?[] { new ActivityInput(input.SourceContext, success.Value) },
+                new object?[] { new ActivityInput(sourceContext, success.Value) },
                 new()
                 {
-                    Id = $"callback-act-{input.SourceContext.Value}",
+                    Id = $"callback-act-{sourceContext.Value}",
                     ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
                 });
         }
