@@ -461,7 +461,7 @@
         "type": "Project",
         "dependencies": {
           "Amazon.Lambda.Core": "[3.1.0, )",
-          "Temporalio": "[1.21.0, )"
+          "Temporalio": "[1.22.0, )"
         }
       },
       "temporalio.extensions.aws.lambda.opentelemetry": {
@@ -470,34 +470,34 @@
           "OpenTelemetry": "[1.15.3, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.15.3, )",
           "OpenTelemetry.Extensions.AWS": "[1.15.1, )",
-          "Temporalio": "[1.21.0, )",
-          "Temporalio.Extensions.Aws.Lambda": "[1.21.0, )",
-          "Temporalio.Extensions.OpenTelemetry": "[1.21.0, )"
+          "Temporalio": "[1.22.0, )",
+          "Temporalio.Extensions.Aws.Lambda": "[1.22.0, )",
+          "Temporalio.Extensions.OpenTelemetry": "[1.22.0, )"
         }
       },
       "temporalio.extensions.aws.s3driver": {
         "type": "Project",
         "dependencies": {
-          "Temporalio": "[1.21.0, )"
+          "Temporalio": "[1.22.0, )"
         }
       },
       "temporalio.extensions.aws.s3driver.awssdk": {
         "type": "Project",
         "dependencies": {
           "AWSSDK.S3": "[4.0.13.1, )",
-          "Temporalio.Extensions.Aws.S3Driver": "[1.21.0, )"
+          "Temporalio.Extensions.Aws.S3Driver": "[1.22.0, )"
         }
       },
       "temporalio.extensions.diagnosticsource": {
         "type": "Project",
         "dependencies": {
-          "Temporalio": "[1.21.0, )"
+          "Temporalio": "[1.22.0, )"
         }
       },
       "temporalio.extensions.gcp.cloudrun.id": {
         "type": "Project",
         "dependencies": {
-          "Temporalio": "[1.21.0, )"
+          "Temporalio": "[1.22.0, )"
         }
       },
       "temporalio.extensions.gcp.cloudrun.opentelemetry": {
@@ -505,29 +505,29 @@
         "dependencies": {
           "OpenTelemetry": "[1.15.3, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.15.3, )",
-          "Temporalio": "[1.21.0, )",
-          "Temporalio.Extensions.OpenTelemetry": "[1.21.0, )"
+          "Temporalio": "[1.22.0, )",
+          "Temporalio.Extensions.OpenTelemetry": "[1.22.0, )"
         }
       },
       "temporalio.extensions.hosting": {
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.Hosting": "[8.0.1, )",
-          "Temporalio": "[1.21.0, )"
+          "Temporalio": "[1.22.0, )"
         }
       },
       "temporalio.extensions.opentelemetry": {
         "type": "Project",
         "dependencies": {
           "OpenTelemetry.Api": "[1.15.3, )",
-          "Temporalio": "[1.21.0, )"
+          "Temporalio": "[1.22.0, )"
         }
       },
       "temporalio.extensions.workflowstreams": {
         "type": "Project",
         "dependencies": {
           "Microsoft.Bcl.AsyncInterfaces": "[9.0.4, )",
-          "Temporalio": "[1.21.0, )"
+          "Temporalio": "[1.22.0, )"
         }
       },
       "Amazon.Lambda.Core": {
