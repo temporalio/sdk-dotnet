@@ -81,7 +81,7 @@ namespace Temporalio.Extensions.OpenTelemetry
             if (!Workflow.Unsafe.IsReplaying || evenOnReplay)
             {
                 // Start/stop immediately
-                activity = source.StartActivity(name, kind, parentContext, tags, links);
+                activity = source.StartActivity(name, kind, parentContext, combinedTags, links);
                 if (activity != null)
                 {
                     updateActivity?.Invoke(activity);

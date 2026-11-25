@@ -645,6 +645,11 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
             new(
                 "CompleteWorkflow:TracingWorkflow",
                 Parent: "RunWorkflow:TracingWorkflow",
+                Tags: workflowRunTags),
+            // A rejected update on the first task can evict the workflow, so replay has no run span.
+            new(
+                "CompleteWorkflow:TracingWorkflow",
+                Parent: "StartWorkflow:TracingWorkflow",
                 Tags: workflowRunTags));
     }
 

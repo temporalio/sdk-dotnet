@@ -44,6 +44,7 @@ Pending changes belong in changelog/; see changelog/README.md.
 - Core: Slot gauges now reflect the current number of used and available slots after concurrent worker updates.
 
 - Fixed a `NullReferenceException` when a workflow decoded a cancelled child workflow start carrying a failure, with a payload codec that implements `IWithSerializationContext<IPayloadCodec>`.
+- Fixed inherited OpenTelemetry workflow tags missing from spans created after replay or cache eviction.
 
 ## [1.22.0] - 2026-11-10
 
