@@ -2,6 +2,7 @@ using Temporalio.Api.Common.V1;
 using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Converters;
+using Temporalio.Runtime;
 using Temporalio.Tests.Converters;
 using Temporalio.Worker;
 using Temporalio.Workflows;
@@ -262,5 +263,75 @@ public class PluginTests : WorkflowEnvironmentTestBase
 
         Assert.Contains("Beginning", transitions);
         Assert.Contains("Ending", transitions);
+    }
+
+    private class VersionedClientPlugin : ITemporalClientPlugin, ITemporalVersionedPlugin
+    {
+        public string Name => "client-plugin";
+
+        public string Version => "1.0.0";
+
+        public void ConfigureClient(TemporalClientOptions options)
+        {
+        }
+
+        public Task<TemporalConnection> ConnectAsync(
+            TemporalClientConnectOptions options,
+            Func<TemporalClientConnectOptions, Task<TemporalConnection>> continuation) =>
+            continuation(options);
+    }
+
+    [Fact]
+    public async Task TestPlugins_VersionsReportedInWorkerHeartbeat()
+    {
+        var runtime = new TemporalRuntime(new()
+        {
+            WorkerHeartbeatInterval = TimeSpan.FromSeconds(1),
+        });
+        var connectionOptions = (TemporalConnectionOptions)Client.Connection.Options.Clone();
+        connectionOptions.Runtime = runtime;
+        var clientOptions = (TemporalClientOptions)Client.Options.Clone();
+        clientOptions.Plugins = new ITemporalClientPlugin[]
+        {
+            new VersionedClientPlugin(),
+            new SimplePlugin("shared-plugin", new() { Version = "3.0.0" }),
+        };
+        var client = new TemporalClient(
+            await TemporalConnection.ConnectAsync(connectionOptions), clientOptions);
+
+        using var worker = new TemporalWorker(
+            client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
+            {
+                Plugins = new ITemporalWorkerPlugin[]
+                {
+                    new SimplePlugin("worker-plugin", new() { Version = "2.0.0" }),
+                    new SimplePlugin("unversioned-plugin"),
+                },
+            }.AddWorkflow<SimpleWorkflow>());
+        await worker.ExecuteAsync(() => AssertMore.EventuallyAsync(async () =>
+        {
+            var listResp = await client.WorkflowService.ListWorkersAsync(new()
+            {
+                Namespace = client.Options.Namespace,
+                Query = $"TaskQueue = \"{worker.Options.TaskQueue}\"",
+            });
+            // The list entries omit plugins, so the full heartbeat must be described.
+            var describeResp = await client.WorkflowService.DescribeWorkerAsync(new()
+            {
+                Namespace = client.Options.Namespace,
+                WorkerInstanceKey = Assert.Single(listResp.Workers).WorkerInstanceKey,
+            });
+            var heartbeat = describeResp.WorkerInfo.WorkerHeartbeat;
+            Assert.Equal(
+                new[]
+                {
+                    ("client-plugin", "1.0.0"),
+                    ("shared-plugin", "3.0.0"),
+                    ("unversioned-plugin", string.Empty),
+                    ("worker-plugin", "2.0.0"),
+                },
+                heartbeat.Plugins.Select(p => (p.Name, p.Version)).OrderBy(p => p.Name));
+        }));
     }
 }
