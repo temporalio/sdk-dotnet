@@ -6054,7 +6054,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     acquired = true;
                 }
             }
-            catch (TaskCanceledException e)
+            catch (TaskCanceledException e) when (e.CancellationToken == (cancellationToken ?? Workflow.CancellationToken))
             {
                 throw new ApplicationFailureException("Acquire canceled", e);
             }
