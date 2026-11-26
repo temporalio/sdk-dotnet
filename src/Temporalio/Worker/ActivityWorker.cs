@@ -398,9 +398,27 @@ namespace Temporalio.Worker
             ActivityExecutionContext.AsyncLocalCurrent.Value = act.Context;
             try
             {
-                await externalStorage.RetrieveAsync(
-                    PayloadVisitors.Walk, tsk, metrics: null, act.Context.CancellationToken)
-                    .ConfigureAwait(false);
+                // Heartbeat details were written with the result context, and the rest of the task
+                // with the activity context. Both are in one message, so the details go first.
+                if (tsk.Start is { } start)
+                {
+                    var heartbeatDetails = await ExternalStorageOperations.RetrieveAsync(
+                        externalStorage,
+                        start.HeartbeatDetails.ToList(),
+                        resultDataConverter.PayloadCodec,
+                        metrics: null,
+                        act.Context.CancellationToken).ConfigureAwait(false);
+                    start.HeartbeatDetails.Clear();
+                    start.HeartbeatDetails.Add(heartbeatDetails);
+                }
+                await ExternalStorageOperations.RetrieveAsync(
+                    externalStorage,
+                    PayloadVisitors.Walk,
+                    tsk,
+                    dataConverter.PayloadCodec,
+                    deriveCodec: null,
+                    metrics: null,
+                    act.Context.CancellationToken).ConfigureAwait(false);
 
                 // Find activity or fail
                 if (!activities.TryGetValue(act.Context.Info.ActivityType, out var defn))

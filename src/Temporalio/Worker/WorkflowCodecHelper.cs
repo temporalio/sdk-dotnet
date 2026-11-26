@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Google.Protobuf;
 using Google.Protobuf.Collections;
 using Temporalio.Api.Common.V1;
 using Temporalio.Bridge.Api.ActivityResult;
@@ -146,6 +147,55 @@ namespace Temporalio.Worker
                 }
             }
         }
+
+        /// <summary>
+        /// Picks the codec for each message of an activation as a payload visitor walks it, the
+        /// same codec <see cref="DecodeAsync(WorkflowCodecContext, WorkflowActivation)"/> uses.
+        /// </summary>
+        /// <param name="context">Codec context.</param>
+        /// <param name="act">Activation that will be walked.</param>
+        /// <returns>The codec deriver, starting from <see cref="WorkflowCodecContext.CodecWorkflowContext"/>.</returns>
+        internal static Func<IMessage, IPayloadCodec?, IPayloadCodec?> ActivationCodecs(
+            WorkflowCodecContext context, WorkflowActivation act)
+        {
+            // The previous run's failure and result sit beside payloads decoded with the job's
+            // codec, so they are told apart by identity.
+            InitializeWorkflow? init = null;
+            IPayloadCodec? previousRunCodec = null;
+            foreach (var job in act.Jobs)
+            {
+                if (job.InitializeWorkflow is { } initJob && JobCodec(context, job) is { } initCodec)
+                {
+                    init = initJob;
+                    previousRunCodec = PreviousRunCodec(context, initJob, initCodec);
+                }
+            }
+            return (message, enclosing) =>
+            {
+                if (message is WorkflowActivationJob job)
+                {
+                    return JobCodec(context, job);
+                }
+                if (init != null &&
+                    (ReferenceEquals(message, init.ContinuedFailure) ||
+                        ReferenceEquals(message, init.LastCompletionResult)))
+                {
+                    return previousRunCodec;
+                }
+                return enclosing;
+            };
+        }
+
+        /// <summary>
+        /// Picks the codec for each message of a completion as a payload visitor walks it, the same
+        /// codec <see cref="EncodeAsync(WorkflowCodecContext, WorkflowActivationCompletion)"/> uses.
+        /// </summary>
+        /// <param name="context">Codec context.</param>
+        /// <returns>The codec deriver, starting from <see cref="WorkflowCodecContext.CodecWorkflowContext"/>.</returns>
+        internal static Func<IMessage, IPayloadCodec?, IPayloadCodec?> CompletionCodecs(
+            WorkflowCodecContext context) =>
+            (message, enclosing) =>
+                message is WorkflowCommand cmd ? CommandCodec(context, cmd) : enclosing;
 
         private static async Task EncodeAsync(WorkflowCodecContext context, WorkflowCommand cmd)
         {
