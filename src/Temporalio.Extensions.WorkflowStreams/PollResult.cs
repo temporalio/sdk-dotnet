@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace Temporalio.Extensions.WorkflowStreams
 {
     /// <summary>
-    /// The cross-language result returned by the poll update.
+    /// The cross-language result returned by the poll update or query.
     /// </summary>
     /// <remarks>
     /// WARNING: Workflow Streams is experimental and may change.

@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace Temporalio.Extensions.WorkflowStreams
 {
     /// <summary>
-    /// The cross-language update input for polling stream items.
+    /// The cross-language update or query input for polling stream items.
     /// </summary>
     /// <remarks>
     /// WARNING: Workflow Streams is experimental and may change.

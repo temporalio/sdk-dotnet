@@ -253,6 +253,7 @@ public class WorkflowDefinitionTests
         Assert.Contains("__temporal_workflow_stream_publish", definition.Signals.Keys);
         Assert.Contains("__temporal_workflow_stream_poll", definition.Updates.Keys);
         Assert.Contains("__temporal_workflow_stream_offset", definition.Queries.Keys);
+        Assert.Contains("__temporal_workflow_stream_poll", definition.Queries.Keys);
 
         AssertBad<Bad.MismatchedWorkflowStreamHandlerNames>(
             "Signal handler name __temporal_workflow_stream_poll cannot start with __temporal");
@@ -657,6 +658,9 @@ public class WorkflowDefinitionTests
 
             [WorkflowUpdate("__temporal_workflow_stream_poll")]
             public Task PollAsync() => Task.CompletedTask;
+
+            [WorkflowQuery("__temporal_workflow_stream_poll")]
+            public string PollQuery() => "poll";
 
             [WorkflowQuery("__temporal_workflow_stream_offset")]
             public long Offset() => 0;

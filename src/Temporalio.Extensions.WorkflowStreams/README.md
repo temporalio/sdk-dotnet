@@ -6,7 +6,8 @@
 
 `Temporalio.Extensions.WorkflowStreams` provides a durable, offset-addressed, multi-topic log
 hosted by a Temporal Workflow. External publishers append batches with a Signal, subscribers
-long-poll with an Update, and a Query reports the current global offset. The implementation includes
+long-poll with an Update, and Queries read retained items after closure or report the current global
+offset. The implementation includes
 publisher deduplication, topic filtering, truncation, response paging, and continue-as-new state
 handoff.
 
@@ -141,14 +142,21 @@ For one topic, use `streams.GetTopic<StatusUpdate>("status").SubscribeAsync(from
 topic collection subscribes to every topic; the empty string is the cross-SDK no-topic value.
 Consumer cancellation cancels the in-flight RPC and throws `OperationCanceledException`. Disposing
 the owning client ends its active enumerations cleanly. Enumerations also end cleanly when the
-Workflow reaches a terminal state and automatically follow continue-as-new chains.
+Workflow reaches a terminal state, after delivering its remaining retained items, and automatically
+follow continue-as-new chains. After closure, reads use immediate Queries pinned to that run, paging
+until no more retained items are ready. Query reads add no history events and clamp truncated
+offsets to the retained base.
+
+Upgrade workers before using upgraded clients. Closed-stream reads require retained history and an
+available compatible worker. Missing handlers, configured query rejection, and other query failures
+are reported to the subscriber.
 
 ## Data conversion and interoperability
 
 The fixed protocol handlers are:
 
 - Signal `__temporal_workflow_stream_publish`
-- Update `__temporal_workflow_stream_poll`
+- Update and Query `__temporal_workflow_stream_poll`
 - Query `__temporal_workflow_stream_offset`
 
 The public wire DTOs use the protocol's exact snake-case JSON names. Each item's `data` is standard
@@ -157,7 +165,7 @@ encoding metadata and makes .NET publishers, Workflow hosts, and subscribers int
 official Workflow Streams implementations in other Temporal SDKs.
 
 Only payload conversion is applied to an individual item. A client's payload codec chain, if any,
-is applied once to the Signal or Update envelope rather than once per item, avoiding double encoding.
+is applied once to the Signal, Update, or Query envelope rather than once per item, avoiding double encoding.
 The envelope itself must use JSON-compatible conversion for cross-language interoperability.
 
 `FromActivity` uses the Activity's payload converter for individual stream items. Do not use its

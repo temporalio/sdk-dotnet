@@ -22,6 +22,11 @@ namespace Temporalio.Extensions.WorkflowStreams
         public const string PollUpdateName = TemporalRuntime.WorkflowStreamPollUpdateName;
 
         /// <summary>
+        /// Query used to read retained items after workflow closure.
+        /// </summary>
+        public const string PollQueryName = TemporalRuntime.WorkflowStreamPollQueryName;
+
+        /// <summary>
         /// Query used to read the current global offset.
         /// </summary>
         public const string OffsetQueryName = TemporalRuntime.WorkflowStreamOffsetQueryName;
